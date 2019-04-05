@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargerPot : Pot
+public class RunnerPot : Pot
 {
-    [SerializeField] public float aggroRadius = 5;
+    [SerializeField] public float cowardRadius = 5;
 
     private void Start()
     {
         stateMachine = new StateMachine();
-        stateMachine.Init(gameObject, 
-            new Charger_Idle(), 
-            new Charger_Charge());
+        stateMachine.Init(gameObject,
+            new Runner_Idle(),
+            new Runner_Run());
     }
 
     private void Update()
@@ -19,38 +19,12 @@ public class ChargerPot : Pot
         stateMachine.Update();
         if (agent.desiredVelocity.magnitude > 0)
         {
-            Hop();
+            Waddle();
         }
     }
 }
 
-public class Charger_Idle : State
-{
-    GameObject player;
-
-    public override void Enter()
-    {
-        if(player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-    }
-
-    public override void Exit()
-    { }
-
-    public override string Update()
-    {
-        if(Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<ChargerPot>().aggroRadius)
-        {
-            return "Charger_Charge";
-        }
-
-        return null;
-    }
-}
-
-public class Charger_Charge : State
+public class Runner_Idle : State
 {
     GameObject player;
 
@@ -67,14 +41,38 @@ public class Charger_Charge : State
 
     public override string Update()
     {
-        if (Vector3.Distance(owner.transform.position, player.transform.position) > owner.GetComponent<ChargerPot>().aggroRadius)
+        if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<RunnerPot>().cowardRadius)
         {
-            return "Charger_Idle";
+            return "Runner_Run";
         }
-
-        agent.SetDestination(player.transform.position);
 
         return null;
     }
 }
+public class Runner_Run : State
+{
+    GameObject player;
 
+    public override void Enter()
+    {
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+    }
+
+    public override void Exit()
+    { }
+
+    public override string Update()
+    {
+        if (Vector3.Distance(owner.transform.position, player.transform.position) > owner.GetComponent<RunnerPot>().cowardRadius)
+        {
+            return "Runner_Idle";
+        }
+
+        agent.SetDestination(owner.transform.position * 2 - player.transform.position);
+
+        return null;
+    }
+}
