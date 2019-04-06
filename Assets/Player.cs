@@ -5,14 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour {
 
-    // Slope Offset = 45 (Also Affect Upward block Movement)
-    // Step Offset = .4 (Allows Moving onto a block .5 Meters high and .75 at Edge)
-    // Skin Width = .2  OR .08 (?, Causes the Collider to "float")
-    // Min Move Distance (Aka, We have to move at least this much, or the controller wont actually move)
-    // 
-
     [Header("Speed")]
-    public float Speed = 1;
     public float MaxSpeed = 5;
     public float AccelerationFactor = 0.9f;
 
@@ -31,7 +24,6 @@ public class Player : MonoBehaviour {
     public float Gravity = 4.5f;
     public float FallStrength = 2.5f;
     public float LowJumpStrength = 2f;
-    public float Dampening = 0.8f;
 
     private new Collider collider;
     private CharacterController controller;
@@ -56,25 +48,16 @@ public class Player : MonoBehaviour {
 
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
-
-        // Third Person
         if (Use3rdPerson) {
-            XRotation = 75f;
-            YRotation = 75f;
-            CameraOffset = 5f;
-            YMinRotation = -10f;
-            YMaxRotation = 85f;
-
-            rotation.x = 40f;
-        } 
-        // First Person
-        else {
-            XRotation = 75f;
-            YRotation = 75f;
-            CameraOffset = 0.1f;
-            YMinRotation = -60f;
-            YMaxRotation = 60f;
+            SetupThirdPerson();
+        } else {
+            SetupFirstPerson();
         }
+
+        // Character controller
+        controller.skinWidth = 0.08f;
+        controller.slopeLimit = 45f;
+        controller.stepOffset = 0.4f;
 
         // Doom Movement
         MaxSpeed = 20f;
@@ -98,9 +81,11 @@ public class Player : MonoBehaviour {
         //TestInput();
     }
     private void LateUpdate() {
-        ThirdPersonCamera();
+        UpdateCamera();
     }
-    public void ThirdPersonCamera() {
+    public void UpdateCamera() {
+        // This is a Third Person Camera that can work as a First Person Camera with a small offset.
+
         float xRot = Input.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
         float yRot = Input.GetAxis("Horizontal Rotation") * XRotation * Time.deltaTime;
 
@@ -128,8 +113,6 @@ public class Player : MonoBehaviour {
 
         // Move with Delta Time
         controller.Move(velocity * Time.deltaTime);
-
-        // Test Dampening (?)
     }
 
     public void DoomMovement() {
@@ -180,7 +163,36 @@ public class Player : MonoBehaviour {
         }
     }
 
-    // Testing... --------------------------------------------------------------
+    [ContextMenu("Setup First Person")]
+    public void SetupFirstPerson() {
+        CameraOffset = 0.1f;
+
+        YMinRotation = -60f;
+        YMaxRotation = 60f;
+    }
+    [ContextMenu("Setup Third Person")]
+    public void SetupThirdPerson() {
+        Use3rdPerson = true;
+
+        CameraOffset = 5f;
+
+        YMinRotation = -10f;
+        YMaxRotation = 85f;
+
+        rotation.x = 40f;
+    }
+    [ContextMenu("Setup Controller")]
+    public void SetupController() {
+        XRotation = 150f;
+        YRotation = 100f;
+    }
+    [ContextMenu("Setup Mouse and Keyboard")]
+    public void SetupMouseAndKeyboard() {
+        XRotation = 75f;
+        YRotation = 75f;
+    }
+
+    // Testing --------------------------------------------------------------
     private int joystickAmo = 0;
     private void TestInput() {
         if(Input.GetJoystickNames().Length != joystickAmo) {
@@ -243,16 +255,8 @@ public class Player : MonoBehaviour {
 
 // Rotation seems to Be good
 // Controller input is working
-
-// Fix Jump Feel
-// Fix Mvmt Feel
-// Test Controller Mvmt and Jump Feel
-// Combat
-
-// How exactly do we want the Movement?
-// Like doom?
-// Like Slime Rancher 
-// Like Banjo and Kazooie?
+// Jump is Ok
+// Mvmt is Ok
 
 // DOOM
 // - Quick, but not Instantaneous
