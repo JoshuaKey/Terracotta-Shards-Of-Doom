@@ -17,8 +17,11 @@ public class Player : MonoBehaviour {
     public float AccelerationFactor = 0.9f;
 
     [Header("Rotation")]
+    public bool Use3rdPerson = true;
+    public float CameraOffset = 5f;
     public float XRotation = 75f;
     public float YRotation = 75f;
+    public float YMinRotation = -40f;
     public float YMaxRotation = 40f;
 
     [Header("Jump")]
@@ -51,7 +54,27 @@ public class Player : MonoBehaviour {
 
         playerLayer = LayerMask.NameToLayer("Player");
 
+        // Camera
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Third Person
+        if (Use3rdPerson) {
+            XRotation = 75f;
+            YRotation = 75f;
+            CameraOffset = 5f;
+            YMinRotation = -10f;
+            YMaxRotation = 85f;
+
+            rotation.x = 40f;
+        } 
+        // First Person
+        else {
+            XRotation = 75f;
+            YRotation = 75f;
+            CameraOffset = 0.1f;
+            YMinRotation = -60f;
+            YMaxRotation = 60f;
+        }
 
         // Doom Movement
         MaxSpeed = 20f;
@@ -69,28 +92,27 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-        UpdateCamera();
         UpdateMovment();
 
         TestAim();
         //TestInput();
     }
-    public void UpdateCamera() {
-        FirstPersonCamera();
-        //ThirdPersonCamera();
+    private void LateUpdate() {
+        ThirdPersonCamera();
     }
-    public void FirstPersonCamera() {
+    public void ThirdPersonCamera() {
         float xRot = Input.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
         float yRot = Input.GetAxis("Horizontal Rotation") * XRotation * Time.deltaTime;
 
         rotation += new Vector3(xRot, yRot, 0.0f);
         rotation.x = Mathf.Min(rotation.x, YMaxRotation);
-        rotation.x = Mathf.Max(rotation.x, -YMaxRotation);
+        rotation.x = Mathf.Max(rotation.x, YMinRotation);
         if (rotation.y > 360 || rotation.y < -360) {
             rotation.y = rotation.y % 360;
         }
 
-        this.transform.rotation = Quaternion.Euler(rotation);
+        camera.transform.position = this.transform.position + Quaternion.Euler(rotation) * Vector3.back * CameraOffset;
+        camera.transform.LookAt(this.transform);
     }
 
     public void UpdateMovment() {
@@ -107,13 +129,13 @@ public class Player : MonoBehaviour {
         // Move with Delta Time
         controller.Move(velocity * Time.deltaTime);
 
-        // Test Dampening
+        // Test Dampening (?)
     }
 
     public void DoomMovement() {
         // Get Movement
-        Vector3 forward = this.transform.forward * Input.GetAxisRaw("Vertical Movement");  
-        Vector3 right = this.transform.right * Input.GetAxisRaw("Horizontal Movement");
+        Vector3 forward = camera.transform.forward * Input.GetAxisRaw("Vertical Movement");  
+        Vector3 right = camera.transform.right * Input.GetAxisRaw("Horizontal Movement");
         // Combine Forward and Right Movement
         Vector3 movement = forward + right; 
         // Ignore Y component
@@ -145,16 +167,16 @@ public class Player : MonoBehaviour {
                 velocity.y = JumpPower;
             }
         }
-
         // By Default the Player does a "long jump" by holding the Jump Button
-
-        // If we are falling, add more Gravity
-        if(velocity.y < 0.0f) {
-            velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
-        } 
-        // If we are not doing a "long jump", add more Gravity 
-        else if(velocity.y > 0.0f && !Input.GetButton("Jump")) {
-            velocity.y -= Gravity * (LowJumpStrength - 1f) * Time.deltaTime;
+        else {
+            // If we are falling, add more Gravity
+            if (velocity.y < 0.0f) {
+                velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
+            }
+            // If we are not doing a "long jump", add more Gravity 
+            else if (velocity.y > 0.0f && !Input.GetButton("Jump")) {
+                velocity.y -= Gravity * (LowJumpStrength - 1f) * Time.deltaTime;
+            }
         }
     }
 
