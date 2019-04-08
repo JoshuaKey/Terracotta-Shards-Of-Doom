@@ -26,12 +26,19 @@ public class Player : MonoBehaviour {
     public float FallStrength = 2.5f;
     public float LowJumpStrength = 2f;
 
+    [Header("Combat")]
+    public float AttackSpeed = .5f;
+    public float Damage = 1f;
+    public float Health = 3f;
+    public float MaxHealth = 3f;
+
     private new Collider collider;
     private CharacterController controller;
     private new Camera camera;
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
+    private float nextAttackTime = 0.0f;
 
     private int playerLayer;
 
@@ -57,11 +64,11 @@ public class Player : MonoBehaviour {
 
         //// Character controller
         controller.skinWidth = 0.08f;
-        controller.slopeLimit = 45f;
+        controller.slopeLimit = 90f;
         controller.stepOffset = 0.4f;
 
         //// Doom Movement
-        MaxSpeed = 10f; // + 10 Speed Boost
+        MaxSpeed = 7.5f; // + 2.5 Speed Boost
         AccelerationFactor = 0.1f;
 
         //// Bunny Jump
@@ -73,13 +80,11 @@ public class Player : MonoBehaviour {
         JumpPower = 15;
         FallStrength = 2.5f;
         LowJumpStrength = 2f;
-
-        print(Time.timeScale);
-        Time.timeScale = 1;
     }
 
     void Update() {
-        UpdateMovment();
+        UpdateMovement();
+        UpdateCombat();
 
         TestAim();
         //TestInput();
@@ -104,8 +109,7 @@ public class Player : MonoBehaviour {
         camera.transform.position = this.transform.position + Quaternion.Euler(rotation) * Vector3.back * CameraOffset;
         camera.transform.LookAt(this.transform);
     }
-
-    public void UpdateMovment() {
+    public void UpdateMovement() {
         DoomMovement();
 
         //BunnyJump();
@@ -118,6 +122,32 @@ public class Player : MonoBehaviour {
 
         // Move with Delta Time
         controller.Move(velocity * Time.deltaTime);
+    }
+    public void UpdateCombat() {
+        if(InputManager.GetButtonDown("Attack") && Time.time <= nextAttackTime) {
+            print("Attack");
+            nextAttackTime = Time.time + AttackSpeed;
+        }
+    }
+
+    public void Attack() {
+        // Raycast
+
+        // Attack Collision Animation
+
+        // Box Popup...
+    }
+
+    public void Heal(float health) {
+        Health = Mathf.Max(MaxHealth, Health + health);
+    }
+
+    public void TakeDamage(float damage) {
+        Health -= damage;
+    }
+
+    public bool IsDead() {
+        return Health <= 0.0f;
     }
 
     public void DoomMovement() {
@@ -204,6 +234,8 @@ public class Player : MonoBehaviour {
         XRotation = 75f;
         YRotation = 75f;
     }
+
+
 
     // Testing --------------------------------------------------------------
     private int joystickAmo = 0;
