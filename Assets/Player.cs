@@ -47,7 +47,7 @@ public class Player : MonoBehaviour {
 
         playerLayer = LayerMask.NameToLayer("Player");
 
-        // Camera
+        //// Camera
         Cursor.lockState = CursorLockMode.Locked;
         if (Use3rdPerson) {
             SetupThirdPerson();
@@ -55,24 +55,27 @@ public class Player : MonoBehaviour {
             SetupFirstPerson();
         }
 
-        // Character controller
+        //// Character controller
         controller.skinWidth = 0.08f;
         controller.slopeLimit = 45f;
         controller.stepOffset = 0.4f;
 
-        // Doom Movement
+        //// Doom Movement
         MaxSpeed = 10f; // + 10 Speed Boost
         AccelerationFactor = 0.1f;
 
-        // Bunny Jump
-        //Gravity = 130f;
-        //JumpPower = 25f;
+        //// Bunny Jump
+        ////Gravity = 130f;
+        ////JumpPower = 25f;
 
-        // Platform Jump
+        //// Platform Jump
         Gravity = 30.0f;
         JumpPower = 15;
         FallStrength = 2.5f;
         LowJumpStrength = 2f;
+
+        print(Time.timeScale);
+        Time.timeScale = 1;
     }
 
     void Update() {
@@ -81,6 +84,7 @@ public class Player : MonoBehaviour {
         TestAim();
         //TestInput();
     }
+
     private void LateUpdate() {
         UpdateCamera();
     }
@@ -204,12 +208,12 @@ public class Player : MonoBehaviour {
     // Testing --------------------------------------------------------------
     private int joystickAmo = 0;
     private void TestInput() {
-        if(InputManager.GetJoystickNames().Length != joystickAmo) {
+        if (InputManager.GetJoystickNames().Length != joystickAmo) {
             joystickAmo = InputManager.GetJoystickNames().Length;
             for (int i = 0; i < joystickAmo; i++) {
                 print(InputManager.GetJoystickNames()[i] + " is Connected!");
             }
-        }    
+        }
 
         PrintAxis("Horizontal Movement");
         PrintAxis("Vertical Movement");
