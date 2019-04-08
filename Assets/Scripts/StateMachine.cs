@@ -111,18 +111,37 @@ public abstract class State
     public GameObject owner;
     public NavMeshAgent agent;
 
+    /// <summary>
+    /// sets variables based on owner
+    /// </summary>
+    /// <param name="owner"></param>
     public void Init(GameObject owner)
     {
         this.owner = owner;
         agent = owner.GetComponent<NavMeshAgent>();
     }
 
+    /// <summary>
+    /// called the StateMachine update before this State starts being updated
+    /// </summary>
     public abstract void Enter();
 
+    /// <summary>
+    /// called when this is the curState
+    /// </summary>
+    /// <returns></returns>
     public abstract string Update();
 
+    /// <summary>
+    /// called on the last update before the curState changes to a different State
+    /// </summary>
     public abstract void Exit();
 
+    /// <summary>
+    /// returns the type of the State in string form. For example a state called DoNothing in code returns 
+    /// "DoNothing". this is useful for automatically making a key for states in StateMachine
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
         return GetType().ToString();

@@ -5,8 +5,9 @@ using UnityEngine.AI;
 
 public abstract class Pot : MonoBehaviour
 {
-    [SerializeField] float waddleAmplitude = 12.5f;
-    [SerializeField] float hopHeight = 0.5f;
+    //these variables are for the animations
+    [SerializeField] float waddleAmplitude = 12.5f; //in degrees
+    [SerializeField] float hopHeight = 0.5f; //in meters
     [Space]
 
     protected StateMachine stateMachine;
@@ -17,6 +18,21 @@ public abstract class Pot : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
+    private void Update()
+    {
+        stateMachine.Update();
+        if (agent.desiredVelocity.magnitude > 0)
+        {
+            Animate();
+        }
+    }
+
+    //this does nothing but child classes can change that
+
+    public virtual void Animate()
+    { }
+
+    //Waddle Animation
     public void Waddle()
     {
         Vector3 euler = transform.rotation.eulerAngles;
@@ -26,6 +42,7 @@ public abstract class Pot : MonoBehaviour
         transform.rotation = Quaternion.Euler(euler);
     }
 
+    //Hop Animation
     public void Hop()
     {
         Vector3 euler = transform.rotation.eulerAngles;
