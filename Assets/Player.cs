@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Luminosity.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -60,7 +61,7 @@ public class Player : MonoBehaviour {
         controller.stepOffset = 0.4f;
 
         // Doom Movement
-        MaxSpeed = 20f;
+        MaxSpeed = 10f; // + 10 Speed Boost
         AccelerationFactor = 0.1f;
 
         // Bunny Jump
@@ -86,8 +87,8 @@ public class Player : MonoBehaviour {
     public void UpdateCamera() {
         // This is a Third Person Camera that can work as a First Person Camera with a small offset.
 
-        float xRot = Input.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
-        float yRot = Input.GetAxis("Horizontal Rotation") * XRotation * Time.deltaTime;
+        float xRot = InputManager.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
+        float yRot = InputManager.GetAxis("Horizontal Rotation") * XRotation * Time.deltaTime;
 
         rotation += new Vector3(xRot, yRot, 0.0f);
         rotation.x = Mathf.Min(rotation.x, YMaxRotation);
@@ -116,15 +117,23 @@ public class Player : MonoBehaviour {
     }
 
     public void DoomMovement() {
-        // Get Movement
-        Vector3 forward = camera.transform.forward * Input.GetAxisRaw("Vertical Movement");  
-        Vector3 right = camera.transform.right * Input.GetAxisRaw("Horizontal Movement");
-        // Combine Forward and Right Movement
-        Vector3 movement = forward + right; 
-        // Ignore Y component
-        movement.y = 0f; 
-        // Normalize Movement Direction
-        movement = movement.normalized;
+        float rightMove = InputManager.GetAxisRaw("Vertical Movement");
+        float frontMove = InputManager.GetAxisRaw("Horizontal Movement");
+        //print("Forward: " + frontMove);
+        //print("Right: " + rightMove);
+        Vector3 movement = Vector3.zero;
+
+        if (Mathf.Abs(rightMove) >= 0.1f || Mathf.Abs(frontMove) >= 0.1f) { // Hot Fix
+            // Get Movement
+            Vector3 forward = camera.transform.forward * rightMove;
+            Vector3 right = camera.transform.right * frontMove;
+            // Combine Forward and Right Movement
+            movement = forward + right;
+            // Ignore Y component
+            movement.y = 0f;
+            // Normalize Movement Direction
+            movement = movement.normalized;
+        }
 
         // Ignore Y Component
         Vector3 currMovement = velocity;
@@ -138,7 +147,7 @@ public class Player : MonoBehaviour {
     public void BunnyJump() {
         // Check for Jump
         if (controller.isGrounded) {
-            if (Input.GetButtonDown("Jump")) {
+            if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
             }
         }
@@ -146,7 +155,7 @@ public class Player : MonoBehaviour {
     public void PlatformJump() {
         // Check for Jump
         if (controller.isGrounded) {
-            if (Input.GetButtonDown("Jump")) {
+            if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
             }
         }
@@ -157,7 +166,7 @@ public class Player : MonoBehaviour {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
             }
             // If we are not doing a "long jump", add more Gravity 
-            else if (velocity.y > 0.0f && !Input.GetButton("Jump")) {
+            else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
                 velocity.y -= Gravity * (LowJumpStrength - 1f) * Time.deltaTime;
             }
         }
@@ -195,10 +204,10 @@ public class Player : MonoBehaviour {
     // Testing --------------------------------------------------------------
     private int joystickAmo = 0;
     private void TestInput() {
-        if(Input.GetJoystickNames().Length != joystickAmo) {
-            joystickAmo = Input.GetJoystickNames().Length;
+        if(InputManager.GetJoystickNames().Length != joystickAmo) {
+            joystickAmo = InputManager.GetJoystickNames().Length;
             for (int i = 0; i < joystickAmo; i++) {
-                print(Input.GetJoystickNames()[i] + " is Connected!");
+                print(InputManager.GetJoystickNames()[i] + " is Connected!");
             }
         }    
 
@@ -216,14 +225,14 @@ public class Player : MonoBehaviour {
         // We can use manual button and axis names as well, "joystick 1 button 0"
     }
     private void PrintAxis(string name) {
-        float val = Input.GetAxis(name);
+        float val = InputManager.GetAxis(name);
         if (val != .0f) {
             print(name + " Axis: " + val);
         }
 
     }
     private void PrintButton(string name) {
-        bool val = Input.GetButton(name);
+        bool val = InputManager.GetButton(name);
         if (val) {
             print(name + " is Pressed!");
         }
@@ -250,6 +259,8 @@ public class Player : MonoBehaviour {
     private void OnGUI() {
         GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
         GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
+
+        GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
     }
 }
 
