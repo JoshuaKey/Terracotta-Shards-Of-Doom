@@ -31,16 +31,23 @@ public class Player : MonoBehaviour {
     public float Damage = 1f;
     public float Health = 3f;
     public float MaxHealth = 3f;
+    public Weapon Sword;
 
     private new Collider collider;
     private CharacterController controller;
     private new Camera camera;
 
+    // Movement
     private Vector3 velocity = Vector3.zero;
     private Vector3 rotation = Vector3.zero;
+
+    private Vector3 cameraOrigin;
+
+    // Attack
     private float nextAttackTime = 0.0f;
 
-    private int playerLayer;
+    // Collision
+    private int playerLayerMask;
 
     void Start() {
         collider = GetComponent<Collider>();
@@ -52,7 +59,8 @@ public class Player : MonoBehaviour {
         camera = GetComponent<Camera>();
         if (camera == null) { camera = GetComponentInChildren<Camera>(); }
 
-        playerLayer = LayerMask.NameToLayer("Player");
+        this.gameObject.layer = LayerMask.NameToLayer("Player");
+        playerLayerMask = 1 << this.gameObject.layer;
 
         //// Camera
         Cursor.lockState = CursorLockMode.Locked;
@@ -61,6 +69,7 @@ public class Player : MonoBehaviour {
         } else {
             SetupFirstPerson();
         }
+        cameraOrigin = camera.transform.localPosition;
 
         //// Character controller
         controller.skinWidth = 0.08f;
@@ -80,6 +89,8 @@ public class Player : MonoBehaviour {
         JumpPower = 15;
         FallStrength = 2.5f;
         LowJumpStrength = 2f;
+
+        Sword.OnEnemyHit += OnEnemyAttack;
     }
 
     void Update() {
@@ -89,25 +100,36 @@ public class Player : MonoBehaviour {
         TestAim();
         //TestInput();
     }
-
     private void LateUpdate() {
+        // Camera Updates Last (Makes it not Jittery...)
         UpdateCamera();
     }
     public void UpdateCamera() {
-        // This is a Third Person Camera that can work as a First Person Camera with a small offset.
-
+        // Rotation Input
         float xRot = InputManager.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
         float yRot = InputManager.GetAxis("Horizontal Rotation") * XRotation * Time.deltaTime;
 
+        // Add to Existing Rotation
         rotation += new Vector3(xRot, yRot, 0.0f);
+
+        // Constrain Rotation
         rotation.x = Mathf.Min(rotation.x, YMaxRotation);
         rotation.x = Mathf.Max(rotation.x, YMinRotation);
         if (rotation.y > 360 || rotation.y < -360) {
             rotation.y = rotation.y % 360;
         }
 
-        camera.transform.position = this.transform.position + Quaternion.Euler(rotation) * Vector3.back * CameraOffset;
-        camera.transform.LookAt(this.transform);
+
+        this.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
+
+        //// Set Camera Position and Rotation (Works for both 1st and 3rd Person Camera)
+        //camera.transform.localPosition = cameraOrigin + Quaternion.Euler(rotation) * Vector3.back * CameraOffset;
+        //camera.transform.LookAt(this.transform.position + cameraOrigin);
+
+        //// Align Player / Model to Camera, Don't affect Camera though...
+        //var rot = camera.transform.rotation;
+        //this.transform.forward = camera.transform.forward;
+        //camera.transform.rotation = rot;
     }
     public void UpdateMovement() {
         DoomMovement();
@@ -124,13 +146,16 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
-        if(InputManager.GetButtonDown("Attack") && Time.time <= nextAttackTime) {
-            print("Attack");
-            nextAttackTime = Time.time + AttackSpeed;
-        }
+        AnimationAttack();
     }
 
-    public void Attack() {
+    private void AnimationAttack() {
+        if (InputManager.GetButtonDown("Attack") && Time.time >= nextAttackTime) {
+            nextAttackTime = Time.time + AttackSpeed;
+
+            StartCoroutine(Sword.Swing(AttackSpeed));
+        }
+
         // Raycast
 
         // Attack Collision Animation
@@ -140,12 +165,14 @@ public class Player : MonoBehaviour {
 
     public void Heal(float health) {
         Health = Mathf.Max(MaxHealth, Health + health);
-    }
 
+        print(this.name + " (Heal): " + Health + "/" + MaxHealth);
+    }
     public void TakeDamage(float damage) {
         Health -= damage;
-    }
 
+        print(this.name + " (Damage): " + Health + "/" + MaxHealth);
+    }
     public bool IsDead() {
         return Health <= 0.0f;
     }
@@ -235,7 +262,12 @@ public class Player : MonoBehaviour {
         YRotation = 75f;
     }
 
-
+    private void OnEnemyAttack(Enemy enemy) {
+        enemy.TakeDamage(Damage);
+        if (enemy.IsDead()) {
+            enemy.gameObject.SetActive(false);
+        }
+    }
 
     // Testing --------------------------------------------------------------
     private int joystickAmo = 0;
@@ -287,7 +319,7 @@ public class Player : MonoBehaviour {
         Debug.DrawRay(ray.origin, ray.direction * distance, Color.green);
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, distance, playerLayer)) {
+        if (Physics.Raycast(ray, out hit, distance, ~playerLayerMask)) {
             print("Pointing at " + hit.collider.gameObject.name);
         }
     }
