@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
 public class Weapon : MonoBehaviour {
 
     public string EnemyTag = "Enemy";
@@ -65,10 +64,14 @@ public class Weapon : MonoBehaviour {
         collider.enabled = true;
 
         // (.5, 1, 1) (-45, 0, 0) -> (0, 0, 1) (45, -45, 0)
-        Vector3 startPos = new Vector3(0.5f, 1, 1);
-        Vector3 endPos = new Vector3(0, 0, 1);
-        Quaternion startRot = Quaternion.Euler(new Vector3(-45, 0, 0));
-        Quaternion endRot = Quaternion.Euler(new Vector3(45, -45, 0));
+        //Vector3 startPos = new Vector3(0.5f, 1, 1);
+        //Vector3 endPos = new Vector3(0, 0, 1);
+        //Quaternion startRot = Quaternion.Euler(new Vector3(-45, 0, 0));
+        //Quaternion endRot = Quaternion.Euler(new Vector3(45, -45, 0));
+        Vector3 startPos = new Vector3(0.5f, 0.5f, 0.777f);
+        Vector3 endPos = new Vector3(-0.2f, 0.2f, 0.777f);
+        Quaternion startRot = Quaternion.Euler(new Vector3(0, 45, -10));
+        Quaternion endRot = Quaternion.Euler(new Vector3(10, 45, 120));
 
         // Swing Blade Down
         float startTime = Time.time;
