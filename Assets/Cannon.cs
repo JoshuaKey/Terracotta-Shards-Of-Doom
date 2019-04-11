@@ -8,8 +8,10 @@ public class Cannon : MonoBehaviour {
     // When Interacted, the Player will align with the Barrel
     // Then the player will shoot, in a specific direction and velocit
 
-    [Header("")]
-    public Vector3 EndPosition;
+    [HideInInspector]
+    public float BaseAngle;
+    [HideInInspector]
+    public float BarrelAngle;
 
     [Header("Time")]
     public float ChargeTime = 2.5f;
@@ -17,6 +19,8 @@ public class Cannon : MonoBehaviour {
 
     [Header("Object")]
     public GameObject Barrel;
+    public GameObject Base;
+    public Transform Target;
 
     private Interactable interactable;
 
@@ -29,9 +33,12 @@ public class Cannon : MonoBehaviour {
         if (interactable == null) { interactable = GetComponentInChildren<Interactable>(); }
 
         interactable.Subscribe(FirePlayer);
+
+        BarrelAngle = Barrel.transform.root.localEulerAngles.z;
+        BaseAngle = Base.transform.root.localEulerAngles.y;
     }
 
-    public void Align() {
+    public void Align(float baseAngle, float barrelAngle) {
         // Dont care right now...
     }
 
@@ -43,7 +50,6 @@ public class Cannon : MonoBehaviour {
 
     public IEnumerator Shoot(Player player) {
         player.CanWalk = false;
-        //player.CanRotate = false;
         player.CanMove = false;
 
         Quaternion playerRot = player.transform.rotation;
@@ -54,8 +60,6 @@ public class Cannon : MonoBehaviour {
         // Move Barrel Back ? Animation
         yield return new WaitForSeconds(ChargeTime);
 
-        player.CanMove = true;
-
         Vector3 startPos = Barrel.transform.position;
         float startTime = Time.time;
         while (Time.time < startTime + LeapTime) {
@@ -64,18 +68,17 @@ public class Cannon : MonoBehaviour {
             Vector3 pos = this.transform.localPosition;
             Quaternion rot = this.transform.localRotation;
 
-            pos.x = Mathf.Lerp(startPos.x, EndPosition.x, t);
-            pos.y = Mathf.Lerp(startPos.y, EndPosition.y, t);
-            pos.z = Mathf.Lerp(startPos.z, EndPosition.z, t);
+            pos.x = Mathf.Lerp(startPos.x, Target.position.x, t);
+            pos.y = Mathf.Lerp(startPos.y, Target.position.y, t);
+            pos.z = Mathf.Lerp(startPos.z, Target.position.z, t);
 
             player.transform.position = pos;
             yield return null;
         }
 
-        player.transform.position = EndPosition;
-        //player.transform.rotation = playerRot;
+        player.transform.position = Target.position;
         player.CanWalk = true;
-        //player.CanRotate = true;
+        player.CanMove = true;
     }
 
 }
