@@ -9,6 +9,7 @@ public class Player : MonoBehaviour {
     [Header("Speed")]
     public float MaxSpeed = 5;
     public float AccelerationFactor = 0.9f;
+    public bool CanWalk = true;
 
     [Header("Rotation")]
     public bool Use3rdPerson = true;
@@ -17,14 +18,17 @@ public class Player : MonoBehaviour {
     public float YRotation = 75f;
     public float YMinRotation = -40f;
     public float YMaxRotation = 40f;
+    public bool CanRotate = true;
 
     [Header("Jump")]
     public float JumpPower = 100;
+    public bool CanJump = true;
 
     [Header("Velocity")]
     public float Gravity = 4.5f;
     public float FallStrength = 2.5f;
     public float LowJumpStrength = 2f;
+    public bool CanMove = true;
 
     [Header("Combat")]
     public float AttackSpeed = .5f;
@@ -32,14 +36,25 @@ public class Player : MonoBehaviour {
     public float Health = 3f;
     public float MaxHealth = 3f;
     public Weapon Sword;
+    public bool CanAttack = true;
+
+    [Header("Interact")]
+    public float InteractDistance = 2.0f;
+    public LayerMask InteractLayer;
+    public bool CanInteract = true;
+
+    [Header("UI")]
+    public PlayerHud HUD;
+
+    public static Player Instance;
 
     private new Collider collider;
     private CharacterController controller;
     private new Camera camera;
 
     // Movement
-    private Vector3 velocity = Vector3.zero;
-    private Vector3 rotation = Vector3.zero;
+    public Vector3 velocity = Vector3.zero;
+    public Vector3 rotation = Vector3.zero;
 
     private Vector3 cameraOrigin;
 
@@ -50,6 +65,12 @@ public class Player : MonoBehaviour {
     private int playerLayerMask;
 
     void Start() {
+        if(Instance == null) {
+            Instance = this;
+        } else {
+            Destroy(this.gameObject);
+        }
+
         collider = GetComponent<Collider>();
         if (collider == null) { collider = GetComponentInChildren<Collider>(); }
 
@@ -70,6 +91,7 @@ public class Player : MonoBehaviour {
             SetupFirstPerson();
         }
         cameraOrigin = camera.transform.localPosition;
+        rotation = this.transform.rotation.eulerAngles;
 
         //// Character controller
         controller.skinWidth = 0.08f;
@@ -94,16 +116,26 @@ public class Player : MonoBehaviour {
     }
 
     void Update() {
-        UpdateMovement();
-        UpdateCombat();
+        if (CanMove) {
+            UpdateMovement();
+        }
+        if (CanAttack) {
+            UpdateCombat();
+        }
+        if (CanInteract) {
+            UpdateInteractable();
+        } 
 
         TestAim();
         //TestInput();
     }
     private void LateUpdate() {
         // Camera Updates Last (Makes it not Jittery...)
-        UpdateCamera();
+        if (CanRotate) {
+            UpdateCamera();
+        }   
     }
+
     public void UpdateCamera() {
         // Rotation Input
         float xRot = InputManager.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
@@ -119,23 +151,18 @@ public class Player : MonoBehaviour {
             rotation.y = rotation.y % 360;
         }
 
-
         this.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
-
-        //// Set Camera Position and Rotation (Works for both 1st and 3rd Person Camera)
-        //camera.transform.localPosition = cameraOrigin + Quaternion.Euler(rotation) * Vector3.back * CameraOffset;
-        //camera.transform.LookAt(this.transform.position + cameraOrigin);
-
-        //// Align Player / Model to Camera, Don't affect Camera though...
-        //var rot = camera.transform.rotation;
-        //this.transform.forward = camera.transform.forward;
-        //camera.transform.rotation = rot;
     }
     public void UpdateMovement() {
-        DoomMovement();
+        if (CanWalk) {
+            DoomMovement();
+        }
 
+        if (CanJump) {
+            PlatformJump();
+        }
         //BunnyJump();
-        PlatformJump();
+        
 
         // Add Gravity
         if (!controller.isGrounded) {
@@ -147,6 +174,22 @@ public class Player : MonoBehaviour {
     }
     public void UpdateCombat() {
         AnimationAttack();
+    }
+    public void UpdateInteractable() {
+        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
+            Interactable interactable = hit.collider.GetComponent<Interactable>();
+
+            HUD.SetInteractText("F", interactable.name);
+
+            if (InputManager.GetButtonDown("Interact")) {
+                interactable.Interact();
+            }
+        } else {
+            HUD.DisableInteractText();
+        }
     }
 
     private void AnimationAttack() {
