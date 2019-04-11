@@ -8,10 +8,13 @@ public class Cannon : MonoBehaviour {
     // When Interacted, the Player will align with the Barrel
     // Then the player will shoot, in a specific direction and velocit
 
+    [Header("Launch")]
     [HideInInspector]
     public float BaseAngle;
     [HideInInspector]
     public float BarrelAngle;
+    public Transform Target;
+    public Transform Peak; // Aka , how high will we get?
 
     [Header("Time")]
     public float ChargeTime = 2.5f;
@@ -20,8 +23,7 @@ public class Cannon : MonoBehaviour {
     [Header("Object")]
     public GameObject Barrel;
     public GameObject Base;
-    public Transform Target;
-
+    
     private Interactable interactable;
 
     private WaitForSeconds chargedWait;
@@ -66,19 +68,23 @@ public class Cannon : MonoBehaviour {
             float t = (Time.time - startTime) / LeapTime;
 
             Vector3 pos = this.transform.localPosition;
-            Quaternion rot = this.transform.localRotation;
 
-            pos.x = Mathf.Lerp(startPos.x, Target.position.x, t);
-            pos.y = Mathf.Lerp(startPos.y, Target.position.y, t);
-            pos.z = Mathf.Lerp(startPos.z, Target.position.z, t);
+            pos = Utility.BezierCurve(startPos, Peak.position, Target.position, t);
 
             player.transform.position = pos;
             yield return null;
         }
 
-        player.transform.position = Target.position;
+        player.transform.position = Utility.BezierCurve(startPos, Peak.position, Target.position, 1.0f);
         player.CanWalk = true;
         player.CanMove = true;
+    }
+
+    [ContextMenu("Find Mid Point")]
+    private void FindMidPoint() {
+        Vector3 mid = Barrel.transform.position + .5f * (Target.position - Barrel.transform.position);
+        Peak.position = mid;
+        Peak.forward = (Target.position - Barrel.transform.position).normalized;
     }
 
 }
