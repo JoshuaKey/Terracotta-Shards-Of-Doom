@@ -35,7 +35,7 @@ public class Player : MonoBehaviour {
     public float Damage = 1f;
     public float Health = 3f;
     public float MaxHealth = 3f;
-    public Weapon Sword;
+    public Weapon weapon;
     public bool CanAttack = true;
 
     [Header("Interact")]
@@ -53,7 +53,9 @@ public class Player : MonoBehaviour {
     private new Camera camera;
 
     // Movement
+    [HideInInspector]
     public Vector3 velocity = Vector3.zero;
+    [HideInInspector]
     public Vector3 rotation = Vector3.zero;
 
     private Vector3 cameraOrigin;
@@ -112,7 +114,7 @@ public class Player : MonoBehaviour {
         FallStrength = 2.5f;
         LowJumpStrength = 2f;
 
-        Sword.OnEnemyHit += OnEnemyAttack;
+        weapon.OnEnemyHit += OnEnemyAttack;
     }
 
     void Update() {
@@ -173,7 +175,11 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
-        AnimationAttack();
+        if (InputManager.GetButtonDown("Attack") && Time.time >= nextAttackTime) {
+            nextAttackTime = Time.time + AttackSpeed;
+
+            StartCoroutine(weapon.Swing(AttackSpeed));
+        }
     }
     public void UpdateInteractable() {
         Ray ray = new Ray(camera.transform.position, camera.transform.forward);
@@ -190,20 +196,6 @@ public class Player : MonoBehaviour {
         } else {
             HUD.DisableInteractText();
         }
-    }
-
-    private void AnimationAttack() {
-        if (InputManager.GetButtonDown("Attack") && Time.time >= nextAttackTime) {
-            nextAttackTime = Time.time + AttackSpeed;
-
-            StartCoroutine(Sword.Swing(AttackSpeed));
-        }
-
-        // Raycast
-
-        // Attack Collision Animation
-
-        // Box Popup...
     }
 
     public void Heal(float health) {

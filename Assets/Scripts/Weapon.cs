@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour {
 
+
+
     public string EnemyTag = "Enemy";
 
     private new Collider collider;
@@ -129,3 +131,20 @@ public class Weapon : MonoBehaviour {
         enemiesHit.Clear();
     }
 }
+
+// Sword - Simple Swing
+// Bow - 
+//      - Fire a Projectile, Arrow drop off
+//      - 
+// Hammer - Ground pound
+// Fire Sword - Simple Swing 
+// Spear - 
+
+// A Weapon should represent an object that that can attack 
+// Each 
+
+// CanCharge
+// Attack Speed
+// Damage
+// Charge - Generate Charge based off Delta Time (Power...)
+// Attack - Start Animation (?), Collider / Physics
