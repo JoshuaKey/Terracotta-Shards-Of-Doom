@@ -40,11 +40,13 @@ public class ArmoredPot : Pot
     {
         stateMachine.Update();
     }
+
     #region Boss States
     public class Armored_Shooting : State
     {
         private GameObject boss = null;
         private GameObject target = null;
+        private byte numberOfShots = 0;
 
         public override void Enter()
         {
@@ -61,7 +63,7 @@ public class ArmoredPot : Pot
 
         public override void Exit()
         {
-            //Any Cleanup
+            numberOfShots = 0;
         }
 
         public override string Update()
@@ -76,6 +78,8 @@ public class ArmoredPot : Pot
             targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
            
             Debug.DrawLine(owner.transform.position, targetPosition, Color.red);
+
+            numberOfShots++;
 
             return null;
         }
@@ -99,10 +103,6 @@ public class ArmoredPot : Pot
 
         public override string Update()
         {
-            if(boss.GetComponent<ArmoredPot>().NumArmorPieces != 0)
-            {
-                Utility
-            }
             return null;
         }
     }

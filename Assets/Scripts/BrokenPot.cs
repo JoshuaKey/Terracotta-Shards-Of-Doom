@@ -2,29 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Enemy))]
 public class BrokenPot : MonoBehaviour {
 
-    public GameObject brokenPot;
-
-    private Enemy enemy;
+    private Rigidbody[] pieces;
 
     void Start() {
-        enemy = GetComponent<Enemy>();
+        pieces = GetComponentsInChildren<Rigidbody>();
 
-        brokenPot.SetActive(false);
+        this.gameObject.SetActive(false);
     }
 
-    void Update() {
-        if (enemy.IsDead()) {
-            this.gameObject.SetActive(false);
-            brokenPot.SetActive(true);
+    public void Activate() {
+        //this.gameObject.SetActive(true);
+    }
 
-            brokenPot.transform.parent = null;
-
-            brokenPot.transform.position = this.transform.position;
-            brokenPot.transform.rotation = this.transform.rotation;
-            brokenPot.transform.localScale = this.transform.localScale;
-        }   
+    public void Explode() {
+        // Put Explodey Logic here
     }
 }
