@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class StateMachine
 {
     Dictionary<string, State> states;
-    State curState;
+    Stack<State> curState;
     GameObject owner;
 
     //////////////////////
@@ -22,6 +22,7 @@ public class StateMachine
     {
         this.owner = owner;
         states = new Dictionary<string, State>();
+        curState = new Stack<State>();
         AddStates(initStates);
     }
 
@@ -31,15 +32,15 @@ public class StateMachine
     /// </summary>
     public void Update()
     {
-        if(curState == null)
+        if(curState.Count < 1)
         {
             throw new System.NullReferenceException
-                ("The curState in StateMachine is null. Did you forget to add States?");
+                ("The curState in StateMachine is empty. Did you forget to add States?");
         }
 
         if (DEBUGGING) Debug.Log($"Updated State {curState}");
 
-        string nextState = curState.Update();
+        string nextState = curState.Peek().Update();
         if(nextState != null)
         {
             ChangeState(nextState);
@@ -49,24 +50,24 @@ public class StateMachine
     /// <summary>
     /// intializes and adds a State to states. uses the State's name as a string, so a State named RunAway is 
     /// automatically stored with the key "RunAway". If this is the first State being added it automatically 
-    /// sets curState to state.
+    /// pusshes state to curState
     /// </summary>
     /// <param name="state"></param>
     public void AddState(State state)
     {
         state.Init(owner);
 
-        if (states.Count == 0)
+        if (states.Count < 1)
         {
-            curState = state;
-            curState.Enter();
+            curState.Push(state);
+            curState.Peek().Enter();
         }
 
         states.Add(state.ToString(), state);
     }
 
     /// <summary>
-    /// adds multiple States at once
+    /// adds multiple States at once to states
     /// </summary>
     /// <param name="initStates"></param>
     public void AddStates(IEnumerable<State> initStates)
@@ -78,7 +79,7 @@ public class StateMachine
     }
 
     /// <summary>
-    /// removes a State
+    /// removes a State from states
     /// </summary>
     /// <param name="state"></param>
     public void RemoveState(State state)
@@ -91,18 +92,55 @@ public class StateMachine
     /// State is found, it throws an error
     /// </summary>
     /// <param name="stateName"></param>
-    void ChangeState(string stateName)
+    public void ChangeState(string stateName)
     {
         if (!states.ContainsKey(stateName))
         {
             throw new System.ArgumentException($"The StateMachine does not contain State '{stateName}'.");
         }
 
-        if (DEBUGGING) Debug.Log($"Exited State {curState}. Entered State {stateName}");
+        if (DEBUGGING) Debug.Log($"Exited State {curState.Peek()}. Entered State {stateName}");
 
-        curState.Exit();
-        curState = states[stateName];
-        curState.Enter();
+        curState.Pop().Exit();
+        curState.Push(states[stateName]);
+        curState.Peek().Enter();
+    }
+
+    /// <summary>
+    /// Pushes a State on top of the curState. If no State is found, it throws an error
+    /// </summary>
+    /// <param name="stateName"></param>
+    public void PushState(string stateName)
+    {
+        if (!states.ContainsKey(stateName))
+        {
+            throw new System.ArgumentException($"The StateMachine does not contain State '{stateName}'.");
+        }
+
+        if (DEBUGGING) Debug.Log($"Exited State {curState.Peek()}. Entered State {stateName} (PUSHED)");
+
+        curState.Peek().Exit();
+        curState.Push(states[stateName]);
+        curState.Peek().Enter();
+    }
+
+    /// <summary>
+    /// Pops the current state. If there is no state underneath, it throws an error
+    /// </summary>
+    public void PopState()
+    {
+        State oldState = curState.Pop();
+
+        if (DEBUGGING) Debug.Log($"Exited State {oldState}. Entered State {curState.Peek()} (POPPED)");
+
+        oldState.Exit();
+
+        if (curState.Count < 1)
+        {
+            throw new System.NullReferenceException("The StateMachine does not have any States left in curState.");
+        }
+
+        curState.Peek().Enter();
     }
 }
 
