@@ -13,7 +13,7 @@ public class BrokenPot : MonoBehaviour {
     }
 
     public void Activate() {
-        this.gameObject.SetActive(true);
+        //this.gameObject.SetActive(true);
     }
 
     public void Explode() {

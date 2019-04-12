@@ -4,15 +4,33 @@ using UnityEngine;
 
 public class Sword : Weapon {
 
-    private bool isSwinging = false;
+    protected new Rigidbody rigidbody;
+    protected new Collider collider;
+
+    //private bool isSwinging = false;
     private List<GameObject> enemiesHit = new List<GameObject>();
 
-    private void Start() {
+    protected void Start() {
+        collider = GetComponent<Collider>();
+        if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
+
+        rigidbody = GetComponent<Rigidbody>();
+        if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
+
+        collider.enabled = false;
+
         CanCharge = false;
         Type = DamageType.BASIC;
+
+        //Vector3 p0;
+        //Vector3 p2;
+        //float t;
+        //float maxDist = 50;
+        //float dist = maxDist - (p2 - p0).magnitude;
+        //Vector3 p1 = Utility.CreatePeak(p0, p2, 0.5f, dist);
     }
     public override void Attack() {
-        if (!CanAttack()) { return;  }
+        if (!CanAttack()) { return; }
 
         base.Attack();
         StartCoroutine(Swing());
@@ -51,6 +69,9 @@ public class Sword : Weapon {
         this.transform.localPosition = endPos;
         this.transform.localRotation = endRot;
 
+        collider.enabled = false;
+        enemiesHit.Clear();
+
         // Move to Start Pos
         startTime = Time.time;
         length = AttackSpeed * 0.6f; // (60%)
@@ -75,21 +96,17 @@ public class Sword : Weapon {
         }
         this.transform.localPosition = startPos;
         this.transform.localRotation = startRot;
-
-        // No longer Attacking
-        collider.enabled = false;
-        enemiesHit.Clear();
     }
 
     protected void OnTriggerEnter(Collider other) {
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponent<Enemy>();
             if (enemy != null) {
-                print("Dealing Damage to " + other.name);
-
                 enemiesHit.Add(other.gameObject);
 
-                OnEnemyHit?.Invoke(enemy);
+                enemy.health.TakeDamage(this.Type, this.Damage);
+
+                //OnEnemyHit?.Invoke(enemy);
             }
         }
     }

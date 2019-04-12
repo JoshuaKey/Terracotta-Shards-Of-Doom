@@ -110,7 +110,7 @@ public class Player : MonoBehaviour {
         FallStrength = 2.5f;
         LowJumpStrength = 2f;
 
-        weapon.OnEnemyHit += OnEnemyAttack;
+        //weapon.OnEnemyHit += OnEnemyAttack;
     }
 
     void Update() {
@@ -169,23 +169,16 @@ public class Player : MonoBehaviour {
     }
     public void UpdateCombat() {
         // Lol 3 If Statements...
-        print("her");
         if (weapon.CanAttack()) {
-            print("here");
             if (weapon.CanCharge) {
-                print("here3");
                 if (InputManager.GetButton("Attack")) {
-                    print("here5");
                     weapon.Charge();
                 }
                 if (InputManager.GetButtonUp("Attack")) {
-                    print("here6");
                     weapon.Attack();
                 }
             } else {
-                print("here2");
                 if (InputManager.GetButtonDown("Attack")) {
-                    print("here4");
                     weapon.Attack();
                 }
             }
@@ -284,12 +277,12 @@ public class Player : MonoBehaviour {
         YRotation = 75f;
     }
 
-    private void OnEnemyAttack(Enemy enemy) {
-        //enemy.TakeDamage(Damage);
-        //if (enemy.IsDead()) {
-        //    //enemy.gameObject.SetActive(false);
-        //}
-    }
+    //private void OnEnemyAttack(Enemy enemy) {
+    //    //enemy.TakeDamage(Damage);
+    //    //if (enemy.IsDead()) {
+    //    //    //enemy.gameObject.SetActive(false);
+    //    //}
+    //}
 
     // Testing --------------------------------------------------------------
     private void OnGUI() {

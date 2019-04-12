@@ -5,13 +5,23 @@ using UnityEngine;
 
 public class Health : MonoBehaviour {
 
+    public delegate void PublicAction();
+
     [HideInInspector]
-    public float CurrentHealth = 3f;
+    public float CurrentHealth;
     public float MaxHealth = 3f;
 
-    public Action OnEnemyDeath;
+    public PublicAction OnEnemyDeath;
     public Action OnEnemyHeal;
     public Action OnEnemyDamage;
+
+    private void Start() {
+        Reset();
+    }
+
+    public void Reset() {
+        CurrentHealth = MaxHealth;
+    }
 
     public void Heal(float health) {
         CurrentHealth = Mathf.Max(MaxHealth, CurrentHealth + health);
