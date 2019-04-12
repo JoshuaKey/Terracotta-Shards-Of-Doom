@@ -8,8 +8,13 @@ public class Cannon : MonoBehaviour {
     // When Interacted, the Player will align with the Barrel
     // Then the player will shoot, in a specific direction and velocit
 
-    [Header("")]
-    public Vector3 EndPosition;
+    [Header("Launch")]
+    [HideInInspector]
+    public float BaseAngle;
+    [HideInInspector]
+    public float BarrelAngle;
+    public Transform Target;
+    public Transform Peak; // Aka , how high will we get?
 
     [Header("Time")]
     public float ChargeTime = 2.5f;
@@ -17,7 +22,8 @@ public class Cannon : MonoBehaviour {
 
     [Header("Object")]
     public GameObject Barrel;
-
+    public GameObject Base;
+    
     private Interactable interactable;
 
     private WaitForSeconds chargedWait;
@@ -29,9 +35,12 @@ public class Cannon : MonoBehaviour {
         if (interactable == null) { interactable = GetComponentInChildren<Interactable>(); }
 
         interactable.Subscribe(FirePlayer);
+
+        BarrelAngle = Barrel.transform.root.localEulerAngles.z;
+        BaseAngle = Base.transform.root.localEulerAngles.y;
     }
 
-    public void Align() {
+    public void Align(float baseAngle, float barrelAngle) {
         // Dont care right now...
     }
 
@@ -43,7 +52,6 @@ public class Cannon : MonoBehaviour {
 
     public IEnumerator Shoot(Player player) {
         player.CanWalk = false;
-        //player.CanRotate = false;
         player.CanMove = false;
 
         Quaternion playerRot = player.transform.rotation;
@@ -54,28 +62,29 @@ public class Cannon : MonoBehaviour {
         // Move Barrel Back ? Animation
         yield return new WaitForSeconds(ChargeTime);
 
-        player.CanMove = true;
-
         Vector3 startPos = Barrel.transform.position;
         float startTime = Time.time;
         while (Time.time < startTime + LeapTime) {
             float t = (Time.time - startTime) / LeapTime;
 
             Vector3 pos = this.transform.localPosition;
-            Quaternion rot = this.transform.localRotation;
 
-            pos.x = Mathf.Lerp(startPos.x, EndPosition.x, t);
-            pos.y = Mathf.Lerp(startPos.y, EndPosition.y, t);
-            pos.z = Mathf.Lerp(startPos.z, EndPosition.z, t);
+            pos = Utility.BezierCurve(startPos, Peak.position, Target.position, t);
 
             player.transform.position = pos;
             yield return null;
         }
 
-        player.transform.position = EndPosition;
-        //player.transform.rotation = playerRot;
+        player.transform.position = Utility.BezierCurve(startPos, Peak.position, Target.position, 1.0f);
         player.CanWalk = true;
-        //player.CanRotate = true;
+        player.CanMove = true;
+    }
+
+    [ContextMenu("Find Mid Point")]
+    private void FindMidPoint() {
+        Vector3 mid = Barrel.transform.position + .5f * (Target.position - Barrel.transform.position);
+        Peak.position = mid;
+        Peak.forward = (Target.position - Barrel.transform.position).normalized;
     }
 
 }

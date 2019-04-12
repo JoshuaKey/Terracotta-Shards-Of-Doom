@@ -154,21 +154,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxSpeed: 5
   AccelerationFactor: 0.9
+  CanWalk: 1
   Use3rdPerson: 0
   CameraOffset: 5
   XRotation: 75
   YRotation: 75
   YMinRotation: -40
   YMaxRotation: 40
+  CanRotate: 1
   JumpPower: 15
+  CanJump: 1
   Gravity: 10
   FallStrength: 2.5
   LowJumpStrength: 2
+  CanMove: 1
   AttackSpeed: 0.5
   Damage: 1
   Health: 3
   MaxHealth: 3
   Sword: {fileID: 1400137758615801008}
+  CanAttack: 1
+  InteractDistance: 4
+  InteractLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  CanInteract: 1
+  HUD: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &4427983776429280603
 GameObject:
   m_ObjectHideFlags: 0
