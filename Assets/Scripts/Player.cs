@@ -65,7 +65,7 @@ public class Player : MonoBehaviour {
     private int playerLayerMask;
 
     void Start() {
-        if(Instance != null) {
+        if(Instance == null) {
             Instance = this;
         } else {
             Destroy(this.gameObject);
@@ -91,6 +91,7 @@ public class Player : MonoBehaviour {
             SetupFirstPerson();
         }
         cameraOrigin = camera.transform.localPosition;
+        rotation = this.transform.rotation.eulerAngles;
 
         //// Character controller
         controller.skinWidth = 0.08f;

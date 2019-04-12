@@ -104,6 +104,11 @@ public class StateMachine
         curState = states[stateName];
         curState.Enter();
     }
+
+    public string GetCurrentState()
+    {
+        return curState.ToString();
+    }
 }
 
 public abstract class State
