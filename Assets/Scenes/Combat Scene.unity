@@ -179,6 +179,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1948159762795534558, guid: 7af5e528f545bc34d9140e685d17ceb2,
+        type: 3}
+      propertyPath: health
+      value: 
+      objectReference: {fileID: 2110392408}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
 --- !u!4 &90025148 stripped
@@ -1412,6 +1417,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108575279}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2110392407 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1948159762795503107, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 90025147}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2110392408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110392407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77660f3d0d02e942905e332b5cba421, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentHealth: 3
+  MaxHealth: 3
 --- !u!1001 &97764429432435656
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1669,6 +1694,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18ac0a6f21c1edf419fde8719501b946, type: 3}
+--- !u!1 &4423136173736017278 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4423136173736017278, guid: b5464378973d74d45b528e66c197b323,
+    type: 3}
+  m_PrefabInstance: {fileID: 4427983776921741077}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4423136173736017279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423136173736017278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a2b767f67e629d48aebdfede3d7388f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanCharge: 0
+  Type: 0
+  AttackSpeed: 1
+  Damage: 1
+  AttackLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1001 &4427983776921741077
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1741,5 +1791,16 @@ PrefabInstance:
       propertyPath: HUD
       value: 
       objectReference: {fileID: 430956618}
-    m_RemovedComponents: []
+    - target: {fileID: 1400137758615801008, guid: b5464378973d74d45b528e66c197b323,
+        type: 3}
+      propertyPath: AttackSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1400137758615801008, guid: b5464378973d74d45b528e66c197b323,
+        type: 3}
+      propertyPath: AttackLayer.m_Bits
+      value: 1024
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1400137758615801008, guid: b5464378973d74d45b528e66c197b323, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b5464378973d74d45b528e66c197b323, type: 3}

@@ -20,4 +20,11 @@ public static class Utility {
         throw new System.NotImplementedException("Yell at Josh to fix this...");
     }
 
+    public static Vector3 CreatePeak(Vector3 p0, Vector3 p1, float t, float heightMult) {
+        Vector3 point = BezierCurve(p0, p1, t);
+        Vector3 forward = (p1 - p0).normalized;
+        Vector3 up = Vector3.Cross(forward, Vector3.right);
+        return up * heightMult;
+    }
+
 }

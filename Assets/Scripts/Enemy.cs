@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
-    [Header("Combat")]
-    public float AttackSpeed = .5f;
-    public float Damage = 1f;
-    public float Health;
-    public float MaxHealth;
+    [HideInInspector]
+    public Health health;
+    [HideInInspector]
+    public Pot pot;
+    [HideInInspector]
+    public BrokenPot brokenPot;
 
     private new Collider collider;
 
@@ -16,31 +17,22 @@ public class Enemy : MonoBehaviour {
         collider = GetComponent<Collider>();
         if (collider == null) { collider = GetComponentInChildren<Collider>(); }
 
+        pot = GetComponent<Pot>();
+        if (pot == null) { pot = GetComponentInChildren<Pot>(); }
+
+        brokenPot = GetComponent<BrokenPot>();
+        if (brokenPot == null) { brokenPot = GetComponentInChildren<BrokenPot>(); }
+
+        health = GetComponent<Health>();
+        if (health == null) { health = GetComponentInChildren<Health>(); }
+
         this.gameObject.tag = "Enemy";
         this.gameObject.layer = LayerMask.NameToLayer("Enemy");
+
+        health.OnEnemyDeath += brokenPot.Activate;
     }
 
     public void Attack() {
-        // Raycast
 
-        // Attack Collision Animation
-
-        // Box Popup...
-    }
-
-    public void Heal(float health) {
-        Health = Mathf.Max(MaxHealth, Health + health);
-
-        print(this.name + " (Heal): " + Health + "/" + MaxHealth);
-    }
-
-    public void TakeDamage(float damage) {
-        Health -= damage;
-
-        print(this.name + " (Damage): " + Health + "/" + MaxHealth);
-    }
-
-    public bool IsDead() {
-        return Health <= 0.0f;
     }
 }

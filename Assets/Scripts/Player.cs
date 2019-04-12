@@ -31,10 +31,7 @@ public class Player : MonoBehaviour {
     public bool CanMove = true;
 
     [Header("Combat")]
-    public float AttackSpeed = .5f;
-    public float Damage = 1f;
-    public float Health = 3f;
-    public float MaxHealth = 3f;
+    public Health health;
     public Weapon weapon;
     public bool CanAttack = true;
 
@@ -60,9 +57,6 @@ public class Player : MonoBehaviour {
 
     private Vector3 cameraOrigin;
 
-    // Attack
-    private float nextAttackTime = 0.0f;
-
     // Collision
     private int playerLayerMask;
 
@@ -81,6 +75,12 @@ public class Player : MonoBehaviour {
 
         camera = GetComponent<Camera>();
         if (camera == null) { camera = GetComponentInChildren<Camera>(); }
+
+        health = GetComponent<Health>();
+        if (health  == null) { health = GetComponentInChildren<Health>(); }
+
+        weapon = GetComponent<Weapon>();
+        if (weapon == null) { weapon = GetComponentInChildren<Weapon>(); }
 
         this.gameObject.layer = LayerMask.NameToLayer("Player");
         playerLayerMask = 1 << this.gameObject.layer;
@@ -104,10 +104,6 @@ public class Player : MonoBehaviour {
         MaxSpeed = 7.5f; // + 2.5 Speed Boost
         AccelerationFactor = 0.1f;
 
-        //// Bunny Jump
-        ////Gravity = 130f;
-        ////JumpPower = 25f;
-
         //// Platform Jump
         Gravity = 30.0f;
         JumpPower = 15;
@@ -127,9 +123,6 @@ public class Player : MonoBehaviour {
         if (CanInteract) {
             UpdateInteractable();
         } 
-
-        TestAim();
-        //TestInput();
     }
     private void LateUpdate() {
         // Camera Updates Last (Makes it not Jittery...)
@@ -175,10 +168,27 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
-        if (InputManager.GetButtonDown("Attack") && Time.time >= nextAttackTime) {
-            nextAttackTime = Time.time + AttackSpeed;
-
-            StartCoroutine(weapon.Swing(AttackSpeed));
+        // Lol 3 If Statements...
+        print("her");
+        if (weapon.CanAttack()) {
+            print("here");
+            if (weapon.CanCharge) {
+                print("here3");
+                if (InputManager.GetButton("Attack")) {
+                    print("here5");
+                    weapon.Charge();
+                }
+                if (InputManager.GetButtonUp("Attack")) {
+                    print("here6");
+                    weapon.Attack();
+                }
+            } else {
+                print("here2");
+                if (InputManager.GetButtonDown("Attack")) {
+                    print("here4");
+                    weapon.Attack();
+                }
+            }
         }
     }
     public void UpdateInteractable() {
@@ -196,20 +206,6 @@ public class Player : MonoBehaviour {
         } else {
             HUD.DisableInteractText();
         }
-    }
-
-    public void Heal(float health) {
-        Health = Mathf.Max(MaxHealth, Health + health);
-
-        print(this.name + " (Heal): " + Health + "/" + MaxHealth);
-    }
-    public void TakeDamage(float damage) {
-        Health -= damage;
-
-        print(this.name + " (Damage): " + Health + "/" + MaxHealth);
-    }
-    public bool IsDead() {
-        return Health <= 0.0f;
     }
 
     public void DoomMovement() {
@@ -238,15 +234,6 @@ public class Player : MonoBehaviour {
         // This Equation moves us towards out desired Movement based off our curr Velocity.
         // The Acceleration allows us to move instantly (1), or build up (.1)
         velocity += ((movement * MaxSpeed) - currMovement) * AccelerationFactor;
-    }
-
-    public void BunnyJump() {
-        // Check for Jump
-        if (controller.isGrounded) {
-            if (InputManager.GetButtonDown("Jump")) {
-                velocity.y = JumpPower;
-            }
-        }
     }
     public void PlatformJump() {
         // Check for Jump
@@ -298,67 +285,13 @@ public class Player : MonoBehaviour {
     }
 
     private void OnEnemyAttack(Enemy enemy) {
-        enemy.TakeDamage(Damage);
-        if (enemy.IsDead()) {
-            //enemy.gameObject.SetActive(false);
-        }
+        //enemy.TakeDamage(Damage);
+        //if (enemy.IsDead()) {
+        //    //enemy.gameObject.SetActive(false);
+        //}
     }
 
     // Testing --------------------------------------------------------------
-    private int joystickAmo = 0;
-    private void TestInput() {
-        if (InputManager.GetJoystickNames().Length != joystickAmo) {
-            joystickAmo = InputManager.GetJoystickNames().Length;
-            for (int i = 0; i < joystickAmo; i++) {
-                print(InputManager.GetJoystickNames()[i] + " is Connected!");
-            }
-        }
-
-        PrintAxis("Horizontal Movement");
-        PrintAxis("Vertical Movement");
-        PrintAxis("Horizontal Rotation");
-        PrintAxis("Vertical Rotation");
-
-        PrintAxisAsButton("Attack");
-
-        PrintButton("Jump");
-        PrintButton("Submit");
-        PrintButton("Cancel");
-
-        // We can use manual button and axis names as well, "joystick 1 button 0"
-    }
-    private void PrintAxis(string name) {
-        float val = InputManager.GetAxis(name);
-        if (val != .0f) {
-            print(name + " Axis: " + val);
-        }
-
-    }
-    private void PrintButton(string name) {
-        bool val = InputManager.GetButton(name);
-        if (val) {
-            print(name + " is Pressed!");
-        }
-    }
-    private void PrintAxisAsButton(string name) {
-        bool val = InputExt.GetAxisAsButton(name);
-        if (val) {
-            print(name + " is Pressed!");
-        }
-    }
-
-    private void TestAim() {
-        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
-        float distance = 10;
-
-        Debug.DrawRay(ray.origin, ray.direction * distance, Color.green);
-
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, distance, ~playerLayerMask)) {
-            print("Pointing at " + hit.collider.gameObject.name);
-        }
-    }
-
     private void OnGUI() {
         GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
         GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
