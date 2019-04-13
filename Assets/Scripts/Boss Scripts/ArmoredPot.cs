@@ -46,7 +46,8 @@ public class ArmoredPot : Pot
     {
         private GameObject boss = null;
         private GameObject target = null;
-        private byte numberOfShots = 0;
+        private byte numberOfShotsFired = 0;
+        private byte numberOfShotsLanded = 0;
 
         public override void Enter()
         {
@@ -63,25 +64,38 @@ public class ArmoredPot : Pot
 
         public override void Exit()
         {
-            numberOfShots = 0;
+            numberOfShotsFired = 0;
+            numberOfShotsLanded = 0;
         }
 
         public override string Update()
         {
-            
-            Player player = target.GetComponent<Player>();
-            Vector3 targetPosition = Vector3.zero;
+            //Debug.DrawLine(owner.transform.position, targetPosition, Color.red);
+            if(numberOfShotsFired < 3)
+            {
+                Player player = target.GetComponent<Player>();
+                Vector3 targetPosition = Vector3.zero;
 
-            float targetX = player.transform.position.x + player.velocity.x;
-            float targetZ = player.transform.position.z + player.velocity.z;
+                float targetX = player.transform.position.x + player.velocity.x;
+                float targetZ = player.transform.position.z + player.velocity.z;
 
-            targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
-           
-            Debug.DrawLine(owner.transform.position, targetPosition, Color.red);
+                targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
 
-            numberOfShots++;
+                numberOfShotsFired++;
+            }
+            else if(numberOfShotsLanded < 3)
+            {
 
+            }
             return null;
+        }
+
+        IEnumerator LaunchPot()
+        {
+            float time = 0;
+
+            yield return null;
+
         }
     }
 
