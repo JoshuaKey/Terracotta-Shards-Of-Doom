@@ -36,5 +36,7 @@ public class Enemy : MonoBehaviour {
         this.gameObject.SetActive(false);
         brokenPot.gameObject.SetActive(true);
         brokenPot.transform.parent = null;
+
+        health.OnEnemyDeath -= this.Die;
     }
 }

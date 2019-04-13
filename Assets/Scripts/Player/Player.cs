@@ -6,34 +6,32 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour {
 
-    [Header("Speed")]
-    public float MaxSpeed = 5;
-    public float AccelerationFactor = 0.9f;
+    [Header("Movement")]
+    public bool CanMove = true;
     public bool CanWalk = true;
-
-    [Header("Rotation")]
-    public bool Use3rdPerson = true;
-    public float CameraOffset = 5f;
-    public float XRotation = 75f;
-    public float YRotation = 75f;
-    public float YMinRotation = -40f;
-    public float YMaxRotation = 40f;
-    public bool CanRotate = true;
+    public float MaxSpeed = 7.5f; // + 2.5 Speed Boost
+    public float AccelerationFactor = 0.1f;
 
     [Header("Jump")]
-    public float JumpPower = 100;
     public bool CanJump = true;
-
-    [Header("Velocity")]
-    public float Gravity = 4.5f;
+    public float JumpPower = 15;
     public float FallStrength = 2.5f;
     public float LowJumpStrength = 2f;
-    public bool CanMove = true;
+    public float Gravity = 30f;
+
+    [Header("Rotation")]
+    public bool CanRotate = true;
+    public float XRotationSpeed = 60f;
+    public float YRotationSpeed = 60f;
+    public float YMinRotation = -40f;
+    public float YMaxRotation = 40f;
+    public new Camera camera;
 
     [Header("Combat")]
-    public Health health;
-    public Weapon weapon;
     public bool CanAttack = true;
+    public int CurrWeaponIndex = 0;
+    public Health health;
+    public GameObject WeaponParent;
 
     [Header("Interact")]
     public float InteractDistance = 2.0f;
@@ -45,19 +43,15 @@ public class Player : MonoBehaviour {
 
     public static Player Instance;
 
-    private new Collider collider;
-    private CharacterController controller;
-    private new Camera camera;
-
-    // Movement
     [HideInInspector]
     public Vector3 velocity = Vector3.zero;
     [HideInInspector]
     public Vector3 rotation = Vector3.zero;
+    [HideInInspector]
+    public List<Weapon> weapons = new List<Weapon>();
 
-    private Vector3 cameraOrigin;
-
-    // Collision
+    private new Collider collider;
+    private CharacterController controller;
     private int playerLayerMask;
 
     void Start() {
@@ -67,50 +61,25 @@ public class Player : MonoBehaviour {
             Destroy(this.gameObject);
         }
 
-        collider = GetComponent<Collider>();
-        if (collider == null) { collider = GetComponentInChildren<Collider>(); }
+        if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
-        controller = GetComponent<CharacterController>();
-        if (controller == null) { controller = GetComponentInChildren<CharacterController>(); }
+        if (controller == null) { controller = GetComponentInChildren<CharacterController>(true); }
 
-        camera = GetComponent<Camera>();
-        if (camera == null) { camera = GetComponentInChildren<Camera>(); }
+        if (health == null) { health = GetComponentInChildren<Health>(true); }
 
-        health = GetComponent<Health>();
-        if (health  == null) { health = GetComponentInChildren<Health>(); }
+        if (camera == null) { camera = GetComponentInChildren<Camera>(true); }
 
-        weapon = GetComponent<Weapon>();
-        if (weapon == null) { weapon = GetComponentInChildren<Weapon>(); }
+        weapons.AddRange(GetComponentsInChildren<Weapon>(true));
+        foreach(Weapon w in weapons) { w.gameObject.SetActive(false); }
+        CurrWeaponIndex = Mathf.Min(weapons.Count - 1, CurrWeaponIndex);
+        SwapWeapon(CurrWeaponIndex);
 
-        this.gameObject.layer = LayerMask.NameToLayer("Player");
+        // Physics
         playerLayerMask = 1 << this.gameObject.layer;
 
-        //// Camera
+        // Camera
         Cursor.lockState = CursorLockMode.Locked;
-        if (Use3rdPerson) {
-            SetupThirdPerson();
-        } else {
-            SetupFirstPerson();
-        }
-        cameraOrigin = camera.transform.localPosition;
         rotation = this.transform.rotation.eulerAngles;
-
-        //// Character controller
-        controller.skinWidth = 0.08f;
-        controller.slopeLimit = 90f;
-        controller.stepOffset = 0.4f;
-
-        //// Doom Movement
-        MaxSpeed = 7.5f; // + 2.5 Speed Boost
-        AccelerationFactor = 0.1f;
-
-        //// Platform Jump
-        Gravity = 30.0f;
-        JumpPower = 15;
-        FallStrength = 2.5f;
-        LowJumpStrength = 2f;
-
-        //weapon.OnEnemyHit += OnEnemyAttack;
     }
 
     void Update() {
@@ -125,7 +94,6 @@ public class Player : MonoBehaviour {
         } 
     }
     private void LateUpdate() {
-        // Camera Updates Last (Makes it not Jittery...)
         if (CanRotate) {
             UpdateCamera();
         }   
@@ -133,8 +101,8 @@ public class Player : MonoBehaviour {
 
     public void UpdateCamera() {
         // Rotation Input
-        float xRot = InputManager.GetAxis("Vertical Rotation") * YRotation * Time.deltaTime;
-        float yRot = InputManager.GetAxis("Horizontal Rotation") * XRotation * Time.deltaTime;
+        float xRot = InputManager.GetAxis("Vertical Rotation") * YRotationSpeed * Time.deltaTime;
+        float yRot = InputManager.GetAxis("Horizontal Rotation") * XRotationSpeed * Time.deltaTime;
 
         // Add to Existing Rotation
         rotation += new Vector3(xRot, yRot, 0.0f);
@@ -146,18 +114,16 @@ public class Player : MonoBehaviour {
             rotation.y = rotation.y % 360;
         }
 
-        this.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
+        camera.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
     }
     public void UpdateMovement() {
         if (CanWalk) {
-            DoomMovement();
+            Walk();
         }
 
         if (CanJump) {
-            PlatformJump();
-        }
-        //BunnyJump();
-        
+            Jump();
+        }      
 
         // Add Gravity
         if (!controller.isGrounded) {
@@ -168,7 +134,18 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
-        // Lol 3 If Statements...
+        // Check for Switch
+        if (InputManager.GetButtonDown("Next Weapon")) {
+            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+            SwapWeapon(nextIndex);
+        }
+        if (InputManager.GetButtonDown("Prev Weapon")) {
+            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+            SwapWeapon(prevIndex);
+        }
+
+        // Check for Attack
+        Weapon weapon = GetCurrentWeapon();
         if (weapon.CanAttack()) {
             if (weapon.CanCharge) {
                 if (InputManager.GetButton("Attack")) {
@@ -178,7 +155,7 @@ public class Player : MonoBehaviour {
                     weapon.Attack();
                 }
             } else {
-                if (InputManager.GetButtonDown("Attack")) {
+                if (InputManager.GetButton("Attack")) {
                     weapon.Attack();
                 }
             }
@@ -201,11 +178,9 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public void DoomMovement() {
+    public void Walk() {
         float rightMove = InputManager.GetAxisRaw("Vertical Movement");
         float frontMove = InputManager.GetAxisRaw("Horizontal Movement");
-        //print("Forward: " + frontMove);
-        //print("Right: " + rightMove);
         Vector3 movement = Vector3.zero;
 
         if (Mathf.Abs(rightMove) >= 0.1f || Mathf.Abs(frontMove) >= 0.1f) { // Hot Fix
@@ -228,7 +203,7 @@ public class Player : MonoBehaviour {
         // The Acceleration allows us to move instantly (1), or build up (.1)
         velocity += ((movement * MaxSpeed) - currMovement) * AccelerationFactor;
     }
-    public void PlatformJump() {
+    public void Jump() {
         // Check for Jump
         if (controller.isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
@@ -248,41 +223,37 @@ public class Player : MonoBehaviour {
         }
     }
 
-    [ContextMenu("Setup First Person")]
-    public void SetupFirstPerson() {
-        CameraOffset = 0.1f;
+    public void AddWeapon(Weapon newWeapon) {
+        weapons.Add(newWeapon);
 
-        YMinRotation = -60f;
-        YMaxRotation = 60f;
+        newWeapon.gameObject.SetActive(false);
+        newWeapon.transform.SetParent(WeaponParent.transform, false);
     }
-    [ContextMenu("Setup Third Person")]
-    public void SetupThirdPerson() {
-        Use3rdPerson = true;
+    public void SwapWeapon(int index) {
+        Weapon oldWeapon = GetCurrentWeapon();
+        oldWeapon.gameObject.SetActive(false);
+        oldWeapon.transform.SetParent(WeaponParent.transform, false);
 
-        CameraOffset = 5f;
+        CurrWeaponIndex = index;
 
-        YMinRotation = -10f;
-        YMaxRotation = 85f;
-
-        rotation.x = 40f;
+        Weapon newWeapon = GetCurrentWeapon();
+        newWeapon.gameObject.SetActive(true);
+        newWeapon.transform.SetParent(camera.transform, false);
     }
+    public Weapon GetCurrentWeapon() {
+        return weapons[CurrWeaponIndex];
+    }
+
     [ContextMenu("Setup Controller")]
-    public void SetupController() {
-        XRotation = 150f;
-        YRotation = 100f;
+    public void SetupControllerRotation() {
+        XRotationSpeed = 150f;
+        YRotationSpeed = 100f;
     }
     [ContextMenu("Setup Mouse and Keyboard")]
-    public void SetupMouseAndKeyboard() {
-        XRotation = 75f;
-        YRotation = 75f;
+    public void SetupMouseRotation() {
+        XRotationSpeed = 75f;
+        YRotationSpeed = 75f;
     }
-
-    //private void OnEnemyAttack(Enemy enemy) {
-    //    //enemy.TakeDamage(Damage);
-    //    //if (enemy.IsDead()) {
-    //    //    //enemy.gameObject.SetActive(false);
-    //    //}
-    //}
 
     // Testing --------------------------------------------------------------
     private void OnGUI() {
@@ -292,15 +263,3 @@ public class Player : MonoBehaviour {
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
     }
 }
-
-// Rotation seems to Be good
-// Controller input is working
-// Jump is Ok
-// Mvmt is Ok
-
-// DOOM
-// - Quick, but not Instantaneous
-// - Uses Velocity
-// - Velocity Persists after movement, but quickly fades
-// - Head Bob
-// - Speed += ((MoveDirection * MaximumSpeed) - Speed) * AccelerationFactor

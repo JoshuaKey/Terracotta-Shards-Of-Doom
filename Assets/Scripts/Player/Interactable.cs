@@ -9,7 +9,7 @@ public class Interactable : MonoBehaviour {
 
     public bool CanInteract;
 
-    private Action OnInteract;
+    public Action OnInteract;
 
     public void Interact() {
         if (CanInteract) {
