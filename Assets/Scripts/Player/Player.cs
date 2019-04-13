@@ -223,6 +223,14 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void Orient(Vector3 forward) {
+        camera.transform.forward = forward;
+        rotation = camera.transform.rotation.eulerAngles;
+
+        if (rotation.x > 180) { rotation.x = rotation.x - 360; }
+        if (rotation.x < -180) { rotation.x = rotation.x + 360; }
+    }
+
     public void AddWeapon(Weapon newWeapon) {
         weapons.Add(newWeapon);
 

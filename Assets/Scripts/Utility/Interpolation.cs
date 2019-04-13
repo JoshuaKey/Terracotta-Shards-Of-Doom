@@ -14,6 +14,11 @@ static public class Interpolation
         return t * t * (3.0f - 2.0f * t);
     }
 
+    static public float Inverse(float t, float delta) 
+    {
+        return t + (t - delta);
+    }
+
     static public float SmootherStep(float t)
     {
         return t * t * t * (t * (6.0f * t - 15.0f) + 10.0f);

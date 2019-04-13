@@ -12,6 +12,7 @@ public class WeaponPickup : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        if (interactable == null) { interactable = GetComponentInChildren<Interactable>(true); }
         interactable.OnInteract += this.Pickup;
 
         WeaponPrefab = GameObject.Instantiate(WeaponPrefab);
