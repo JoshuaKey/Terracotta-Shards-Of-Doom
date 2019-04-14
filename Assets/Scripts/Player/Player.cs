@@ -166,13 +166,19 @@ public class Player : MonoBehaviour {
 
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
-            Interactable interactable = hit.collider.GetComponent<Interactable>();
+            Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
+            if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
-            HUD.SetInteractText("F", interactable.name);
+            if (interactable.CanInteract) {
+                HUD.SetInteractText("F", interactable.name);
 
-            if (InputManager.GetButtonDown("Interact")) {
-                interactable.Interact();
+                if (InputManager.GetButtonDown("Interact")) {
+                    interactable.Interact();
+                }
+            } else {
+                HUD.DisableInteractText();
             }
+
         } else {
             HUD.DisableInteractText();
         }
@@ -208,6 +214,8 @@ public class Player : MonoBehaviour {
         if (controller.isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
+            } else {
+                velocity.y = -1;
             }
         }
         // By Default the Player does a "long jump" by holding the Jump Button
@@ -223,7 +231,7 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public void Orient(Vector3 forward) {
+    public void LookTowards(Vector3 forward) {
         camera.transform.forward = forward;
         rotation = camera.transform.rotation.eulerAngles;
 

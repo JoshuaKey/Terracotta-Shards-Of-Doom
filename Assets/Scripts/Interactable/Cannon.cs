@@ -9,13 +9,14 @@ public class Cannon : MonoBehaviour {
     // Then the player will shoot, in a specific direction and velocit
 
     [Header("Launch")]
-    [HideInInspector]
-    public float BaseAngle;
-    [HideInInspector]
-    public float BarrelAngle;
+    //[HideInInspector]
+    //public float BaseAngle;
+    //[HideInInspector]
+    //public float BarrelAngle;
     public Transform Target;
     public Transform Peak; // Aka , how high will we get?
     public Transform BarrelChargePos; // z = -.5
+    public bool AutoAlign = false;
 
     [Header("Damage")]
     public float Damage;
@@ -43,59 +44,94 @@ public class Cannon : MonoBehaviour {
 
         interactable.Subscribe(FirePlayer);
 
-        BarrelAngle = Barrel.transform.root.localEulerAngles.x;
-        BaseAngle = Base.transform.root.localEulerAngles.y;
-        Align();
+        //BarrelAngle = Barrel.transform.root.localEulerAngles.x;
+        //BaseAngle = Base.transform.root.localEulerAngles.y;
+        if (AutoAlign) {
+            Align(Target.position, Peak.position);
+        }  
+    }
 
-        float max = 50;
-        for (int i = 0; i <= max; i++) {
-            float t = i / max;
+    public void Rotate(Transform target, Transform peak) => Rotate(target, peak, ChargeTime, LeapTime);
+    public void Rotate(Transform target, Transform peak, float chargeTime, float leapTime) {
+        ChargeTime = chargeTime == 0.0f ? ChargeTime : chargeTime;
+        LeapTime = leapTime == 0.0f ? LeapTime : leapTime;
 
-            float t2 = Interpolation.QuinticInOut(t);
+        Vector3 targetPos = target == null ? Target.position : target.position;
+        Vector3 peakPos = peak == null ? Peak.position : peak.position;
 
-            float delta = Interpolation.QuinticInOut(t);
-            t = Interpolation.Inverse(t, delta);
+        StartCoroutine(Rotate(targetPos, peakPos));
 
-            print("Lerp: " + (i / max) + " - " + t + " - " + t2);
+        Target = target == null ? Target : target;
+        Peak = peak == null ? Peak : peak;
+
+        print("Here");
+    }
+
+    private IEnumerator Rotate(Vector3 newTarget, Vector3 newPeak) {
+        aligning = true;
+        Vector3 oldTarget = Target.position;
+        Vector3 oldPeak = Peak.position;
+
+        print("Here2");
+
+        Vector3 oldBaseDir = oldTarget - Base.transform.position;
+        oldBaseDir.y = 0.0f;
+        oldBaseDir = oldBaseDir.normalized;
+
+        Vector3 newBaseDir = newTarget - Base.transform.position;
+        newBaseDir.y = 0.0f;
+        newBaseDir = newBaseDir.normalized;
+        
+        // Base Rotation
+        {
+            float startTime = Time.time;
+            float length = 0.5f;
+            while (Time.time < startTime + length) {
+                float t = (Time.time - startTime) / length;
+
+                Vector3 baseDir = Vector3.Lerp(oldBaseDir, newBaseDir, t);
+
+                Base.transform.forward = baseDir;
+                print("Here4");
+                yield return null;
+            }
+            Base.transform.forward = newBaseDir;
         }
+
+        Vector3 oldBarrelDir = Barrel.transform.forward;
+
+        Vector3 newBarrelDir = newPeak - Barrel.transform.position;
+        newBarrelDir = newBarrelDir.normalized;
+
+        // Barrel Rotation
+        {
+            float startTime = Time.time;
+            float length = 0.5f;
+            while (Time.time < startTime + length) {
+                float t = (Time.time - startTime) / length;
+
+                Vector3 barrelDir = Vector3.Lerp(oldBarrelDir, newBarrelDir, t);
+
+                Barrel.transform.forward = barrelDir;
+                print("Here5");
+                yield return null;
+            }
+            Barrel.transform.forward = newBarrelDir;
+        }
+
+        aligning = false;
+
+        print("Here3");
+
     }
 
-    public void Change(float baseAngle, float barrelAngle, Transform target, Transform peak, 
-        float chargeTime, float leapTime) {
-
-        //BaseAngle = baseAngle;
-        //BarrelAngle = barrelAngle;
-        //Target = target;
-        //Peak = peak;
-        //ChargeTime = chargeTime;
-        //LeapTime = leapTime;
-
-        //StartCoroutine(Align(1.0f, .5f));
-    }
-
-    //private IEnumerator Align(float baseTime, float barrelTime) {
-        //Quaternion startRot = Base.transform.localRotation;
-        //Quaternion endRot = startRot * Quaternion.AngleAxis(;
-        //float startTime = Time.time;
-        //while (Time.time < startTime + baseTime) {
-        //    float t = (Time.time - startTime) / baseTime;
-
-        //    Quaternion rot = Quaternion.identity;
-
-        //    pos = Quaternion.SlerpUnclamped(startRot, )
-
-        //    player.transform.position = pos;
-        //    yield return null;
-        //}
-    //}
-    [ContextMenu("Align")]
-    public void Align() {
-        Vector3 baseDir = Target.transform.position - Base.transform.position;
+    private void Align(Vector3 target, Vector3 peak) {
+        Vector3 baseDir = target - Base.transform.position;
         baseDir.y = 0.0f;
         baseDir = baseDir.normalized;
 
-        Vector3 barrelDir = Peak.position - Barrel.transform.position;
-        barrelDir.x = 0.0f;
+        Vector3 barrelDir = peak - Barrel.transform.position;
+        //barrelDir.x = 0.0f;
         barrelDir = barrelDir.normalized;
 
         Base.transform.forward = baseDir; // Angle on Y Axis
@@ -114,7 +150,7 @@ public class Cannon : MonoBehaviour {
         player.transform.position = Barrel.transform.position;
         player.transform.SetParent(Barrel.transform, true);
         player.transform.up = Barrel.transform.forward;
-        player.Orient(Barrel.transform.forward);
+        player.LookTowards(Barrel.transform.forward);
 
         player.CanWalk = false;
         player.CanMove = false;
@@ -141,6 +177,7 @@ public class Cannon : MonoBehaviour {
             }
         }
 
+        player.LookTowards(Barrel.transform.forward);
         player.CanRotate = true;
 
         // Launch Animation
@@ -149,22 +186,6 @@ public class Cannon : MonoBehaviour {
             float startTime = Time.time;
             while (Time.time < startTime + LeapTime) {
                 float t = (Time.time - startTime) / LeapTime;
-
-                //t = Interpolation.SmoothStep(t);
-                //t = Interpolation.SmoothStep(t);
-                //t = Interpolation.SmoothStep(t);
-
-
-                //t = Interpolation.InverseSmoothStep(t);
-                //t = Interpolation.InverseSmoothStep(t);
-                //t = Interpolation.InverseSmoothStep(t);
-
-                //t = Interpolation.QuinticIn(t);
-                //t = Interpolation.QuinticOut(t);
-                t = t + (t - Interpolation.QuinticInOut(t));
-
-                //float delta = Interpolation.QuinticInOut(t);
-                //t = Interpolation.Inverse(t, delta);
 
                 Vector3 pos = Utility.BezierCurve(startPos, Peak.position, Target.position, t);
 
