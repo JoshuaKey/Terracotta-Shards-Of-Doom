@@ -24,7 +24,7 @@ public class Health : MonoBehaviour {
     }
 
     public void Heal(float health) {
-        CurrentHealth = Mathf.Max(MaxHealth, CurrentHealth + health);
+        CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + health);
 
         print(this.name + " (Heal): " + CurrentHealth + "/" + MaxHealth);
 

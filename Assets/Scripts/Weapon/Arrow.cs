@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour {
 
+    public int Pierce = 1;
     public float Impulse = 10;
     public float Damage = 0f;
     public DamageType Type;
 
     protected new Rigidbody rigidbody;
     protected new Collider collider;
+
+    private int currPierce = 0;
 
     // Start is called before the first frame update
     void Start() {
@@ -45,11 +48,19 @@ public class Arrow : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
+        if (other.isTrigger) { return; }
+
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null) {
             enemy.health.TakeDamage(this.Type, this.Damage);
             //OnEnemyHit?.Invoke(enemy);
         }
-        this.gameObject.SetActive(false);
+
+        currPierce++;
+        if(currPierce == Pierce) {
+            this.gameObject.SetActive(false);
+            //rigidbody.velocity = Vector3.zero;
+            //this.transform.SetParent(other.transform, true);
+        }
     }
 }
