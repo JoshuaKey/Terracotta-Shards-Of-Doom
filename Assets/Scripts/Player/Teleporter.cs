@@ -7,7 +7,6 @@ public class Teleporter : MonoBehaviour {
     public string sceneName;
 
     private void OnTriggerEnter(Collider other) {
-        print("Here");
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             LevelManager.Instance.LoadScene(sceneName);
         }
