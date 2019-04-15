@@ -7,6 +7,7 @@ public class ArmoredPot : Pot
     new Transform transform = null;
 
     private int numArmorPieces = 3;
+    public GameObject AISpawnPoint = null;
 
     public int NumArmorPieces
     {
@@ -23,6 +24,7 @@ public class ArmoredPot : Pot
             }
         }
     }
+
 
     void Start()
     {
@@ -72,10 +74,10 @@ public class ArmoredPot : Pot
             {
                 Target = GameObject.FindGameObjectWithTag("Player");
             }
-
             if(AISpawnPoint == null)
+
             {
-                AISpawnPoint = GameObject.FindGameObjectWithTag("AISpawnPoint").transform;
+                AISpawnPoint = owner.GetComponent<ArmoredPot>().AISpawnPoint.transform;
             }
 
             if(SpawnableObjects == null)
@@ -101,7 +103,7 @@ public class ArmoredPot : Pot
             }
             else if(numberOfShotsLanded < 3)
             {
-
+            
             }
             return null;
         }
@@ -125,11 +127,11 @@ public class ArmoredPot : Pot
 
             Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 75.0f - (startPosition - targetPosition).magnitude);
 
-            while (time != 1.0f)
+            while (time != 1.5f)
             {
             
-                time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.0f);
-                Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time);
+                time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.5f);
+                Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time/1.5f);
 
                 enemy.transform.position = newPosition;
 
