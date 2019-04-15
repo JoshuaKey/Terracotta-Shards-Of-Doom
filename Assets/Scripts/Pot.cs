@@ -28,7 +28,6 @@ public abstract class Pot : MonoBehaviour
     }
 
     //this does nothing but child classes can change that
-
     public virtual void Animate()
     { }
 

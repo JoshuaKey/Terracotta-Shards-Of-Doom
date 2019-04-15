@@ -43,7 +43,20 @@ public class StateMachine
         string nextState = curState.Peek().Update();
         if(nextState != null)
         {
-            ChangeState(nextState);
+            string[] splitNextState = nextState.Split('.');
+
+            if(splitNextState[0].ToUpper() == "PUSH")
+            {
+                PushState(splitNextState[1]);
+            }
+            else if(nextState.ToUpper() == "POP")
+            {
+                PopState();
+            }
+            else
+            {
+                ChangeState(nextState);
+            }
         }
     }
 

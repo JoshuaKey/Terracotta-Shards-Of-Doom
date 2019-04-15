@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChargerPot : Pot
 {
     [SerializeField] public float aggroRadius = 5;
+    [SerializeField] public float attackTime = 1;
 
     private void Start()
     {
@@ -74,6 +75,31 @@ public class Charger_Charge : State
         }
 
         agent.SetDestination(player.transform.position);
+
+        return null;
+    }
+}
+
+public class Charger_Attack : State
+{
+    float timer;
+
+    public override void Enter()
+    {
+        timer = 0;
+    }
+
+    public override void Exit()
+    { }
+
+    public override string Update()
+    {
+        timer += Time.deltaTime;
+
+        if(timer >= owner.GetComponent<ChargerPot>().attackTime)
+        {
+            return "POP";
+        }
 
         return null;
     }
