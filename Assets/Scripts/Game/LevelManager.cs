@@ -32,6 +32,9 @@ public class LevelManager : MonoBehaviour {
         CheckPointSystem.Instance.LoadStartPoint();
     }
 
+    public void RestartLevel() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     public void LoadLevel(int world, int level) {
         SceneManager.LoadScene(world + "-" + level);
     }

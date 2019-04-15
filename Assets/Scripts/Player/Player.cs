@@ -77,6 +77,8 @@ public class Player : MonoBehaviour {
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
+
+        this.health.OnEnemyDeath += this.Die;
     }
 
     void Update() {
@@ -88,7 +90,11 @@ public class Player : MonoBehaviour {
         }
         if (CanInteract) {
             UpdateInteractable();
-        } 
+        }
+
+        if (Input.GetKeyDown(KeyCode.T)) {
+            this.health.TakeDamage(DamageType.TRUE, 0.5f);
+        }
     }
     private void LateUpdate() {
         if (CanRotate) {
@@ -226,6 +232,10 @@ public class Player : MonoBehaviour {
                 velocity.y -= Gravity * (LowJumpStrength - 1f) * Time.deltaTime;
             }
         }
+    }
+
+    public void Die() {
+        LevelManager.Instance.RestartLevel();
     }
 
     public void LookTowards(Vector3 forward) {
