@@ -197,7 +197,8 @@ public class Player : MonoBehaviour {
                 interactable.Interact();
             }
         } else {
-            HUD.DisableInteractText();
+            //TODO: uncomment
+            //HUD.DisableInteractText();
         }
     }
 

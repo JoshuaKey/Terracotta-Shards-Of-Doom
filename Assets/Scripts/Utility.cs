@@ -27,4 +27,11 @@ public static class Utility {
         return up * heightMult;
     }
 
+    public static Vector3 CreatePeak(Vector3 p0, Vector3 p1, float heightMult)
+    {
+        Vector3 midpoint = ((p1 - p0) * .5f) + p0;
+        Vector3 peak = (Vector3.up * heightMult) + midpoint;
+        return peak;
+    }
+
 }

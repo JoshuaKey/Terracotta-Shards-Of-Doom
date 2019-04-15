@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ArmoredPot : Pot
 {
-    new Transform transform;
-    private int numArmorPieces;
+    new Transform transform = null;
+
+    private int numArmorPieces = 3;
 
     public int NumArmorPieces
     {
@@ -23,12 +24,12 @@ public class ArmoredPot : Pot
         }
     }
 
-
     void Start()
     {
         transform = GetComponent<Transform>();
         gameObject.tag = "Boss";
         stateMachine = new StateMachine();
+        //stateMachine.Init(gameObject, 
         //stateMachine.Init(gameObject, 
         //    new Armored_Spawning(), 
         //    new Armored_Shooting(), 
@@ -41,24 +42,45 @@ public class ArmoredPot : Pot
         stateMachine.Update();
     }
 
+    public void RunStateCoroutine(IEnumerator coroutine)
+    {
+        StartCoroutine(coroutine);
+    }
+
     #region Boss States
     public class Armored_Shooting : State
     {
-        private GameObject boss = null;
-        private GameObject target = null;
+        private GameObject Boss = null;
+        private GameObject Target = null;
+        private Transform AISpawnPoint = null;
+
+        private GameObject[] SpawnableObjects = null;
+
         private byte numberOfShotsFired = 0;
         private byte numberOfShotsLanded = 0;
 
+        private bool firing = false;
+
         public override void Enter()
         {
-            if(boss == null)
+            if(Boss == null)
             {
-                boss = GameObject.FindGameObjectWithTag("Boss");
+                Boss = GameObject.FindGameObjectWithTag("Boss");
             }
 
-            if(target == null)
+            if(Target == null)
             {
-                target = GameObject.FindGameObjectWithTag("Player");
+                Target = GameObject.FindGameObjectWithTag("Player");
+            }
+
+            if(AISpawnPoint == null)
+            {
+                AISpawnPoint = GameObject.FindGameObjectWithTag("AISpawnPoint").transform;
+            }
+
+            if(SpawnableObjects == null)
+            {
+                SpawnableObjects = Resources.LoadAll<GameObject>("Boss1_SpawnableObjects"); 
             }
         }
 
@@ -70,18 +92,12 @@ public class ArmoredPot : Pot
 
         public override string Update()
         {
-            //Debug.DrawLine(owner.transform.position, targetPosition, Color.red);
             if(numberOfShotsFired < 3)
             {
-                Player player = target.GetComponent<Player>();
-                Vector3 targetPosition = Vector3.zero;
-
-                float targetX = player.transform.position.x + player.velocity.x;
-                float targetZ = player.transform.position.z + player.velocity.z;
-
-                targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
-
-                numberOfShotsFired++;
+                if(!firing)
+                {
+                    owner.GetComponent<ArmoredPot>().RunStateCoroutine(LaunchPot());
+                }
             }
             else if(numberOfShotsLanded < 3)
             {
@@ -92,10 +108,35 @@ public class ArmoredPot : Pot
 
         IEnumerator LaunchPot()
         {
+            firing = true;
+            numberOfShotsFired++;
+
             float time = 0;
+            GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
 
-            yield return null;
+            Player player = Target.GetComponent<Player>();
 
+            Vector3 targetPosition = Vector3.zero;
+            float targetX = player.transform.position.x + player.velocity.x;
+            float targetZ = player.transform.position.z + player.velocity.z;
+            targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
+
+            Vector3 startPosition = AISpawnPoint.position;
+
+            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 75.0f - (startPosition - targetPosition).magnitude);
+
+            while (time != 1.0f)
+            {
+            
+                time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.0f);
+                Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time);
+
+                enemy.transform.position = newPosition;
+
+                yield return null;
+            }
+            numberOfShotsLanded++;
+            firing = false;
         }
     }
 
