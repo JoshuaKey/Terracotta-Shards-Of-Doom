@@ -22,7 +22,7 @@ public class CannonLever : Lever {
 
     public void AlignCannon() {
         cannon.Rotate(Target, Peak, ChargeTime, LeapTime);
-        cannon.FirePlayer();
+        //cannon.FirePlayer();
         interactable.CanInteract = false;
     }
 }

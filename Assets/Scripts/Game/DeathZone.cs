@@ -13,6 +13,7 @@ public class DeathZone : MonoBehaviour {
             CheckPoint checkpoint = CheckPointSystem.Instance.LastCheckPoint;
 
             player.transform.position = checkpoint.transform.position;
+            player.velocity = Vector3.zero;
             player.LookTowards(checkpoint.transform.forward);
             player.CanMove = false;
         } else {

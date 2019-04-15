@@ -6,9 +6,9 @@ public class CheckPointSystem : MonoBehaviour {
 
     public static CheckPointSystem Instance;
 
-    [HideInInspector]
+    //[HideInInspector]
     public CheckPoint StartingPoint;
-    [HideInInspector]
+    //[HideInInspector]
     public CheckPoint LastCheckPoint;
 
     private CheckPoint[] checkpoints;
