@@ -38,6 +38,7 @@ public class CheckPointSystem : MonoBehaviour {
     public void LoadCheckPoint(CheckPoint checkpoint) {
         Player player = Player.Instance;
         player.transform.position = checkpoint.transform.position;
+        player.velocity = Vector3.zero;
         player.LookTowards(checkpoint.transform.forward);
     }
 }
