@@ -6,15 +6,13 @@ public class CheckPointSystem : MonoBehaviour {
 
     public static CheckPointSystem Instance;
 
-    [HideInInspector]
-    public CheckPoint StartingPoint;
-    [HideInInspector]
-    public CheckPoint LastCheckPoint;
+    private CheckPoint StartingPoint;
+    private CheckPoint LastCheckPoint;
 
     private CheckPoint[] checkpoints;
 
     // Start is called before the first frame update
-    void Start() {
+    void Awake() {
         // Destroy Old Instance
         if (Instance != null) { Destroy(Instance.gameObject); }
         Instance = this;
@@ -25,5 +23,21 @@ public class CheckPointSystem : MonoBehaviour {
         LastCheckPoint = StartingPoint;
 
         print("Starting Point: " + StartingPoint.transform.position);
+    }
+
+    public void SetLastCheckpoint(CheckPoint checkpoint) {
+        LastCheckPoint = checkpoint;
+    }
+    public void LoadlastCheckpoint() {
+        LoadCheckPoint(LastCheckPoint);
+    }
+    public void LoadStartPoint() {
+        LoadCheckPoint(StartingPoint);
+    }
+
+    public void LoadCheckPoint(CheckPoint checkpoint) {
+        Player player = Player.Instance;
+        player.transform.position = checkpoint.transform.position;
+        player.LookTowards(checkpoint.transform.forward);
     }
 }
