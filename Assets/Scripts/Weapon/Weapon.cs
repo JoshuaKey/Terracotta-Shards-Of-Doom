@@ -9,7 +9,10 @@ public class Weapon : MonoBehaviour {
     [HideInInspector]
     public DamageType Type;
 
+    [Header("Speed")]
     public float AttackSpeed;
+
+    [Header("Damage")]
     public float Damage;
     public LayerMask AttackLayer;
 
@@ -34,16 +37,36 @@ public class Weapon : MonoBehaviour {
 // Fire Sword - Simple Swing 
 // Spear - Lunge
 
-// A Weapon should represent an object that that can attack 
-// Each 
+// Sword
+//  Swings (animation)
+//  hits multiple enemies
+//  Deals damage on contact
+//  has Attack Speed 
 
-// CanCharge
-// Attack Speed
-// Damage
-// Charge - Generate Charge based off Delta Time (Power...)
-// Attack - Start Animation (?), Collider / Physics
+// Hammer
+//  Swings (animation)
+//  hits no enemies (aoe)
+//  deals no damage (spawns earthquake)
+//  has Attack Speed 
 
-// Each weapon has it's own specific data and logic...
-// Pool Manager (?)
+// Spear
+//  Lunge (animation)
+//  hits multple enemies
+//  Deals damage on contact
+//  has Attack Speed 
 
-// Can we do Boss Attack with Layer?
+// Bow
+//  Charges (animation)
+//  hits no enemies (1 per arrow)
+//  deals no damage (spawns arrow)
+//  basically instant fire (charge)
+
+// Uzi
+//  Knockback (animation)
+//  hits no enemies (1 per bullet)
+//  deals no damage (spawns bullet)
+//  has Attack Speed (delay)
+
+// The weapon can damage on Contact, Charge, and Spawn. Any Combination
+// Decorator Pattern (?)
+// 

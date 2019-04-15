@@ -8,4 +8,5 @@ public enum DamageType {
     ICE,
     LIGHTNING,
     EXPLOSIVE,
+    TRUE,
 }
