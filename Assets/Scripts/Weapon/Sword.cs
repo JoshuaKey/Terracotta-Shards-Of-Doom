@@ -39,9 +39,11 @@ public class Sword : Weapon {
     private IEnumerator Swing() {
         collider.enabled = true;
 
-        Vector3 startPos = this.transform.localPosition; // new Vector3(0.5f, -0.25f, 0.777f);
+        //Vector3 startPos = this.transform.localPosition; // new Vector3(0.5f, -0.25f, 0.777f);
+        Vector3 startPos = new Vector3(0.5f, -0.25f, 0.777f);
         Vector3 endPos = new Vector3(-0.2f, -0.55f, 0.777f);
-        Quaternion startRot = this.transform.localRotation; //  Quaternion.Euler(new Vector3(0, 45, -10));
+        //Quaternion startRot = this.transform.localRotation; //  Quaternion.Euler(new Vector3(0, 45, -10));
+        Quaternion startRot = Quaternion.Euler(new Vector3(0, 45, -10));
         Quaternion endRot = Quaternion.Euler(new Vector3(10, 45, 120));
 
         // Swing Blade Down
@@ -74,7 +76,7 @@ public class Sword : Weapon {
 
         // Move to Start Pos
         startTime = Time.time;
-        length = AttackSpeed * 0.6f; // (60%)
+        length = AttackSpeed * 0.55f; // (60%)
         while (Time.time < startTime + length) {
             float t = (Time.time - startTime) / length;
 
