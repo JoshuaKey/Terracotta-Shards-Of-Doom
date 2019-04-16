@@ -220,6 +220,7 @@ public class Player : MonoBehaviour {
             // If we are falling, add more Gravity
             if (velocity.y < 0.0f) {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
+                //Debug.Break();
             }
             // If we are not doing a "long jump", add more Gravity 
             else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
