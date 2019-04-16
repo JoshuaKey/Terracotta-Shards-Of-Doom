@@ -55,11 +55,8 @@ public class Player : MonoBehaviour {
     private int playerLayerMask;
 
     void Start() {
-        if(Instance == null) {
-            Instance = this;
-        } else {
-            Destroy(this.gameObject);
-        }
+        if (Instance != null) { Destroy(this.gameObject); return; }
+        Instance = this;
 
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
@@ -223,6 +220,7 @@ public class Player : MonoBehaviour {
             // If we are falling, add more Gravity
             if (velocity.y < 0.0f) {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
+                //Debug.Break();
             }
             // If we are not doing a "long jump", add more Gravity 
             else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
@@ -278,4 +276,6 @@ public class Player : MonoBehaviour {
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
     }
+
+    
 }
