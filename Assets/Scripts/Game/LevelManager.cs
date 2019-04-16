@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour {
 
-    public bool LoadPersistent = false;
     public string PersistentSceneName = "Persistent";
     public string StartingSceneName = "Hub";
 
@@ -15,23 +14,21 @@ public class LevelManager : MonoBehaviour {
     void Start() {
         if(Instance != null) { Destroy(this.gameObject); return; }
 
-        if (LoadPersistent) {
-            if (SceneManager.GetActiveScene().name == PersistentSceneName) {
-                SceneManager.LoadScene(StartingSceneName);
-            } else {
-                SceneManager.LoadScene(PersistentSceneName);
-                Destroy(this.gameObject);
-                return;
-            }
+        if (SceneManager.GetActiveScene().name == PersistentSceneName) {
+            SceneManager.LoadScene(StartingSceneName);
         } 
         Instance = this;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        print(scene.name + " was Loaded!");
         CheckPointSystem.Instance.LoadStartPoint();
     }
 
+    public void RestartLevel() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     public void LoadLevel(int world, int level) {
         SceneManager.LoadScene(world + "-" + level);
     }
