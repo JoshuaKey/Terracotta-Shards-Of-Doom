@@ -11,7 +11,7 @@ public class Health : MonoBehaviour {
     public float CurrentHealth;
     public float MaxHealth = 3f;
 
-    public PublicAction OnEnemyDeath;
+    public Action OnEnemyDeath;
     public Action OnEnemyHeal;
     public Action OnEnemyDamage;
 
