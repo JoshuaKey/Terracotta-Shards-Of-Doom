@@ -10,10 +10,11 @@ public class Health : MonoBehaviour {
     [HideInInspector]
     public float CurrentHealth;
     public float MaxHealth = 3f;
+    public DamageType Resistance = 0;
 
-    public PublicAction OnEnemyDeath;
-    public Action OnEnemyHeal;
-    public Action OnEnemyDamage;
+    public Action OnDeath;
+    public Action<float> OnHeal;
+    public Action<float> OnDamage;
 
     private void Start() {
         Reset();
@@ -23,26 +24,34 @@ public class Health : MonoBehaviour {
         CurrentHealth = MaxHealth;
     }
 
-    public void Heal(float health) {
-        CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + health);
+    public float Heal(float health) {
+        if(CurrentHealth + health > MaxHealth) {
+            health = MaxHealth - CurrentHealth;
+        }
+
+        CurrentHealth += health;
 
         print(this.name + " (Heal): " + CurrentHealth + "/" + MaxHealth);
 
-        OnEnemyHeal?.Invoke();
+        OnHeal?.Invoke(health);
+        return health;
     }
 
-    public void TakeDamage(DamageType type, float damage) {
-        // What do we do with Type ???
+    public float TakeDamage(DamageType type, float damage) {
+        if ((Resistance & type) != 0) {
+            damage = 0;
+        } 
 
         CurrentHealth -= damage;
-
         print(this.name + " (Damage): " + CurrentHealth + "/" + MaxHealth);
 
-        OnEnemyDamage?.Invoke();
+        OnDamage?.Invoke(damage);
 
         if (IsDead()) {
-            OnEnemyDeath?.Invoke();
+            OnDeath?.Invoke();
         }
+
+        return damage;
     }
 
     public bool IsDead() {

@@ -10,7 +10,7 @@ public class StateMachine
     GameObject owner;
 
     //////////////////////
-    bool DEBUGGING = false;
+    public bool DEBUGGING = false;
     //////////////////////
 
     /// <summary>
@@ -38,12 +38,25 @@ public class StateMachine
                 ("The curState in StateMachine is empty. Did you forget to add States?");
         }
 
-        if (DEBUGGING) Debug.Log($"Updated State {curState}");
+        if (DEBUGGING) Debug.Log($"Updated State {curState.Peek()}");
 
         string nextState = curState.Peek().Update();
         if(nextState != null)
         {
-            ChangeState(nextState);
+            string[] splitNextState = nextState.Split('.');
+
+            if(splitNextState[0].ToUpper() == "PUSH")
+            {
+                PushState(splitNextState[1]);
+            }
+            else if(nextState.ToUpper() == "POP")
+            {
+                PopState();
+            }
+            else
+            {
+                ChangeState(nextState);
+            }
         }
     }
 

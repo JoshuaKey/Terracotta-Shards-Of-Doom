@@ -21,14 +21,8 @@ public class Sword : Weapon {
 
         CanCharge = false;
         Type = DamageType.BASIC;
-
-        //Vector3 p0;
-        //Vector3 p2;
-        //float t;
-        //float maxDist = 50;
-        //float dist = maxDist - (p2 - p0).magnitude;
-        //Vector3 p1 = Utility.CreatePeak(p0, p2, 0.5f, dist);
     }
+
     public override void Attack() {
         if (!CanAttack()) { return; }
 
@@ -39,9 +33,11 @@ public class Sword : Weapon {
     private IEnumerator Swing() {
         collider.enabled = true;
 
-        Vector3 startPos = this.transform.localPosition; // new Vector3(0.5f, -0.25f, 0.777f);
+        //Vector3 startPos = this.transform.localPosition; // new Vector3(0.5f, -0.25f, 0.777f);
+        Vector3 startPos = new Vector3(0.5f, -0.25f, 0.777f);
         Vector3 endPos = new Vector3(-0.2f, -0.55f, 0.777f);
-        Quaternion startRot = this.transform.localRotation; //  Quaternion.Euler(new Vector3(0, 45, -10));
+        //Quaternion startRot = this.transform.localRotation; //  Quaternion.Euler(new Vector3(0, 45, -10));
+        Quaternion startRot = Quaternion.Euler(new Vector3(0, 45, -10));
         Quaternion endRot = Quaternion.Euler(new Vector3(10, 45, 120));
 
         // Swing Blade Down
@@ -74,7 +70,7 @@ public class Sword : Weapon {
 
         // Move to Start Pos
         startTime = Time.time;
-        length = AttackSpeed * 0.6f; // (60%)
+        length = AttackSpeed * 0.55f; // (60%)
         while (Time.time < startTime + length) {
             float t = (Time.time - startTime) / length;
 
@@ -104,7 +100,18 @@ public class Sword : Weapon {
             if (enemy != null) {
                 enemiesHit.Add(other.gameObject);
 
-                enemy.health.TakeDamage(this.Type, this.Damage);
+                float damage = enemy.health.TakeDamage(this.Type, this.Damage);
+                bool isDead = enemy.health.IsDead();
+                if (damage > 0) {
+                    if (isDead) {
+                        print("Explode");
+                    } else {
+                        Vector3 forward = Player.Instance.camera.transform.forward;
+                        forward.y = 0.0f;
+                        forward = forward.normalized;
+                        enemy.Knockback(forward * Knockback);
+                    }
+                }
 
                 //OnEnemyHit?.Invoke(enemy);
             }

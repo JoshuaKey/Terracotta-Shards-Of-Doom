@@ -8,8 +8,7 @@ public class CheckPoint : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag(PlayerTag)) {
-            print("CheckPoint: " + this.transform.position);
-            CheckPointSystem.Instance.LastCheckPoint = this;
+            CheckPointSystem.Instance.SetLastCheckpoint(this);
         }
     }
 }

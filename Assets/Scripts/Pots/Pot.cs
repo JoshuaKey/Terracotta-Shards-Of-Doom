@@ -28,7 +28,6 @@ public abstract class Pot : MonoBehaviour
     }
 
     //this does nothing but child classes can change that
-
     public virtual void Animate()
     { }
 
@@ -54,5 +53,12 @@ public abstract class Pot : MonoBehaviour
         newPos.y += Mathf.Max(hopHeight * Mathf.Cos(Mathf.PI * agent.speed * Time.time + Mathf.PI * 0.5f), 0);
 
         transform.position = newPos;
+    }
+
+    public NavMeshAgent GetAgent() {
+        return agent;
+    }
+    public StateMachine GetStateMachine() {
+        return stateMachine;
     }
 }
