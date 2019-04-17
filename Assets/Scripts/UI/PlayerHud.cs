@@ -6,11 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerHud : MonoBehaviour {
 
-    // Interact
+    [Header("Player")]
+    public Slider PlayerHealthBar;
     public TextMeshProUGUI InteractText;
+    public Image CrossHairs;
 
-    // Boss
-    public RectTransform BossUI;
+    [Header("Boss")]
     public Slider BossHealthBar;
 
     public static PlayerHud Instance;
@@ -20,20 +21,38 @@ public class PlayerHud : MonoBehaviour {
         Instance = this;
     }
 
-    public void SetBossHealth(float percent) {
-        BossHealthBar.value = percent;
+    // Player
+    public void SetPlayerHealth(float percent) {
+        PlayerHealthBar.gameObject.SetActive(true);
+        PlayerHealthBar.value = percent;
     }
-
-    public void DisableBossUI() {
-        BossUI.gameObject.SetActive(false);
-    }
-
     public void SetInteractText(string button, string name) {
         InteractText.gameObject.SetActive(true);
         InteractText.text = "Press '" + button + "' to interact with '" + name + "'";
     }
 
+    public void EnableCrosshairs() {
+        CrossHairs.gameObject.SetActive(true);
+    }
+
+    public void DisableCrosshairs() {
+        CrossHairs.gameObject.SetActive(false);
+    }
     public void DisableInteractText() {
         InteractText.gameObject.SetActive(false);
     }
+    public void DisablePlayerUI() {
+        PlayerHealthBar.gameObject.SetActive(false);
+    }
+
+    // Boss
+    public void SetBossHealth(float percent) {
+        BossHealthBar.gameObject.SetActive(true);
+        BossHealthBar.value = percent;
+    }
+
+    public void DisableBossUI() {
+        BossHealthBar.gameObject.SetActive(false);
+    }
+
 }

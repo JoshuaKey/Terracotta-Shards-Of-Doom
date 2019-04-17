@@ -79,6 +79,8 @@ public class Player : MonoBehaviour {
         rotation = this.transform.rotation.eulerAngles;
 
         this.health.OnDeath += this.Die;
+        this.health.OnDamage += ChangeHealthUI;
+        this.health.OnHeal += ChangeHealthUI;
     }
 
     void Update() {
@@ -235,6 +237,9 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void ChangeHealthUI(float val) {
+        PlayerHud.Instance.SetPlayerHealth(this.health.CurrentHealth / this.health.MaxHealth);
+    }
     public void Die() {
         LevelManager.Instance.RestartLevel();
     }
@@ -287,5 +292,9 @@ public class Player : MonoBehaviour {
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
     }
 
-    
+    private void OnTriggerEnter(Collider other) {
+        print("Player Collision: " + other.name);
+    }
+
+
 }

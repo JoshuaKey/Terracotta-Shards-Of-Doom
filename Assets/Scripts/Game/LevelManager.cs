@@ -24,10 +24,11 @@ public class LevelManager : MonoBehaviour {
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         print(scene.name + " was Loaded!");
         CheckPointSystem.Instance.LoadStartPoint();
+        Player.Instance.health.Heal(Player.Instance.health.MaxHealth);
     }
 
     public void RestartLevel() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);    
     }
     public void LoadLevel(int world, int level) {
         SceneManager.LoadScene(world + "-" + level);

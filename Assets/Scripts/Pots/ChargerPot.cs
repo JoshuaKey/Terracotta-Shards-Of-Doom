@@ -16,7 +16,7 @@ public class ChargerPot : Pot
             new Charger_Idle(), 
             new Charger_Charge(),
             new Charger_Attack());
-        stateMachine.DEBUGGING = true;
+        stateMachine.DEBUGGING = false;
     }
 
     //Calls hop when Animate is called. This looks bad but it's the most efficient way to do it
@@ -24,9 +24,15 @@ public class ChargerPot : Pot
     {
         Hop();
 
-        if(gameObject.name == "Charger Pot Variant")
+        if(gameObject.name == "Charger Pot Variant" && stateMachine.DEBUGGING)
         {
             Debug.Log(Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position));
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag(Game.Instance.PlayerTag) && stateMachine.GetCurrState().ToString() == "Charger_Attack") {
+            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
         }
     }
 }

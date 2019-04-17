@@ -155,6 +155,11 @@ public class StateMachine
 
         curState.Peek().Enter();
     }
+
+    public State GetCurrState()
+    {
+        return curState.Peek();
+    }
 }
 
 public abstract class State
