@@ -38,8 +38,8 @@ public class Player : MonoBehaviour {
     public LayerMask InteractLayer;
     public bool CanInteract = true;
 
-    [Header("UI")]
-    public PlayerHud HUD;
+    //[Header("UI")]
+    //public PlayerHud HUD;
 
     public static Player Instance;
 
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
 
-        this.health.OnEnemyDeath += this.Die;
+        this.health.OnDeath += this.Die;
     }
 
     void Update() {
@@ -173,17 +173,17 @@ public class Player : MonoBehaviour {
             if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
             if (interactable.CanInteract) {
-                HUD.SetInteractText("F", interactable.name);
+                PlayerHud.Instance.SetInteractText("F", interactable.name);
 
                 if (InputManager.GetButtonDown("Interact")) {
                     interactable.Interact();
                 }
             } else {
-                HUD.DisableInteractText();
+                PlayerHud.Instance.DisableInteractText();
             }
 
         } else {
-            HUD.DisableInteractText();
+            PlayerHud.Instance.DisableInteractText();
         }
     }
 

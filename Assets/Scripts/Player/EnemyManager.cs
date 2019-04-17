@@ -29,7 +29,7 @@ public class EnemyManager : MonoBehaviour {
 
         for (int i = 0; i < enemies.Count; i++) {
             enemies[i].transform.SetParent(this.transform, true);
-            enemies[i].health.OnEnemyDeath += EnemyDeath;
+            enemies[i].health.OnDeath += EnemyDeath;
         }
     }
 
