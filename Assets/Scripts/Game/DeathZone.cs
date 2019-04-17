@@ -4,18 +4,11 @@ using UnityEngine;
 
 public class DeathZone : MonoBehaviour {
 
-    public string PlayerTag;
-
     private void OnTriggerEnter(Collider other) {
         print("Death: " + other.name);
-        if (other.CompareTag(PlayerTag)) {
-            Player player = Player.Instance;
-            CheckPoint checkpoint = CheckPointSystem.Instance.LastCheckPoint;
-
-            player.transform.position = checkpoint.transform.position;
-            player.velocity = Vector3.zero;
-            player.LookTowards(checkpoint.transform.forward);
-            player.CanMove = false;
+        if (other.CompareTag(Game.Instance.PlayerTag)) {
+            CheckPointSystem.Instance.LoadlastCheckpoint();
+            Player.Instance.CanMove = false;
         } else {
             Health health = other.GetComponentInChildren<Health>(true);
             if (health == null) { health = other.GetComponentInParent<Health>(); }
@@ -29,9 +22,8 @@ public class DeathZone : MonoBehaviour {
     }
 
     private void OnTriggerExit(Collider other) {
-        if (other.CompareTag(PlayerTag)) {
-            Player player = Player.Instance;
-            player.CanMove = true;
+        if (other.CompareTag(Game.Instance.PlayerTag)) {
+            Player.Instance.CanMove = true;
         }       
     }
 }

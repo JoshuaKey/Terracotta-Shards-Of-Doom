@@ -55,11 +55,8 @@ public class Player : MonoBehaviour {
     private int playerLayerMask;
 
     void Start() {
-        if(Instance == null) {
-            Instance = this;
-        } else {
-            Destroy(this.gameObject);
-        }
+        if (Instance != null) { Destroy(this.gameObject); return; }
+        Instance = this;
 
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
@@ -80,6 +77,8 @@ public class Player : MonoBehaviour {
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
+
+        this.health.OnEnemyDeath += this.Die;
     }
 
     void Update() {
@@ -91,7 +90,11 @@ public class Player : MonoBehaviour {
         }
         if (CanInteract) {
             UpdateInteractable();
-        } 
+        }
+
+        if (Input.GetKeyDown(KeyCode.T)) {
+            this.health.TakeDamage(DamageType.TRUE, 0.5f);
+        }
     }
     private void LateUpdate() {
         if (CanRotate) {
@@ -223,12 +226,17 @@ public class Player : MonoBehaviour {
             // If we are falling, add more Gravity
             if (velocity.y < 0.0f) {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
+                //Debug.Break();
             }
             // If we are not doing a "long jump", add more Gravity 
             else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
                 velocity.y -= Gravity * (LowJumpStrength - 1f) * Time.deltaTime;
             }
         }
+    }
+
+    public void Die() {
+        LevelManager.Instance.RestartLevel();
     }
 
     public void LookTowards(Vector3 forward) {
@@ -278,4 +286,6 @@ public class Player : MonoBehaviour {
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
     }
+
+    
 }

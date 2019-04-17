@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Flags]
 public enum DamageType {
-    BASIC, // Pierce ?
-    FIRE,
-    ICE,
-    LIGHTNING,
-    EXPLOSIVE,
-    TRUE,
+    BASIC = (1 << 0), // Pierce ?
+    FIRE = (1 << 1),
+    ICE = (1 << 2),
+    LIGHTNING = (1 << 3),
+    EXPLOSIVE = (1 << 4),
+    TRUE = (1 << 5),
 }
