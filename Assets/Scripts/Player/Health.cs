@@ -10,7 +10,7 @@ public class Health : MonoBehaviour {
     [HideInInspector]
     public float CurrentHealth;
     public float MaxHealth = 3f;
-    public DamageType Resistances;
+    public DamageType Resistance = 0;
 
     public Action OnEnemyDeath;
     public Action OnEnemyHeal;
@@ -33,10 +33,7 @@ public class Health : MonoBehaviour {
     }
 
     public void TakeDamage(DamageType type, float damage) {
-        print(type);
-        print(Resistances);
-        print(Resistances & type);
-        if ((Resistances & type) != DamageType.NONE) {
+        if ((Resistance & type) != 0) {
             print(this.name + " took no Damage!");
             return;
         }
