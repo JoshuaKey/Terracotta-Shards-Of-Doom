@@ -90,7 +90,7 @@ public class ArmoredPot : Pot
 
         public override string Update()
         {
-            if (armoredPot.numArmorPieces == 0)
+            if (armoredPot.numArmorPieces != 0)
             {
                 if (numberOfShotsFired < 3)
                 {
@@ -125,6 +125,7 @@ public class ArmoredPot : Pot
             float targetZ = player.transform.position.z + player.velocity.z;
             targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
 
+            Debug.Log(targetPosition);
             NavMeshHit hit;
             NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 25.0f, NavMesh.AllAreas);
             targetPosition = hit.position;
@@ -135,7 +136,6 @@ public class ArmoredPot : Pot
             {
                 time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.5f);
                 Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time / 1.5f);
-
                 enemy.transform.position = newPosition;
 
                 yield return null;
