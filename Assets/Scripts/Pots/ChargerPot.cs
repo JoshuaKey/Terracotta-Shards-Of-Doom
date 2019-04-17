@@ -63,7 +63,8 @@ public class Charger_Charge : State
     }
 
     public override void Exit()
-    { }
+    {
+    }
 
     //if the distance to player is greater than aggroRadius, stop running at player
     public override string Update()

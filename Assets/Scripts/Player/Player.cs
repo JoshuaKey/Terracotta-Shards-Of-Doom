@@ -165,23 +165,29 @@ public class Player : MonoBehaviour {
         Ray ray = new Ray(camera.transform.position, camera.transform.forward);
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
+        if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer))
+        {
             Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
             if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
-            if (interactable.CanInteract) {
+            if (interactable.CanInteract)
+            {
                 HUD.SetInteractText("F", interactable.name);
 
-                if (InputManager.GetButtonDown("Interact")) {
+                if (InputManager.GetButtonDown("Interact"))
+                {
                     interactable.Interact();
                 }
-            } else {
+            }
+            else
+            {
                 HUD.DisableInteractText();
             }
 
-        } else {
-            //TODO: uncomment
-            //HUD.DisableInteractText();
+        }
+        else
+        {
+            HUD.DisableInteractText();
         }
     }
 
