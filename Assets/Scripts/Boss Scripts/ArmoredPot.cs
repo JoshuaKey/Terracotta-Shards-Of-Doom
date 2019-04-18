@@ -34,12 +34,11 @@ public class ArmoredPot : Pot
         navMeshAgent = GetComponent<NavMeshAgent>();
         gameObject.tag = "Boss";
         stateMachine = new StateMachine();
-        //stateMachine.Init(gameObject, 
-        //stateMachine.Init(gameObject, 
-        //    new Armored_Spawning(), 
-        //    new Armored_Shooting(), 
-        //    new Armored_Charging());
-        stateMachine.Init(gameObject, new Armored_Shooting());
+        stateMachine.DEBUGGING = true;
+        stateMachine.Init(gameObject,
+            new Armored_Shooting(),
+            new Armored_Spawning(),
+            new Armored_Charging());
     }
 
     void Update()
@@ -60,6 +59,7 @@ public class ArmoredPot : Pot
         private byte numberOfShotsLanded = 0;
 
         private bool firing = false;
+
         public override void Enter()
         {
             if (Target == null)
@@ -67,18 +67,19 @@ public class ArmoredPot : Pot
                 Target = GameObject.FindGameObjectWithTag("Player");
             }
 
+            if (armoredPot == null)
+            {
+                armoredPot = owner.GetComponent<ArmoredPot>();
+            }
+
             if (AISpawnPoint == null)
             {
-                AISpawnPoint = owner.GetComponent<ArmoredPot>().AISpawnPoint.transform;
+                AISpawnPoint = armoredPot.AISpawnPoint.transform;
             }
 
             if (SpawnableObjects == null)
             {
                 SpawnableObjects = Resources.LoadAll<GameObject>("Boss1_SpawnableObjects");
-            }
-            if (armoredPot == null)
-            {
-                armoredPot = owner.GetComponent<ArmoredPot>();
             }
         }
 
@@ -99,9 +100,18 @@ public class ArmoredPot : Pot
                         armoredPot.StartCoroutine(LaunchPot());
                     }
                 }
-                else if (numberOfShotsLanded < 3)
+                else if (numberOfShotsLanded == 3)
                 {
-                    return "Armored_Spawning";
+                    if ((Target.transform.position - owner.transform.position).magnitude <= 50.0f)
+                    {
+                        numberOfShotsFired = 0;
+                        numberOfShotsLanded = 0;
+                        return "PUSH.ArmoredPot+Armored_Spawning";
+                    }
+                    else
+                    {
+                        armoredPot.StartCoroutine(LaunchPot());
+                    }
                 }
             }
             return null;
@@ -115,6 +125,12 @@ public class ArmoredPot : Pot
             float time = 0;
             //TODO: Change to pick a random object
             GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
+
+            Collider collider = enemy.GetComponent<Collider>();
+            collider.enabled = false;
+
+            Pot pot = enemy.GetComponent<Pot>();
+            pot.enabled = false;
 
             Player player = Target.GetComponent<Player>();
 
@@ -141,6 +157,9 @@ public class ArmoredPot : Pot
                 yield return null;
             }
 
+            collider.enabled = false;
+
+            pot.enabled = true;
             numberOfShotsLanded++;
             firing = false;
         }
@@ -151,47 +170,49 @@ public class ArmoredPot : Pot
         private Transform AISpawnPoint = null;
         private GameObject[] SpawnableObjects = null;
         //The state needs any monobehavior it can get to start a coroutine
-        private MonoBehaviour monoBehaviour = null;
+        private ArmoredPot armoredPot = null;
 
         private byte numberOfBurstsFired = 0;
         private byte numberOfShotsLanded = 0;
         private bool firing = false;
         public override void Enter()
         {
+
+            if (armoredPot == null)
+            {
+                armoredPot = owner.GetComponent<ArmoredPot>();
+            }
+
             if (AISpawnPoint == null)
             {
-                AISpawnPoint = owner.GetComponent<ArmoredPot>().AISpawnPoint.transform;
+                AISpawnPoint = armoredPot.AISpawnPoint.transform;
             }
 
             if (SpawnableObjects == null)
             {
                 SpawnableObjects = Resources.LoadAll<GameObject>("Boss1_SpawnableObjects");
             }
-
-            if (monoBehaviour == null)
-            {
-                monoBehaviour = owner.GetComponent<MonoBehaviour>();
-            }
         }
 
         public override void Exit()
         {
             numberOfBurstsFired = 0;
+            numberOfShotsLanded = 0;
         }
 
         public override string Update()
         {
             if (!firing && numberOfBurstsFired != 3)
             {
-                for (int i = 0; i < 3; i++)
-                {
-                    monoBehaviour.StartCoroutine(LaunchPot());
-                }
-                //monoBehaviour.StartCoroutine(LaunchBurst());
+                armoredPot.StartCoroutine(LaunchBurst());
             }
             else if (numberOfBurstsFired == 3)
             {
-                //TODO: Change state
+                if(armoredPot.numArmorPieces == 0)
+                {
+
+                }
+                return "POP";
             }
             return null;
         }
@@ -199,18 +220,32 @@ public class ArmoredPot : Pot
         IEnumerator LaunchBurst()
         {
             firing = true;
+            for (int i = 0; i < 3; i++)
+            {
+                armoredPot.StartCoroutine(LaunchPot());
+            }
 
             while (numberOfShotsLanded < 3)
             {
                 yield return null;
             }
 
+            firing = false;
+          
+            numberOfShotsLanded = 0;
+            numberOfBurstsFired++;
         }
         IEnumerator LaunchPot()
         {
             float time = 0.0f;
 
-            GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[1]);
+            GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
+
+            Collider collider = enemy.GetComponent<Collider>();
+            collider.enabled = false;
+
+            Pot pot = enemy.GetComponent<Pot>();
+            pot.enabled = false;
 
             Vector3 startPosition = AISpawnPoint.position;
             Vector2 direction = Vector2.zero;
@@ -241,6 +276,11 @@ public class ArmoredPot : Pot
 
                 yield return null;
             }
+
+            collider.enabled = true;
+
+            pot.enabled = true;
+
             numberOfShotsLanded++;
         }
     }
@@ -281,7 +321,7 @@ public class ArmoredPot : Pot
         IEnumerator Charge()
         {
             charging = true;
-
+            
             NavMeshAgent navMeshAgent = owner.GetComponent<NavMeshAgent>();
             //NavMesh.CalculatePath();
             Vector3 targetPosition = target.transform.position;
