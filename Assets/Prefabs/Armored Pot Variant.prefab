@@ -37,6 +37,9 @@ MonoBehaviour:
   waddleAmplitude: 6.25
   hopHeight: 1
   aggroRadius: 20
+  attackRadius: 3
+  attackDuration: 0.25
+  attackAngle: 70
 --- !u!1001 &1639069917670760712
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -104,13 +107,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1948159762795534558, guid: 7af5e528f545bc34d9140e685d17ceb2,
-        type: 3}
-      propertyPath: Health
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1948159762795534558, guid: 7af5e528f545bc34d9140e685d17ceb2,
-        type: 3}
+    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
       propertyPath: MaxHealth
       value: 4
       objectReference: {fileID: 0}
