@@ -12,11 +12,8 @@ public class BrokenPot : MonoBehaviour {
         this.gameObject.SetActive(false);
     }
 
-    public void Activate() {
-        //this.gameObject.SetActive(true);
-    }
-
     public void Explode() {
+        
         // Put Explodey Logic here
     }
 }

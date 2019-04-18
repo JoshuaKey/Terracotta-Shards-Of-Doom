@@ -54,4 +54,11 @@ public abstract class Pot : MonoBehaviour
 
         transform.position = newPos;
     }
+
+    public NavMeshAgent GetAgent() {
+        return agent;
+    }
+    public StateMachine GetStateMachine() {
+        return stateMachine;
+    }
 }

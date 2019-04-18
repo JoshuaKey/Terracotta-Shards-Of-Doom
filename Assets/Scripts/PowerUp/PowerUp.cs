@@ -10,7 +10,7 @@ public class PowerUp : MonoBehaviour {
         if (health == null) { health = GetComponentInChildren<Health>(true); }
 
         // Assume player killed Pot...
-        health.OnEnemyDeath += GainPowerUp;
+        health.OnDeath += GainPowerUp;
     }
 
     public virtual void GainPowerUp() { print("Power Up!!!!"); }

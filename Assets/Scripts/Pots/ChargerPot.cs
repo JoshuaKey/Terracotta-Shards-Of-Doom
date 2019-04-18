@@ -91,7 +91,9 @@ public class Charger_Charge : State
             return "PUSH.Charger_Attack";
         }
 
-        agent.SetDestination(player.transform.position);
+        if (agent.isActiveAndEnabled) {
+            agent.SetDestination(player.transform.position);
+        }
 
         return null;
     }
