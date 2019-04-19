@@ -125,13 +125,13 @@ public class ArmoredPot : Pot
             //TODO: Change to pick a random object
             GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
 
-            Collider collider = enemy.GetComponent<Collider>();
-            collider.enabled = false;
+            NavMeshAgent navAgent = enemy.GetComponent<NavMeshAgent>();
+            navAgent.enabled = false;
 
             Pot pot = enemy.GetComponent<Pot>();
             pot.enabled = false;
 
-            Player player = Target.GetComponent<Player>();
+            Player player = Player.Instance;
 
             Vector3 startPosition = AISpawnPoint.position;
 
@@ -155,9 +155,9 @@ public class ArmoredPot : Pot
                 yield return null;
             }
 
-            collider.enabled = true;
+            navAgent.enabled = true;
 
-            //pot.enabled = true;
+            pot.enabled = true;
             numberOfShotsLanded++;
             firing = false;
         }
@@ -208,7 +208,7 @@ public class ArmoredPot : Pot
             {
                 if(armoredPot.numArmorPieces == 0)
                 {
-
+                        
                 }
                 return "POP";
             }
@@ -237,10 +237,11 @@ public class ArmoredPot : Pot
         {
             float time = 0.0f;
 
+            //TODO: Change to pick a random object
             GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
 
-            Collider collider = enemy.GetComponent<Collider>();
-            collider.enabled = false;
+            NavMeshAgent navAgent = enemy.GetComponent<NavMeshAgent>();
+            navAgent.enabled = false;
 
             Pot pot = enemy.GetComponent<Pot>();
             pot.enabled = false;
@@ -254,7 +255,7 @@ public class ArmoredPot : Pot
 
             do
             {
-                direction = Random.insideUnitCircle.normalized * Random.Range(10.0f, 75.0f);
+                direction = Random.insideUnitCircle.normalized * Random.Range(10.0f, 50.0f);
                 targetPosition = new Vector3(direction.x, 0.0f, direction.y);
 
                 NavMeshHit hit;
@@ -275,8 +276,8 @@ public class ArmoredPot : Pot
                 yield return null;
             }
 
-            collider.enabled = true;
-
+            navAgent.enabled = true;
+            
             pot.enabled = true;
 
             numberOfShotsLanded++;
