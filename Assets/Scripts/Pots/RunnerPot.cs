@@ -24,14 +24,14 @@ public class Runner_Idle : State
 {
     GameObject player;
 
-    //if player is null it sets player
-    public override void Enter()
+    public override void Init(GameObject owner)
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
+        base.Init(owner);
+        player = GameObject.FindGameObjectWithTag("Player");
     }
+
+    public override void Enter()
+    { }
 
     public override void Exit()
     { }
@@ -51,14 +51,14 @@ public class Runner_Run : State
 {
     GameObject player;
 
-    //if player is null it sets player
-    public override void Enter()
+    public override void Init(GameObject owner)
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
+        base.Init(owner);
+        player = GameObject.FindGameObjectWithTag("Player");
     }
+
+    public override void Enter()
+    { }
 
     public override void Exit()
     { }
