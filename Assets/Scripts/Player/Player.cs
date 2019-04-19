@@ -175,7 +175,7 @@ public class Player : MonoBehaviour {
             if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
             if (interactable.CanInteract) {
-                PlayerHud.Instance.SetInteractText("F", interactable.name);
+                PlayerHud.Instance.SetInteractText("f", interactable.name);
 
                 if (InputManager.GetButtonDown("Interact")) {
                     interactable.Interact();
@@ -238,7 +238,7 @@ public class Player : MonoBehaviour {
     }
 
     public void ChangeHealthUI(float val) {
-        PlayerHud.Instance.SetPlayerHealth(this.health.CurrentHealth / this.health.MaxHealth);
+        PlayerHud.Instance.SetPlayerHealthBar(this.health.CurrentHealth / this.health.MaxHealth);
     }
     public void Die() {
         LevelManager.Instance.RestartLevel();
@@ -293,7 +293,7 @@ public class Player : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        print("Player Collision: " + other.name);
+        //print("Player Collision: " + other.name);
     }
 
 
