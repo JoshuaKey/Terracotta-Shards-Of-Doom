@@ -5,9 +5,12 @@ using UnityEngine;
 public class ChargerPot : Pot
 {
     [SerializeField] public float aggroRadius = 5f;
-    [SerializeField] public float attackRadius = 3f;
+    [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
     [SerializeField] public float attackAngle = 70f;
+
+    [HideInInspector] public bool isAttacking = false;
+    [HideInInspector] public bool hasHitPlayer = false;
 
     private void Start()
     {
@@ -31,7 +34,8 @@ public class ChargerPot : Pot
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag(Game.Instance.PlayerTag) && stateMachine.GetCurrState().ToString() == "Charger_Attack") {
+        if (other.CompareTag(Game.Instance.PlayerTag) && isAttacking && !hasHitPlayer) {
+            hasHitPlayer = true;
             Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
         }
     }
@@ -97,7 +101,8 @@ public class Charger_Charge : State
             return "PUSH.Charger_Attack";
         }
 
-        if (agent.isActiveAndEnabled) {
+        if (agent.isActiveAndEnabled) 
+        {
             agent.SetDestination(player.transform.position);
         }
 
@@ -109,6 +114,7 @@ public class Charger_Attack : State
 {
     float timer;
     GameObject player;
+    ChargerPot cp;
 
     public override void Enter()
     {
@@ -116,19 +122,33 @@ public class Charger_Attack : State
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
+        if(cp == null) 
+        {
+            cp = owner.GetComponent<ChargerPot>();
+        }
         timer = 0;
+        cp.isAttacking = true;
+        cp.hasHitPlayer = false;
+        agent.isStopped = true;
+        Debug.Log("Attacking");
     }
 
     public override void Exit()
-    { }
+    {
+        cp.isAttacking = false;
+        cp.hasHitPlayer = false;
+        agent.isStopped = false;
+        Debug.Log("Stopped Attacking");
+    }
 
     public override string Update()
     {
         timer += Time.deltaTime;
+        Debug.Log("Here");
 
         Vector3 newRotation = owner.transform.rotation.eulerAngles;
 
-        ChargerPot cp = owner.GetComponent<ChargerPot>();
+        //ChargerPot cp = owner.GetComponent<ChargerPot>();
 
         newRotation.x = timer * (timer - cp.attackDuration) * (-4 * cp.attackAngle) / Mathf.Pow(cp.attackDuration, 2);
         newRotation.y = Quaternion.LookRotation(player.transform.position - owner.transform.position).eulerAngles.y;

@@ -292,9 +292,4 @@ public class Player : MonoBehaviour {
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
     }
 
-    private void OnTriggerEnter(Collider other) {
-        //print("Player Collision: " + other.name);
-    }
-
-
 }
