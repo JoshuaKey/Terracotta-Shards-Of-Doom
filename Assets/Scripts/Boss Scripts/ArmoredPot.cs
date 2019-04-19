@@ -34,7 +34,6 @@ public class ArmoredPot : Pot
         navMeshAgent = GetComponent<NavMeshAgent>();
         gameObject.tag = "Boss";
         stateMachine = new StateMachine();
-        stateMachine.DEBUGGING = true;
         stateMachine.Init(gameObject,
             new Armored_Shooting(),
             new Armored_Spawning(),
@@ -141,7 +140,6 @@ public class ArmoredPot : Pot
             float targetZ = player.transform.position.z + player.velocity.z;
             targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
 
-            Debug.Log(targetPosition);
             NavMeshHit hit;
             NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 25.0f, NavMesh.AllAreas);
             targetPosition = hit.position;
@@ -157,9 +155,9 @@ public class ArmoredPot : Pot
                 yield return null;
             }
 
-            collider.enabled = false;
+            collider.enabled = true;
 
-            pot.enabled = true;
+            //pot.enabled = true;
             numberOfShotsLanded++;
             firing = false;
         }
