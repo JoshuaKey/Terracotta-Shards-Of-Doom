@@ -129,26 +129,25 @@ public class Charger_Attack : State
         timer = 0;
         cp.isAttacking = true;
         cp.hasHitPlayer = false;
-        agent.isStopped = true;
-        Debug.Log("Attacking");
+        if(agent.isActiveAndEnabled && agent.isOnNavMesh) {
+            agent.isStopped = true;
+        }
     }
 
     public override void Exit()
     {
         cp.isAttacking = false;
         cp.hasHitPlayer = false;
-        agent.isStopped = false;
-        Debug.Log("Stopped Attacking");
+        if (agent.isActiveAndEnabled && agent.isOnNavMesh) {
+            agent.isStopped = false;
+        }
     }
 
     public override string Update()
     {
         timer += Time.deltaTime;
-        Debug.Log("Here");
 
         Vector3 newRotation = owner.transform.rotation.eulerAngles;
-
-        //ChargerPot cp = owner.GetComponent<ChargerPot>();
 
         newRotation.x = timer * (timer - cp.attackDuration) * (-4 * cp.attackAngle) / Mathf.Pow(cp.attackDuration, 2);
         newRotation.y = Quaternion.LookRotation(player.transform.position - owner.transform.position).eulerAngles.y;

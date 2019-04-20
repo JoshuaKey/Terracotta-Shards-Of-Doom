@@ -27,6 +27,10 @@ public class LevelManager : MonoBehaviour {
         Player.Instance.health.Heal(Player.Instance.health.MaxHealth);
     }
 
+    public void MoveToScene(GameObject obj) {
+        SceneManager.MoveGameObjectToScene(obj, SceneManager.GetActiveScene());
+    }
+
     public void RestartLevel() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);    
     }

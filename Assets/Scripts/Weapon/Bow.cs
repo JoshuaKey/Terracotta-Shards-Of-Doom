@@ -61,6 +61,20 @@ public class Bow : Weapon {
         Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
     }
 
+    private void OnEnable() {
+        PlayerHud.Instance.EnableCrosshair();
+    }
+
+    private void OnDisable() {
+        PlayerHud.Instance.DisableCrosshair();
+
+        StopAllCoroutines();
+        if(currArrow != null) {
+            Destroy(currArrow.gameObject);
+        }
+        charge = 0.0f;
+    }
+
     public override void Charge() {
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
@@ -75,7 +89,7 @@ public class Bow : Weapon {
     }
 
     public override void Attack() {
-        if (!CanAttack()) { return; }
+        if (!CanAttack() || charge == 0.0f) { return; }
 
         base.Attack();
 

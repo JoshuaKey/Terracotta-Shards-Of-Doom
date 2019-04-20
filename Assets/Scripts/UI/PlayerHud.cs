@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerHud : MonoBehaviour {
@@ -32,12 +33,20 @@ public class PlayerHud : MonoBehaviour {
     public Image NextWeaponIcon;
     public Image CurrWeaponIcon;
     public Image PrevWeaponIcon;
+    public TextMeshProUGUI NextWeaponText;
+    public TextMeshProUGUI CurrWeaponText;
+    public TextMeshProUGUI PrevWeaponText;
     public TextMeshProUGUI NextWeaponInputIcon;
     public TextMeshProUGUI PrevWeaponInputIcon;
 
     [Header("Weapon Wheel")]
     public GameObject WeaponWheel;
-    public TextMeshProUGUI WeaponWheelIcon;
+    public RectTransform WeaponWheelCursor;
+    public Image[] WeaponWheelIcons; // Total of 6
+    public TextMeshProUGUI[] WeaponWheelTexts; // Total of 6
+    public Button[] WeaponWheelButtons; // Total of 6
+    public Image[] WeaponWheelButtonImages; // Total of 6
+    public int WeaponWheelAmo = 1;
 
     [Header("Compass")]
     public GameObject Compass;
@@ -48,11 +57,17 @@ public class PlayerHud : MonoBehaviour {
     public Slider BossHealthBackgroundSlider;
     private IEnumerator BossHealthRoutine;
 
+    [Header("Other")]
+    public EventSystem eventSystem;
+
     public static PlayerHud Instance;
 
-    public void Start() {
+    private void Awake() {
         if (Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
+    }
+    private void Start() {
+        if(eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
     }
 
     // Hud
@@ -127,24 +142,91 @@ public class PlayerHud : MonoBehaviour {
 
     // Weapon toggle
     public void EnableWeaponToggle() {
-
+        WeaponToggle.gameObject.SetActive(true);
     }
-    public void SetWeaponToggle() {
-
+    public void SetWeaponToggle(string prevWeapon, string currWeapon, string nextWeapon) {
+        EnableWeaponToggle();
+        NextWeaponText.text = nextWeapon;
+        CurrWeaponText.text = currWeapon;
+        PrevWeaponText.text = prevWeapon;
     }
     public void DisableWeaponToggle() {
-
+        WeaponToggle.gameObject.SetActive(false);
     }
 
     // Weapon Wheel
     public void EnableWeaponWheel() {
-
+        WeaponWheel.gameObject.SetActive(true);
     }
-    public void SetWeaponWheel() {
+    public void SetWeaponWheel(string[] weapons) {
+        // Supplies Images and Weapon Wheel dynamically arranges them in a circle.
+        EnableWeaponWheel();
 
+        WeaponWheelAmo = weapons.Length;
+
+        float fillAmo = 1 / (float)(WeaponWheelAmo);
+        float zRot = 0;
+        float rotIncrease = 360 / WeaponWheelAmo;
+
+        for (int i = 0; i < WeaponWheelButtons.Length; i++) {
+            Button button = WeaponWheelButtons[i];
+            Image buttonImage = WeaponWheelButtonImages[i];
+            TextMeshProUGUI text = WeaponWheelTexts[i];
+            Image image = WeaponWheelIcons[i];
+
+            if (i < WeaponWheelAmo) {
+                // Button
+                {
+                    button.gameObject.SetActive(true);
+
+                    RectTransform rect = button.GetComponent<RectTransform>();
+                    Vector3 rot = rect.localRotation.eulerAngles;
+                    rot.z = zRot;
+                    button.transform.localRotation = Quaternion.Euler(rot);
+                }
+
+                // Button Image 
+                {
+                    buttonImage.fillAmount = fillAmo;
+                }
+                
+                // Weapon Text
+                {
+                    text.text = weapons[i];
+
+                    Vector3 rot = text.rectTransform.localRotation.eulerAngles;
+                    rot.z = -zRot;
+                    text.transform.localRotation = Quaternion.Euler(rot);
+                    
+                    Vector3 pos = Quaternion.Euler(0, 0, -rotIncrease / 2f) * new Vector3(0, 100, 0);
+                    print(pos);
+                    print(rotIncrease / 2f);
+                    text.rectTransform.localPosition = pos;
+                }
+
+                // Weapon Icon
+                {
+                    image.gameObject.SetActive(false);
+                }
+                
+                zRot += rotIncrease;
+            } else {
+                button.gameObject.SetActive(false);
+            }
+        }
+    }
+    public void HighlightWeaponWheel(int index, Vector3 dir) {
+
+        WeaponWheelCursor.localPosition = dir * 100;
+
+        GameObject obj = null;
+        if (index != -1) {
+            obj = WeaponWheelButtons[index].gameObject;
+        }
+        eventSystem.SetSelectedGameObject(obj);
     }
     public void DisableWeaponWheel() {
-
+        WeaponWheel.gameObject.SetActive(false);
     }
 
     // Compass

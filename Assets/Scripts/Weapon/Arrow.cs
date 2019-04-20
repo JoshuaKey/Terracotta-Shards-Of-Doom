@@ -27,15 +27,14 @@ public class Arrow : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        Vector3 start = this.transform.position;
-        Vector3 end = this.transform.position + rigidbody.velocity * Time.deltaTime;
-        RaycastHit hit;
-        if (Physics.Linecast(start, end, out hit)) {
-            OnTriggerEnter(hit.collider);
+        if (!rigidbody.isKinematic) {
+            Vector3 start = this.transform.position;
+            Vector3 end = this.transform.position + rigidbody.velocity * Time.deltaTime;
+            RaycastHit hit;
+            if (Physics.Linecast(start, end, out hit)) {
+                OnTriggerEnter(hit.collider);
+            }
         }
-
-        // Debug
-        Debug.DrawRay(this.transform.position, rigidbody.velocity * Time.deltaTime, Color.cyan, 0.3f);
     }
 
     public void Fire() {
@@ -45,6 +44,9 @@ public class Arrow : MonoBehaviour {
         rigidbody.AddForce(this.transform.forward * Impulse, ForceMode.Impulse);
 
         this.transform.parent = null;
+        LevelManager.Instance.MoveToScene(this.gameObject);
+
+        FixedUpdate();
     }
 
     private void OnTriggerEnter(Collider other) {
