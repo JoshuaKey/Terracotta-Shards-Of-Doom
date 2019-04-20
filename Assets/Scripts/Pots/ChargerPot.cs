@@ -45,14 +45,14 @@ public class Charger_Idle : State
 {
     GameObject player;
 
-    //if player is null it sets player
-    public override void Enter()
+    public override void Init(GameObject owner)
     {
-        if(player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
+        base.Init(owner);
+        player = GameObject.FindGameObjectWithTag("Player");
     }
+
+    public override void Enter()
+    { }
 
     public override void Exit()
     { }
@@ -73,14 +73,15 @@ public class Charger_Charge : State
 {
     GameObject player;
 
+    public override void Init(GameObject owner)
+    {
+        base.Init(owner);
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
+
     //if player is null it sets player
     public override void Enter()
-    {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-    }
+    { }
 
     public override void Exit()
     { }
@@ -110,11 +111,16 @@ public class Charger_Charge : State
     }
 }
 
-public class Charger_Attack : State
+public class Charger_Attack : TimedState
 {
-    float timer;
     GameObject player;
     ChargerPot cp;
+
+    public override void Init(GameObject owner)
+    {
+        base.Init(owner);
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
 
     public override void Enter()
     {
@@ -145,7 +151,7 @@ public class Charger_Attack : State
 
     public override string Update()
     {
-        timer += Time.deltaTime;
+        base.Update();
 
         Vector3 newRotation = owner.transform.rotation.eulerAngles;
 

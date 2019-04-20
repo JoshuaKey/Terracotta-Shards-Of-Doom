@@ -8,6 +8,7 @@ public class StateMachine
     Dictionary<string, State> states;
     Stack<State> curState;
     GameObject owner;
+    MonoBehaviour ownerScript;
 
     //////////////////////
     public bool DEBUGGING = false;
@@ -21,6 +22,7 @@ public class StateMachine
     public void Init(GameObject owner, params State[] initStates)
     {
         this.owner = owner;
+        ownerScript = owner.GetComponent<MonoBehaviour>();
         states = new Dictionary<string, State>();
         curState = new Stack<State>();
         AddStates(initStates);
@@ -171,7 +173,7 @@ public abstract class State
     /// sets variables based on owner
     /// </summary>
     /// <param name="owner"></param>
-    public void Init(GameObject owner)
+    public virtual void Init(GameObject owner)
     {
         this.owner = owner;
         agent = owner.GetComponent<NavMeshAgent>();
@@ -201,5 +203,33 @@ public abstract class State
     public override string ToString()
     {
         return GetType().ToString();
+    }
+}
+
+/// <summary>
+/// A child class of State that automatically includes a timer. Useful for when an AI needs to wait for a 
+/// certain number of seconds or perform an action for an amount of time. Aside from having a timer it
+/// updates and a float to store when the timer is done, most of it is left to child classes.
+/// </summary>
+public abstract class TimedState : State
+{
+    public float timer;
+    public float seconds;
+
+    public TimedState() { }
+    public TimedState(float seconds)
+    {
+        this.seconds = seconds;
+    }
+
+    public override void Enter()
+    {
+        seconds = 0;
+    }
+
+    public override string Update()
+    {
+        timer += Time.deltaTime;
+        return null;
     }
 }
