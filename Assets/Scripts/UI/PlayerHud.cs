@@ -209,7 +209,7 @@ public class PlayerHud : MonoBehaviour {
                     image.gameObject.SetActive(false);
                 }
                 
-                zRot += rotIncrease;
+                zRot -= rotIncrease;
             } else {
                 button.gameObject.SetActive(false);
             }
