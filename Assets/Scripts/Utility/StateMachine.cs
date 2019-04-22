@@ -157,6 +157,11 @@ public class StateMachine
 
         curState.Peek().Enter();
     }
+
+    public string GetCurrentState()
+    {
+        return curState.ToString();
+    }
 }
 
 public abstract class State
