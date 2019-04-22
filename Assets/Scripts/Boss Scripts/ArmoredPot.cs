@@ -18,13 +18,9 @@ public class ArmoredPot : Pot
         {
             return numArmorPieces;
         }
-
         set
         {
-            if (numArmorPieces - value == 1)
-            {
-                numArmorPieces = value;
-            }
+            numArmorPieces = value;
         }
     }
 
@@ -56,9 +52,9 @@ public class ArmoredPot : Pot
 
         private byte numberOfShotsFired = 0;
         private byte numberOfShotsLanded = 0;
-
         private bool firing = false;
 
+        private float timer = 0.0f;
         public override void Enter()
         {
             if (Target == null)
@@ -86,6 +82,7 @@ public class ArmoredPot : Pot
         {
             numberOfShotsFired = 0;
             numberOfShotsLanded = 0;
+            timer = 0.0f;
         }
 
         public override string Update()
@@ -99,19 +96,26 @@ public class ArmoredPot : Pot
                         armoredPot.StartCoroutine(LaunchPot());
                     }
                 }
-                else if (numberOfShotsLanded == 3)
+                else if (numberOfShotsLanded >= 3)
                 {
+                    timer += Time.deltaTime;
                     if ((Target.transform.position - owner.transform.position).magnitude <= 50.0f)
                     {
-                        numberOfShotsFired = 0;
-                        numberOfShotsLanded = 0;
-                        return "PUSH.ArmoredPot+Armored_Spawning";
+
+                        return "ArmoredPot+Armored_Spawning";
                     }
                     else
                     {
-                        armoredPot.StartCoroutine(LaunchPot());
+                        if(!firing)
+                        {
+                            armoredPot.StartCoroutine(LaunchPot());
+                        }
                     }
                 }
+            }
+            else
+            {
+                return "ArmoredPot+Armored_Charging";
             }
             return null;
         }
@@ -144,7 +148,7 @@ public class ArmoredPot : Pot
             NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 25.0f, NavMesh.AllAreas);
             targetPosition = hit.position;
 
-            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 75.0f - (startPosition - targetPosition).magnitude);
+            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 150.0f - (startPosition - targetPosition).magnitude);
 
             while (time != 1.5f)
             {
@@ -173,6 +177,8 @@ public class ArmoredPot : Pot
         private byte numberOfBurstsFired = 0;
         private byte numberOfShotsLanded = 0;
         private bool firing = false;
+
+        private float timer = 0;
         public override void Enter()
         {
 
@@ -196,6 +202,7 @@ public class ArmoredPot : Pot
         {
             numberOfBurstsFired = 0;
             numberOfShotsLanded = 0;
+            timer = 0;
         }
 
         public override string Update()
@@ -206,11 +213,22 @@ public class ArmoredPot : Pot
             }
             else if (numberOfBurstsFired == 3)
             {
-                if(armoredPot.numArmorPieces == 0)
+                if(armoredPot.NumArmorPieces == 0)
                 {
-                        
+                    timer += Time.deltaTime;
+                    if(timer >= 2.0f)
+                    {
+                        return "ArmoredPot+Armored_Charging";
+                    }
                 }
-                return "POP";
+                else if(armoredPot.numArmorPieces != 0)
+                {
+                    timer += Time.deltaTime;
+                    if(timer >= 2.0f)
+                    {
+                        return "ArmoredPot+Armored_Shooting";
+                    }
+                }
             }
             return null;
         }
@@ -233,6 +251,7 @@ public class ArmoredPot : Pot
             numberOfShotsLanded = 0;
             numberOfBurstsFired++;
         }
+
         IEnumerator LaunchPot()
         {
             float time = 0.0f;
@@ -287,11 +306,21 @@ public class ArmoredPot : Pot
     public class Armored_Charging : State
     {
         private GameObject target = null;
+        private ArmoredPot armoredPot = null;
         private MonoBehaviour monoBehaviour = null;
+
         private bool charging = false;
+        private bool charged = false;
+        private float timer = 0.0f;
+        //private float rotateSpeed = 30.0f;
 
         public override void Enter()
         {
+            if(armoredPot == null)
+            {
+                armoredPot = owner.GetComponent<ArmoredPot>();
+            }
+
             if (target == null)
             {
                 target = GameObject.FindGameObjectWithTag("Player");
@@ -305,14 +334,35 @@ public class ArmoredPot : Pot
 
         public override void Exit()
         {
-
+            charged = false;
+            timer = 0.0f;
         }
 
         public override string Update()
         {
             if (!charging)
             {
-                monoBehaviour.StartCoroutine(Charge());
+                //Transform transform = owner.transform;
+
+                //Quaternion currentRotation = transform.rotation;
+
+                //Vector3 targetPosition = target.transform.position;
+                //Vector3 targetOffset = (new Vector3(Player.Instance.velocity.x, 0.0f, Player.Instance.velocity.z)) * 1.5f;
+                //targetPosition = new Vector3(targetPosition.x, 0.0f, targetPosition.z) + targetOffset;
+
+                //Vector3 targetDirection = (targetPosition - transform.position).normalized;
+
+                //Quaternion desiredRotation = Quaternion.FromToRotation(transform.forward, targetDirection);
+                //Quaternion.RotateTowards(currentRotation, desiredRotation, rotateSpeed * Time.deltaTime);
+                timer += Time.deltaTime;
+                if(timer > 2.5f)
+                {
+                    monoBehaviour.StartCoroutine(Charge());
+                }
+            }
+            else if(charged)
+            {
+                return "ArmoredPot+Armored_Spawning";
             }
             return null;
         }
@@ -325,12 +375,13 @@ public class ArmoredPot : Pot
             //NavMesh.CalculatePath();
             Vector3 targetPosition = target.transform.position;
             navMeshAgent.SetDestination(targetPosition);
-            while (navMeshAgent.remainingDistance < .01f)
+            while ((navMeshAgent.destination - owner.transform.position).magnitude >.01f)
             {
                 yield return null;
             }
 
             charging = false;
+            charged = true;
         }
     }
     #endregion

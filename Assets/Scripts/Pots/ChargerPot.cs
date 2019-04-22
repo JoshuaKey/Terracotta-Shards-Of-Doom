@@ -12,11 +12,10 @@ public class ChargerPot : Pot
     private void Start()
     {
         stateMachine = new StateMachine();
-        stateMachine.Init(gameObject, 
-            new Charger_Idle(), 
+        stateMachine.Init(gameObject,
+            new Charger_Idle(),
             new Charger_Charge(),
             new Charger_Attack());
-        stateMachine.DEBUGGING = true;
     }
 
     //Calls hop when Animate is called. This looks bad but it's the most efficient way to do it
