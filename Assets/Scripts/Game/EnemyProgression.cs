@@ -21,7 +21,7 @@ public class EnemyProgression : MonoBehaviour {
         PlayerHud.Instance.SetEnemyCount(enemiesKilled, enemiesNeeded);
     }
 
-    private void Check() {
+    public void Check() {
         enemiesKilled++;
         if(enemiesKilled >= enemiesNeeded) {
             this.gameObject.SetActive(true);

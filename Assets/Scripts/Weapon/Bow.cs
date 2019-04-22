@@ -22,6 +22,7 @@ public class Bow : Weapon {
     [Header("Visuals")]
     public Arrow ArrowPrefab;
     public Transform ChargedArrowPos;
+    public ArrowPool arrowPool;
 
     // Value between 0 and 1;
     private float charge;
@@ -78,6 +79,8 @@ public class Bow : Weapon {
     public override void Charge() {
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
+            //currArrow = arrowPool.Create();
+            //currArrow.transform.SetParent(this.transform);
         }
 
         charge += Time.deltaTime / ChargeTime;
@@ -95,6 +98,7 @@ public class Bow : Weapon {
 
         float t = Interpolation.QuadraticIn(charge);
         currArrow.Impulse = Mathf.Lerp(MinSpeed, MaxSpeed, t);
+        currArrow.LifeTime = 20f;
         currArrow.Damage = charge == 1 ? MaxDamage : (charge >= BaseChargeTime ? BaseDamage : MinDamage);
         currArrow.Type = this.Type;
         currArrow.Fire();

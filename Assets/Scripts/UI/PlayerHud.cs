@@ -48,9 +48,6 @@ public class PlayerHud : MonoBehaviour {
     public Image[] WeaponWheelButtonImages; // Total of 6
     public int WeaponWheelAmo = 1;
 
-    [Header("Compass")]
-    public GameObject Compass;
-
     [Header("Boss Health Bar")]
     public GameObject BossHealthBar;
     public Slider BossHealthForegroundSlider;
@@ -80,7 +77,7 @@ public class PlayerHud : MonoBehaviour {
 
     // Player Health Bar
     public void EnablePlayerHealthBar() {
-        PlayerHealthBar.gameObject.SetActive(true);
+        PlayerHealthBar.SetActive(true);
     }
     public void SetPlayerHealthBar(float percent) {
         EnablePlayerHealthBar();
@@ -99,7 +96,7 @@ public class PlayerHud : MonoBehaviour {
         StartCoroutine(PlayerHealthRoutine);
     }
     public void DisablePlayerHealthBar() {
-        PlayerHealthBar.gameObject.SetActive(false);
+        PlayerHealthBar.SetActive(false);
     }
 
     // Interact Text
@@ -117,7 +114,7 @@ public class PlayerHud : MonoBehaviour {
 
     // Crosshair
     public void EnableCrosshair() {
-        CrossHair.gameObject.SetActive(true);
+        CrossHair.SetActive(true);
     }
     public void SetCrosshair(Sprite crosshair) {
         EnableCrosshair();
@@ -125,24 +122,24 @@ public class PlayerHud : MonoBehaviour {
         CrossHairBackground.sprite = crosshair;
     }
     public void DisableCrosshair() {
-        CrossHair.gameObject.SetActive(false);
+        CrossHair.SetActive(false);
     }
 
     // Enemy Count
     public void EnableEnemyCount() {
-        EnemyCount.gameObject.SetActive(true);
+        EnemyCount.SetActive(true);
     }
     public void SetEnemyCount(int currEnemyCount, int maxEnemyCount) {
         EnableEnemyCount();
         EnemyCountText.text = currEnemyCount + " / " + maxEnemyCount + " Pots";
     }
     public void DisableEnemyCount() {
-        EnemyCount.gameObject.SetActive(false);
+        EnemyCount.SetActive(false);
     }
 
     // Weapon toggle
     public void EnableWeaponToggle() {
-        WeaponToggle.gameObject.SetActive(true);
+        WeaponToggle.SetActive(true);
     }
     public void SetWeaponToggle(string prevWeapon, string currWeapon, string nextWeapon) {
         EnableWeaponToggle();
@@ -151,12 +148,12 @@ public class PlayerHud : MonoBehaviour {
         PrevWeaponText.text = prevWeapon;
     }
     public void DisableWeaponToggle() {
-        WeaponToggle.gameObject.SetActive(false);
+        WeaponToggle.SetActive(false);
     }
 
     // Weapon Wheel
     public void EnableWeaponWheel() {
-        WeaponWheel.gameObject.SetActive(true);
+        WeaponWheel.SetActive(true);
     }
     public void SetWeaponWheel(string[] weapons) {
         // Supplies Images and Weapon Wheel dynamically arranges them in a circle.
@@ -226,23 +223,12 @@ public class PlayerHud : MonoBehaviour {
         eventSystem.SetSelectedGameObject(obj);
     }
     public void DisableWeaponWheel() {
-        WeaponWheel.gameObject.SetActive(false);
-    }
-
-    // Compass
-    public void EnableCompass() {
-
-    }
-    public void SetCompass() {
-
-    }
-    public void DisableCompass() {
-
+        WeaponWheel.SetActive(false);
     }
 
     // Boss Health Bar
     public void EnableBossHealthBar() {
-        BossHealthBar.gameObject.SetActive(true);
+        BossHealthBar.SetActive(true);
     }
     public void SetBossHealthBar(float percent) {
         EnableBossHealthBar();
@@ -259,7 +245,7 @@ public class PlayerHud : MonoBehaviour {
         StartCoroutine(BossHealthRoutine);
     }
     public void DisableBossHealthBar() {
-        BossHealthBar.gameObject.SetActive(false);
+        BossHealthBar.SetActive(false);
     }
 
     public IEnumerator SliderTransition(Slider slider, float value) {

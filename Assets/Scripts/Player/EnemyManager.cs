@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour {
@@ -39,6 +40,21 @@ public class EnemyManager : MonoBehaviour {
         print(EnemyManager.Instance.GetEnemiesKilled() + " Enemies Killed");
     }
 
+    public Enemy GetClosestEnemy(Vector3 pos) {
+        var activeEnemies = enemies.Where(e => e.gameObject.activeInHierarchy);
+        var distances = enemies.Select(e => (e.transform.position - pos).sqrMagnitude);
+
+        float currMin = float.MaxValue;
+        int currIndex = -1;
+        for(int i = 0; i < distances.Count(); i++) {
+            if(distances.ElementAt(i) < currMin) {
+                currMin = distances.ElementAt(i);
+                currIndex = i;
+            }
+        }
+
+        return activeEnemies.ElementAt(currIndex);
+    }
     public Enemy GetEnemy(int index) {
         if (index < 0 || index >= enemies.Count) { return null; }
         return enemies[index];

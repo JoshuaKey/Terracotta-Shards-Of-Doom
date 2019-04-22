@@ -17,7 +17,6 @@ public class EnemyCountProgression : MonoBehaviour {
 
     public void Check() {
         if(EnemyManager.Instance.GetEnemiesKilled() >= EnemyCount) {
-            print(this.name + " Has Spawned!");
             this.gameObject.SetActive(true);
         }
 

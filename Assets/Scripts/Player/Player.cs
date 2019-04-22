@@ -38,6 +38,7 @@ public class Player : MonoBehaviour {
     [Header("Interact")]
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
+    public CompassPot compass;
     public bool CanInteract = true;
 
     public static Player Instance;
@@ -48,10 +49,11 @@ public class Player : MonoBehaviour {
     public Vector3 rotation = Vector3.zero;
     [HideInInspector]
     public List<Weapon> weapons = new List<Weapon>();
+    [HideInInspector]
+    public int layerMask;
 
     private new Collider collider;
     private CharacterController controller;
-    private int playerLayerMask;
     private Vector2 weaponWheelRotation = Vector2.zero;
 
     void Start() {
@@ -80,7 +82,7 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.DisableWeaponToggle();
 
         // Physics
-        playerLayerMask = 1 << this.gameObject.layer;
+        layerMask = 1 << this.gameObject.layer;
 
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
@@ -146,6 +148,7 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
+        // Check for Weapon Swap
         if(CanSwapWeapon) {
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
@@ -190,7 +193,7 @@ public class Player : MonoBehaviour {
                     SwapWeapon(index);
                 }
             }
-        }   
+        }
 
         // Check for Attack
         if (CanAttack) {
@@ -212,25 +215,46 @@ public class Player : MonoBehaviour {
         }
     }
     public void UpdateInteractable() {
-        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
 
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
-            Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
-            if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
+        // Check for Compass
+        {
+            if (InputManager.GetButtonDown("Compass")) {
+                compass.Enable(-camera.transform.forward);
+            } 
+            else if (InputManager.GetButton("Compass")) {
+                Enemy closestEnemy = EnemyManager.Instance.GetClosestEnemy(this.transform.position);
+                Vector3 dir = closestEnemy.transform.position - this.transform.position;
+                dir = dir.normalized;
+                print("Enemy Dir: " + dir);
+                compass.UpdateDirection(dir);
+            } 
+            else if (InputManager.GetButtonUp("Compass")) {
+                compass.Disable();
+            }
+        }
 
-            if (interactable.CanInteract) {
-                PlayerHud.Instance.SetInteractText("f", interactable.name);
+        // Check for interactable
+        {
+            Ray ray = new Ray(camera.transform.position, camera.transform.forward);
 
-                if (InputManager.GetButtonDown("Interact")) {
-                    interactable.Interact();
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
+                Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
+                if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
+
+                if (interactable.CanInteract) {
+                    PlayerHud.Instance.SetInteractText("f", interactable.name);
+
+                    if (InputManager.GetButtonDown("Interact")) {
+                        interactable.Interact();
+                    }
+                } else {
+                    PlayerHud.Instance.DisableInteractText();
                 }
+
             } else {
                 PlayerHud.Instance.DisableInteractText();
             }
-
-        } else {
-            PlayerHud.Instance.DisableInteractText();
         }
     }
 
@@ -332,7 +356,7 @@ public class Player : MonoBehaviour {
         newWeapon.transform.SetParent(camera.transform, false);
 
         int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count : CurrWeaponIndex - 1;
+        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
