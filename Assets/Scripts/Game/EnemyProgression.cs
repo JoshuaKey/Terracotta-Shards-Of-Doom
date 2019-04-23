@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyProgression : MonoBehaviour {
 
     [Header("Enemies")]
+    public bool UseAllEnemies = true;
     public Enemy[] Enemies;
     public int KillsNeeded;
 
@@ -17,8 +18,12 @@ public class EnemyProgression : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        for(int i = 0; i < Enemies.Length; i++) {
-            Enemies[i].health.OnDeath += OnEnemyDeath;
+        if (UseAllEnemies) {
+            EnemyManager.Instance.OnEnemyDeath += OnEnemyDeath;
+        } else {
+            for (int i = 0; i < Enemies.Length; i++) {
+                Enemies[i].health.OnDeath += OnEnemyDeath;
+            }
         }
 
         ProgressionObject.SetActive(!SetActive);
