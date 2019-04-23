@@ -158,9 +158,13 @@ public class StateMachine
         curState.Peek().Enter();
     }
 
-    public State GetCurrState()
+    public State GetCurrState() 
     {
         return curState.Peek();
+    }
+    public string GetCurrentState()
+    {
+        return curState.ToString();
     }
 }
 

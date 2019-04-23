@@ -15,8 +15,8 @@ public class ChargerPot : Pot
     private void Start()
     {
         stateMachine = new StateMachine();
-        stateMachine.Init(gameObject, 
-            new Charger_Idle(), 
+        stateMachine.Init(gameObject,
+            new Charger_Idle(),
             new Charger_Charge(),
             new Charger_Attack());
         stateMachine.DEBUGGING = false;
@@ -84,7 +84,8 @@ public class Charger_Charge : State
     { }
 
     public override void Exit()
-    { }
+    {
+    }
 
     //if the distance to player is greater than aggroRadius, stop running at player
     public override string Update()

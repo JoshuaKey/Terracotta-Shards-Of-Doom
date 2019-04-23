@@ -215,10 +215,8 @@ public class Player : MonoBehaviour {
         }
     }
     public void UpdateInteractable() {
-
         // Check for Compass
         {
-
             if (InputManager.GetButtonDown("Compass")) {
                 compass.Activate(-camera.transform.forward);
             } 
@@ -235,10 +233,10 @@ public class Player : MonoBehaviour {
             }
         }
 
+
         // Check for interactable
         {
             Ray ray = new Ray(camera.transform.position, camera.transform.forward);
-
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
                 Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
