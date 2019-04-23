@@ -18,12 +18,16 @@ public class EnemyManager : MonoBehaviour {
 
     public Action OnEnemyDeath;
 
+    public EnemyProgression MainProgression;
+
     // Start is called before the first frame update
     void Awake() {
         if (Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
     }
     void Start() {
+        if (MainProgression == null) { MainProgression = GetComponentInChildren<EnemyProgression>(true); }
+
         Enemy[] enemiesArray = GameObject.FindObjectsOfType<Enemy>();
 
         enemies.AddRange(enemiesArray);

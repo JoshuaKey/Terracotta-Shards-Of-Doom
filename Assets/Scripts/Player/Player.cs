@@ -218,18 +218,20 @@ public class Player : MonoBehaviour {
 
         // Check for Compass
         {
+
             if (InputManager.GetButtonDown("Compass")) {
-                compass.Enable(-camera.transform.forward);
+                compass.Activate(-camera.transform.forward);
             } 
-            else if (InputManager.GetButton("Compass")) {
-                Enemy closestEnemy = EnemyManager.Instance.GetClosestEnemy(this.transform.position);
-                Vector3 dir = closestEnemy.transform.position - this.transform.position;
+            else if (compass.gameObject.activeInHierarchy) {
+                Transform target;
+                if (EnemyManager.Instance.MainProgression.IsComplete()) {
+                    target = EnemyManager.Instance.MainProgression.ProgressionObject.transform;
+                } else {
+                    target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
+                }
+                Vector3 dir = target.position - this.transform.position;
                 dir = dir.normalized;
-                print("Enemy Dir: " + dir);
-                compass.UpdateDirection(dir);
-            } 
-            else if (InputManager.GetButtonUp("Compass")) {
-                compass.Disable();
+                compass.SetDirection(dir);
             }
         }
 

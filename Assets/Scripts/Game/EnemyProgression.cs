@@ -4,30 +4,47 @@ using UnityEngine;
 
 public class EnemyProgression : MonoBehaviour {
 
+    [Header("Enemies")]
     public Enemy[] Enemies;
+    public int KillsNeeded;
 
-    private int enemiesKilled = 0;
-    private int enemiesNeeded = 0;
+    [Header("Object")]
+    public GameObject ProgressionObject;
+    public bool SetActive = true;
+    public bool UseHud = false;
+
+    private int currKills = 0;
 
     // Start is called before the first frame update
     void Start() {
         for(int i = 0; i < Enemies.Length; i++) {
-            Enemies[i].health.OnDeath += Check;
+            Enemies[i].health.OnDeath += OnEnemyDeath;
         }
-        enemiesNeeded = Enemies.Length;
 
-        this.gameObject.SetActive(false);
+        ProgressionObject.SetActive(!SetActive);
 
-        PlayerHud.Instance.SetEnemyCount(enemiesKilled, enemiesNeeded);
+        if (UseHud) {
+            PlayerHud.Instance.SetEnemyCount(currKills, KillsNeeded);
+        }   
+    }
+
+    private void OnEnemyDeath() {
+        currKills++;
+        Check();
     }
 
     public void Check() {
-        enemiesKilled++;
-        if(enemiesKilled >= enemiesNeeded) {
-            this.gameObject.SetActive(true);
+        if(IsComplete()) {
+            ProgressionObject.SetActive(SetActive);
         }
 
-        PlayerHud.Instance.SetEnemyCount(enemiesKilled, enemiesNeeded);
+        if (UseHud) {
+            PlayerHud.Instance.SetEnemyCount(currKills, KillsNeeded);
+        }
+    }
+
+    public bool IsComplete() {
+        return currKills >= KillsNeeded;
     }
 
 }

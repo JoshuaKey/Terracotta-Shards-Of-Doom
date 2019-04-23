@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CompassPot : MonoBehaviour {
 
+    [Header("Timer")]
+    public float ActiveTime = 5.0f;
+    public float CooldownTime = 5.0f;
+
     [Header("Moving")]
     public float Speed = 5;
     public float Distance = 2;
@@ -17,6 +21,7 @@ public class CompassPot : MonoBehaviour {
     public float BobSpeed = 3f;
     public float BobDistance = 1f;
 
+    private string state;
     private IEnumerator routine;
     private float baseY;
 
@@ -25,29 +30,40 @@ public class CompassPot : MonoBehaviour {
 
     private Vector3 dir;
 
+    private float nextActiveTime;
+
     private void Start() {
         baseY = this.transform.localPosition.y;
         this.gameObject.SetActive(false);
     }
 
-    public void Enable(Vector3 moveDir) {
-        this.gameObject.SetActive(true);
-        this.dir = moveDir;
+    public void Activate(Vector3 moveDir) {
+        if (Time.time >= nextActiveTime) {
+            this.gameObject.SetActive(true);
+            this.dir = moveDir;
 
+            StartCoroutine(ActivateAbility());
+
+            nextActiveTime = Time.time + ActiveTime + CooldownTime;
+        }
+    }
+
+    public void SetDirection(Vector3 dir) {
+        this.dir = dir;
+    }
+
+    private void Enable() {
         if (routine != null) {
             StopCoroutine(routine);
+            if (state != "") {
+                dir = this.transform.localPosition.normalized;
+            }
         }   
 
-        routine = Move(moveDir * Distance, false);
+        routine = Move(dir * Distance, false);
         StartCoroutine(routine);
     }
-    public void UpdateDirection(Vector3 faceDir) {
-        this.gameObject.SetActive(true);
-        this.dir = faceDir;
-    }
-    public void Disable() {
-        this.gameObject.SetActive(true);
-
+    private void Disable() {
         if (routine != null) {
             StopCoroutine(routine);
         }
@@ -56,10 +72,17 @@ public class CompassPot : MonoBehaviour {
         StartCoroutine(routine);
     }
 
+    private IEnumerator ActivateAbility() {
+        Enable();
+        yield return new WaitForSeconds(ActiveTime);
+        Disable();
+    }
+
     private IEnumerator Move(Vector3 dest, bool disable) {
         Vector3 pos = this.transform.localPosition;
         while (!IsCloseTo(pos, dest)) {
-            print("Moving ");
+            print("Moving");
+            state = "Move";
             pos = this.transform.localPosition;
 
             // Moving
@@ -78,6 +101,7 @@ public class CompassPot : MonoBehaviour {
         if (disable) {
             routine = null;
             this.gameObject.SetActive(false);
+            state = "";
         } else {
             routine = Rotate();
             StartCoroutine(routine);
@@ -91,15 +115,18 @@ public class CompassPot : MonoBehaviour {
 
             if (dir == Vector3.zero) {
                 print("Circling");
+                state = "Circle";
 
                 pos = Quaternion.Euler(RotateSpeed * Time.deltaTime, 0, 0) * pos;
                 pos.y = baseY + Bob(BobSpeed, BobDistance);
             } else if(IsCloseTo(pos, dest)) {
                 print("Bobing");
+                state = "Bob";
 
                 pos.y = baseY + Bob(BobSpeed, BobDistance);
             } else {
                 print("Rotating");
+                state = "Rotate";
 
                 Vector3 posDir = this.transform.localPosition.normalized;
                 pos = Vector3.RotateTowards(posDir, dir, RotateSpeed * Time.deltaTime, 0.0f);
@@ -118,12 +145,8 @@ public class CompassPot : MonoBehaviour {
         bobDist = Mathf.Lerp(bobDist, distance, Time.deltaTime);
         return Mathf.Sin(bobTimer) * bobDist;
     }
-    private bool IsCloseTo(Vector3 pos, Vector3 point, float e = .5f) {
+    private bool IsCloseTo(Vector3 pos, Vector3 point, float e = .1f) {
         pos.y = point.y = 0.0f;
         return (point - pos).sqrMagnitude <= e * e;
-    }
-
-    private void OnGUI() {
-        GUI.Label(new Rect(330, 10, 150, 20), "Pos: " + this.transform.position);
     }
 }
