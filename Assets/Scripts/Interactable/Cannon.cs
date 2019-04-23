@@ -144,13 +144,19 @@ public class Cannon : MonoBehaviour {
     }
 
     public IEnumerator Shoot(Player player) {
+
+
         Transform oldParent = player.transform.parent;
         Quaternion oldRot = player.transform.localRotation;
+        DamageType resistance = player.health.Resistance;
 
         player.transform.position = Barrel.transform.position;
         player.transform.SetParent(Barrel.transform, true);
         player.transform.up = Barrel.transform.forward;
         player.LookTowards(Barrel.transform.forward);
+
+        // Immune to all...
+        player.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
 
         player.CanWalk = false;
         player.CanMove = false;
@@ -201,6 +207,7 @@ public class Cannon : MonoBehaviour {
         player.CanMove = true;
         player.transform.SetParent(oldParent, true);
         player.transform.localRotation = oldRot;
+        player.health.Resistance = resistance;
     }
 
     [ContextMenu("Find Mid Point")]
