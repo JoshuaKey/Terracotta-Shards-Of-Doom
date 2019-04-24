@@ -34,6 +34,8 @@ public class Bow : Weapon {
     protected void Start() {
         CanCharge = true;
         Type = DamageType.BASIC;
+
+        this.name = "Bow";
     }
 
     private void Update() {

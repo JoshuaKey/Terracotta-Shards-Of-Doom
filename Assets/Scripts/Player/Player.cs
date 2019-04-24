@@ -79,7 +79,13 @@ public class Player : MonoBehaviour {
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
-        PlayerHud.Instance.DisableWeaponToggle();
+        if (weapons.Count > 1) {
+            PlayerHud.Instance.EnableWeaponToggle();
+            CanSwapWeapon = true;
+        } else {       
+            PlayerHud.Instance.DisableWeaponToggle();
+            CanSwapWeapon = false;
+        }  
 
         // Physics
         layerMask = 1 << this.gameObject.layer;

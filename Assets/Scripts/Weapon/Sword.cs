@@ -7,14 +7,10 @@ public class Sword : Weapon {
     protected new Rigidbody rigidbody;
     protected new Collider collider;
 
-    //private bool isSwinging = false;
     private List<GameObject> enemiesHit = new List<GameObject>();
 
     protected void Start() {
-        collider = GetComponent<Collider>();
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
-
-        rigidbody = GetComponent<Rigidbody>();
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
 
         collider.enabled = false;
