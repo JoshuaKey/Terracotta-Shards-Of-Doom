@@ -6,10 +6,11 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour {
 
-    //public Enemy PotPrefab;
-    //public Enemy ChargerPotPrefab;
-    //public Enemy RunnerPotPrefab;
-    //public Enemy ArmorPotPrefab;
+    public Enemy PotPrefab;
+    public Enemy ChargerPotPrefab;
+    public Enemy RunnerPotPrefab;
+    public Enemy ArmorPotPrefab;
+    public Enemy HealthPotPrefab;
 
     public static EnemyManager Instance;
 
@@ -38,6 +39,29 @@ public class EnemyManager : MonoBehaviour {
         }
     }
 
+    private Enemy SpawnPrefab(Enemy prefab) {
+        Enemy enemy = GameObject.Instantiate(prefab);
+        enemy.transform.parent = this.transform;
+        enemies.Add(enemy);
+        return enemy;
+    }
+
+    public Enemy SpawnPot() {
+        return SpawnPrefab(PotPrefab);
+    }
+    public Enemy SpawnHealthPot() {
+        return SpawnPrefab(HealthPotPrefab);
+    }
+    public Enemy SpawnRunnerPot() {
+        return SpawnPrefab(RunnerPotPrefab);
+    }
+    public Enemy SpawnChargerPot() {
+        return SpawnPrefab(ChargerPotPrefab);
+    }
+    public Enemy SpawnArmorPot() {
+        return SpawnPrefab(ArmorPotPrefab);
+    }
+
     private void EnemyDeath() {
         enemiesKilled++;
         OnEnemyDeath?.Invoke();
@@ -62,6 +86,9 @@ public class EnemyManager : MonoBehaviour {
     public Enemy GetEnemy(int index) {
         if (index < 0 || index >= enemies.Count) { return null; }
         return enemies[index];
+    }
+    public int GetEnemyCount() {
+        return enemies.Count();
     }
     public int GetEnemiesKilled() {
         return enemiesKilled;

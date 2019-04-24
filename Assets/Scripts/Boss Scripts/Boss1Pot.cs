@@ -29,6 +29,7 @@ public class Boss1Pot : Pot
     {
         if (enemy == null) { enemy = GetComponentInChildren<Enemy>(true); }
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.avoidancePriority = 0;
 
         gameObject.tag = "Boss";
 
@@ -44,6 +45,7 @@ public class Boss1Pot : Pot
 
         enemy.health.OnDamage += ChangeHealthUI;
         enemy.health.OnDamage += ChangePhase;
+        enemy.health.OnDeath += OnDeath;
         ChangeHealthUI(0);
     }
 
@@ -57,24 +59,38 @@ public class Boss1Pot : Pot
         PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
     }
 
+    private void OnDeath() {
+        PlayerHud.Instance.DisableBossHealthBar();
+        //int enemyCount = EnemyManager.Instance.GetEnemyCount();
+        //for(int i = 0; i < enemyCount; i++) {
+        //    Enemy enemy = EnemyManager.Instance.GetEnemy(i);
+        //    if(enemy.gameObject != this.gameObject) {
+        //        enemy.health.TakeDamage(DamageType.TRUE, enemy.health.CurrentHealth);
+        //    }
+        //}
+    }
+
     private void ChangePhase(float val) 
     {
-        // Phase 1
-        if (GetArmor() > 0) {
+        // Phase 2
+        if (GetArmor() <= 0) {
+            enemy.health.Resistance = Phase2Resistance;
+            enemy.health.OnDamage -= ChangePhase;
+        }
+
+        // Phase 1 - Remove Armor
+        while (GetArmor() < ArmorPieces.Count) {
             int index = (int)(Random.value * ArmorPieces.Count);
             Rigidbody armor = ArmorPieces[index];
             armor.isKinematic = false;
             armor.transform.parent = null;
             ArmorPieces.RemoveAt(index);
-        } else { // Phase 2
-            enemy.health.Resistance = Phase2Resistance;
-            enemy.health.OnDamage -= ChangePhase;
         }
     }
 
     public float GetArmor() 
     {
-        return Mathf.Max(enemy.health.CurrentHealth - Phase2Health / Phase1Health, 0);
+        return Mathf.Max(enemy.health.CurrentHealth - Phase2Health, 0);
     }
 
     #region Boss States
@@ -162,14 +178,33 @@ public class Boss1Pot : Pot
             numberOfShotsFired++;
 
             float time = 0;
-            //TODO: Change to pick a random object
-            GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
+
+            int type = Random.Range(0, 3);
+            Enemy enemy = null;
+            switch (type) {
+                case 0:
+                    enemy = EnemyManager.Instance.SpawnPot();
+                    break;
+                case 1:
+                    enemy = EnemyManager.Instance.SpawnHealthPot();
+                    break;
+                case 2:
+                    enemy = EnemyManager.Instance.SpawnChargerPot();
+                    break;
+                case 3:
+                    enemy = EnemyManager.Instance.SpawnRunnerPot();
+                    break;
+            }
 
             NavMeshAgent navAgent = enemy.GetComponent<NavMeshAgent>();
-            navAgent.enabled = false;
+            if(navAgent != null) {
+                navAgent.enabled = false;
+            }      
 
             Pot pot = enemy.GetComponent<Pot>();
-            pot.enabled = false;
+            if (pot != null) {
+                pot.enabled = false;
+            }
 
             Player player = Player.Instance;
 
@@ -190,14 +225,19 @@ public class Boss1Pot : Pot
             {
                 time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.5f);
                 Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time / 1.5f);
+                // pos is NaN
                 enemy.transform.position = newPosition;
 
                 yield return null;
             }
 
-            navAgent.enabled = true;
-
-            pot.enabled = true;
+            if (navAgent != null) {
+                navAgent.enabled = true;
+            }
+            
+            if(pot != null) {
+                pot.enabled = true;
+            }           
             numberOfShotsLanded++;
             firing = false;
         }
@@ -292,14 +332,32 @@ public class Boss1Pot : Pot
         {
             float time = 0.0f;
 
-            //TODO: Change to pick a random object
-            GameObject enemy = GameObject.Instantiate<GameObject>(SpawnableObjects[0]);
+            int type = Random.Range(0, 3);
+            Enemy enemy = null;
+            switch (type) {
+                case 0:
+                    enemy = EnemyManager.Instance.SpawnPot();
+                    break;
+                case 1:
+                    enemy = EnemyManager.Instance.SpawnHealthPot();
+                    break;
+                case 2:
+                    enemy = EnemyManager.Instance.SpawnChargerPot();
+                    break;
+                case 3:
+                    enemy = EnemyManager.Instance.SpawnRunnerPot();
+                    break;
+            }
 
             NavMeshAgent navAgent = enemy.GetComponent<NavMeshAgent>();
-            navAgent.enabled = false;
+            if (navAgent != null) {
+                navAgent.enabled = false;
+            }
 
             Pot pot = enemy.GetComponent<Pot>();
-            pot.enabled = false;
+            if (pot != null) {
+                pot.enabled = false;
+            }
 
             Vector3 startPosition = AISpawnPoint.position;
             Vector2 direction = Vector2.zero;
@@ -331,9 +389,13 @@ public class Boss1Pot : Pot
                 yield return null;
             }
 
-            navAgent.enabled = true;
-            
-            pot.enabled = true;
+            if (navAgent != null) {
+                navAgent.enabled = true;
+            }
+
+            if (pot != null) {
+                pot.enabled = true;
+            }
 
             numberOfShotsLanded++;
         }

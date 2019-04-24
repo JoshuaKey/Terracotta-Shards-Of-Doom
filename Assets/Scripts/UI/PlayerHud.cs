@@ -196,8 +196,6 @@ public class PlayerHud : MonoBehaviour {
                     text.transform.localRotation = Quaternion.Euler(rot);
                     
                     Vector3 pos = Quaternion.Euler(0, 0, -rotIncrease / 2f) * new Vector3(0, 100, 0);
-                    print(pos);
-                    print(rotIncrease / 2f);
                     text.rectTransform.localPosition = pos;
                 }
 

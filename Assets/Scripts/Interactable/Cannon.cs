@@ -63,16 +63,12 @@ public class Cannon : MonoBehaviour {
 
         Target = target == null ? Target : target;
         Peak = peak == null ? Peak : peak;
-
-        print("Here");
     }
 
     private IEnumerator Rotate(Vector3 newTarget, Vector3 newPeak) {
         aligning = true;
         Vector3 oldTarget = Target.position;
         Vector3 oldPeak = Peak.position;
-
-        print("Here2");
 
         Vector3 oldBaseDir = oldTarget - Base.transform.position;
         oldBaseDir.y = 0.0f;
@@ -92,7 +88,6 @@ public class Cannon : MonoBehaviour {
                 Vector3 baseDir = Vector3.Lerp(oldBaseDir, newBaseDir, t);
 
                 Base.transform.forward = baseDir;
-                print("Here4");
                 yield return null;
             }
             Base.transform.forward = newBaseDir;
@@ -113,16 +108,12 @@ public class Cannon : MonoBehaviour {
                 Vector3 barrelDir = Vector3.Lerp(oldBarrelDir, newBarrelDir, t);
 
                 Barrel.transform.forward = barrelDir;
-                print("Here5");
                 yield return null;
             }
             Barrel.transform.forward = newBarrelDir;
         }
 
         aligning = false;
-
-        print("Here3");
-
     }
 
     private void Align(Vector3 target, Vector3 peak) {
@@ -144,8 +135,6 @@ public class Cannon : MonoBehaviour {
     }
 
     public IEnumerator Shoot(Player player) {
-
-
         Transform oldParent = player.transform.parent;
         Quaternion oldRot = player.transform.localRotation;
         DamageType resistance = player.health.Resistance;
@@ -220,8 +209,10 @@ public class Cannon : MonoBehaviour {
     public void Explosion(Vector3 pos) {
         Collider[] colliders = Physics.OverlapSphere(pos, RadiusSize, EnemyLayer);
         foreach(Collider other in colliders) {
-            Enemy enemy = other.GetComponent<Enemy>();
+            Enemy enemy = other.GetComponentInChildren<Enemy>();
+            if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
             if (enemy != null) {
+                print("Cannon hit " + other.name + " or " + enemy.name);
                 enemy.health.TakeDamage(DamageType.EXPLOSIVE, this.Damage);
                 //OnEnemyHit?.Invoke(enemy);
             }

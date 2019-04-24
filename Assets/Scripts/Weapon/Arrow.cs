@@ -39,7 +39,8 @@ public class Arrow : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
-        Enemy enemy = other.GetComponent<Enemy>();
+        Enemy enemy = other.GetComponentInChildren<Enemy>();
+        if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
             enemy.health.TakeDamage(this.Type, this.Damage);
             //OnEnemyHit?.Invoke(enemy);
