@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Spear : Weapon {
 
+    [Header("Swing Animation")]
+    public Vector3 StartPos = new Vector3(0.4f, -1, 0.77f);
+    public Vector3 EndPos = new Vector3(0.4f, -1, 0.77f);
+    public float AnimationSwingTime;
+
+    [Header("Recoil Animation")]
+    public Vector3 StartRot = Vector3.zero;
+    public Vector3 EndRot = new Vector3(120, 0, 0);
+    public float AnimationRecoilTime;
+
     protected new Rigidbody rigidbody;
     protected new Collider collider;
 
@@ -23,8 +33,8 @@ public class Spear : Weapon {
 
     private void OnDisable() {
         StopAllCoroutines();
-        //this.transform.localPosition = new Vector3(0.5f, -0.25f, 0.777f);
-        //this.transform.localRotation = Quaternion.Euler(new Vector3(0, 45, -10));
+        this.transform.localPosition = StartPos;
+        this.transform.localRotation = Quaternion.Euler(StartRot);
     }
 
     public override void Attack() {
@@ -40,7 +50,8 @@ public class Spear : Weapon {
 
     protected void OnTriggerEnter(Collider other) {
         if (!enemiesHit.Contains(other.gameObject)) {
-            Enemy enemy = other.GetComponent<Enemy>();
+            Enemy enemy = other.GetComponentInChildren<Enemy>();
+            if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
             if (enemy != null) {
                 enemiesHit.Add(other.gameObject);
 
@@ -56,8 +67,6 @@ public class Spear : Weapon {
                         enemy.Knockback(forward * Knockback);
                     }
                 }
-
-                //OnEnemyHit?.Invoke(enemy);
             }
         }
     }

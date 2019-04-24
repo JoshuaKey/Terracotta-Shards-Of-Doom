@@ -15,7 +15,6 @@ public class Weapon : MonoBehaviour {
     [Header("Damage")]
     public float Damage;
     public float Knockback;
-    public LayerMask AttackLayer;
 
     //public delegate void EnemyAction(Enemy enemy);
     //public EnemyAction OnEnemyHit;

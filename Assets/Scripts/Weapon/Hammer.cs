@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class Hammer : Weapon {
 
-    //protected new Rigidbody rigidbody;
-    //protected new Collider collider;
+    [Header("Slam")]
+    public Transform SlamCenter;
+    public float SlamRadius;
 
-    private List<GameObject> enemiesHit = new List<GameObject>();
+    [Header("Swing Animation")]
+    public Vector3 StartPos = new Vector3(0.4f, -1, 0.77f);
+    public Vector3 EndPos = new Vector3(0.4f, -1, 0.77f);
+    public float AnimationSwingTime;
+    public float PlayerJump = 10;
+
+    [Header("Recoil Animation")]
+    public Vector3 StartRot = Vector3.zero;
+    public Vector3 EndRot = new Vector3(120, 0, 0);
+    public float AnimationRecoilTime;
 
     void Start() {
-        //if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
-        //if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
-
-        //collider.enabled = false;
-
         CanCharge = false;
         Type = DamageType.BASIC;
 
@@ -23,8 +28,8 @@ public class Hammer : Weapon {
 
     private void OnDisable() {
         StopAllCoroutines();
-        //this.transform.localPosition = new Vector3(0.5f, -0.25f, 0.777f);
-        //this.transform.localRotation = Quaternion.Euler(new Vector3(0, 45, -10));
+        this.transform.localPosition = StartPos;
+        this.transform.localRotation = Quaternion.Euler(StartRot);
     }
 
     public override void Attack() {
@@ -35,29 +40,61 @@ public class Hammer : Weapon {
     }
 
     private IEnumerator Slam() {
-        yield return null;
+        Player.Instance.CanWalk = false;
+        //Player.Instance.CanMove = false;
+        Quaternion StartRotQuat = Quaternion.Euler(StartRot);
+        Quaternion EndRotQuat = Quaternion.Euler(EndRot);
+
+        // Swing
+        float startTime = Time.time;
+        while (Time.time < startTime + AnimationSwingTime) {
+            float t = (Time.time - startTime) / AnimationSwingTime;
+            t = Interpolation.ExpoIn(t);
+            this.transform.localPosition = Vector3.LerpUnclamped(StartPos, EndPos, t);
+            this.transform.localRotation = Quaternion.SlerpUnclamped(StartRotQuat, EndRotQuat, t);
+            yield return null;
+        }
+        this.transform.localPosition = EndPos;
+        this.transform.localRotation = EndRotQuat;
+
+        SlamAttack();
+        Player.Instance.CanWalk = true;
+
+        // Recoil
+        startTime = Time.time;
+        while (Time.time < startTime + AnimationRecoilTime) {
+            float t = (Time.time - startTime) / AnimationRecoilTime;
+
+            this.transform.localPosition = Vector3.LerpUnclamped(EndPos, StartPos, t);
+            this.transform.localRotation = Quaternion.SlerpUnclamped(EndRotQuat, StartRotQuat, t);
+            yield return null;
+        }
+
+        this.transform.localPosition = StartPos;
+        this.transform.localRotation = StartRotQuat;
     }
 
-    protected void OnTriggerEnter(Collider other) {
-        if (!enemiesHit.Contains(other.gameObject)) {
-            Enemy enemy = other.GetComponent<Enemy>();
-            if (enemy != null) {
-                enemiesHit.Add(other.gameObject);
+    private void SlamAttack() {
+        Player.Instance.velocity.y = PlayerJump;
 
+        int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
+        Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
+        foreach (Collider c in colliders) {
+            Enemy enemy = c.GetComponentInChildren<Enemy>();
+            if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
+            if (enemy != null) {
                 float damage = enemy.health.TakeDamage(this.Type, this.Damage);
                 bool isDead = enemy.health.IsDead();
                 if (damage > 0) {
                     if (isDead) {
                         //print("Explode");
                     } else {
-                        Vector3 forward = Player.Instance.camera.transform.forward;
-                        forward.y = 0.0f;
-                        forward = forward.normalized;
-                        enemy.Knockback(forward * Knockback);
+                        Vector3 dir = c.transform.position - SlamCenter.position;
+                        dir.y = 0.0f;
+                        dir = dir.normalized;
+                        enemy.Knockback(dir * Knockback);
                     }
                 }
-
-                //OnEnemyHit?.Invoke(enemy);
             }
         }
     }
