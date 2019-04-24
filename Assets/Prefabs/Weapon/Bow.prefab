@@ -79,6 +79,7 @@ MonoBehaviour:
   Type: 0
   AttackSpeed: 0
   Damage: 2
+  Knockback: 0
   AttackLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -93,6 +94,7 @@ MonoBehaviour:
   MaxDamage: 3
   ArrowPrefab: {fileID: 875288165, guid: 949b54f69f15f6b4fbf0706d8c42ef7e, type: 3}
   ChargedArrowPos: {fileID: 573013029372495927}
+  arrowPool: {fileID: 0}
 --- !u!1 &3726514527976388611
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +152,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+  - {fileID: 2100000, guid: 3836a6e58b9c3d84b86dcc277d5ee862, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
