@@ -23,7 +23,7 @@ public class ArenaDoor : MonoBehaviour
 		{
 			float currentY = this.transform.position.y;
 			//lerpChange = Mathf.Clamp01(lerpChange + Time.deltaTime);
-			float newY = Mathf.Lerp(currentY, upperPosition, Time.deltaTime);
+			float newY = Mathf.Lerp(currentY, upperPosition, Time.deltaTime*2);
 			this.transform.position = new Vector3(this.transform.position.x, newY, this.transform.position.z);
 			if(newY == upperPosition)
 			{

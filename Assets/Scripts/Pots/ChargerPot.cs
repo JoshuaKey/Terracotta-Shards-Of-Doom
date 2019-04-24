@@ -5,9 +5,12 @@ using UnityEngine;
 public class ChargerPot : Pot
 {
     [SerializeField] public float aggroRadius = 5f;
-    [SerializeField] public float attackRadius = 3f;
+    [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
     [SerializeField] public float attackAngle = 70f;
+
+    [HideInInspector] public bool isAttacking = false;
+    [HideInInspector] public bool hasHitPlayer = false;
 
     private void Start()
     {
@@ -15,8 +18,8 @@ public class ChargerPot : Pot
         stateMachine.Init(gameObject,
             new Charger_Idle(),
             new Charger_Charge(),
-            new Charger_Attack(attackDuration));
-        stateMachine.DEBUGGING = true;
+            new Charger_Attack());
+        stateMachine.DEBUGGING = false;
     }
 
     //Calls hop when Animate is called. This looks bad but it's the most efficient way to do it
@@ -24,9 +27,16 @@ public class ChargerPot : Pot
     {
         Hop();
 
-        if(gameObject.name == "Charger Pot Variant")
+        if(gameObject.name == "Charger Pot Variant" && stateMachine.DEBUGGING)
         {
             Debug.Log(Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position));
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag(Game.Instance.PlayerTag) && isAttacking && !hasHitPlayer) {
+            hasHitPlayer = true;
+            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
         }
     }
 }
@@ -93,7 +103,8 @@ public class Charger_Charge : State
             return "PUSH.Charger_Attack";
         }
 
-        if (agent.isActiveAndEnabled) {
+        if (agent.isActiveAndEnabled) 
+        {
             agent.SetDestination(player.transform.position);
         }
 
@@ -104,9 +115,7 @@ public class Charger_Charge : State
 public class Charger_Attack : TimedState
 {
     GameObject player;
-
-    public Charger_Attack(float seconds) : base(seconds)
-    { }
+    ChargerPot cp;
 
     public override void Init(GameObject owner)
     {
@@ -120,18 +129,32 @@ public class Charger_Attack : TimedState
         {
             player = GameObject.FindGameObjectWithTag("Player");
         }
+        if(cp == null) 
+        {
+            cp = owner.GetComponent<ChargerPot>();
+        }
+        timer = 0;
+        cp.isAttacking = true;
+        cp.hasHitPlayer = false;
+        if(agent.isActiveAndEnabled && agent.isOnNavMesh) {
+            agent.isStopped = true;
+        }
     }
 
     public override void Exit()
-    { }
+    {
+        cp.isAttacking = false;
+        cp.hasHitPlayer = false;
+        if (agent.isActiveAndEnabled && agent.isOnNavMesh) {
+            agent.isStopped = false;
+        }
+    }
 
     public override string Update()
     {
         base.Update();
 
         Vector3 newRotation = owner.transform.rotation.eulerAngles;
-
-        ChargerPot cp = owner.GetComponent<ChargerPot>();
 
         newRotation.x = timer * (timer - cp.attackDuration) * (-4 * cp.attackAngle) / Mathf.Pow(cp.attackDuration, 2);
         newRotation.y = Quaternion.LookRotation(player.transform.position - owner.transform.position).eulerAngles.y;

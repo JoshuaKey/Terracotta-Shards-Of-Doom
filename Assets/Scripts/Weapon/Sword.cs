@@ -21,6 +21,14 @@ public class Sword : Weapon {
 
         CanCharge = false;
         Type = DamageType.BASIC;
+
+        this.name = "Sword";
+    }
+
+    private void OnDisable() {
+        StopAllCoroutines();
+        this.transform.localPosition = new Vector3(0.5f, -0.25f, 0.777f);
+        this.transform.localRotation = Quaternion.Euler(new Vector3(0, 45, -10));
     }
 
     public override void Attack() {
@@ -104,7 +112,7 @@ public class Sword : Weapon {
                 bool isDead = enemy.health.IsDead();
                 if (damage > 0) {
                     if (isDead) {
-                        print("Explode");
+                        //print("Explode");
                     } else {
                         Vector3 forward = Player.Instance.camera.transform.forward;
                         forward.y = 0.0f;

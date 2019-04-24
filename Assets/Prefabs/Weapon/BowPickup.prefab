@@ -42,10 +42,10 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740220624744741537}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2.5
+  m_Radius: 1
+  m_Height: 6
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1740220624744741551
@@ -74,7 +74,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Axis: {x: 0, y: 1, z: 0}
-  Speed: 30
+  RotateSpeed: 30
+  Speed: 1.5
+  Magnitude: 0.5
   interactable: {fileID: 1740220624744741551}
   WeaponPrefab: {fileID: 3726514527976357539, guid: 4b8accc48522646418e1a9badb82f823,
     type: 3}
