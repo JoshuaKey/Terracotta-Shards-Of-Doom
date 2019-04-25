@@ -31,10 +31,15 @@ public class Sword : Weapon {
         this.name = "Sword";
     }
 
-    private void OnDisable() {
-        StopAllCoroutines();
+    private void OnEnable() {
         this.transform.localPosition = StartPos;
         this.transform.localRotation = Quaternion.Euler(StartRot);
+    }
+    private void OnDisable() {
+        StopAllCoroutines();
+        if (collider) {
+            collider.enabled = false;
+        }
     }
 
     public override void Attack() {

@@ -26,10 +26,12 @@ public class Hammer : Weapon {
         this.name = "Hammer";
     }
 
-    private void OnDisable() {
-        StopAllCoroutines();
+    private void OnEnable() {
         this.transform.localPosition = StartPos;
         this.transform.localRotation = Quaternion.Euler(StartRot);
+    }
+    private void OnDisable() {
+        StopAllCoroutines();
     }
 
     public override void Attack() {
@@ -41,7 +43,6 @@ public class Hammer : Weapon {
 
     private IEnumerator Slam() {
         Player.Instance.CanWalk = false;
-        //Player.Instance.CanMove = false;
         Quaternion StartRotQuat = Quaternion.Euler(StartRot);
         Quaternion EndRotQuat = Quaternion.Euler(EndRot);
 

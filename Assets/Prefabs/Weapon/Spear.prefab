@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070653790102783923}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -63,12 +63,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanCharge: 0
   Type: 0
-  AttackSpeed: 0.75
+  AttackSpeed: 0.5
   Damage: 1.5
   Knockback: 1.5
-  AttackLayer:
-    serializedVersion: 2
-    m_Bits: 1024
+  StartPos: {x: 0.1, y: -0.2, z: 0}
+  EndPos: {x: 0.1, y: -0.2, z: 1.14}
+  AnimationSwingTime: 0.2
+  StartRot: {x: 90, y: 0, z: 0}
+  EndRot: {x: 80, y: 0, z: 0}
+  AnimationRecoilTime: 0.3
 --- !u!65 &397011515432864730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -81,7 +84,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.39999998, y: 3.3749998, z: 0.39999998}
-  m_Center: {x: 0, y: 0.18749999, z: 0}
+  m_Center: {x: 0, y: 0.375, z: 0}
 --- !u!1001 &4985659700287879594
 PrefabInstance:
   m_ObjectHideFlags: 0
