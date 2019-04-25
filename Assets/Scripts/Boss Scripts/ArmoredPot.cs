@@ -375,7 +375,7 @@ public class ArmoredPot : Pot
             //NavMesh.CalculatePath();
             Vector3 targetPosition = target.transform.position;
             navMeshAgent.SetDestination(targetPosition);
-            while ((navMeshAgent.destination - owner.transform.position).magnitude >.01f)
+            while ((navMeshAgent.destination - owner.transform.position).magnitude >.1f)
             {
                 yield return null;
             }
