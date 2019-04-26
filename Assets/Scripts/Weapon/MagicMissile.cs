@@ -6,6 +6,7 @@ public class MagicMissile : PoolObject {
 
     [Header("Life")]
     public Vector3 Impulse;
+    public float TargetLerpSpeed = 0.9f;
     public float LifeTime = 20f;
 
     [Header("Damage")]
@@ -30,9 +31,8 @@ public class MagicMissile : PoolObject {
 
     private void FixedUpdate() {
         if (!rigidbody.isKinematic && Target != null) {
-            Vector3 dir = Target.transform.position - this.transform.position;
-            Vector3 vel = Vector3.LerpUnclamped(rigidbody.velocity, dir, Time.deltaTime);
-            rigidbody.velocity = vel;
+            Vector3 dir = (Target.transform.position - this.transform.position);
+            rigidbody.AddForce(dir, ForceMode.Impulse);
         }
     }
 
@@ -41,6 +41,9 @@ public class MagicMissile : PoolObject {
         rigidbody.isKinematic = false;
         
         rigidbody.AddForce(Impulse, ForceMode.Impulse);
+        if(Impulse == Vector3.zero) {
+            rigidbody.useGravity = true;
+        }
 
         StartCoroutine(Die());
 
@@ -65,5 +68,7 @@ public class MagicMissile : PoolObject {
 
         rigidbody.velocity = Vector3.zero;
         collider.isTrigger = false;
+        rigidbody.useGravity = true;
+        Target = null;
     }
 }

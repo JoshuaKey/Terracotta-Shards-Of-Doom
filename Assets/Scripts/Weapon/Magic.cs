@@ -5,6 +5,7 @@ using UnityEngine;
 public class Magic : Weapon {
 
     [Header("Visuals")]
+    public float MagicMissileImpulse = 10f;
     public MagicMissile MagicMissilePrefab;
     public Transform[] MagicMissilePositions;
     //public MagicMissilePool magicMissilePool;
@@ -32,12 +33,20 @@ public class Magic : Weapon {
         charge = 0.0f;
         maxMissileCount = MagicMissilePositions.Length;
         missileChargeInc = 1f / maxMissileCount;
+        //print(missileChargeInc);
     }
 
-    private void OnEnable() { }
+    private void OnEnable() {
+        if(collider != null){
+            collider.enabled = false;
+        }
+    }
     private void OnDisable() {
         StopAllCoroutines();
         charge = 0.0f;
+        if (collider != null) {
+            collider.enabled = false;
+        }
     }
 
     public override void Charge() {
@@ -48,10 +57,17 @@ public class Magic : Weapon {
         charge += Time.deltaTime / AttackSpeed;
         charge = Mathf.Min(charge, 1.0f);
 
-        int index = (int)(charge / missileChargeInc);
-        if(index >= currMissiles.Count) {
+        //  0  charge -> 0 count, index 0
+        //  .2 charge -> 0 count, index 1
+        //  .4 charge -> 1 count, index 2
+        //  .6 charge -> 2 count, index 3
+        //  .8 charge -> 3 count, index 4
+        //  1  charge -> 4 count, index 5
+        
+        int index = Mathf.RoundToInt(charge / missileChargeInc);
+        if (index > currMissiles.Count) {
             MagicMissile missile = Instantiate(MagicMissilePrefab, this.transform);
-            missile.transform.localPosition = MagicMissilePositions[index].localPosition;
+            missile.transform.position = MagicMissilePositions[index - 1].position;
             currMissiles.Add(missile);
         }
     }
@@ -61,8 +77,8 @@ public class Magic : Weapon {
 
         for(int i = 0; i < currMissiles.Count; i++) {
             MagicMissile m = currMissiles[i];
-            m.Target =  i >= enemyList.Count ? null : enemyList[i];
-            m.Impulse = Player.Instance.camera.transform.forward * 10f;
+            m.Target = enemyList.Count == 0 ? null :  enemyList[i % enemyList.Count];
+            m.Impulse = m.Target == null ? Vector3.zero : Vector3.up * MagicMissileImpulse;
             m.LifeTime = 20f;
             m.Damage = this.Damage;
             m.Type = this.Type;
@@ -79,6 +95,7 @@ public class Magic : Weapon {
         if (!enemyList.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponent<Enemy>();
             if(enemy != null){
+                print("Target " + other.name);
                 enemyList.Add(other.gameObject);
             }
         }

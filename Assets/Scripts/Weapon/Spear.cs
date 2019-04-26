@@ -18,7 +18,6 @@ public class Spear : Weapon {
     protected new Collider collider;
 
     private List<GameObject> enemiesHit = new List<GameObject>();
-    private bool stabing = false;
 
     protected void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
@@ -51,7 +50,6 @@ public class Spear : Weapon {
     }
 
     private IEnumerator Stab() {
-        stabing = true;
         collider.enabled = true;
         Quaternion StartRotQuat = Quaternion.Euler(StartRot);
         Quaternion EndRotQuat = Quaternion.Euler(EndRot);
@@ -83,7 +81,6 @@ public class Spear : Weapon {
 
         this.transform.localPosition = StartPos;
         this.transform.localRotation = StartRotQuat;
-        stabing = false;
     }
 
     protected void OnTriggerEnter(Collider other) {

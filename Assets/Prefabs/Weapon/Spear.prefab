@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1070653790103214995
 Transform:
   m_ObjectHideFlags: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070653790102783923}
   m_LocalRotation: {x: -0.087072834, y: -0.04345342, z: -0.0038016832, w: 0.9952466}
-  m_LocalPosition: {x: 0.059999466, y: 0.63, z: 1.6}
+  m_LocalPosition: {x: 0.06, y: -0.12, z: 1.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7679099409555593391}
@@ -63,15 +63,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanCharge: 0
   Type: 0
-  AttackSpeed: 0.5
-  Damage: 1.5
+  AttackSpeed: 0.25
+  Damage: 1
   Knockback: 1.5
   StartPos: {x: 0.2, y: -0.4, z: 0}
   EndPos: {x: 0.06, y: -0.12, z: 1.6}
-  AnimationSwingTime: 0.2
+  AnimationSwingTime: 0.1
   StartRot: {x: -10, y: -5, z: 0}
   EndRot: {x: -10, y: -5, z: 0}
-  AnimationRecoilTime: 0.3
+  AnimationRecoilTime: 0.15
 --- !u!65 &397011515432864730
 BoxCollider:
   m_ObjectHideFlags: 0
