@@ -102,6 +102,17 @@ public class Player : MonoBehaviour {
         if (CanInteract) {
             UpdateInteractable();
         }
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (PauseMenu.Instance.activeSelf)
+            {
+                PauseMenu.Instance.SetActive(false);
+            }
+            else
+            {
+                PauseMenu.Instance.SetActive(true);
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.T) && Application.isEditor) {
             this.health.TakeDamage(DamageType.TRUE, 0.5f);
@@ -343,7 +354,7 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.DisableWeaponWheel();
     }
     public void SwapWeapon(int index) {
-        if(index == CurrWeaponIndex) { return; }
+        if (index == CurrWeaponIndex) { return; }
 
         Weapon oldWeapon = GetCurrentWeapon();
         oldWeapon.gameObject.SetActive(false);
