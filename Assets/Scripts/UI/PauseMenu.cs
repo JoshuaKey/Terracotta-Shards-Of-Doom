@@ -11,6 +11,9 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject PauseStart;
     [SerializeField] GameObject Progress;
     [SerializeField] GameObject Options;
+    [SerializeField] GameObject Video;
+    [SerializeField] GameObject Audio;
+    [SerializeField] GameObject Controls;
 
     public static GameObject Instance;
 
@@ -55,6 +58,9 @@ public class PauseMenu : MonoBehaviour
         PauseStart.SetActive(false);
         Progress.SetActive(false);
         Options.SetActive(false);
+        Video.SetActive(false);
+        Audio.SetActive(false);
+        Controls.SetActive(false);
 
         Debug.Log($"BUtton pressed. Going to {menuName}.");
 
@@ -68,6 +74,15 @@ public class PauseMenu : MonoBehaviour
                 break;
             case "options":
                 Options.SetActive(true);
+                break;
+            case "video":
+                Video.SetActive(true);
+                break;
+            case "audio":
+                Audio.SetActive(true);
+                break;
+            case "controls":
+                Controls.SetActive(true);
                 break;
         }
     }
