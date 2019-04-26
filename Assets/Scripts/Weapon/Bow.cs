@@ -109,8 +109,8 @@ public class Bow : Weapon {
         currArrow = null;
     }
 
-    private void OnGUI() {
-        GUI.Label(new Rect(160, 10, 150, 20), "Charge: " + charge);
-        GUI.Label(new Rect(160, 30, 150, 20), "Dist: " + dist);
-    }
+    //private void OnGUI() {
+    //    GUI.Label(new Rect(160, 10, 150, 20), "Charge: " + charge);
+    //    GUI.Label(new Rect(160, 30, 150, 20), "Dist: " + dist);
+    //}
 }

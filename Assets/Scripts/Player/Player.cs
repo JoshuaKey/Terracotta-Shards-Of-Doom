@@ -32,6 +32,7 @@ public class Player : MonoBehaviour {
     public bool CanAttack = true;
     public bool CanSwapWeapon = false;
     public int CurrWeaponIndex = 0;
+    public float WeaponWheeltimeScale = .5f;
     public Health health;
     public GameObject WeaponParent;
 
@@ -169,11 +170,13 @@ public class Player : MonoBehaviour {
 
             // Weapon Wheel
             if (InputManager.GetButtonDown("Weapon Wheel")) {
+                Time.timeScale = WeaponWheeltimeScale;
                 PlayerHud.Instance.EnableWeaponWheel();
                 CanRotate = false;
                 CanAttack = false;
             } 
             else if (InputManager.GetButtonUp("Weapon Wheel")) {
+                Time.timeScale = 1f;
                 PlayerHud.Instance.DisableWeaponWheel();
                 CanRotate = true;
                 CanAttack = true;
@@ -195,6 +198,9 @@ public class Player : MonoBehaviour {
                     index = (int)(currAngle / weaponAngle);
                 }
                 PlayerHud.Instance.HighlightWeaponWheel(index, weaponWheelRotation);
+                if(index != -1) {
+                    this.SwapWeapon(index);
+                }
 
                 if (InputManager.GetButtonDown("Submit") && weaponWheelRotation != Vector2.zero) {
                     SwapWeapon(index);
@@ -363,8 +369,11 @@ public class Player : MonoBehaviour {
         newWeapon.gameObject.SetActive(true);
         newWeapon.transform.SetParent(camera.transform, false);
 
-        int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
+        //int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+        //int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
+        int nextIndex = (CurrWeaponIndex + 1) % weapons.Count;
+        int prevIndex = Mathf.Abs((CurrWeaponIndex - 1) % weapons.Count);
+        print(nextIndex + " " + prevIndex);
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {

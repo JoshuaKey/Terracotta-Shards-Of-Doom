@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Arrow : PoolObject {
+public class MagicMissile : PoolObject {
 
     [Header("Life")]
-    public float Impulse = 10;
+    public Vector3 Impulse;
     public float LifeTime = 20f;
 
     [Header("Damage")]
     public float Damage = 0f;
     public DamageType Type;
+    public GameObject Target;
 
     protected new Rigidbody rigidbody;
     protected new Collider collider;
@@ -27,23 +28,19 @@ public class Arrow : PoolObject {
         rigidbody.isKinematic = true;
     }
 
-    //private void FixedUpdate() {
-        //if (!rigidbody.isKinematic) {
-        //    Vector3 start = this.transform.position;
-        //    Vector3 end = start + rigidbody.velocity;
-        //    int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
-        //    RaycastHit hit;
-        //    if(Physics.Linecast(start, end, out hit, layermask)) {
-        //        OnTriggerEnter(hit.collider);
-        //    }
-        //}
-    //}
+    private void FixedUpdate() {
+        if (!rigidbody.isKinematic && Target != null) {
+            Vector3 dir = Target.transform.position - this.transform.position;
+            Vector3 vel = Vector3.LerpUnclamped(rigidbody.velocity, dir, Time.deltaTime);
+            rigidbody.velocity = vel;
+        }
+    }
 
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
-
-        rigidbody.AddForce(this.transform.forward * Impulse, ForceMode.Impulse);
+        
+        rigidbody.AddForce(Impulse, ForceMode.Impulse);
 
         StartCoroutine(Die());
 
@@ -64,7 +61,6 @@ public class Arrow : PoolObject {
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
             enemy.health.TakeDamage(this.Type, this.Damage);
-            //OnEnemyHit?.Invoke(enemy);
         }
 
         rigidbody.velocity = Vector3.zero;

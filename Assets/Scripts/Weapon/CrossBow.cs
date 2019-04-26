@@ -11,6 +11,7 @@ public class CrossBow : Weapon {
 
     [Header("Visuals")]
     public Arrow ArrowPrefab;
+    public Transform ArrowPos;
     public Transform ChargedArrowPos;
     public ArrowPool arrowPool;
     
@@ -50,12 +51,14 @@ public class CrossBow : Weapon {
     }
 
     private void OnEnable() {
+        PlayerHud.Instance.EnableCrosshair();
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
             currArrow.transform.position = ChargedArrowPos.position;
         }       
     }
     private void OnDisable() {
+        PlayerHud.Instance.DisableCrosshair();
         StopAllCoroutines();
     }
 
@@ -79,15 +82,15 @@ public class CrossBow : Weapon {
 
     private IEnumerator Reload() {
         if (!currArrow) {
-            currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);           
+            currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
+            currArrow.transform.position = ArrowPos.position;
         }
 
         float startTime = Time.time;
         while(Time.time < startTime + AttackSpeed) {
             float t = (Time.time - startTime) / AttackSpeed;
-            t = Interpolation.CubicOut(t);
 
-            Vector3 arrowPos = Interpolation.BezierCurve(this.transform.position, ChargedArrowPos.position, t);
+            Vector3 arrowPos = Interpolation.BezierCurve(ArrowPos.position, ChargedArrowPos.position, t);
             currArrow.transform.position = arrowPos;
 
             yield return null;
