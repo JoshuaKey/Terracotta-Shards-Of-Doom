@@ -343,7 +343,7 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.DisableWeaponWheel();
     }
     public void SwapWeapon(int index) {
-        if(index == CurrWeaponIndex) { return; }
+        if (index == CurrWeaponIndex) { return; }
 
         Weapon oldWeapon = GetCurrentWeapon();
         oldWeapon.gameObject.SetActive(false);
