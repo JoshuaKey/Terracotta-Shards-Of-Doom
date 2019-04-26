@@ -39,6 +39,14 @@ public class PlayerHud : MonoBehaviour {
     public TextMeshProUGUI NextWeaponInputIcon;
     public TextMeshProUGUI PrevWeaponInputIcon;
 
+    [Header("Weapon Icons")]
+    public Sprite SwordIcon;
+    public Sprite BowIcon;
+    public Sprite HammerIcon;
+    public Sprite SpearIcon;
+    public Sprite CrossbowIcon;
+    public Sprite MagicMissleIcon;
+
     [Header("Weapon Wheel")]
     public GameObject WeaponWheel;
     public RectTransform WeaponWheelCursor;
@@ -146,9 +154,31 @@ public class PlayerHud : MonoBehaviour {
         NextWeaponText.text = nextWeapon;
         CurrWeaponText.text = currWeapon;
         PrevWeaponText.text = prevWeapon;
+        NextWeaponIcon.sprite = GetIcon(nextWeapon);
+        CurrWeaponIcon.sprite = GetIcon(currWeapon);
+        PrevWeaponIcon.sprite = GetIcon(prevWeapon);
     }
     public void DisableWeaponToggle() {
         WeaponToggle.SetActive(false);
+    }
+    public Sprite GetIcon(string weaponName)
+    {
+        Sprite retval = null;
+
+        switch(weaponName)
+        {
+            case "Sword":
+                retval = SwordIcon;
+                break;
+            case "Bow":
+                retval = BowIcon;
+                break;
+            default:
+                retval = SwordIcon;
+                break;
+        }
+
+        return retval;
     }
 
     // Weapon Wheel
@@ -196,8 +226,6 @@ public class PlayerHud : MonoBehaviour {
                     text.transform.localRotation = Quaternion.Euler(rot);
                     
                     Vector3 pos = Quaternion.Euler(0, 0, -rotIncrease / 2f) * new Vector3(0, 100, 0);
-                    print(pos);
-                    print(rotIncrease / 2f);
                     text.rectTransform.localPosition = pos;
                 }
 
