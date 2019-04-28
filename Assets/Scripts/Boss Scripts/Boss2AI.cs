@@ -22,18 +22,29 @@ public class Boss2AI : Pot
         }
     }
 
-    [Range(0.0f, 20.0f)]
-    [SerializeField]
-    float PanickedTimer = 0.0f;
+
+    Waypoint[] barrierWaypoints = null;
+
+    public Waypoint[] BarrierWaypoints
+    {
+        get
+        {
+            return barrierWaypoints;
+        }
+    }
+
+    //[Range(0.0f, 20.0f)]
+    //[SerializeField]
+    //float PanickedTimer = 0.0f;
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        barrierWaypoints = gameObject.GetComponentsInChildren<Waypoint>();
         stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
-            new Boss2AI_Running(),
-            new Boss2AI_Panicked(PanickedTimer),
-            new Boss2AI_Animating());
+            new Moving(),
+            new Animating());
     }
 
     void Update()
@@ -42,35 +53,52 @@ public class Boss2AI : Pot
     }
 
     #region Boss States
-    private class Boss2AI_Panicked : TimedState
-    {
-        public Boss2AI_Panicked(float seconds) : base(seconds)
-        {
+    //private class Boss2AI_Panicked : TimedState
+    //{
+    //    public Boss2AI_Panicked(float seconds) : base(seconds)
+    //    {
 
-        }
+    //    }
+
+    //    public override void Enter()
+    //    {
+    //        base.Enter();
+    //    }
+
+    //    public override string Update()
+    //    {
+    //        if (timer >= seconds)
+    //        {
+    //            //Exit to some state
+    //        }
+    //        //Call this last if the condition to exit was not met
+    //        return base.Update();
+    //    }
+
+    //    public override void Exit()
+    //    {
+
+    //    }
+    //}
+
+    private class Running : State
+    {
         
         public override void Enter()
         {
-            base.Enter();
-        }
-
-        public override string Update()
-        {
-            if (timer >= seconds)
-            {
-                //Exit to some state
-            }
-            //Call this last if the condition to exit was not met
-            return base.Update();
         }
 
         public override void Exit()
         {
+        }
 
+        public override string Update()
+        {
+            return null;
         }
     }
 
-    private class Boss2AI_Running : State
+    private class Moving : State
     {
         NavMeshAgent navMeshAgent = null;
         List<GameObject> waypoints = null;
@@ -84,29 +112,29 @@ public class Boss2AI : Pot
         public override void Enter()
         {
             running = false;
-            if(navMeshAgent == null)
+            if (navMeshAgent == null)
             {
                 navMeshAgent = owner.GetComponent<NavMeshAgent>();
             }
 
-            if(waypoints == null)
+            if (waypoints == null)
             {
                 waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
             }
 
-            if(boss2AI == null)
+            if (boss2AI == null)
             {
                 boss2AI = owner.GetComponent<Boss2AI>();
             }
 
-            if(monoBehaviour == null)
+            if (monoBehaviour == null)
             {
                 monoBehaviour = owner.GetComponent<MonoBehaviour>();
             }
 
-            if(waypoints.Where(w => w.GetComponent<Waypoint>().Visited).Count() == waypoints.Count)
+            if (waypoints.Where(w => w.GetComponent<Waypoint>().Visited).Count() == waypoints.Count)
             {
-                foreach(GameObject waypoint in waypoints)
+                foreach (GameObject waypoint in waypoints)
                 {
                     waypoint.GetComponent<Waypoint>().Visited = false;
                 }
@@ -129,13 +157,13 @@ public class Boss2AI : Pot
 
         public override string Update()
         {
-            if(!running && !reachedDestination)
+            if (!running && !reachedDestination)
             {
                 monoBehaviour.StartCoroutine(Run());
             }
             else if (reachedDestination)
             {
-                return "";
+                return "Boss2AI+Animating";
             }
             return null;
         }
@@ -143,7 +171,7 @@ public class Boss2AI : Pot
         {
             running = true;
             navMeshAgent.SetDestination(target.transform.position);
-            while((navMeshAgent.destination - owner.transform.position).magnitude > .1f)
+            while ((navMeshAgent.destination - owner.transform.position).magnitude > .1f)
             {
                 yield return null;
             }
@@ -152,36 +180,71 @@ public class Boss2AI : Pot
             reachedDestination = true;
         }
     }
-    
-    private class Boss2AI_Animating : State
+
+    private class Animating : State
     {
         List<Pot> Pots = null;
+
+        private bool animating = false;
+        private bool doneAnimating = false;
+
+        MonoBehaviour monoBehaviour = null;
+
+        Vector3 offset = new Vector3(0.0f, .5f, 0.0f);
+
+        Vector3 halfExtents = new Vector3(10.0f, .5f, 10.5f);
+
         public override void Enter()
         {
-            if(Pots == null)
+            animating = false;
+            doneAnimating = false;
+
+            Pots = new List<Pot>();
+            Collider[] colliders = Physics.OverlapBox(owner.transform.position + offset, halfExtents);
+            Pot p;
+            foreach (Collider c in colliders)
             {
-                Pots = owner.GetComponent<Boss2AI>().currentWaypoint.pots;
+                if (p = c.GetComponent<Pot>())
+                {
+                    Pots.Add(p);
+                }
+            }
+
+            if (monoBehaviour == null)
+            {
+                monoBehaviour = owner.GetComponent<MonoBehaviour>();
             }
         }
 
         public override void Exit()
         {
             Pots = null;
+            animating = false;
+            doneAnimating = false;
         }
 
         public override string Update()
         {
-
+            if (!animating)
+            {
+                monoBehaviour.StartCoroutine(AnimatePots());
+            }
+            else if (doneAnimating)
+            {
+                //return "Boss2AI+Boss2AI_Panicked";
+            }
             return null;
         }
 
         IEnumerator AnimatePots()
         {
-            foreach(Pot p in Pots)
+            animating = true;
+            foreach (Pot p in Pots)
             {
                 p.enabled = true;
             }
-            return null;
+            doneAnimating = true;
+            yield break;
         }
     }
     #endregion
