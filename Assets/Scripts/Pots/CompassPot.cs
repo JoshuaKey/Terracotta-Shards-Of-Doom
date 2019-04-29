@@ -81,7 +81,7 @@ public class CompassPot : MonoBehaviour {
     private IEnumerator Move(Vector3 dest, bool disable) {
         Vector3 pos = this.transform.localPosition;
         while (!IsCloseTo(pos, dest)) {
-            print("Moving");
+            //print("Moving");
             state = "Move";
             pos = this.transform.localPosition;
 
@@ -114,18 +114,18 @@ public class CompassPot : MonoBehaviour {
             Vector3 dest = dir * Distance;
 
             if (dir == Vector3.zero) {
-                print("Circling");
+                //print("Circling");
                 state = "Circle";
 
                 pos = Quaternion.Euler(RotateSpeed * Time.deltaTime, 0, 0) * pos;
                 pos.y = baseY + Bob(BobSpeed, BobDistance);
             } else if(IsCloseTo(pos, dest)) {
-                print("Bobing");
+                //print("Bobing");
                 state = "Bob";
 
                 pos.y = baseY + Bob(BobSpeed, BobDistance);
             } else {
-                print("Rotating");
+                //print("Rotating");
                 state = "Rotate";
 
                 Vector3 posDir = this.transform.localPosition.normalized;

@@ -105,7 +105,7 @@ namespace LuminosityEditor.IO
 
 			EditorApplication.playModeStateChanged += HandlePlayModeChanged;
 			m_isDisposed = false;
-		}
+        }
 
 		private void OnDisable()
 		{

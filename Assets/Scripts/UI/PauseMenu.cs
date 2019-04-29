@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject Video;
     [SerializeField] GameObject Audio;
     [SerializeField] GameObject Controls;
+    [Space]
+    [SerializeField] Button ContinueButton;
+
+    [Header("Other")]
+    public EventSystem eventSystem;
 
     public static GameObject Instance;
 
@@ -25,6 +31,7 @@ public class PauseMenu : MonoBehaviour
 
         gameObject.SetActive(false);
 
+        if (eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
     }
 
     private void OnEnable()
@@ -34,14 +41,18 @@ public class PauseMenu : MonoBehaviour
         Options.SetActive(false);
 
         Time.timeScale = 0;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+
+        //Cursor.lockState = CursorLockMode.None;
+        //Cursor.visible = true;
 
         if (Player.Instance != null)
         {
             Player.Instance.CanAttack = false;
+            Player.Instance.CanSwapWeapon = false;
         }
         PlayerHUD.SetActive(false);
+
+        eventSystem.SetSelectedGameObject(ContinueButton.gameObject);
     }
 
     private void OnDisable()
@@ -53,9 +64,11 @@ public class PauseMenu : MonoBehaviour
         if (Player.Instance != null)
         {
             Player.Instance.CanAttack = true;
+            Player.Instance.CanSwapWeapon = true;
         }
 
         PlayerHUD.SetActive(true);
+        eventSystem.SetSelectedGameObject(null);
     }
 
     public void OpenPauseMenu(string menuName)

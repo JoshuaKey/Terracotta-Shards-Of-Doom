@@ -61,11 +61,15 @@ public class Bow : Weapon {
     }
 
     private void OnEnable() {
-        PlayerHud.Instance.EnableCrosshair();
+        if (Player.Instance != null) {
+            PlayerHud.Instance.EnableCrosshair();
+        }
     }
 
     private void OnDisable() {
-        PlayerHud.Instance.DisableCrosshair();
+        if (Player.Instance != null) {
+            PlayerHud.Instance.DisableCrosshair();
+        }
 
         StopAllCoroutines();
         if(currArrow != null) {

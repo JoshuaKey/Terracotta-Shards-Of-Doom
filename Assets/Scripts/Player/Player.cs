@@ -212,10 +212,6 @@ public class Player : MonoBehaviour {
                 if(index != -1) {
                     this.SwapWeapon(index);
                 }
-
-                if (InputManager.GetButtonDown("Submit") && weaponWheelRotation != Vector2.zero) {
-                    SwapWeapon(index);
-                }
             }
         }
 
@@ -384,7 +380,7 @@ public class Player : MonoBehaviour {
         //int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
         int nextIndex = (CurrWeaponIndex + 1) % weapons.Count;
         int prevIndex = Mathf.Abs((CurrWeaponIndex - 1) % weapons.Count);
-        print(nextIndex + " " + prevIndex);
+        //print(nextIndex + " " + prevIndex);
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
