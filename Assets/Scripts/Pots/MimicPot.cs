@@ -21,7 +21,8 @@ public class MimicPot : Pot
         stateMachine = new StateMachine();
         stateMachine.Init(gameObject,
             new Mimic_Idle(),
-            new Mimic_Charge());
+            new Mimic_Charge(),
+            new Mimic_Attack());
     }
 
     public override void Animate()
@@ -109,12 +110,12 @@ public class Mimic_Charge : State
 
         if (distance > mp.chaseRadius)
         {
-            return "Charger_Idle";
+            return "Mimic_Idle";
         }
 
         if (distance < mp.attackRadius)
         {
-            return "PUSH.Charger_Attack";
+            return "PUSH.Mimic_Attack";
         }
 
         if (agent.isActiveAndEnabled)
