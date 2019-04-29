@@ -23,20 +23,18 @@ public class Lever : MonoBehaviour {
     public void Rotate() {
         StartCoroutine(RotateHandle(Quaternion.Euler(HandleAngle), RotateTime));
     }
-    public IEnumerator RotateHandle(Quaternion endRot, float time) {
-        {
-            Quaternion startRot = LeverHandle.transform.rotation;
-            float startTime = Time.time;
-            while (Time.time < startTime + time) {
-                float t = (Time.time - startTime) / time;
+    public IEnumerator RotateHandle(Quaternion endRot, float rotTime) {
+        Quaternion startRot = LeverHandle.transform.rotation;
+        float startTime = Time.time;
+        while (Time.time < startTime + rotTime) {
+            float t = (Time.time - startTime) / rotTime;
 
-                Quaternion rot = Quaternion.SlerpUnclamped(startRot, endRot, t);
+            Quaternion rot = Quaternion.SlerpUnclamped(startRot, endRot, t);
 
-                LeverHandle.transform.rotation = rot;
-                yield return null;
-            }
-            LeverHandle.transform.rotation = endRot;
+            LeverHandle.transform.rotation = rot;
+            yield return null;
         }
+        LeverHandle.transform.rotation = endRot; 
     }
 
 }
