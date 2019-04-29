@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class Sword : Weapon {
 
+    [Header("Swing Animation")]
+    public Vector3 StartPos = new Vector3(0.5f, -0.25f, 0.777f);
+    public Vector3 EndPos = new Vector3(-0.2f, -0.55f, 0.777f);
+    public float AnimationSwingTime = 0.2f;
+
+    [Header("Recoil Animation")]
+    public Vector3 StartRot = new Vector3(0, 45, -10);
+    public Vector3 EndRot = new Vector3(10, 45, 120);
+    public float AnimationRecoilTime = 0.3f;
+
     protected new Rigidbody rigidbody;
     protected new Collider collider;
 
-    //private bool isSwinging = false;
     private List<GameObject> enemiesHit = new List<GameObject>();
 
     protected void Start() {
-        collider = GetComponent<Collider>();
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
-
-        rigidbody = GetComponent<Rigidbody>();
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
 
         collider.enabled = false;
@@ -25,10 +31,15 @@ public class Sword : Weapon {
         this.name = "Sword";
     }
 
+    private void OnEnable() {
+        this.transform.localPosition = StartPos;
+        this.transform.localRotation = Quaternion.Euler(StartRot);
+    }
     private void OnDisable() {
         StopAllCoroutines();
-        this.transform.localPosition = new Vector3(0.5f, -0.25f, 0.777f);
-        this.transform.localRotation = Quaternion.Euler(new Vector3(0, 45, -10));
+        if (collider) {
+            collider.enabled = false;
+        }
     }
 
     public override void Attack() {
@@ -39,67 +50,38 @@ public class Sword : Weapon {
     }
 
     private IEnumerator Swing() {
+        Quaternion StartRotQuat = Quaternion.Euler(StartRot);
+        Quaternion EndRotQuat = Quaternion.Euler(EndRot);
+
         collider.enabled = true;
 
-        //Vector3 startPos = this.transform.localPosition; // new Vector3(0.5f, -0.25f, 0.777f);
-        Vector3 startPos = new Vector3(0.5f, -0.25f, 0.777f);
-        Vector3 endPos = new Vector3(-0.2f, -0.55f, 0.777f);
-        //Quaternion startRot = this.transform.localRotation; //  Quaternion.Euler(new Vector3(0, 45, -10));
-        Quaternion startRot = Quaternion.Euler(new Vector3(0, 45, -10));
-        Quaternion endRot = Quaternion.Euler(new Vector3(10, 45, 120));
-
-        // Swing Blade Down
+        // Swing
         float startTime = Time.time;
-        float length = AttackSpeed * 0.4f; // (40%)
-        while (Time.time < startTime + length) {
-            float t = (Time.time - startTime) / length;
-
-            Vector3 pos = this.transform.localPosition;
-            Quaternion rot = this.transform.localRotation;
-
-            pos.x = Mathf.Lerp(startPos.x, endPos.x, t);
-            pos.y = Mathf.Lerp(startPos.y, endPos.y, t);
-            pos.z = Mathf.Lerp(startPos.z, endPos.z, t);
-
-            rot.x = Mathf.Lerp(startRot.x, endRot.x, t);
-            rot.y = Mathf.Lerp(startRot.y, endRot.y, t);
-            rot.z = Mathf.Lerp(startRot.z, endRot.z, t);
-            rot.w = Mathf.Lerp(startRot.w, endRot.w, t);
-
-            this.transform.localPosition = pos;
-            this.transform.localRotation = rot;
+        while (Time.time < startTime + AnimationSwingTime) {
+            float t = (Time.time - startTime) / AnimationSwingTime;
+            t = Interpolation.ExpoIn(t);
+            this.transform.localPosition = Vector3.LerpUnclamped(StartPos, EndPos, t);
+            this.transform.localRotation = Quaternion.SlerpUnclamped(StartRotQuat, EndRotQuat, t);
             yield return null;
         }
-        this.transform.localPosition = endPos;
-        this.transform.localRotation = endRot;
+        this.transform.localPosition = EndPos;
+        this.transform.localRotation = EndRotQuat;
 
         collider.enabled = false;
         enemiesHit.Clear();
 
-        // Move to Start Pos
+        // Recoil
         startTime = Time.time;
-        length = AttackSpeed * 0.55f; // (60%)
-        while (Time.time < startTime + length) {
-            float t = (Time.time - startTime) / length;
+        while (Time.time < startTime + AnimationRecoilTime) {
+            float t = (Time.time - startTime) / AnimationRecoilTime;
 
-            Vector3 pos = this.transform.localPosition;
-            Quaternion rot = this.transform.localRotation;
-
-            pos.x = Mathf.Lerp(endPos.x, startPos.x, t);
-            pos.y = Mathf.Lerp(endPos.y, startPos.y, t);
-            pos.z = Mathf.Lerp(endPos.z, startPos.z, t);
-
-            rot.x = Mathf.Lerp(endRot.x, startRot.x, t);
-            rot.y = Mathf.Lerp(endRot.y, startRot.y, t);
-            rot.z = Mathf.Lerp(endRot.z, startRot.z, t);
-            rot.w = Mathf.Lerp(endRot.w, startRot.w, t);
-
-            this.transform.localPosition = pos;
-            this.transform.localRotation = rot;
+            this.transform.localPosition = Vector3.LerpUnclamped(EndPos, StartPos, t);
+            this.transform.localRotation = Quaternion.SlerpUnclamped(EndRotQuat, StartRotQuat, t);
             yield return null;
         }
-        this.transform.localPosition = startPos;
-        this.transform.localRotation = startRot;
+
+        this.transform.localPosition = StartPos;
+        this.transform.localRotation = StartRotQuat;
     }
 
     protected void OnTriggerEnter(Collider other) {
@@ -121,8 +103,6 @@ public class Sword : Weapon {
                         enemy.Knockback(forward * Knockback);
                     }
                 }
-
-                //OnEnemyHit?.Invoke(enemy);
             }
         }
     }

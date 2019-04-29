@@ -32,6 +32,7 @@ public class Player : MonoBehaviour {
     public bool CanAttack = true;
     public bool CanSwapWeapon = false;
     public int CurrWeaponIndex = 0;
+    public float WeaponWheeltimeScale = .5f;
     public Health health;
     public GameObject WeaponParent;
 
@@ -79,7 +80,13 @@ public class Player : MonoBehaviour {
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
-        PlayerHud.Instance.DisableWeaponToggle();
+        if (weapons.Count > 1) {
+            PlayerHud.Instance.EnableWeaponToggle();
+            CanSwapWeapon = true;
+        } else {       
+            PlayerHud.Instance.DisableWeaponToggle();
+            CanSwapWeapon = false;
+        }  
 
         // Physics
         layerMask = 1 << this.gameObject.layer;
@@ -114,6 +121,7 @@ public class Player : MonoBehaviour {
             }
         }
 
+        // Debug...
         if (Input.GetKeyDown(KeyCode.T) && Application.isEditor) {
             this.health.TakeDamage(DamageType.TRUE, 0.5f);
         }
@@ -142,9 +150,7 @@ public class Player : MonoBehaviour {
         camera.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
     }
     public void UpdateMovement() {
-        if (CanWalk) {
-            Walk();
-        }
+        Walk();
 
         if (CanJump) {
             Jump();
@@ -159,8 +165,10 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
+        Weapon weapon = GetCurrentWeapon();
+
         // Check for Weapon Swap
-        if(CanSwapWeapon) {
+        if (CanSwapWeapon && weapon.CanAttack()) {
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -173,11 +181,13 @@ public class Player : MonoBehaviour {
 
             // Weapon Wheel
             if (InputManager.GetButtonDown("Weapon Wheel")) {
+                Time.timeScale = WeaponWheeltimeScale;
                 PlayerHud.Instance.EnableWeaponWheel();
                 CanRotate = false;
                 CanAttack = false;
             } 
             else if (InputManager.GetButtonUp("Weapon Wheel")) {
+                Time.timeScale = 1f;
                 PlayerHud.Instance.DisableWeaponWheel();
                 CanRotate = true;
                 CanAttack = true;
@@ -199,6 +209,9 @@ public class Player : MonoBehaviour {
                     index = (int)(currAngle / weaponAngle);
                 }
                 PlayerHud.Instance.HighlightWeaponWheel(index, weaponWheelRotation);
+                if(index != -1) {
+                    this.SwapWeapon(index);
+                }
 
                 if (InputManager.GetButtonDown("Submit") && weaponWheelRotation != Vector2.zero) {
                     SwapWeapon(index);
@@ -207,8 +220,7 @@ public class Player : MonoBehaviour {
         }
 
         // Check for Attack
-        if (CanAttack) {
-            Weapon weapon = GetCurrentWeapon();
+        if (CanAttack) {          
             if (weapon.CanAttack()) {
                 if (weapon.CanCharge) {
                     if (InputManager.GetButton("Attack")) {
@@ -270,9 +282,14 @@ public class Player : MonoBehaviour {
     }
 
     public void Walk() {
-        float rightMove = InputManager.GetAxisRaw("Vertical Movement");
-        float frontMove = InputManager.GetAxisRaw("Horizontal Movement");
         Vector3 movement = Vector3.zero;
+        float rightMove = 0.0f;
+        float frontMove = 0.0f;
+
+        if (CanWalk) {
+            rightMove = InputManager.GetAxisRaw("Vertical Movement");
+            frontMove = InputManager.GetAxisRaw("Horizontal Movement");
+        }      
 
         if (Mathf.Abs(rightMove) >= 0.1f || Mathf.Abs(frontMove) >= 0.1f) { // Hot Fix
             // Get Movement
@@ -299,16 +316,13 @@ public class Player : MonoBehaviour {
         if (controller.isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
-            } else {
-                velocity.y = -1;
-            }
+            } 
         }
         // By Default the Player does a "long jump" by holding the Jump Button
         else {
             // If we are falling, add more Gravity
             if (velocity.y < 0.0f) {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
-                //Debug.Break();
             }
             // If we are not doing a "long jump", add more Gravity 
             else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
@@ -366,8 +380,11 @@ public class Player : MonoBehaviour {
         newWeapon.gameObject.SetActive(true);
         newWeapon.transform.SetParent(camera.transform, false);
 
-        int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
+        //int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+        //int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
+        int nextIndex = (CurrWeaponIndex + 1) % weapons.Count;
+        int prevIndex = Mathf.Abs((CurrWeaponIndex - 1) % weapons.Count);
+        print(nextIndex + " " + prevIndex);
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
