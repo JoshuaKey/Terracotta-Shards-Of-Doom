@@ -22,6 +22,8 @@ public class Boss2AI : Pot
         }
     }
 
+    [SerializeField]
+    GameObject Barrier = null;
 
     Waypoint[] barrierWaypoints = null;
 
@@ -33,18 +35,26 @@ public class Boss2AI : Pot
         }
     }
 
-    //[Range(0.0f, 20.0f)]
-    //[SerializeField]
-    //float PanickedTimer = 0.0f;
+    private List<BarrierPot> barrierPots = null;
+
+    public List<BarrierPot> BarrierPots
+    {
+        get
+        {
+            return barrierPots;
+        }
+    }
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        barrierWaypoints = gameObject.GetComponentsInChildren<Waypoint>();
+        barrierWaypoints = Barrier.GetComponentsInChildren<Waypoint>();
+        barrierPots = new List<BarrierPot>(8);
         stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
             new Moving(),
-            new Animating());
+            new Animating(),
+            new DoNothing());
     }
 
     void Update()
@@ -53,37 +63,10 @@ public class Boss2AI : Pot
     }
 
     #region Boss States
-    //private class Boss2AI_Panicked : TimedState
-    //{
-    //    public Boss2AI_Panicked(float seconds) : base(seconds)
-    //    {
-
-    //    }
-
-    //    public override void Enter()
-    //    {
-    //        base.Enter();
-    //    }
-
-    //    public override string Update()
-    //    {
-    //        if (timer >= seconds)
-    //        {
-    //            //Exit to some state
-    //        }
-    //        //Call this last if the condition to exit was not met
-    //        return base.Update();
-    //    }
-
-    //    public override void Exit()
-    //    {
-
-    //    }
-    //}
 
     private class Running : State
     {
-        
+
         public override void Enter()
         {
         }
@@ -167,6 +150,7 @@ public class Boss2AI : Pot
             }
             return null;
         }
+
         IEnumerator Run()
         {
             running = true;
@@ -183,12 +167,11 @@ public class Boss2AI : Pot
 
     private class Animating : State
     {
+        Boss2AI boss2AI = null;
         List<Pot> Pots = null;
 
         private bool animating = false;
         private bool doneAnimating = false;
-
-        MonoBehaviour monoBehaviour = null;
 
         Vector3 offset = new Vector3(0.0f, .5f, 0.0f);
 
@@ -196,6 +179,11 @@ public class Boss2AI : Pot
 
         public override void Enter()
         {
+            if (boss2AI == null)
+            {
+                boss2AI = owner.GetComponent<Boss2AI>();
+            }
+
             animating = false;
             doneAnimating = false;
 
@@ -204,15 +192,10 @@ public class Boss2AI : Pot
             Pot p;
             foreach (Collider c in colliders)
             {
-                if (p = c.GetComponent<Pot>())
+                if ((p = c.GetComponent<Pot>()) && (c.gameObject != owner))
                 {
                     Pots.Add(p);
                 }
-            }
-
-            if (monoBehaviour == null)
-            {
-                monoBehaviour = owner.GetComponent<MonoBehaviour>();
             }
         }
 
@@ -227,11 +210,11 @@ public class Boss2AI : Pot
         {
             if (!animating)
             {
-                monoBehaviour.StartCoroutine(AnimatePots());
+                boss2AI.StartCoroutine(AnimatePots());
             }
             else if (doneAnimating)
             {
-                //return "Boss2AI+Boss2AI_Panicked";
+                return "Boss2AI+DoNothing";
             }
             return null;
         }
@@ -239,12 +222,75 @@ public class Boss2AI : Pot
         IEnumerator AnimatePots()
         {
             animating = true;
+            BarrierPot bp = null;
             foreach (Pot p in Pots)
             {
-                p.enabled = true;
+                if (!p.enabled)
+                {
+
+                    p.enabled = true;
+                    bp = p as BarrierPot;
+                    if (bp != null)
+                    {
+                        boss2AI.BarrierPots.Add(bp);
+                        Waypoint w = FindBestEmptyBarrierWaypoint(bp.transform.position);
+                        if (w != null)
+                        {
+                            w.Visited = true;
+                            bp.Waypoint = w;
+                            bp.GetStateMachine().ChangeState("BarrierPot+EnterFormation");
+                        }
+                    }
+                }
+            }
+            while(boss2AI.BarrierPots.Exists(p => !p.InPosition))
+            {
+                yield return null;
             }
             doneAnimating = true;
             yield break;
+        }
+
+        public Waypoint FindBestEmptyBarrierWaypoint(Vector3 position)
+        {
+
+            Waypoint waypoint = null;
+            float shortestDistanceSquared = float.MaxValue;
+
+            foreach (Waypoint w in boss2AI.BarrierWaypoints)
+            {
+                if (!w.Visited)
+                {
+                    float distanceSquared = (position - w.gameObject.transform.position).sqrMagnitude;
+                    if (distanceSquared < shortestDistanceSquared)
+                    {
+                        shortestDistanceSquared = distanceSquared;
+                        waypoint = w;
+                    }
+                }
+            }
+            if (waypoint == null)
+            {
+                Debug.Log("All waypoints are occupied or something went wrong");
+
+            }
+            return waypoint;
+        }
+    }
+
+    public class DoNothing : State
+    {
+        public override void Enter()
+        {
+        }
+
+        public override void Exit()
+        {
+        }
+
+        public override string Update()
+        {
+            return null;
         }
     }
     #endregion
