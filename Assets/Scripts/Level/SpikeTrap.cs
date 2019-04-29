@@ -35,13 +35,13 @@ public class SpikeTrap : MonoBehaviour {
 
         float startTime = Time.time;
         while (Time.time < startTime + WaitTime) {
-            print("Waiting");
+            //print("Waiting");
             yield return null;
         }
 
         startTime = Time.time;
         while (Time.time < startTime + SpringTime) {
-            print("Springing");
+            //print("Springing");
 
             float t = (Time.time - startTime) / SpringTime;
             t = Interpolation.ExpoIn(t);
@@ -52,7 +52,7 @@ public class SpikeTrap : MonoBehaviour {
 
         startTime = Time.time;
         while (Time.time < startTime + RecoilTime) {
-            print("Recoiling");
+            //print("Recoiling");
 
             float t = (Time.time - startTime) / RecoilTime;
 
@@ -65,7 +65,7 @@ public class SpikeTrap : MonoBehaviour {
 
         startTime = Time.time;
         while (Time.time < startTime + ReloadTime) {
-            print("Waiting");
+            //print("Waiting");
             yield return null;
         }
 
