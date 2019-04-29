@@ -16,12 +16,14 @@ public class Sword : Weapon {
 
     protected new Rigidbody rigidbody;
     protected new Collider collider;
+    protected Animator animator;
 
     private List<GameObject> enemiesHit = new List<GameObject>();
 
     protected void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
+        if (animator == null) { animator = GetComponentInChildren<Animator>(true); }
 
         collider.enabled = false;
 
@@ -46,7 +48,19 @@ public class Sword : Weapon {
         if (!CanAttack()) { return; }
 
         base.Attack();
-        StartCoroutine(Swing());
+        //StartCoroutine(Swing());
+        animator.SetTrigger("Swing");
+    }
+
+    public void EnableHitbox()
+    {
+        collider.enabled = true;
+    }
+
+    public void DisableHitbox()
+    {
+        collider.enabled = false;
+        enemiesHit.Clear();
     }
 
     private IEnumerator Swing() {

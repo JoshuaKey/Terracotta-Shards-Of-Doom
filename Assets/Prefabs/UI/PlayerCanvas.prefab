@@ -124,7 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3970892244975131163}
   - component: {fileID: 3970892244975131162}
-  - component: {fileID: 3970892244975131165}
+  - component: {fileID: 4826227784578977705}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
---- !u!114 &3970892244975131165
+--- !u!114 &4826227784578977705
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -170,15 +170,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 3970892244975131164}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: cb136099cc3379144a392d48c3cce324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
+  m_UpButton: UI_Up
+  m_DownButton: UI_Down
+  m_LeftButton: UI_Left
+  m_RightButton: UI_Right
+  m_SubmitButton: UI_Submit
+  m_CancelButton: UI_Cancel
   m_ForceModuleActive: 1
 --- !u!1001 &634265238451629725
 PrefabInstance:
@@ -558,6 +558,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 8251038189675638712, guid: 147149214cf12a8458dade7cdf07fc8c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8188569899198103573, guid: 147149214cf12a8458dade7cdf07fc8c,
         type: 3}
       propertyPath: m_IsActive
@@ -866,11 +871,6 @@ PrefabInstance:
     - target: {fileID: 7160647395735272151, guid: 147149214cf12a8458dade7cdf07fc8c,
         type: 3}
       propertyPath: m_inputSource
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8251038189675638712, guid: 147149214cf12a8458dade7cdf07fc8c,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
