@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour {
     }
 
     public void Knockback(Vector3 force) {
+        print(force);
         StartCoroutine(KnockbackRoutine(force));
     }
 

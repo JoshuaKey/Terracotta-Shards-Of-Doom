@@ -1,6 +1,7 @@
 ﻿using Luminosity.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -29,17 +30,17 @@ public class Player : MonoBehaviour {
 
     [Header("Combat")]
     public bool CanAttack = true;
+    public bool CanSwapWeapon = false;
     public int CurrWeaponIndex = 0;
+    public float WeaponWheeltimeScale = .5f;
     public Health health;
     public GameObject WeaponParent;
 
     [Header("Interact")]
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
+    public CompassPot compass;
     public bool CanInteract = true;
-
-    //[Header("UI")]
-    //public PlayerHud HUD;
 
     public static Player Instance;
 
@@ -49,10 +50,12 @@ public class Player : MonoBehaviour {
     public Vector3 rotation = Vector3.zero;
     [HideInInspector]
     public List<Weapon> weapons = new List<Weapon>();
+    [HideInInspector]
+    public int layerMask;
 
     private new Collider collider;
     private CharacterController controller;
-    private int playerLayerMask;
+    private Vector2 weaponWheelRotation = Vector2.zero;
 
     void Start() {
         if (Instance != null) { Destroy(this.gameObject); return; }
@@ -69,30 +72,57 @@ public class Player : MonoBehaviour {
         weapons.AddRange(GetComponentsInChildren<Weapon>(true));
         foreach(Weapon w in weapons) { w.gameObject.SetActive(false); }
         CurrWeaponIndex = Mathf.Min(weapons.Count - 1, CurrWeaponIndex);
-        SwapWeapon(CurrWeaponIndex);
+
+        Weapon newWeapon = GetCurrentWeapon();
+        newWeapon.gameObject.SetActive(true);
+        newWeapon.transform.SetParent(camera.transform, false);
+
+        string[] weaponNames = weapons.Select(x => x.name).ToArray();
+        PlayerHud.Instance.SetWeaponWheel(weaponNames);
+        PlayerHud.Instance.DisableWeaponWheel();
+        if (weapons.Count > 1) {
+            PlayerHud.Instance.EnableWeaponToggle();
+            CanSwapWeapon = true;
+        } else {       
+            PlayerHud.Instance.DisableWeaponToggle();
+            CanSwapWeapon = false;
+        }  
 
         // Physics
-        playerLayerMask = 1 << this.gameObject.layer;
+        layerMask = 1 << this.gameObject.layer;
 
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
 
+        PlayerHud.Instance.EnablePlayerHealthBar();
         this.health.OnDeath += this.Die;
+        this.health.OnDamage += ChangeHealthUI;
+        this.health.OnHeal += ChangeHealthUI;
     }
 
     void Update() {
         if (CanMove) {
             UpdateMovement();
         }
-        if (CanAttack) {
-            UpdateCombat();
-        }
+        UpdateCombat();
         if (CanInteract) {
             UpdateInteractable();
         }
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (PauseMenu.Instance.activeSelf)
+            {
+                PauseMenu.Instance.SetActive(false);
+            }
+            else
+            {
+                PauseMenu.Instance.SetActive(true);
+            }
+        }
 
-        if (Input.GetKeyDown(KeyCode.T)) {
+        // Debug...
+        if (Input.GetKeyDown(KeyCode.T) && Application.isEditor) {
             this.health.TakeDamage(DamageType.TRUE, 0.5f);
         }
     }
@@ -120,9 +150,7 @@ public class Player : MonoBehaviour {
         camera.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
     }
     public void UpdateMovement() {
-        if (CanWalk) {
-            Walk();
-        }
+        Walk();
 
         if (CanJump) {
             Jump();
@@ -137,62 +165,131 @@ public class Player : MonoBehaviour {
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
-        // Check for Switch
-        if (InputManager.GetButtonDown("Next Weapon")) {
-            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-            SwapWeapon(nextIndex);
-        }
-        if (InputManager.GetButtonDown("Prev Weapon")) {
-            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
-            SwapWeapon(prevIndex);
+        Weapon weapon = GetCurrentWeapon();
+
+        // Check for Weapon Swap
+        if (CanSwapWeapon && weapon.CanAttack()) {
+            // Weapon Toggle
+            if (InputManager.GetButtonDown("Next Weapon")) {
+                int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+                SwapWeapon(nextIndex);
+            }
+            if (InputManager.GetButtonDown("Prev Weapon")) {
+                int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+                SwapWeapon(prevIndex);
+            }
+
+            // Weapon Wheel
+            if (InputManager.GetButtonDown("Weapon Wheel")) {
+                Time.timeScale = WeaponWheeltimeScale;
+                PlayerHud.Instance.EnableWeaponWheel();
+                CanRotate = false;
+                CanAttack = false;
+            } 
+            else if (InputManager.GetButtonUp("Weapon Wheel")) {
+                Time.timeScale = 1f;
+                PlayerHud.Instance.DisableWeaponWheel();
+                CanRotate = true;
+                CanAttack = true;
+                weaponWheelRotation = Vector3.zero;
+            } 
+            else if (InputManager.GetButton("Weapon Wheel")) {
+                UpdateWeaponWheelRotation();
+
+                int index = -1;
+                float currAngle = 0;
+                if (weaponWheelRotation != Vector2.zero) {
+                    float weaponAngle = Mathf.PI * 2 / weapons.Count;
+                    currAngle = Mathf.Atan2(weaponWheelRotation.x, weaponWheelRotation.y);
+                    
+                    if(currAngle < 0) {
+                        currAngle = Mathf.PI * 2 + currAngle;
+                    }
+
+                    index = (int)(currAngle / weaponAngle);
+                }
+                PlayerHud.Instance.HighlightWeaponWheel(index, weaponWheelRotation);
+                if(index != -1) {
+                    this.SwapWeapon(index);
+                }
+
+                if (InputManager.GetButtonDown("Submit") && weaponWheelRotation != Vector2.zero) {
+                    SwapWeapon(index);
+                }
+            }
         }
 
         // Check for Attack
-        Weapon weapon = GetCurrentWeapon();
-        if (weapon.CanAttack()) {
-            if (weapon.CanCharge) {
-                if (InputManager.GetButton("Attack")) {
-                    weapon.Charge();
-                }
-                if (InputManager.GetButtonUp("Attack")) {
-                    weapon.Attack();
-                }
-            } else {
-                if (InputManager.GetButton("Attack")) {
-                    weapon.Attack();
+        if (CanAttack) {          
+            if (weapon.CanAttack()) {
+                if (weapon.CanCharge) {
+                    if (InputManager.GetButton("Attack")) {
+                        weapon.Charge();
+                    }
+                    if (InputManager.GetButtonUp("Attack")) {
+                        weapon.Attack();
+                    }
+                } else {
+                    if (InputManager.GetButton("Attack")) {
+                        weapon.Attack();
+                    }
                 }
             }
         }
     }
     public void UpdateInteractable() {
-        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
-
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer))
+        // Check for Compass
         {
-            Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
-            if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
-
-            if (interactable.CanInteract) {
-                PlayerHud.Instance.SetInteractText("F", interactable.name);
-
-                if (InputManager.GetButtonDown("Interact"))
-                {
-                    interactable.Interact();
+            if (InputManager.GetButtonDown("Compass")) {
+                compass.Activate(-camera.transform.forward);
+            } 
+            else if (compass.gameObject.activeInHierarchy) {
+                Transform target;
+                if (EnemyManager.Instance.MainProgression.IsComplete()) {
+                    target = EnemyManager.Instance.MainProgression.ProgressionObject.transform;
+                } else {
+                    target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
                 }
+                Vector3 dir = target.position - this.transform.position;
+                dir = dir.normalized;
+                compass.SetDirection(dir);
+            }
+        }
+
+
+        // Check for interactable
+        {
+            Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, InteractDistance, InteractLayer)) {
+                Interactable interactable = hit.collider.GetComponentInChildren<Interactable>(true);
+                if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
+
+                if (interactable.CanInteract) {
+                    PlayerHud.Instance.SetInteractText("f", interactable.name);
+
+                    if (InputManager.GetButtonDown("Interact")) {
+                        interactable.Interact();
+                    }
+                } else {
+                    PlayerHud.Instance.DisableInteractText();
+                }
+
             } else {
                 PlayerHud.Instance.DisableInteractText();
             }
-
-        } else {
-            PlayerHud.Instance.DisableInteractText();
         }
     }
 
     public void Walk() {
-        float rightMove = InputManager.GetAxisRaw("Vertical Movement");
-        float frontMove = InputManager.GetAxisRaw("Horizontal Movement");
         Vector3 movement = Vector3.zero;
+        float rightMove = 0.0f;
+        float frontMove = 0.0f;
+
+        if (CanWalk) {
+            rightMove = InputManager.GetAxisRaw("Vertical Movement");
+            frontMove = InputManager.GetAxisRaw("Horizontal Movement");
+        }      
 
         if (Mathf.Abs(rightMove) >= 0.1f || Mathf.Abs(frontMove) >= 0.1f) { // Hot Fix
             // Get Movement
@@ -219,16 +316,13 @@ public class Player : MonoBehaviour {
         if (controller.isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
-            } else {
-                velocity.y = -1;
-            }
+            } 
         }
         // By Default the Player does a "long jump" by holding the Jump Button
         else {
             // If we are falling, add more Gravity
             if (velocity.y < 0.0f) {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
-                //Debug.Break();
             }
             // If we are not doing a "long jump", add more Gravity 
             else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
@@ -237,6 +331,9 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void ChangeHealthUI(float val) {
+        PlayerHud.Instance.SetPlayerHealthBar(this.health.CurrentHealth / this.health.MaxHealth);
+    }
     public void Die() {
         LevelManager.Instance.RestartLevel();
     }
@@ -249,13 +346,30 @@ public class Player : MonoBehaviour {
         if (rotation.x < -180) { rotation.x = rotation.x + 360; }
     }
 
+    public Vector3 UpdateWeaponWheelRotation() {
+        // Rotation Input
+        float yRot = -InputManager.GetAxis("Vertical Rotation") * YRotationSpeed * Time.deltaTime;
+        float xRot = InputManager.GetAxis("Horizontal Rotation") * XRotationSpeed * Time.deltaTime;
+
+        // Add to Existing Rotation
+        weaponWheelRotation += new Vector2(xRot, yRot);
+        weaponWheelRotation = weaponWheelRotation.normalized;
+
+        return weaponWheelRotation;
+    }
     public void AddWeapon(Weapon newWeapon) {
         weapons.Add(newWeapon);
 
         newWeapon.gameObject.SetActive(false);
         newWeapon.transform.SetParent(WeaponParent.transform, false);
+
+        string[] weaponNames = weapons.Select(x => x.name).ToArray();
+        PlayerHud.Instance.SetWeaponWheel(weaponNames);
+        PlayerHud.Instance.DisableWeaponWheel();
     }
     public void SwapWeapon(int index) {
+        if (index == CurrWeaponIndex) { return; }
+
         Weapon oldWeapon = GetCurrentWeapon();
         oldWeapon.gameObject.SetActive(false);
         oldWeapon.transform.SetParent(WeaponParent.transform, false);
@@ -265,6 +379,13 @@ public class Player : MonoBehaviour {
         Weapon newWeapon = GetCurrentWeapon();
         newWeapon.gameObject.SetActive(true);
         newWeapon.transform.SetParent(camera.transform, false);
+
+        //int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+        //int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
+        int nextIndex = (CurrWeaponIndex + 1) % weapons.Count;
+        int prevIndex = Mathf.Abs((CurrWeaponIndex - 1) % weapons.Count);
+        print(nextIndex + " " + prevIndex);
+        PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
         return weapons[CurrWeaponIndex];
@@ -287,7 +408,7 @@ public class Player : MonoBehaviour {
         GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
+        GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
     }
 
-    
 }

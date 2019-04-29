@@ -158,6 +158,10 @@ public class StateMachine
         curState.Peek().Enter();
     }
 
+    public State GetCurrState() 
+    {
+        return curState.Peek();
+    }
     public string GetCurrentState()
     {
         return curState.ToString();
@@ -216,6 +220,7 @@ public abstract class TimedState : State
     public float timer;
     public float seconds;
 
+    public TimedState() { }
     public TimedState(float seconds)
     {
         this.seconds = seconds;

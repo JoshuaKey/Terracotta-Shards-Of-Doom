@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class Bow : Weapon {
 
+    [Header("Damage")]
+    public float MinDamage = .5f;
+
     [Header("Aim")]
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
-    public float ChargeTime = 1f;
-    public float BaseChargeTime = .2f;
 
     [Header("Force")]
     public float MinSpeed = 0f;
-    public float MaxSpeed = 12f;
-
-    [Header("Damage")]
-    public float MinDamage = .25f; // Tap
-    public float BaseDamage = 1f; // .1f
-    public float MaxDamage = 3f; // Full Charge
+    public float MaxSpeed = 5f;
 
     [Header("Visuals")]
     public Arrow ArrowPrefab;
     public Transform ChargedArrowPos;
+    public ArrowPool arrowPool;
 
     // Value between 0 and 1;
     private float charge;
@@ -33,6 +30,8 @@ public class Bow : Weapon {
     protected void Start() {
         CanCharge = true;
         Type = DamageType.BASIC;
+
+        this.name = "Bow";
     }
 
     private void Update() {
@@ -61,12 +60,28 @@ public class Bow : Weapon {
         Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
     }
 
+    private void OnEnable() {
+        PlayerHud.Instance.EnableCrosshair();
+    }
+
+    private void OnDisable() {
+        PlayerHud.Instance.DisableCrosshair();
+
+        StopAllCoroutines();
+        if(currArrow != null) {
+            Destroy(currArrow.gameObject);
+        }
+        charge = 0.0f;
+    }
+
     public override void Charge() {
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
+            //currArrow = arrowPool.Create();
+            //currArrow.transform.SetParent(this.transform);
         }
-
-        charge += Time.deltaTime / ChargeTime;
+        
+        charge += Time.deltaTime / AttackSpeed;
         charge = Mathf.Min(charge, 1.0f);
 
         float t = Interpolation.CubicOut(charge);
@@ -77,20 +92,15 @@ public class Bow : Weapon {
     public override void Attack() {
         if (!CanAttack()) { return; }
 
-        base.Attack();
-
         float t = Interpolation.QuadraticIn(charge);
+        // float t = Interpolation.ExpoIn(charge);
         currArrow.Impulse = Mathf.Lerp(MinSpeed, MaxSpeed, t);
-        currArrow.Damage = charge == 1 ? MaxDamage : (charge >= BaseChargeTime ? BaseDamage : MinDamage);
+        currArrow.LifeTime = 20f;
+        currArrow.Damage = charge == 1 ? Damage : MinDamage;
         currArrow.Type = this.Type;
         currArrow.Fire();
 
         charge = 0.0f;
         currArrow = null;
-    }
-
-    private void OnGUI() {
-        GUI.Label(new Rect(160, 10, 150, 20), "Charge: " + charge);
-        GUI.Label(new Rect(160, 30, 150, 20), "Dist: " + dist);
     }
 }
