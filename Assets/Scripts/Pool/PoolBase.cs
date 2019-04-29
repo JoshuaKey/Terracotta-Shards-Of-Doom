@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class PoolBase : MonoBehaviour {
 
-    public abstract void Destroy(int index);
+    //public abstract void Destroy(int index);
 }
