@@ -50,7 +50,11 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        Player.Instance.CanAttack = true;
+        if (Player.Instance != null)
+        {
+            Player.Instance.CanAttack = true;
+        }
+
         PlayerHUD.SetActive(true);
     }
 
