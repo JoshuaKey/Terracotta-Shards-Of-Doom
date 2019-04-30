@@ -109,7 +109,7 @@ public class Player : MonoBehaviour {
         if (CanInteract) {
             UpdateInteractable();
         }
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("UI_Cancel"))
         {
             if (PauseMenu.Instance.activeSelf)
             {
