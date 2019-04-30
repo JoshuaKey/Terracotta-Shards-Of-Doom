@@ -399,12 +399,12 @@ public class Player : MonoBehaviour {
     }
 
     // Testing --------------------------------------------------------------
-    private void OnGUI() {
-        GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
-        GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
+    //private void OnGUI() {
+    //    GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
+    //    GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
 
-        GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
-        GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
-    }
+    //    GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
+    //    GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
+    //}
 
 }
