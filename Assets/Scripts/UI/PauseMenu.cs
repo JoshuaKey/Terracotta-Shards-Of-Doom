@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
+    #pragma warning disable 0649
     [Space]
     [SerializeField] GameObject PlayerHUD;
     [Space]
@@ -17,6 +18,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject Controls;
     [Space]
     [SerializeField] Button ContinueButton;
+    #pragma warning restore 0649
 
     [Header("Other")]
     public EventSystem eventSystem;
