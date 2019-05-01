@@ -51,14 +51,18 @@ public class CrossBow : Weapon {
     }
 
     private void OnEnable() {
-        PlayerHud.Instance.EnableCrosshair();
+        if (Player.Instance != null) {
+            PlayerHud.Instance.EnableCrosshair();
+        }
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
             currArrow.transform.position = ChargedArrowPos.position;
         }       
     }
     private void OnDisable() {
-        PlayerHud.Instance.DisableCrosshair();
+        if (Player.Instance != null) {
+            PlayerHud.Instance.DisableCrosshair();
+        }
         StopAllCoroutines();
     }
 

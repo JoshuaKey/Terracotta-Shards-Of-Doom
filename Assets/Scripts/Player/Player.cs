@@ -109,7 +109,7 @@ public class Player : MonoBehaviour {
         if (CanInteract) {
             UpdateInteractable();
         }
-        if (Input.GetButtonDown("Cancel"))
+        if (InputManager.GetButtonDown("UI_Cancel"))
         {
             if (PauseMenu.Instance.activeSelf)
             {
@@ -211,10 +211,6 @@ public class Player : MonoBehaviour {
                 PlayerHud.Instance.HighlightWeaponWheel(index, weaponWheelRotation);
                 if(index != -1) {
                     this.SwapWeapon(index);
-                }
-
-                if (InputManager.GetButtonDown("Submit") && weaponWheelRotation != Vector2.zero) {
-                    SwapWeapon(index);
                 }
             }
         }
@@ -384,7 +380,7 @@ public class Player : MonoBehaviour {
         //int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
         int nextIndex = (CurrWeaponIndex + 1) % weapons.Count;
         int prevIndex = Mathf.Abs((CurrWeaponIndex - 1) % weapons.Count);
-        print(nextIndex + " " + prevIndex);
+        //print(nextIndex + " " + prevIndex);
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
@@ -403,12 +399,12 @@ public class Player : MonoBehaviour {
     }
 
     // Testing --------------------------------------------------------------
-    private void OnGUI() {
-        GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
-        GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
+    //private void OnGUI() {
+    //    GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
+    //    GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
 
-        GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
-        GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
-    }
+    //    GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
+    //    GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
+    //}
 
 }

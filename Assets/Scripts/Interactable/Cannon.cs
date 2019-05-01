@@ -30,6 +30,7 @@ public class Cannon : MonoBehaviour {
     [Header("Object")]
     public GameObject Barrel;
     public GameObject Base;
+    public ParticleSystem LandingEffect;
 
     private Interactable interactable;
 
@@ -207,6 +208,9 @@ public class Cannon : MonoBehaviour {
     }
 
     public void Explosion(Vector3 pos) {
+        LandingEffect.transform.position = pos;
+        LandingEffect.Play();
+
         Collider[] colliders = Physics.OverlapSphere(pos, RadiusSize, EnemyLayer);
         foreach(Collider other in colliders) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
@@ -216,7 +220,7 @@ public class Cannon : MonoBehaviour {
                 enemy.health.TakeDamage(DamageType.EXPLOSIVE, this.Damage);
                 //OnEnemyHit?.Invoke(enemy);
             }
-        }
+        }    
     }
 
 }
