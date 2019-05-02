@@ -55,7 +55,7 @@ public class Sword : Weapon {
     public void StartSwing()
     {
         collider.enabled = true;
-        AudioManager.Instance.PlaySoundWithParent("swoosh", gameObject);
+        AudioManager.Instance.PlaySoundWithParent("swoosh", ESoundChannel.SFX, gameObject);
     }
 
     public void EndSwing()

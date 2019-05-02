@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour {
             "ceramic_shatter2",
             "ceramic_shatter3",
         };
-        AudioManager.Instance.PlaySoundAtLocation(sounds[Random.Range(0, sounds.Length)], transform.position);
+        AudioManager.Instance.PlaySoundAtLocation(sounds[Random.Range(0, sounds.Length)], ESoundChannel.SFX, transform.position);
 
         this.gameObject.SetActive(false);
         brokenPot.gameObject.SetActive(true);
