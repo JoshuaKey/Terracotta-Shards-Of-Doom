@@ -111,13 +111,13 @@ public class Player : MonoBehaviour {
         }
         if (InputManager.GetButtonDown("UI_Cancel"))
         {
-            if (PauseMenu.Instance.activeSelf)
+            if (Time.timeScale == 0)
             {
-                PauseMenu.Instance.SetActive(false);
+                PauseMenu.Instance.DeactivatePauseMenu();
             }
             else
             {
-                PauseMenu.Instance.SetActive(true);
+                PauseMenu.Instance.ActivatePauseMenu();
             }
         }
 
