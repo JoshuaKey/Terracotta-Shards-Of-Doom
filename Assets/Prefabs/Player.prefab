@@ -312,8 +312,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanMove: 1
   CanWalk: 1
-  MaxSpeed: 7.5
+  MaxSpeed: 7
   AccelerationFactor: 0.1
+  MaxVelocity: 100
   CanJump: 1
   JumpPower: 7
   FallStrength: 5
@@ -331,12 +332,24 @@ MonoBehaviour:
   WeaponWheeltimeScale: 0.1
   health: {fileID: 4427983775954707073}
   WeaponParent: {fileID: 2654979141965366666}
-  InteractDistance: 2
+  InteractDistance: 3
   InteractLayer:
     serializedVersion: 2
     m_Bits: 2048
   compass: {fileID: 50113012}
   CanInteract: 1
+  SwordPrefab: {fileID: 951680341231762631, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
+    type: 3}
+  BowPrefab: {fileID: 3726514527976357539, guid: 4b8accc48522646418e1a9badb82f823,
+    type: 3}
+  HammerPrefab: {fileID: 5093554559765653830, guid: daee01d86bf2ecf4199591e4b623924a,
+    type: 3}
+  SpearPrefab: {fileID: 1070653790102783926, guid: 843f5d44cb9d5f345b284237aa77a20e,
+    type: 3}
+  CrossBowPrefab: {fileID: 8370362770596623324, guid: 876946995b9777145a9171a56fed0c69,
+    type: 3}
+  MagicPrefab: {fileID: 7386883575333685265, guid: 749b4a3b106d3a949b320cbad9f00278,
+    type: 3}
   velocity: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   weapons: []
@@ -356,6 +369,25 @@ MonoBehaviour:
   CurrentHealth: 3
   MaxHealth: 6
   Resistance: 0
+--- !u!95 &6466489162386729239
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8097329731332695128}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ac1e4f45d8d77b499171c9414d4136b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &9037161253144631452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -376,7 +408,7 @@ PrefabInstance:
     - target: {fileID: 951680341231329508, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.25
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 951680341231329508, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
         type: 3}
@@ -425,6 +457,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc4bf2df4c17b694dbe8c6d997ee0461, type: 3}
+--- !u!1 &8097329731332695128 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 951680341231762628, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
+    type: 3}
+  m_PrefabInstance: {fileID: 9037161253144631452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8097329731332798584 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 951680341231329508, guid: bc4bf2df4c17b694dbe8c6d997ee0461,

@@ -61,13 +61,13 @@ public class Bow : Weapon {
     }
 
     private void OnEnable() {
-        if (Player.Instance != null) {
+        if(Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
         }
     }
 
     private void OnDisable() {
-        if (Player.Instance != null) {
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.DisableCrosshair();
         }
 
@@ -94,7 +94,7 @@ public class Bow : Weapon {
     }
 
     public override void Attack() {
-        if (!CanAttack()) { return; }
+        if (!CanAttack() || !currArrow) { return; }
 
         float t = Interpolation.QuadraticIn(charge);
         // float t = Interpolation.ExpoIn(charge);

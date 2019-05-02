@@ -51,7 +51,7 @@ public class CrossBow : Weapon {
     }
 
     private void OnEnable() {
-        if (Player.Instance != null) {
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
         }
         if (!currArrow) {
@@ -60,7 +60,7 @@ public class CrossBow : Weapon {
         }       
     }
     private void OnDisable() {
-        if (Player.Instance != null) {
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.DisableCrosshair();
         }
         StopAllCoroutines();
