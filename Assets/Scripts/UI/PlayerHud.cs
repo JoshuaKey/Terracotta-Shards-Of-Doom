@@ -148,6 +148,9 @@ public class PlayerHud : MonoBehaviour {
     // Weapon toggle
     public void EnableWeaponToggle() {
         WeaponToggle.SetActive(true);
+        NextWeaponIcon.sprite = GetIcon(NextWeaponText.text);
+        CurrWeaponIcon.sprite = GetIcon(CurrWeaponText.text);
+        PrevWeaponIcon.sprite = GetIcon(PrevWeaponText.text);
     }
     public void SetWeaponToggle(string prevWeapon, string currWeapon, string nextWeapon) {
         EnableWeaponToggle();
