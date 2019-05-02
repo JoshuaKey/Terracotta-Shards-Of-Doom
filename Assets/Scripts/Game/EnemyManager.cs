@@ -65,7 +65,7 @@ public class EnemyManager : MonoBehaviour {
     private void EnemyDeath() {
         enemiesKilled++;
         OnEnemyDeath?.Invoke();
-        print(EnemyManager.Instance.GetEnemiesKilled() + " Enemies Killed");
+        //print(EnemyManager.Instance.GetEnemiesKilled() + " Enemies Killed");
     }
 
     public Enemy GetClosestEnemy(Vector3 pos) {

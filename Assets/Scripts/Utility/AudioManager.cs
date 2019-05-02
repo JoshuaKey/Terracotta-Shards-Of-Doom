@@ -1,15 +1,24 @@
 ﻿using Luminosity.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Audio;
+
+public enum ESoundChannel
+{
+    MUSIC,
+    SFX,
+}
 
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private int initialAudioSources = 10;
     #pragma warning disable 0649
+    [SerializeField] public AudioMixer audioMixer;
     [SerializeField] private AudioClip[] audioClips;
-#pragma warning restore 0649
+    #pragma warning restore 0649
 
     public static AudioManager Instance;
 
@@ -17,7 +26,7 @@ public class AudioManager : MonoBehaviour
     private List<AudioSource> audioSources;
     private int audioSourceID;
 
-    private readonly bool DEBUGGING = true;
+    private readonly bool DEBUGGING = false;
     
     void Start()
     {
@@ -52,9 +61,9 @@ public class AudioManager : MonoBehaviour
     /// <param name="loop"> Whether the SoundClip loops </param>
     /// <param name="onFinish"> Function called when the SoundClip is done playing </param>
     /// <returns> The played SoundClip </returns>
-    public SoundClip PlaySound(string soundName, bool loop = false, UnityAction onFinish = null)
+    public SoundClip PlaySound(string soundName, ESoundChannel soundChannel, bool loop = false, UnityAction onFinish = null)
     {
-        return PlaySoundAtLocation(soundName, transform.position, loop, onFinish);
+        return PlaySoundAtLocation(soundName, soundChannel, transform.position, loop, onFinish);
     }
 
     /// <summary>
@@ -65,11 +74,12 @@ public class AudioManager : MonoBehaviour
     /// <param name="loop"> Whether the SoundClip loops </param>
     /// <param name="onFinish"> Function called when the SoundClip is done playing </param>
     /// <returns> The played SoundClip </returns>
-    public SoundClip PlaySoundAtLocation(string soundName, Vector3 location, bool loop = false, UnityAction onFinish = null)
+    public SoundClip PlaySoundAtLocation(string soundName, ESoundChannel soundChannel, Vector3 location, bool loop = false, UnityAction onFinish = null)
     {
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName} at location {location}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
+        soundClip.soundChannel = soundChannel;
         soundClip.loop = loop;
 
         if (onFinish != null) { soundClip.onFinish += onFinish; }
@@ -91,11 +101,12 @@ public class AudioManager : MonoBehaviour
     /// <param name="loop"> Whether the SoundClip loops </param>
     /// <param name="onFinish"> Function called when the SoundClip is done playing </param>
     /// <returns> The played SoundClip </returns>
-    public SoundClip PlaySoundWithParent(string soundName, GameObject parent, bool loop = false, UnityAction onFinish = null)
+    public SoundClip PlaySoundWithParent(string soundName, ESoundChannel soundChannel, GameObject parent, bool loop = false, UnityAction onFinish = null)
     {
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName} attached to GameObject {parent}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
+        soundClip.soundChannel = soundChannel;
         soundClip.loop = loop;
 
         if (onFinish != null) { soundClip.onFinish += onFinish; }
@@ -138,7 +149,11 @@ public class AudioManager : MonoBehaviour
     private AudioSource CreateNewAudioSource(bool active = false)
     {
         GameObject go = new GameObject($"AudioSource ({audioSourceID++})");
+        go.transform.parent = transform;
         AudioSource audioSource = go.AddComponent<AudioSource>();
+        audioSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
+        audioSource.spatialBlend = 1f;
+
         audioSources.Add(audioSource);
         go.SetActive(active);
 
@@ -157,6 +172,7 @@ public class SoundClip
     public bool loop;
     public UnityAction onFinish;
     public AudioSource audioSource;
+    public ESoundChannel soundChannel;
 
     private readonly AudioClip audioClip;
 
@@ -209,7 +225,19 @@ public class SoundClip
     {
         this.audioSource = audioSource;
         audioSource.clip = audioClip;
+        audioSource.transform.position = Vector3.zero;
+        audioSource.transform.parent = null;
         audioSource.gameObject.SetActive(true);
+        
+        switch(soundChannel)
+        {
+            case ESoundChannel.MUSIC:
+                audioSource.outputAudioMixerGroup = AudioManager.Instance.audioMixer.FindMatchingGroups("Music")[0];
+                break;
+            case ESoundChannel.SFX:
+                audioSource.outputAudioMixerGroup = AudioManager.Instance.audioMixer.FindMatchingGroups("SFX")[0];
+                break;
+        }
 
         return audioSource;
     }
@@ -220,6 +248,7 @@ public class SoundClip
     private void DeactivateAudioSource()
     {
         audioSource.gameObject.SetActive(false);
+        audioSource.transform.parent = AudioManager.Instance.transform;
         onFinish = DeactivateAudioSource;
     }
 }
