@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 951680341231329508}
   - component: {fileID: 951680341231762625}
   - component: {fileID: 951680341231762631}
+  - component: {fileID: 6466489162386729239}
   m_Layer: 9
   m_Name: Sword
   m_TagString: Untagged
@@ -65,13 +66,32 @@ MonoBehaviour:
   Type: 0
   AttackSpeed: 0.5
   Damage: 2
-  Knockback: 5
-  StartPos: {x: 0.5, y: -0.25, z: 0.777}
-  EndPos: {x: -0.27, y: -0.45, z: 1.13}
+  Knockback: 3
+  StartPos: {x: 0.5, y: -0.5, z: 0.777}
+  EndPos: {x: -0.27, y: -0.7, z: 1.13}
   AnimationSwingTime: 0.2
   StartRot: {x: 30, y: 60, z: 10}
   EndRot: {x: 39.29, y: -296.8, z: -255.7}
   AnimationRecoilTime: 0.3
+--- !u!95 &6466489162386729239
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951680341231762628}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ac1e4f45d8d77b499171c9414d4136b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!65 &4269187116918195028
 BoxCollider:
   m_ObjectHideFlags: 0

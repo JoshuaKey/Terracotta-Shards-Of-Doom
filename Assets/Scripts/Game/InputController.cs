@@ -39,5 +39,9 @@ public class InputController : MonoBehaviour {
             currScheme = newScheme;
             print("Control Scheme: " + newScheme);
         }
+
+        //ScanSettings settings = new ScanSettings();
+        //settings.CancelScanKey = 
+        //InputManager.StartInputScan(new ScanSettings(), new ScanHandler());
     }
 }

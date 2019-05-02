@@ -60,6 +60,8 @@ public class MagicMissile : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
+        print("Hit " + other.name);
+
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
@@ -70,5 +72,6 @@ public class MagicMissile : PoolObject {
         collider.isTrigger = false;
         rigidbody.useGravity = true;
         Target = null;
+        this.enabled = false;
     }
 }

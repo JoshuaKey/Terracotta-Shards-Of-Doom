@@ -66,12 +66,16 @@ public class Runner_Run : State
     //if distance to player is greater than cowardRadius, stop running away
     public override string Update()
     {
-        if (Vector3.Distance(owner.transform.position, player.transform.position) > owner.GetComponent<RunnerPot>().cowardRadius)
+
+        RunnerPot rp = owner.GetComponent<RunnerPot>();
+        if (Vector3.Distance(owner.transform.position, player.transform.position) > rp.cowardRadius)
         {
             return "Runner_Idle";
         }
 
-        agent.SetDestination(owner.transform.position * 2 - player.transform.position);
+        if (!rp.stunned) {
+            agent.SetDestination(owner.transform.position * 2 - player.transform.position);
+        }       
 
         return null;
     }
