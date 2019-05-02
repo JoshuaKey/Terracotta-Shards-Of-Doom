@@ -61,17 +61,17 @@ public class Cannon : MonoBehaviour {
 	public void SetLineRenderPoints()
 	{
 		renderer.positionCount = 11;
-		Vector3[] positions = { Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.0f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.1f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.2f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.3f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.4f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.5f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.6f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.7f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.8f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 0.9f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 1 + BarrelChargePos.forward * 1), Peak.position, Target.position, 1.0f) };
+		Vector3[] positions = { Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.0f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.1f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.2f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.3f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.4f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.5f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.6f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.7f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.8f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.9f),
+								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 1.0f) };
 		renderer.SetPositions(positions);
 	}
 
