@@ -52,12 +52,13 @@ public class Sword : Weapon {
         animator.SetTrigger("Swing");
     }
 
-    public void EnableHitbox()
+    public void StartSwing()
     {
         collider.enabled = true;
+        AudioManager.Instance.PlaySoundWithParent("swoosh", gameObject);
     }
 
-    public void DisableHitbox()
+    public void EndSwing()
     {
         collider.enabled = false;
         enemiesHit.Clear();
