@@ -276,7 +276,12 @@ public class Player : MonoBehaviour {
 
             // Scroll Wheel
             if (Input.GetAxis("Mouse ScrollWheel") != 0.0f) {
-                int index = (int)(CurrWeaponIndex + Input.mouseScrollDelta.y) % weapons.Count;
+                int index = (int)(CurrWeaponIndex + Input.mouseScrollDelta.y);
+                if(index >= weapons.Count) {
+                    index = 0;
+                } else if (index < 0) {
+                    index = weapons.Count - 1;
+                }
                 SwapWeapon(index);
             }
         }
@@ -446,11 +451,8 @@ public class Player : MonoBehaviour {
         newWeapon.gameObject.SetActive(true);
         newWeapon.transform.SetParent(camera.transform, false);
 
-        //int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-        //int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
-        int nextIndex = (CurrWeaponIndex + 1) % weapons.Count;
-        int prevIndex = Mathf.Abs((CurrWeaponIndex - 1) % weapons.Count);
-        //print(nextIndex + " " + prevIndex);
+        int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {

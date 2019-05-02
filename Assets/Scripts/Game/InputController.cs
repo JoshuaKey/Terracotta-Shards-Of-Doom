@@ -37,7 +37,7 @@ public class InputController : MonoBehaviour {
         if (currScheme != newScheme) {
             InputManager.SetControlScheme(newScheme, PlayerID.One);
             currScheme = newScheme;
-            print("Changed Control Scheme " + newScheme);
+            print("Control Scheme: " + newScheme);
         }
     }
 }
