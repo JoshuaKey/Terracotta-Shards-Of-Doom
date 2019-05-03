@@ -47,8 +47,10 @@ public class Enemy : MonoBehaviour {
         StartCoroutine(KnockbackRoutine(force));
     }
 
-    public void Explode() {
-
+    public void Explode(Vector3 force, Vector3 pos) {
+        if (brokenPot.gameObject.activeInHierarchy) {
+            brokenPot.Explode(force, pos);
+        }
     }
 
     private void Die() {

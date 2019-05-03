@@ -109,13 +109,22 @@ public class Sword : Weapon {
                 bool isDead = enemy.health.IsDead();
                 if (damage > 0) {
                     if (isDead) {
-                        //print("Explode");
+                        Vector3 forward = Player.Instance.camera.transform.forward;
+                        //forward = forward.normalized;
+                        enemy.Explode(forward * RigidbodyKnockback, Player.Instance.camera.transform.position);
                     } else {
                         Vector3 forward = Player.Instance.camera.transform.forward;
                         forward.y = 0.0f;
                         forward = forward.normalized;
                         enemy.Knockback(forward * Knockback);
                     }
+                }
+            } else {
+                Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
+                if (rb != null) {
+                    Vector3 forward = Player.Instance.camera.transform.forward;
+                    //forward = forward.normalized;
+                    rb.AddForce(forward * RigidbodyKnockback, ForceMode.Impulse);
                 }
             }
         }

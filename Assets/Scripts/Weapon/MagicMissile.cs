@@ -13,6 +13,8 @@ public class MagicMissile : PoolObject {
     public float Damage = 0f;
     public DamageType Type;
     public GameObject Target;
+    public float Knockback;
+    public float RigidbodyKnockback;
 
     protected new Rigidbody rigidbody;
     protected new Collider collider;
@@ -65,8 +67,18 @@ public class MagicMissile : PoolObject {
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
-            enemy.health.TakeDamage(this.Type, this.Damage);
-        }
+            // Damage
+            float damage = enemy.health.TakeDamage(this.Type, this.Damage);
+            bool isDead = enemy.health.IsDead();
+
+            // Explosion
+            if (damage > 0 && isDead) {
+                Vector3 forward = this.transform.forward;
+                forward.y = 0.0f;
+                forward = forward.normalized;
+                enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
+            }
+        } 
 
         rigidbody.velocity = Vector3.zero;
         collider.isTrigger = false;

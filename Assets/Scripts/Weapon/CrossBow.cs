@@ -79,6 +79,8 @@ public class CrossBow : Weapon {
         currArrow.LifeTime = 20f;
         currArrow.Damage = this.Damage;
         currArrow.Type = this.Type;
+        currArrow.Knockback = this.Knockback;
+        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
         currArrow.Fire();
 
         currArrow = null;

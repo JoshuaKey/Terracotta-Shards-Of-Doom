@@ -7,6 +7,7 @@ public class Hammer : Weapon {
     [Header("Slam")]
     public Transform SlamCenter;
     public float SlamRadius;
+    public ParticleSystem DustEffect;
 
     [Header("Swing Animation")]
     public Vector3 StartPos = new Vector3(0.4f, -1, 0.77f);
@@ -78,6 +79,8 @@ public class Hammer : Weapon {
     private void SlamAttack() {
         Player.Instance.velocity.y = PlayerJump;
 
+        DustEffect.Play();
+
         int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
         foreach (Collider c in colliders) {
@@ -88,13 +91,24 @@ public class Hammer : Weapon {
                 bool isDead = enemy.health.IsDead();
                 if (damage > 0) {
                     if (isDead) {
-                        //print("Explode");
+                        Vector3 dir = c.transform.position - SlamCenter.position;
+                        //dir.y = 0.0f;
+                        dir = dir.normalized;
+                        enemy.Explode(dir * RigidbodyKnockback, SlamCenter.position);
                     } else {
                         Vector3 dir = c.transform.position - SlamCenter.position;
                         dir.y = 0.0f;
                         dir = dir.normalized;
                         enemy.Knockback(dir * Knockback);
                     }
+                }
+            } else {
+                Rigidbody rb = c.GetComponentInChildren<Rigidbody>();
+                if(rb != null){
+                    Vector3 dir = c.transform.position - SlamCenter.position;
+                    //dir.y = 0.0f;
+                    dir = dir.normalized;
+                    rb.AddForceAtPosition(dir * RigidbodyKnockback, SlamCenter.position, ForceMode.Impulse);                   
                 }
             }
         }

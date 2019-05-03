@@ -102,6 +102,8 @@ public class Bow : Weapon {
         currArrow.LifeTime = 20f;
         currArrow.Damage = charge == 1 ? Damage : MinDamage;
         currArrow.Type = this.Type;
+        currArrow.Knockback = this.Knockback;
+        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
         currArrow.Fire();
 
         charge = 0.0f;
