@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
+    #pragma warning disable 0649
     [Space]
     [SerializeField] GameObject PlayerHUD;
     [Space]
@@ -17,24 +18,25 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject Controls;
     [Space]
     [SerializeField] Button ContinueButton;
+    #pragma warning restore 0649
 
     [Header("Other")]
     public EventSystem eventSystem;
 
-    public static GameObject Instance;
+    public static PauseMenu Instance;
 
     private void Start()
     {
         if (Instance != null) { Destroy(this); return; }
 
-        Instance = gameObject;
+        Instance = this;
 
-        gameObject.SetActive(false);
+        DeactivatePauseMenu();
 
         if (eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
     }
 
-    private void OnEnable()
+    public void ActivatePauseMenu()
     {
         PauseStart.SetActive(true);
         Progress.SetActive(false);
@@ -42,8 +44,8 @@ public class PauseMenu : MonoBehaviour
 
         Time.timeScale = 0;
 
-        //Cursor.lockState = CursorLockMode.None;
-        //Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         if (Player.Instance != null)
         {
@@ -53,9 +55,11 @@ public class PauseMenu : MonoBehaviour
         PlayerHUD.SetActive(false);
 
         eventSystem.SetSelectedGameObject(ContinueButton.gameObject);
+
+        gameObject.SetActive(true);
     }
 
-    private void OnDisable()
+    public void DeactivatePauseMenu()
     {
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
@@ -69,6 +73,8 @@ public class PauseMenu : MonoBehaviour
 
         PlayerHUD.SetActive(true);
         eventSystem.SetSelectedGameObject(null);
+
+        gameObject.SetActive(false);
     }
 
     public void OpenPauseMenu(string menuName)
@@ -109,10 +115,11 @@ public class PauseMenu : MonoBehaviour
 
     public void Continue()
     {
-        gameObject.SetActive(false);
+        DeactivatePauseMenu();
     }
 
     public void Quit()
     {
+        Application.Quit();
     }
 }

@@ -42,7 +42,7 @@ public class Health : MonoBehaviour {
         }
 
         CurrentHealth -= damage;
-        print(this.name + " (Damage): " + CurrentHealth + "/" + MaxHealth);
+        //print(this.name + " (Damage): " + CurrentHealth + "/" + MaxHealth);
 
         OnDamage?.Invoke(damage);
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class DeathZone : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
-        print("Death: " + other.name);
+        //print("Death: " + other.name);
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             CheckPointSystem.Instance.LoadlastCheckpoint();
             Player.Instance.CanMove = false;

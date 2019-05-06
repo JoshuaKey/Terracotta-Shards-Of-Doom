@@ -123,7 +123,7 @@ namespace LuminosityEditor.IO
 
         public string KeyToString(KeyCode code) {
             switch (code) {
-                case KeyCode.Slash:
+                case KeyCode.Backslash:
                     return "\\";
                 case KeyCode.Quote:
                     return "\"";
@@ -134,7 +134,7 @@ namespace LuminosityEditor.IO
         public KeyCode StringToKey(string code) {
             switch (code) {
                 case "\\":
-                    return KeyCode.Slash;
+                    return KeyCode.Backslash;
                 case "\"":
                     return KeyCode.Quote;
                 default:

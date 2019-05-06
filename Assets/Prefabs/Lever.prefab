@@ -117,7 +117,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5343395031816242785}
-  m_Layer: 0
+  - component: {fileID: 4403515640253348358}
+  m_Layer: 11
   m_Name: Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,6 +141,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4403515640253348358
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5343395031815887425}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.5, y: 3, z: 2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &5343395031815887427
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,6 +165,7 @@ GameObject:
   - component: {fileID: 5343395031816242787}
   - component: {fileID: 5343395031812851267}
   - component: {fileID: 5343395031813948547}
+  - component: {fileID: 4968767433401861096}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -217,3 +232,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &4968767433401861096
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5343395031815887427}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.84776, y: 0.92388, z: 1}
+  m_Center: {x: 0, y: 0.46194, z: 0}
