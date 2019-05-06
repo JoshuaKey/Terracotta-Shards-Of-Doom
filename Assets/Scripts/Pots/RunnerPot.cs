@@ -22,6 +22,10 @@ public class RunnerPot : Pot
 
 public class Runner_Idle : State
 {
+    //if player is within aggro radius and visible
+    //or pot is damaged
+    //move to runner_run
+
     RunnerPot runnerPot;
     Health health;
     bool isDamaged;
@@ -67,6 +71,8 @@ public class Runner_Idle : State
 
 public class Runner_Run : State
 {
+    //run away from player
+
     RunnerPot runnerPot;
 
     public override void Init(GameObject owner)

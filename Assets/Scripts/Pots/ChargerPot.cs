@@ -102,7 +102,6 @@ public class Charger_Charge : State
 
     ChargerPot chargerPot;
 
-
     public override void Init(GameObject owner)
     {
         base.Init(owner);
@@ -120,7 +119,7 @@ public class Charger_Charge : State
             return "Charger_Attack";
         }
 
-        if (agent.isActiveAndEnabled && !cp.stunned)
+        if (agent.isActiveAndEnabled && !chargerPot.stunned)
         {
             agent.SetDestination(Player.Instance.transform.position);
         }
