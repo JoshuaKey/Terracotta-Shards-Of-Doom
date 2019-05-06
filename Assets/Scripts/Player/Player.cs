@@ -161,22 +161,6 @@ public class Player : MonoBehaviour {
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
-
-            //if (Input.GetKeyDown(KeyCode.N)) {
-            //    velocity += -camera.transform.forward * 10; // Crossbow
-            //}
-            //if (Input.GetKeyDown(KeyCode.M)) {
-            //    velocity += -camera.transform.forward * 20; // Spear & Charger Pot
-            //}
-            //if (Input.GetKeyDown(KeyCode.Comma)) {
-            //    velocity += -camera.transform.forward * 30; // hammer & Armor Pot
-            //}
-            //if (Input.GetKeyDown(KeyCode.Period)) {
-            //    velocity += -camera.transform.forward * 40; // Sword
-            //}
-            //if (Input.GetKeyDown(KeyCode.Slash)) {
-            //    velocity += -camera.transform.forward * 50; // Boss
-            //}
         }
 
     }
@@ -348,7 +332,8 @@ public class Player : MonoBehaviour {
                 if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
                 if (interactable.CanInteract) {
-                    PlayerHud.Instance.SetInteractText("f", interactable.name);
+                    Sprite inputIcon = InputController.Instance.GetActionIcon("Interact");
+                    PlayerHud.Instance.SetInteractText(inputIcon);
 
                     if (InputManager.GetButtonDown("Interact")) {
                         interactable.Interact();
