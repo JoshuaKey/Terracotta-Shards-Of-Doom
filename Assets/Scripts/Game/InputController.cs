@@ -37,7 +37,11 @@ public class InputController : MonoBehaviour {
         if (currScheme != newScheme) {
             InputManager.SetControlScheme(newScheme, PlayerID.One);
             currScheme = newScheme;
-            print("Changed Control Scheme " + newScheme);
+            print("Control Scheme: " + newScheme);
         }
+
+        //ScanSettings settings = new ScanSettings();
+        //settings.CancelScanKey = 
+        //InputManager.StartInputScan(new ScanSettings(), new ScanHandler());
     }
 }

@@ -9,10 +9,12 @@ public abstract class Pot : MonoBehaviour
     [SerializeField] float waddleAmplitude = 12.5f; //in degrees
     [SerializeField] float hopHeight = 0.5f; //in meters
     [Space]
+    [SerializeField] public bool stunned = false;
+
 
     protected StateMachine stateMachine;
     protected NavMeshAgent agent;
-
+    
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
