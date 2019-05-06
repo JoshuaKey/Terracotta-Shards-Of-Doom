@@ -22,7 +22,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &890124778229564163
+--- !u!114 &5279424448788725284
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -38,10 +38,28 @@ MonoBehaviour:
   hopHeight: 0.5
   aggroRadius: 20
   attackRadius: 2.5
-  attackDuration: 0.25
-  attackAngle: 70
+  attackDuration: 1
   isAttacking: 0
   hasHitPlayer: 0
+--- !u!95 &4467311786474838681
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988088890821312265}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1639069917670760712
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -144,6 +162,12 @@ GameObject:
 --- !u!4 &988088890821600043 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1948159762795659811, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1639069917670760712}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &988088890821312265 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1948159762795503105, guid: 7af5e528f545bc34d9140e685d17ceb2,
     type: 3}
   m_PrefabInstance: {fileID: 1639069917670760712}
   m_PrefabAsset: {fileID: 0}

@@ -12,7 +12,7 @@ public abstract class Pot : MonoBehaviour
 
     protected StateMachine stateMachine;
     protected NavMeshAgent agent;
-
+    
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
