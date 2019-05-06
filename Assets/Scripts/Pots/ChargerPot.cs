@@ -7,11 +7,14 @@ public class ChargerPot : Pot
     [SerializeField] public float aggroRadius = 5f;
     [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
-    [SerializeField] public float attackAngle = 70f;
     [SerializeField] public float knockback = 20f;
 
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool hasHitPlayer = false;
+
+    //delete this later
+    public static bool debugged = false;
+    //delete this later
 
     private void Start()
     {
@@ -19,8 +22,8 @@ public class ChargerPot : Pot
         stateMachine.Init(gameObject,
             new Charger_Idle(),
             new Charger_Charge(),
-            new Charger_Attack());
-        stateMachine.DEBUGGING = false;
+            new Charger_Attack(attackDuration));
+        //stateMachine.DEBUGGING = true;
     }
 
     //Calls hop when Animate is called. This looks bad but it's the most efficient way to do it
@@ -45,71 +48,82 @@ public class ChargerPot : Pot
 
 public class Charger_Idle : State
 {
-    GameObject player;
+    //if player is within aggro radius and visible
+    //or pot is damaged
+    //move to charger_charge
+
+    ChargerPot chargerPot;
+    Health health;
+    bool isDamaged;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        chargerPot = owner.GetComponent<ChargerPot>();
+        health = owner.GetComponent<Health>();
     }
 
     public override void Enter()
-    { }
+    {
+        isDamaged = false;
+        health.OnDamage += OnDamage;
+    }
 
     public override void Exit()
-    { }
+    {
+        health.OnDamage -= OnDamage;
+    }
 
-    //if the distance to player is less than aggroRadius, start running at player
     public override string Update()
     {
-        if(Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<ChargerPot>().aggroRadius)
+        Vector3 towardPlayer = Player.Instance.transform.position - owner.transform.position;
+
+        RaycastHit hit;
+        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, chargerPot.aggroRadius, ~LayerMask.GetMask("Enemy"))
+            && hit.collider.tag == "Player")
+            || isDamaged)
         {
             return "Charger_Charge";
         }
 
         return null;
     }
+
+    public void OnDamage(float damage)
+    {
+        isDamaged = true;
+    }
 }
 
 public class Charger_Charge : State
 {
-    GameObject player;
+    //if player is within attack radius
+    //move to charger_attack
 
+    ChargerPot chargerPot;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        chargerPot = owner.GetComponent<ChargerPot>();
     }
 
-    //if player is null it sets player
-    public override void Enter()
-    { }
+    public override void Enter() { }
 
-    public override void Exit()
-    {
-    }
+    public override void Exit() { }
 
-    //if the distance to player is greater than aggroRadius, stop running at player
     public override string Update()
     {
-        float distance = Vector3.Distance(owner.transform.position, player.transform.position);
-        ChargerPot cp = owner.GetComponent<ChargerPot>();
-
-        if (distance > cp.aggroRadius)
+        if(Vector3.Distance(owner.transform.position, Player.Instance.transform.position) < chargerPot.attackRadius)
         {
-            return "Charger_Idle";
+            return "Charger_Attack";
         }
 
-        if (distance < cp.attackRadius)
+        if (agent.isActiveAndEnabled && !chargerPot.stunned)
         {
-            return "PUSH.Charger_Attack";
+            agent.SetDestination(Player.Instance.transform.position);
         }
 
-        if (agent.isActiveAndEnabled && !cp.stunned) 
-        {
-            agent.SetDestination(player.transform.position);
-        }
 
         return null;
     }
@@ -117,56 +131,37 @@ public class Charger_Charge : State
 
 public class Charger_Attack : TimedState
 {
-    GameObject player;
-    ChargerPot cp;
+    //trigger animation
+    //after a certain amount of time move to charger_charge
+
+    Animator animator;
+
+    public Charger_Attack(float seconds)
+        : base(seconds)
+    { }
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        animator = owner.GetComponentInChildren<Animator>();
+        Debug.Log(animator != null);
     }
 
     public override void Enter()
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-        if(cp == null) 
-        {
-            cp = owner.GetComponent<ChargerPot>();
-        }
-        timer = 0;
-        cp.isAttacking = true;
-        cp.hasHitPlayer = false;
-        if(agent.isActiveAndEnabled && agent.isOnNavMesh) {
-            agent.isStopped = true;
-        }
+        base.Enter();
+        animator.SetTrigger("Attack");
     }
 
-    public override void Exit()
-    {
-        cp.isAttacking = false;
-        cp.hasHitPlayer = false;
-        if (agent.isActiveAndEnabled && agent.isOnNavMesh) {
-            agent.isStopped = false;
-        }
-    }
+    public override void Exit() { }
 
     public override string Update()
     {
         base.Update();
 
-        Vector3 newRotation = owner.transform.rotation.eulerAngles;
-
-        newRotation.x = timer * (timer - cp.attackDuration) * (-4 * cp.attackAngle) / Mathf.Pow(cp.attackDuration, 2);
-        newRotation.y = Quaternion.LookRotation(player.transform.position - owner.transform.position).eulerAngles.y;
-
-        owner.transform.rotation = Quaternion.Euler(newRotation);
-
-        if(timer >= cp.attackDuration)
+        if(timer >= seconds)
         {
-            return "POP";
+            return "Charger_Charge";
         }
 
         return null;
