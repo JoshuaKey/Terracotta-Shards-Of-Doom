@@ -306,7 +306,7 @@ public class Boss1Pot : Pot
                 randomDirection.y = Mathf.Abs(randomDirection.y);
                 
                 Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y);;
-                aimOffset = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * aimOffset)) * 2.0f
+                aimOffset = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * aimOffset)) * 2.0f;
                 aimOffset += aimOffset * Random.Range(0.0f, 2.0f);
 
                 targetX = player.transform.position.x + aimOffset.x;
