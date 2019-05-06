@@ -12,8 +12,9 @@ public class BrokenPot : MonoBehaviour {
         this.gameObject.SetActive(false);
     }
 
-    public void Explode() {
-        
-        // Put Explodey Logic here
+    public void Explode(Vector3 force, Vector3 pos) {
+        foreach(Rigidbody rb in pieces) {
+            rb.AddExplosionForce(force.magnitude, pos, 10.0f, 1.0f, ForceMode.Impulse);
+        }
     }
 }

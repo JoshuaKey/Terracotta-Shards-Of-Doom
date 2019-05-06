@@ -43,9 +43,6 @@ public class WeaponPickup : MonoBehaviour {
         interactable.OnInteract -= this.Pickup;
         interactable.CanInteract = false;
         this.gameObject.SetActive(false);
-
-        Player.Instance.CanSwapWeapon = true;
-        PlayerHud.Instance.EnableWeaponToggle();
     }
 
     private void OnTriggerEnter(Collider other) {

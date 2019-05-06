@@ -84,8 +84,11 @@ public class Runner_Run : State
         Debug.DrawLine(owner.transform.position, Player.Instance.transform.position, Color.red);
         Debug.DrawLine(owner.transform.position, agent.destination, Color.cyan);
 
-        Vector3 awayFromPlayer = owner.transform.position * 2 - Player.Instance.transform.position;
-        agent.SetDestination(awayFromPlayer);
+        if (!runnerPot.stunned) {
+          Vector3 awayFromPlayer = owner.transform.position * 2 - Player.Instance.transform.position;
+          agent.SetDestination(awayFromPlayer);
+        }
+        
         return null;
     }
 }

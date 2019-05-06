@@ -7,6 +7,7 @@ public class ChargerPot : Pot
     [SerializeField] public float aggroRadius = 5f;
     [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
+    [SerializeField] public float knockback = 20f;
 
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool hasHitPlayer = false;
@@ -40,6 +41,7 @@ public class ChargerPot : Pot
         if (other.CompareTag(Game.Instance.PlayerTag) && isAttacking && !hasHitPlayer) {
             hasHitPlayer = true;
             Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
+            Player.Instance.Knockback(this.transform.forward * knockback);
         }
     }
 }
@@ -100,6 +102,7 @@ public class Charger_Charge : State
 
     ChargerPot chargerPot;
 
+
     public override void Init(GameObject owner)
     {
         base.Init(owner);
@@ -117,10 +120,12 @@ public class Charger_Charge : State
             return "Charger_Attack";
         }
 
-        Debug.DrawLine(owner.transform.position, Player.Instance.transform.position, Color.red);
-        Debug.DrawLine(owner.transform.position, agent.destination, Color.cyan);
+        if (agent.isActiveAndEnabled && !cp.stunned)
+        {
+            agent.SetDestination(Player.Instance.transform.position);
+        }
 
-        agent.SetDestination(Player.Instance.transform.position);
+
         return null;
     }
 }
@@ -132,7 +137,7 @@ public class Charger_Attack : TimedState
 
     Animator animator;
 
-    public Charger_Attack(float seconds) 
+    public Charger_Attack(float seconds)
         : base(seconds)
     { }
 

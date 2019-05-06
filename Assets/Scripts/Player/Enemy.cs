@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
@@ -10,6 +11,8 @@ public class Enemy : MonoBehaviour {
     public Pot pot;
     [HideInInspector]
     public BrokenPot brokenPot;
+    [HideInInspector]
+    public NavMeshAgent agent;
 
     private new Rigidbody rigidbody;
     private new Collider collider;
@@ -30,6 +33,8 @@ public class Enemy : MonoBehaviour {
         health = GetComponent<Health>();
         if (health == null) { health = GetComponentInChildren<Health>(true); }
 
+        if (agent == null) { agent = GetComponentInChildren<NavMeshAgent>(true); }
+
         this.gameObject.tag = "Enemy";
         this.gameObject.layer = LayerMask.NameToLayer("Enemy");
 
@@ -39,12 +44,13 @@ public class Enemy : MonoBehaviour {
     }
 
     public void Knockback(Vector3 force) {
-        print(force);
         StartCoroutine(KnockbackRoutine(force));
     }
 
-    public void Explode() {
-
+    public void Explode(Vector3 force, Vector3 pos) {
+        if (brokenPot.gameObject.activeInHierarchy) {
+            brokenPot.Explode(force, pos);
+        }
     }
 
     private void Die() {
@@ -63,18 +69,17 @@ public class Enemy : MonoBehaviour {
     }
 
     protected IEnumerator KnockbackRoutine(Vector3 force) {
-        rigidbody.isKinematic = false;
-        if (pot != null && pot.GetAgent() != null) {
-            pot.GetAgent().enabled = false;
+        if (agent != null) {
+            agent.SetDestination(this.transform.position + force);
         }
-
-        rigidbody.AddForce(force, ForceMode.Impulse);
+        if (pot != null) {
+            pot.stunned = true;
+        }
 
         yield return new WaitForSeconds(1f);
 
-        rigidbody.isKinematic = true;
-        if (pot != null && pot.GetAgent() != null) {
-            pot.GetAgent().enabled = true;
+        if (pot != null) {
+            pot.stunned = false;
         }
     }
 }

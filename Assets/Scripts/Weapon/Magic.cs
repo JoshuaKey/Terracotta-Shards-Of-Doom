@@ -82,6 +82,8 @@ public class Magic : Weapon {
             m.LifeTime = 20f;
             m.Damage = this.Damage;
             m.Type = this.Type;
+            m.Knockback = this.Knockback;
+            m.RigidbodyKnockback = this.RigidbodyKnockback;
             m.Fire();
         }
 
