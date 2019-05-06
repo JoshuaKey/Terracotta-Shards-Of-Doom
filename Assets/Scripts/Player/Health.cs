@@ -45,7 +45,7 @@ public class Health : MonoBehaviour {
         //print(this.name + " (Damage): " + CurrentHealth + "/" + MaxHealth);
 
         OnDamage?.Invoke(damage);
-
+        
         if (IsDead()) {
             OnDeath?.Invoke();
         }

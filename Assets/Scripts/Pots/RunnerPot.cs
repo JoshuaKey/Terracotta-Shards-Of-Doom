@@ -22,61 +22,79 @@ public class RunnerPot : Pot
 
 public class Runner_Idle : State
 {
-    GameObject player;
+    //if player is within aggro radius and visible
+    //or pot is damaged
+    //move to runner_run
+
+    RunnerPot runnerPot;
+    Health health;
+    bool isDamaged;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        runnerPot = owner.GetComponent<RunnerPot>();
+        health = owner.GetComponent<Health>();
     }
 
     public override void Enter()
-    { }
+    {
+        isDamaged = false;
+        health.OnDamage += OnDamage;
+    }
 
     public override void Exit()
-    { }
+    {
+        health.OnDamage -= OnDamage;
+    }
 
-    //if the distance to player is less than cowardRadius, start running away
     public override string Update()
     {
-        if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<RunnerPot>().cowardRadius)
+        Vector3 towardPlayer = Player.Instance.transform.position - owner.transform.position;
+
+        RaycastHit hit;
+        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, runnerPot.cowardRadius, ~LayerMask.GetMask("Enemy"))
+            && hit.collider.tag == "Player")
+            || isDamaged)
         {
             return "Runner_Run";
         }
 
         return null;
     }
+
+    public void OnDamage(float damage)
+    {
+        isDamaged = true;
+    }
 }
+
 public class Runner_Run : State
 {
-    GameObject player;
+    //run away from player
+
+    RunnerPot runnerPot;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        runnerPot = owner.GetComponent<RunnerPot>();
     }
 
-    public override void Enter()
-    { }
+    public override void Enter() { }
 
-    public override void Exit()
-    { }
+    public override void Exit() { }
 
-    //if distance to player is greater than cowardRadius, stop running away
     public override string Update()
     {
+        Debug.DrawLine(owner.transform.position, Player.Instance.transform.position, Color.red);
+        Debug.DrawLine(owner.transform.position, agent.destination, Color.cyan);
 
-        RunnerPot rp = owner.GetComponent<RunnerPot>();
-        if (Vector3.Distance(owner.transform.position, player.transform.position) > rp.cowardRadius)
-        {
-            return "Runner_Idle";
+        if (!runnerPot.stunned) {
+          Vector3 awayFromPlayer = owner.transform.position * 2 - Player.Instance.transform.position;
+          agent.SetDestination(awayFromPlayer);
         }
-
-        if (!rp.stunned) {
-            agent.SetDestination(owner.transform.position * 2 - player.transform.position);
-        }       
-
+        
         return null;
     }
 }
