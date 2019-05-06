@@ -7,7 +7,6 @@ public class Health : MonoBehaviour {
 
     public delegate void PublicAction();
 
-    [HideInInspector]
     public float CurrentHealth;
     public float MaxHealth = 3f;
     public DamageType Resistance = 0;
@@ -40,7 +39,7 @@ public class Health : MonoBehaviour {
     public float TakeDamage(DamageType type, float damage) {
         if ((Resistance & type) != 0) {
             damage = 0;
-        } 
+        }
 
         CurrentHealth -= damage;
         print(this.name + " (Damage): " + CurrentHealth + "/" + MaxHealth);
