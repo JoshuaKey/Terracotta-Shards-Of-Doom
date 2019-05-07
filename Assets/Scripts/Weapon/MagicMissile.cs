@@ -6,6 +6,7 @@ public class MagicMissile : PoolObject {
 
     [Header("Life")]
     public Vector3 Impulse;
+    public float TargetSpeed = 5;
     public float TargetLerpSpeed = 0.9f;
     public float LifeTime = 20f;
 
@@ -34,6 +35,7 @@ public class MagicMissile : PoolObject {
     private void FixedUpdate() {
         if (!rigidbody.isKinematic && Target != null) {
             Vector3 dir = (Target.transform.position - this.transform.position);
+            dir = dir.normalized * TargetSpeed;
             rigidbody.AddForce(dir, ForceMode.Impulse);
         }
     }

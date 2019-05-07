@@ -8,6 +8,7 @@ public class CrossBow : Weapon {
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
     public float Impulse = 5f;
+    public LayerMask AimLayer;
 
     [Header("Visuals")]
     public Arrow ArrowPrefab;
@@ -32,7 +33,7 @@ public class CrossBow : Weapon {
         Ray ray = new Ray(camera.transform.position + forward * MinDistance, forward);
         RaycastHit hit;
         Vector3 aimPoint = Vector3.zero;
-        if (Physics.Raycast(ray, out hit, MaxDistance)) {
+        if (Physics.Raycast(ray, out hit, MaxDistance, AimLayer)) {
             aimPoint = hit.point;
         } else {
             aimPoint = camera.transform.position + forward * MaxDistance;

@@ -21,6 +21,8 @@ public class Cannon : MonoBehaviour {
     [Header("Damage")]
     public float Damage;
     public float RadiusSize;
+    public float Knockback = 1;
+    public float RigidbodyKnockback = 5;
     public LayerMask EnemyLayer;
 
     [Header("Time")]
@@ -38,7 +40,7 @@ public class Cannon : MonoBehaviour {
     private WaitForSeconds leapWait;
     private bool aligning = false;
 
-	public LineRenderer renderer;
+	public new LineRenderer renderer;
 
     // Start is called before the first frame update
     void Start() {
@@ -47,8 +49,6 @@ public class Cannon : MonoBehaviour {
 
 		renderer = GetComponentInChildren<LineRenderer>();
 
-		SetLineRenderPoints();
-
         interactable.Subscribe(FirePlayer);
 
         //BarrelAngle = Barrel.transform.root.localEulerAngles.x;
@@ -56,23 +56,28 @@ public class Cannon : MonoBehaviour {
         if (AutoAlign) {
             Align(Target.position, Peak.position);
         }
+
+        SetLineRenderPoints();
     }
 
 	public void SetLineRenderPoints()
 	{
-		renderer.positionCount = 11;
-		Vector3[] positions = { Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.0f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.1f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.2f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.3f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.4f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.5f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.6f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.7f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.8f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 0.9f),
-								Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.up * 0.5f + BarrelChargePos.forward * 0.5f), Peak.position, Target.position, 1.0f) };
-		renderer.SetPositions(positions);
+        int amo = 11;
+		renderer.positionCount = amo;
+
+        Vector3[] positions = {
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.0f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.1f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.2f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.3f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.4f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.5f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.6f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.7f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.8f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.9f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 1.0f) };
+        renderer.SetPositions(positions);
 	}
 
     public void Rotate(Transform target, Transform peak) => Rotate(target, peak, ChargeTime, LeapTime);
@@ -160,6 +165,7 @@ public class Cannon : MonoBehaviour {
 
     public void FirePlayer() {
         Player player = Player.Instance;
+        renderer.enabled = false;
         StartCoroutine(Shoot(player));
     }
 
@@ -179,6 +185,7 @@ public class Cannon : MonoBehaviour {
         player.CanWalk = false;
         player.CanMove = false;
         player.CanRotate = false;
+        player.CanAttack = false;
 
         while (aligning) {
             yield return null;
@@ -224,6 +231,7 @@ public class Cannon : MonoBehaviour {
 
         player.CanWalk = true;
         player.CanMove = true;
+        player.CanAttack = true;
         player.transform.SetParent(oldParent, true);
         player.transform.localRotation = oldRot;
         player.health.Resistance = resistance;
@@ -245,28 +253,18 @@ public class Cannon : MonoBehaviour {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
             if (enemy != null) {
-                print("Cannon hit " + other.name + " or " + enemy.name);
-                enemy.health.TakeDamage(DamageType.EXPLOSIVE, this.Damage);
-                //OnEnemyHit?.Invoke(enemy);
+                // Damage
+                float damage = enemy.health.TakeDamage(DamageType.EXPLOSIVE, this.Damage);
+                bool isDead = enemy.health.IsDead();
+
+                // Explosion
+                if (damage > 0 && isDead) {
+                    Vector3 forward = this.transform.forward;
+                    forward.y = 0.0f;
+                    forward = forward.normalized;
+                    enemy.Explode(forward * RigidbodyKnockback, pos);
+                }
             }
         }    
     }
-
-	private void OnTriggerEnter(Collider other)
-	{
-		Debug.Log("PLEASE GOD PLEASE AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-		if(other.gameObject.tag == "Player")
-		{
-			Debug.Log("OH COOL EVERYTHING'S FINE");
-			renderer.enabled = true;
-		}
-	}
-
-	private void OnTriggerExit(Collider other)
-	{
-		if(other.gameObject.tag == "Player")
-		{
-			renderer.enabled = false;
-		}
-	}
 }
