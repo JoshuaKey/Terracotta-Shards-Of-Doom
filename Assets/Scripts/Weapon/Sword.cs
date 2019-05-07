@@ -16,12 +16,14 @@ public class Sword : Weapon {
 
     protected new Rigidbody rigidbody;
     protected new Collider collider;
+    protected Animator animator;
 
     private List<GameObject> enemiesHit = new List<GameObject>();
 
     protected void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
+        if (animator == null) { animator = GetComponentInChildren<Animator>(true); }
 
         collider.enabled = false;
 
@@ -46,7 +48,20 @@ public class Sword : Weapon {
         if (!CanAttack()) { return; }
 
         base.Attack();
-        StartCoroutine(Swing());
+        //StartCoroutine(Swing());
+        animator.SetTrigger("Swing");
+    }
+
+    public void StartSwing()
+    {
+        collider.enabled = true;
+        AudioManager.Instance.PlaySoundWithParent("swoosh", ESoundChannel.SFX, gameObject);
+    }
+
+    public void EndSwing()
+    {
+        collider.enabled = false;
+        enemiesHit.Clear();
     }
 
     private IEnumerator Swing() {
@@ -95,13 +110,22 @@ public class Sword : Weapon {
                 bool isDead = enemy.health.IsDead();
                 if (damage > 0) {
                     if (isDead) {
-                        //print("Explode");
+                        Vector3 forward = Player.Instance.camera.transform.forward;
+                        //forward = forward.normalized;
+                        enemy.Explode(forward * RigidbodyKnockback, Player.Instance.camera.transform.position);
                     } else {
                         Vector3 forward = Player.Instance.camera.transform.forward;
                         forward.y = 0.0f;
                         forward = forward.normalized;
                         enemy.Knockback(forward * Knockback);
                     }
+                }
+            } else {
+                Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
+                if (rb != null) {
+                    Vector3 forward = Player.Instance.camera.transform.forward;
+                    //forward = forward.normalized;
+                    rb.AddForce(forward * RigidbodyKnockback, ForceMode.Impulse);
                 }
             }
         }

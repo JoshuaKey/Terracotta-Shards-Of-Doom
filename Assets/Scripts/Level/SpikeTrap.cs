@@ -31,20 +31,23 @@ public class SpikeTrap : MonoBehaviour {
 
     private IEnumerator Activate() {
         Trigger.enabled = false;
-        DamageCollider.enabled = true;
+        DamageCollider.enabled = false;
 
         float startTime = Time.time;
         while (Time.time < startTime + WaitTime) {
-            print("Waiting");
+            //print("Waiting");
             yield return null;
         }
 
         startTime = Time.time;
         while (Time.time < startTime + SpringTime) {
-            print("Springing");
+            //print("Springing");
 
             float t = (Time.time - startTime) / SpringTime;
             t = Interpolation.ExpoIn(t);
+
+            DamageCollider.enabled = t > .1f;
+
             TrapModel.transform.position = Vector3.Lerp(WaitPos.position, SpringPos.position, t);
             yield return null;
         }
@@ -52,7 +55,7 @@ public class SpikeTrap : MonoBehaviour {
 
         startTime = Time.time;
         while (Time.time < startTime + RecoilTime) {
-            print("Recoiling");
+            //print("Recoiling");
 
             float t = (Time.time - startTime) / RecoilTime;
 
@@ -65,7 +68,7 @@ public class SpikeTrap : MonoBehaviour {
 
         startTime = Time.time;
         while (Time.time < startTime + ReloadTime) {
-            print("Waiting");
+            //print("Waiting");
             yield return null;
         }
 

@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 50113010}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: 403c633a46e201a4eb635bd78a24a6df, type: 3}
 --- !u!23 &50113013
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: fc87bce7f4f25794fa4b62eb865c26bd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -312,8 +312,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanMove: 1
   CanWalk: 1
-  MaxSpeed: 7.5
+  MaxSpeed: 7
   AccelerationFactor: 0.1
+  MaxVelocity: 100
   CanJump: 1
   JumpPower: 7
   FallStrength: 5
@@ -328,15 +329,27 @@ MonoBehaviour:
   CanAttack: 1
   CanSwapWeapon: 0
   CurrWeaponIndex: 1
-  WeaponWheeltimeScale: 0.5
+  WeaponWheeltimeScale: 0.1
   health: {fileID: 4427983775954707073}
   WeaponParent: {fileID: 2654979141965366666}
-  InteractDistance: 2
+  InteractDistance: 3
   InteractLayer:
     serializedVersion: 2
     m_Bits: 2048
   compass: {fileID: 50113012}
   CanInteract: 1
+  SwordPrefab: {fileID: 951680341231762631, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
+    type: 3}
+  BowPrefab: {fileID: 3726514527976357539, guid: 4b8accc48522646418e1a9badb82f823,
+    type: 3}
+  HammerPrefab: {fileID: 5093554559765653830, guid: daee01d86bf2ecf4199591e4b623924a,
+    type: 3}
+  SpearPrefab: {fileID: 1070653790102783926, guid: 843f5d44cb9d5f345b284237aa77a20e,
+    type: 3}
+  CrossBowPrefab: {fileID: 8370362770596623324, guid: 876946995b9777145a9171a56fed0c69,
+    type: 3}
+  MagicPrefab: {fileID: 7386883575333685265, guid: 749b4a3b106d3a949b320cbad9f00278,
+    type: 3}
   velocity: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   weapons: []
@@ -376,7 +389,7 @@ PrefabInstance:
     - target: {fileID: 951680341231329508, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.25
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 951680341231329508, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
         type: 3}

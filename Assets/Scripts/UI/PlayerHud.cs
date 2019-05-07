@@ -22,7 +22,7 @@ public class PlayerHud : MonoBehaviour {
 
     [Header("Interact Text")]
     public GameObject InteractTextObject;
-    public TextMeshProUGUI InteractText;
+    public Image InteractImage;
 
     [Header("Enemy Count")]
     public GameObject EnemyCount;
@@ -109,15 +109,16 @@ public class PlayerHud : MonoBehaviour {
 
     // Interact Text
     public void EnableInteractText() {
-        InteractText.gameObject.SetActive(true);
+        InteractImage.gameObject.SetActive(true);
     }
-    public void SetInteractText(string button, string name) {
+    public void SetInteractText(Sprite icon) {
         EnableInteractText();
         //InteractText.text = "Press <sprite name=\"" + button + "\"> to interact with '" + name + "'";
-        InteractText.text = "Press '" + button + "' to interact with '" + name + "'";
+
+        InteractImage.sprite = icon;
     }
     public void DisableInteractText() {
-        InteractText.gameObject.SetActive(false);
+        InteractImage.gameObject.SetActive(false);
     }
 
     // Crosshair
@@ -148,6 +149,9 @@ public class PlayerHud : MonoBehaviour {
     // Weapon toggle
     public void EnableWeaponToggle() {
         WeaponToggle.SetActive(true);
+        NextWeaponIcon.sprite = GetIcon(NextWeaponText.text);
+        CurrWeaponIcon.sprite = GetIcon(CurrWeaponText.text);
+        PrevWeaponIcon.sprite = GetIcon(PrevWeaponText.text);
     }
     public void SetWeaponToggle(string prevWeapon, string currWeapon, string nextWeapon) {
         EnableWeaponToggle();

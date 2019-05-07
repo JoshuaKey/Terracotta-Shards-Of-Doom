@@ -8,6 +8,7 @@ public class CrossBow : Weapon {
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
     public float Impulse = 5f;
+    public LayerMask AimLayer;
 
     [Header("Visuals")]
     public Arrow ArrowPrefab;
@@ -32,7 +33,7 @@ public class CrossBow : Weapon {
         Ray ray = new Ray(camera.transform.position + forward * MinDistance, forward);
         RaycastHit hit;
         Vector3 aimPoint = Vector3.zero;
-        if (Physics.Raycast(ray, out hit, MaxDistance)) {
+        if (Physics.Raycast(ray, out hit, MaxDistance, AimLayer)) {
             aimPoint = hit.point;
         } else {
             aimPoint = camera.transform.position + forward * MaxDistance;
@@ -51,14 +52,18 @@ public class CrossBow : Weapon {
     }
 
     private void OnEnable() {
-        PlayerHud.Instance.EnableCrosshair();
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
+            PlayerHud.Instance.EnableCrosshair();
+        }
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
             currArrow.transform.position = ChargedArrowPos.position;
         }       
     }
     private void OnDisable() {
-        PlayerHud.Instance.DisableCrosshair();
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
+            PlayerHud.Instance.DisableCrosshair();
+        }
         StopAllCoroutines();
     }
 
@@ -75,6 +80,8 @@ public class CrossBow : Weapon {
         currArrow.LifeTime = 20f;
         currArrow.Damage = this.Damage;
         currArrow.Type = this.Type;
+        currArrow.Knockback = this.Knockback;
+        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
         currArrow.Fire();
 
         currArrow = null;

@@ -40,6 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3726514527976219681}
   - component: {fileID: 3726514527976357539}
+  - component: {fileID: 5890436956241529575}
   m_Layer: 0
   m_Name: Bow
   m_TagString: Untagged
@@ -80,14 +81,38 @@ MonoBehaviour:
   AttackSpeed: 0.5
   Damage: 1.5
   Knockback: 0
+  RigidbodyKnockback: 1
   MinDamage: 1
-  MinDistance: 5
+  MinCharge: 0.25
+  MinDistance: 1
   MaxDistance: 100
+  AimLayer:
+    serializedVersion: 2
+    m_Bits: 26113
   MinSpeed: 0
   MaxSpeed: 5
   ArrowPrefab: {fileID: 875288165, guid: 949b54f69f15f6b4fbf0706d8c42ef7e, type: 3}
   ChargedArrowPos: {fileID: 573013029372495927}
   arrowPool: {fileID: 0}
+--- !u!95 &5890436956241529575
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3726514527976388609}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 920cf35bbe5069b4b96b357a9022ea7f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &7469677765144939661
 PrefabInstance:
   m_ObjectHideFlags: 0

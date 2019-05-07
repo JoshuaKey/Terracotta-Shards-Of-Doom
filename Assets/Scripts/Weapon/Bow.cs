@@ -6,10 +6,12 @@ public class Bow : Weapon {
 
     [Header("Damage")]
     public float MinDamage = .5f;
+    public float MinCharge = .25f;
 
     [Header("Aim")]
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
+    public LayerMask AimLayer;
 
     [Header("Force")]
     public float MinSpeed = 0f;
@@ -42,7 +44,7 @@ public class Bow : Weapon {
         Ray ray = new Ray(camera.transform.position + forward * MinDistance, forward);
         RaycastHit hit;
         Vector3 aimPoint = Vector3.zero;
-        if (Physics.Raycast(ray, out hit, MaxDistance)) {
+        if (Physics.Raycast(ray, out hit, MaxDistance, AimLayer)) {
             aimPoint = hit.point;
         } else {
             aimPoint = camera.transform.position + forward * MaxDistance;
@@ -56,16 +58,19 @@ public class Bow : Weapon {
 
         // Debug
         Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
-        Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
         Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
     }
 
     private void OnEnable() {
-        PlayerHud.Instance.EnableCrosshair();
+        if(Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
+            PlayerHud.Instance.EnableCrosshair();
+        }
     }
 
     private void OnDisable() {
-        PlayerHud.Instance.DisableCrosshair();
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
+            PlayerHud.Instance.DisableCrosshair();
+        }
 
         StopAllCoroutines();
         if(currArrow != null) {
@@ -90,14 +95,22 @@ public class Bow : Weapon {
     }
 
     public override void Attack() {
-        if (!CanAttack()) { return; }
+        if (!CanAttack() || !currArrow) { return; }
+
+        if(charge < MinCharge) {
+            Destroy(currArrow.gameObject);
+            charge = 0.0f;
+            currArrow = null;
+            return;
+        }
 
         float t = Interpolation.QuadraticIn(charge);
-        // float t = Interpolation.ExpoIn(charge);
         currArrow.Impulse = Mathf.Lerp(MinSpeed, MaxSpeed, t);
         currArrow.LifeTime = 20f;
         currArrow.Damage = charge == 1 ? Damage : MinDamage;
         currArrow.Type = this.Type;
+        currArrow.Knockback = this.Knockback;
+        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
         currArrow.Fire();
 
         charge = 0.0f;
