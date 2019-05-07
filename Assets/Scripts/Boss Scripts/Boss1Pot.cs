@@ -32,8 +32,6 @@ public class Boss1Pot : Pot
     [Header("Visual")]
     public List<Rigidbody> ArmorPieces;
 
-    public int NumArmorPieces { get; set; } = 3;
-
     void Start()
     {
         if (enemy == null) { enemy = GetComponentInChildren<Enemy>(true); }
@@ -141,7 +139,6 @@ public class Boss1Pot : Pot
     {
         private GameObject Target = null;
         private Transform AISpawnPoint = null;
-        //The state needs any monobehavior it can get to start a coroutine
         private Boss1Pot armoredPot = null;
 
         private byte numberOfShotsFired = 0;
@@ -419,7 +416,6 @@ public class Boss1Pot : Pot
                 timer += Time.deltaTime;
                 if (timer >= 2.0f)
                 {
-                    Debug.Log(armoredPot.GetArmor());
                     if (armoredPot.GetArmor() == 0)
                     {
                         timer = 0.0f;
