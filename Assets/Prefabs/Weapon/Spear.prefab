@@ -66,6 +66,7 @@ MonoBehaviour:
   AttackSpeed: 0.25
   Damage: 1
   Knockback: 1.5
+  RigidbodyKnockback: 5
   StartPos: {x: 0.2, y: -0.4, z: 0}
   EndPos: {x: 0.06, y: -0.12, z: 1.6}
   AnimationSwingTime: 0.1
@@ -152,6 +153,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3432089465089139687, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6f1cd722143dc9b4e95b1bf71d85e02e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71ac7aa2a8363b24c856858a3bf6efce, type: 3}
 --- !u!4 &7679099409555593391 stripped
