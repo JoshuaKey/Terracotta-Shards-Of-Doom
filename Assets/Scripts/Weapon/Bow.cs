@@ -22,6 +22,10 @@ public class Bow : Weapon {
     public Transform ChargedArrowPos;
     public ArrowPool arrowPool;
 
+    [Header("Animation")]
+    public GameObject drawString;
+    private Vector3 drawStringDefaultPos;
+
     // Value between 0 and 1;
     private float charge;
     private Arrow currArrow = null;
@@ -34,6 +38,8 @@ public class Bow : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Bow";
+
+        drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -89,6 +95,8 @@ public class Bow : Weapon {
         charge += Time.deltaTime / AttackSpeed;
         charge = Mathf.Min(charge, 1.0f);
 
+        drawString.transform.localPosition = drawStringDefaultPos + (Vector3.back * charge / 100);
+
         float t = Interpolation.CubicOut(charge);
         Vector3 arrowPos = Interpolation.BezierCurve(this.transform.position, ChargedArrowPos.position, t);
         currArrow.transform.position = arrowPos;
@@ -114,6 +122,7 @@ public class Bow : Weapon {
         currArrow.Fire();
 
         charge = 0.0f;
+        drawString.transform.localPosition = drawStringDefaultPos;
         currArrow = null;
     }
 }
