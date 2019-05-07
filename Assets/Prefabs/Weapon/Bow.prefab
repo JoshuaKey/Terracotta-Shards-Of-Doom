@@ -40,6 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3726514527976219681}
   - component: {fileID: 3726514527976357539}
+  - component: {fileID: 5890436956241529575}
   m_Layer: 0
   m_Name: Bow
   m_TagString: Untagged
@@ -93,6 +94,26 @@ MonoBehaviour:
   ArrowPrefab: {fileID: 875288165, guid: 949b54f69f15f6b4fbf0706d8c42ef7e, type: 3}
   ChargedArrowPos: {fileID: 573013029372495927}
   arrowPool: {fileID: 0}
+  drawString: {fileID: 5773275374503152858}
+--- !u!95 &5890436956241529575
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3726514527976388609}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 920cf35bbe5069b4b96b357a9022ea7f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &7469677765144939661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -165,6 +186,12 @@ PrefabInstance:
 --- !u!4 &1675090421715127682 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8112880157194469647, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7469677765144939661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5773275374503152858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4014795260396585047, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
     type: 3}
   m_PrefabInstance: {fileID: 7469677765144939661}
   m_PrefabAsset: {fileID: 0}
