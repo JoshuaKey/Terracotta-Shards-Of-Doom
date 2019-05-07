@@ -101,7 +101,7 @@ public class Boss1Pot : Pot
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             playerTrigger.enabled = false;
             playerEnteredArena = true;
@@ -129,7 +129,7 @@ public class Boss1Pot : Pot
 
         public override string Update()
         {
-            if(boss1Pot.playerEnteredArena)
+            if (boss1Pot.playerEnteredArena)
             {
                 return "Boss1Pot+Armored_Spawning";
             }
@@ -164,6 +164,8 @@ public class Boss1Pot : Pot
 
         public override void Enter()
         {
+            numberOfShotsFired = 0;
+            numberOfShotsLanded = 0;
             timer = 0.0f;
         }
 
@@ -180,7 +182,7 @@ public class Boss1Pot : Pot
             {
                 if (numberOfShotsFired < 3)
                 {
-                    if (!firing && timer >= 1.0f)
+                    if (!firing && timer >= 2.0f)
                     {
                         armoredPot.StartCoroutine(LaunchPot());
                         timer = 0;
@@ -198,7 +200,7 @@ public class Boss1Pot : Pot
                     }
                     else
                     {
-                        if (!firing && timer >= 1.0f)
+                        if (!firing && timer >= 2.0f)
                         {
                             armoredPot.StartCoroutine(LaunchPot());
                             timer = 0.0f;
@@ -231,19 +233,19 @@ public class Boss1Pot : Pot
 
             int type = -1;
 
-            if(player.health.CurrentHealth/player.health.MaxHealth <= .40f)
+            if (player.health.CurrentHealth / player.health.MaxHealth <= .40f)
             {
-                if(percent <= 9.0f)
+                if (percent <= 9.0f)
                 {
                     enemy = EnemyManager.Instance.SpawnPot();
                     type = 0;
                 }
-                else if(percent <= 39.0f)
+                else if (percent <= 39.0f)
                 {
                     enemy = EnemyManager.Instance.SpawnHealthPot();
                     type = 1;
                 }
-                else if(percent <= 79.0f)
+                else if (percent <= 79.0f)
                 {
                     enemy = EnemyManager.Instance.SpawnChargerPot();
                     type = 2;
@@ -304,8 +306,8 @@ public class Boss1Pot : Pot
             {
                 Vector2 randomDirection = Random.insideUnitCircle.normalized;
                 randomDirection.y = Mathf.Abs(randomDirection.y);
-                
-                Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y);;
+
+                Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y); ;
                 aimOffset = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * aimOffset)) * 2.0f;
                 aimOffset += aimOffset * Random.Range(0.0f, 2.0f);
 
@@ -344,7 +346,7 @@ public class Boss1Pot : Pot
             {
                 pot.enabled = true;
             }
-            if(type == 0)
+            if (type == 0)
             {
                 enemy.health.TakeDamage(DamageType.BASIC, 1.0f);
             }
@@ -355,9 +357,8 @@ public class Boss1Pot : Pot
 
     public class Armored_Spawning : State
     {
+        private GameObject Target = null;
         private Transform AISpawnPoint = null;
-        private GameObject[] SpawnableObjects = null;
-        //The state needs any monobehavior it can get to start a coroutine
         private Boss1Pot armoredPot = null;
 
         private byte numberOfBurstsFired = 0;
@@ -368,6 +369,8 @@ public class Boss1Pot : Pot
 
         public override void Init(GameObject owner)
         {
+            Target = GameObject.FindGameObjectWithTag("Player");
+
             armoredPot = owner.GetComponent<Boss1Pot>();
 
             AISpawnPoint = armoredPot.AISpawnPoint.transform;
@@ -377,15 +380,21 @@ public class Boss1Pot : Pot
 
         public override void Enter()
         {
-            timer = 0.0f;
+            numberOfBurstsFired = 0;
+            numberOfShotsLanded = 0;
+            firing = false;
+            timer = 0;
         }
 
         public override void Exit()
         {
             numberOfBurstsFired = 0;
             numberOfShotsLanded = 0;
+            firing = false;
             timer = 0;
         }
+
+        Coroutine c = null;
 
         public override string Update()
         {
@@ -393,11 +402,12 @@ public class Boss1Pot : Pot
             {
                 if (numberOfBurstsFired == 0)
                 {
-                    armoredPot.StartCoroutine(LaunchBurst());
+                    c = armoredPot.StartCoroutine(LaunchBurst());
                 }
-                else if (!firing && timer >= 1.0f)
+                else if (!firing && timer >= 1.5f)
                 {
-                    armoredPot.StartCoroutine(LaunchBurst());
+                    c = armoredPot.StartCoroutine(LaunchBurst());
+                    timer = 0.0f;
                 }
                 else if (!firing)
                 {
@@ -406,27 +416,30 @@ public class Boss1Pot : Pot
             }
             else if (numberOfBurstsFired == 3)
             {
-                if (armoredPot.NumArmorPieces == 0)
+                timer += Time.deltaTime;
+                if (timer >= 2.0f)
                 {
-                    timer += Time.deltaTime;
-                    if (timer >= 2.0f)
+                    Debug.Log(armoredPot.GetArmor());
+                    if (armoredPot.GetArmor() == 0)
                     {
+                        timer = 0.0f;
                         return "Boss1Pot+Armored_Charging";
                     }
-                }
-                else if (armoredPot.GetArmor() > 0)
-                {
-                    timer += Time.deltaTime;
-                    if (timer >= 2.0f)
+                    else if (armoredPot.GetArmor() > 0)
                     {
+                        timer = 0.0f;
                         return "Boss1Pot+Armored_Shooting";
                     }
                 }
             }
+            else if ((Target.transform.position - owner.transform.position).magnitude >= 50.0f)
+            {
+                armoredPot.StopCoroutine(c);
+                return "Boss1Pot+Armored_Shooting";
+            }
             return null;
         }
 
-        //TODO: target a circle around the player
         IEnumerator LaunchBurst()
         {
             firing = true;
@@ -522,17 +535,16 @@ public class Boss1Pot : Pot
             NavMeshPath path = new NavMeshPath();
 
             Vector3 targetPosition = Vector3.zero;
-            
+
             do
             {
+                //TODO: Remove the y-axis
                 direction = Random.insideUnitCircle.normalized;
                 Vector3 randomDirection = new Vector3(direction.x, 0.0f, direction.y);
                 targetPosition = player.transform.position + ((randomDirection * 10.0f) + (randomDirection * Random.Range(0.0f, 5.0f)));
-                Debug.Log((targetPosition - player.transform.position).magnitude);
                 NavMeshHit hit;
-                NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 25.0f, NavMesh.AllAreas);
+                NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 50.0f, NavMesh.AllAreas);
                 targetPosition = hit.position;
-
             } while (!(NavMesh.CalculatePath(Vector3.zero, targetPosition, NavMesh.AllAreas, path)));
 
             Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 100.0f - (startPosition - targetPosition).magnitude);
@@ -546,7 +558,7 @@ public class Boss1Pot : Pot
 
                 yield return null;
             }
-            if(type == 0)
+            if (type == 0)
             {
                 enemy.health.TakeDamage(DamageType.BASIC, 1.0f);
             }
@@ -589,11 +601,14 @@ public class Boss1Pot : Pot
 
         public override void Enter()
         {
-
+            charging = false;
+            charged = false;
+            timer = 0.0f;
         }
 
         public override void Exit()
         {
+            charging = false;
             charged = false;
             timer = 0.0f;
         }
@@ -602,27 +617,25 @@ public class Boss1Pot : Pot
         {
             if (!charging)
             {
-                //Transform transform = owner.transform;
+                Transform transform = owner.transform;         
 
-                //Quaternion currentRotation = transform.rotation;
+                Vector3 targetPosition = target.transform.position;
+                Vector3 targetOffset = (new Vector3(Player.Instance.velocity.x, 0.0f, Player.Instance.velocity.z)) * 1.5f;
+                targetPosition = new Vector3(targetPosition.x, 0.0f, targetPosition.z) + targetOffset;
 
-                //Vector3 targetPosition = target.transform.position;
-                //Vector3 targetOffset = (new Vector3(Player.Instance.velocity.x, 0.0f, Player.Instance.velocity.z)) * 1.5f;
-                //targetPosition = new Vector3(targetPosition.x, 0.0f, targetPosition.z) + targetOffset;
+                Vector3 targetDirection = (targetPosition - transform.position).normalized;
 
-                //Vector3 targetDirection = (targetPosition - transform.position).normalized;
+                owner.transform.rotation = Quaternion.FromToRotation(transform.forward, targetDirection);
 
-                //Quaternion desiredRotation = Quaternion.FromToRotation(transform.forward, targetDirection);
-                //Quaternion.RotateTowards(currentRotation, desiredRotation, rotateSpeed * Time.deltaTime);
-                timer += Time.deltaTime;
-                if (timer > 2.5f)
-                {
-                    monoBehaviour.StartCoroutine(Charge());
-                }
+                monoBehaviour.StartCoroutine(Charge());
             }
-            else if (charged)
+            else if (charged && timer > 5.0f)
             {
                 return "Boss1Pot+Armored_Spawning";
+            }
+            else
+            {
+                timer += Time.deltaTime;
             }
             return null;
         }
@@ -632,8 +645,9 @@ public class Boss1Pot : Pot
             charging = true;
 
             NavMeshAgent navMeshAgent = owner.GetComponent<NavMeshAgent>();
-            //NavMesh.CalculatePath();
+            
             Vector3 targetPosition = target.transform.position;
+
             navMeshAgent.SetDestination(targetPosition);
             while ((navMeshAgent.destination - owner.transform.position).magnitude > .01f)
             {
