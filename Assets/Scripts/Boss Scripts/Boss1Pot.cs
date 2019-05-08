@@ -530,6 +530,7 @@ public class Boss1Pot : Pot
 
             NavMeshPath path = new NavMeshPath();
 
+            Vector3 playerPosition = Vector3.zero;
             Vector3 targetPosition = Vector3.zero;
 
             do
@@ -537,9 +538,10 @@ public class Boss1Pot : Pot
                 //TODO: Remove the y-axis
                 direction = Random.insideUnitCircle.normalized;
                 Vector3 randomDirection = new Vector3(direction.x, 0.0f, direction.y);
-                targetPosition = player.transform.position + ((randomDirection * 10.0f) + (randomDirection * Random.Range(0.0f, 5.0f)));
+                playerPosition = player.transform.position;
+                targetPosition =  new Vector3(playerPosition.x, 0.0f, playerPosition.z) + ((randomDirection * 10.0f) + (randomDirection * Random.Range(0.0f, 5.0f)));
                 NavMeshHit hit;
-                NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 50.0f, NavMesh.AllAreas);
+                NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 20.0f, NavMesh.AllAreas);
                 targetPosition = hit.position;
             } while (!(NavMesh.CalculatePath(Vector3.zero, targetPosition, NavMesh.AllAreas, path)));
 
