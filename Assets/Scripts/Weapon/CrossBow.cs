@@ -8,13 +8,18 @@ public class CrossBow : Weapon {
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
     public float Impulse = 5f;
+    public LayerMask AimLayer;
 
     [Header("Visuals")]
     public Arrow ArrowPrefab;
     public Transform ArrowPos;
     public Transform ChargedArrowPos;
     public ArrowPool arrowPool;
-    
+
+    [Header("Animation")]
+    public GameObject drawString;
+    private Vector3 drawStringDefaultPos;
+
     private Arrow currArrow = null;
 
     void Start() {
@@ -22,6 +27,8 @@ public class CrossBow : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Crossbow";
+
+        drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -32,7 +39,7 @@ public class CrossBow : Weapon {
         Ray ray = new Ray(camera.transform.position + forward * MinDistance, forward);
         RaycastHit hit;
         Vector3 aimPoint = Vector3.zero;
-        if (Physics.Raycast(ray, out hit, MaxDistance)) {
+        if (Physics.Raycast(ray, out hit, MaxDistance, AimLayer)) {
             aimPoint = hit.point;
         } else {
             aimPoint = camera.transform.position + forward * MaxDistance;
@@ -44,6 +51,8 @@ public class CrossBow : Weapon {
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
 
+        AnimateDrawString();
+
         // Debug
         Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
         Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
@@ -51,7 +60,7 @@ public class CrossBow : Weapon {
     }
 
     private void OnEnable() {
-        if (Player.Instance != null) {
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
         }
         if (!currArrow) {
@@ -60,10 +69,22 @@ public class CrossBow : Weapon {
         }       
     }
     private void OnDisable() {
-        if (Player.Instance != null) {
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.DisableCrosshair();
         }
         StopAllCoroutines();
+    }
+
+    public void AnimateDrawString()
+    {
+        if(currArrow == null)
+        {
+            drawString.transform.localPosition = drawStringDefaultPos;
+        }
+        else
+        {
+            drawString.transform.position = currArrow.transform.position - transform.forward * 0.225f;
+        }
     }
 
     public override void Attack() {
@@ -79,6 +100,8 @@ public class CrossBow : Weapon {
         currArrow.LifeTime = 20f;
         currArrow.Damage = this.Damage;
         currArrow.Type = this.Type;
+        currArrow.Knockback = this.Knockback;
+        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
         currArrow.Fire();
 
         currArrow = null;

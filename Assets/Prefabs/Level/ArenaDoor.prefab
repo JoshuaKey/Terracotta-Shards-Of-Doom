@@ -15,12 +15,12 @@ GameObject:
   - component: {fileID: 268759895948475314}
   - component: {fileID: 268759895948475325}
   - component: {fileID: 268759895948475324}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: ArenaDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 9
   m_IsActive: 1
 --- !u!4 &268759895948475326
 Transform:
@@ -106,8 +106,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 107a40214fd1f1e448aaa5ec1117c5e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowerPosition: -2.5
-  upperPosition: 1.5
+  arenaCollider: {fileID: 268759895948475313}
+  walls: []
 --- !u!54 &268759895948475325
 Rigidbody:
   m_ObjectHideFlags: 0

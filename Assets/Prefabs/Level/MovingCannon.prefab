@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 4381110978236051294}
   - component: {fileID: 8208343151173104793}
   - component: {fileID: 7066574086793967794}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: BoxCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,11 +57,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6636848362899225755}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.72, y: -0.3, z: 5.75}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7609907997231558512}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &4381110978236051294
 LineRenderer:
@@ -169,8 +169,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 22.370531, y: 5, z: 16.772297}
-  m_Center: {x: 1.7156763, y: 2, z: -1.5359797}
+  m_Size: {x: 20, y: 5, z: 20}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7066574086793967794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,8 +218,8 @@ Transform:
   - {fileID: 7842069993846739525}
   - {fileID: 7842069993750346155}
   - {fileID: 7842069993527932523}
-  - {fileID: 4979280289400354879}
   - {fileID: 1265091438674697598}
+  - {fileID: 4979280289400354879}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -241,6 +241,8 @@ MonoBehaviour:
   AutoAlign: 1
   Damage: 1
   RadiusSize: 5
+  Knockback: 1
+  RigidbodyKnockback: 5
   EnemyLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -248,8 +250,8 @@ MonoBehaviour:
   LeapTime: 5
   Barrel: {fileID: 7609907997944460269}
   Base: {fileID: 7609907998468080539}
-  renderer: {fileID: 0}
   LandingEffect: {fileID: 1265091438674697599}
+  renderer: {fileID: 0}
 --- !u!114 &7609907997231558513
 MonoBehaviour:
   m_ObjectHideFlags: 0
