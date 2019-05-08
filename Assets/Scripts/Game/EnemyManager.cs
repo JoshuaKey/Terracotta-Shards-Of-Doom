@@ -81,7 +81,6 @@ public class EnemyManager : MonoBehaviour {
             }
         }
 
-        print(distances.ElementAt(currIndex));
         return activeEnemies.ElementAt(currIndex);
     }
     public Enemy GetEnemy(int index) {

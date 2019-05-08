@@ -306,6 +306,7 @@ public class Player : MonoBehaviour {
                     if (InputManager.GetButton("Attack")) {
                         weapon.Charge();
                     } else {
+                        print("here");
                         weapon.Attack();
                     }
                 } else {
