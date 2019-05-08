@@ -47,7 +47,9 @@ public class EnemyManager : MonoBehaviour {
     }
 
     public Enemy SpawnPot() {
-        return SpawnPrefab(PotPrefab);
+
+        Enemy enemy = SpawnPrefab(PotPrefab);
+        return enemy;
     }
     public Enemy SpawnHealthPot() {
         return SpawnPrefab(HealthPotPrefab);
