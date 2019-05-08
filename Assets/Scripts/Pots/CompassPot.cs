@@ -259,7 +259,6 @@ public class CompassPot : MonoBehaviour {
 //  Move In
 //      Compass travels towards the player and ends the ability.
 
-// Compass Parent - Shoulder Pos
-// Player Forward direction
-// Player Forward Angle
-// Player Peripheral Angle
+// DO NOT USE APPROXIMATION
+// LERP
+// ABSOULTE POSITIONS
