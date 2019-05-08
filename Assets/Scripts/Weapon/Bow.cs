@@ -62,6 +62,8 @@ public class Bow : Weapon {
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
 
+        AnimateDrawString();
+
         // Debug
         Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
         Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
@@ -85,6 +87,11 @@ public class Bow : Weapon {
         charge = 0.0f;
     }
 
+    public void AnimateDrawString()
+    {
+        drawString.transform.localPosition = drawStringDefaultPos + (Vector3.back * charge / 100);
+    }
+
     public override void Charge() {
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
@@ -94,8 +101,6 @@ public class Bow : Weapon {
         
         charge += Time.deltaTime / AttackSpeed;
         charge = Mathf.Min(charge, 1.0f);
-
-        drawString.transform.localPosition = drawStringDefaultPos + (Vector3.back * charge / 100);
 
         float t = Interpolation.CubicOut(charge);
         Vector3 arrowPos = Interpolation.BezierCurve(this.transform.position, ChargedArrowPos.position, t);
@@ -122,7 +127,6 @@ public class Bow : Weapon {
         currArrow.Fire();
 
         charge = 0.0f;
-        drawString.transform.localPosition = drawStringDefaultPos;
         currArrow = null;
     }
 }
