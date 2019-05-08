@@ -52,7 +52,7 @@ public class Boss2AI : Pot
         barrierPots = new List<BarrierPot>(8);
         stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
-            new Moving(),
+            new ChangingRooms(),
             new Animating(),
             new DoNothing());
     }
@@ -81,25 +81,17 @@ public class Boss2AI : Pot
         }
     }
 
-    private class Moving : State
+    private class ChangingRooms : State
     {
-        NavMeshAgent navMeshAgent = null;
         List<GameObject> waypoints = null;
         GameObject target = null;
         Boss2AI boss2AI = null;
-        //The state needs any monobehaviour to start coroutines
-        MonoBehaviour monoBehaviour = null;
 
         bool running = false;
         bool reachedDestination = false;
-        public override void Enter()
-        {
-            running = false;
-            if (navMeshAgent == null)
-            {
-                navMeshAgent = owner.GetComponent<NavMeshAgent>();
-            }
 
+        public override void Init(GameObject owner)
+        {
             if (waypoints == null)
             {
                 waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
@@ -109,12 +101,14 @@ public class Boss2AI : Pot
             {
                 boss2AI = owner.GetComponent<Boss2AI>();
             }
+            base.Init(owner);
+        }
 
-            if (monoBehaviour == null)
-            {
-                monoBehaviour = owner.GetComponent<MonoBehaviour>();
-            }
-
+        public override void Enter()
+        {
+            running = false;
+            reachedDestination = false;
+            //If every waypoint has been visited, reset them  all
             if (waypoints.Where(w => w.GetComponent<Waypoint>().Visited).Count() == waypoints.Count)
             {
                 foreach (GameObject waypoint in waypoints)
@@ -140,22 +134,23 @@ public class Boss2AI : Pot
 
         public override string Update()
         {
-            if (!running && !reachedDestination)
+            if (!running)
             {
-                monoBehaviour.StartCoroutine(Run());
+                boss2AI.StartCoroutine(Run());
             }
             else if (reachedDestination)
             {
                 return "Boss2AI+Animating";
             }
+            
             return null;
         }
 
         IEnumerator Run()
         {
             running = true;
-            navMeshAgent.SetDestination(target.transform.position);
-            while ((navMeshAgent.destination - owner.transform.position).magnitude > .1f)
+            boss2AI.agent.SetDestination(target.transform.position);
+            while ((boss2AI.agent.destination - owner.transform.position).magnitude > .1f)
             {
                 yield return null;
             }

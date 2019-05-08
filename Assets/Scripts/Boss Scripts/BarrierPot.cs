@@ -32,8 +32,7 @@ public class BarrierPot : Pot
     {
         stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
-     new EnterFormation(),
-     new FollowWaypoint());
+            new EnterFormation());
     }
 
     // Start is called before the first frame update
@@ -74,14 +73,12 @@ public class BarrierPot : Pot
 
         public override string Update()
         {
+            
             if (!moving)
             {
                 barrierPot.StartCoroutine(MoveToWaypoint());
             }
-            else if (barrierPot.InPosition)
-            {
-                return "BarrierPot+FollowWaypoint";
-            }
+     
             return null;
         }
 
@@ -89,47 +86,20 @@ public class BarrierPot : Pot
         {
             moving = true;
 
-            NavMeshAgent navMeshAgent = barrierPot.agent;
-            navMeshAgent.speed = 15.0f;
-            navMeshAgent.SetDestination(waypoint.transform.position);
+            Transform transform = owner.transform;
+            Vector3 waypointPosition = waypoint.transform.position;
 
-            while ((navMeshAgent.destination - owner.transform.position).magnitude > .1f)
+            while ((transform.position - waypointPosition).magnitude > .01f)
             {
+                transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
                 yield return null;
             }
 
             barrierPot.InPosition = true;
+            barrierPot.transform.parent = waypoint.transform;
+            barrierPot.enabled = false;
         }
     }
 
-    public class FollowWaypoint : State
-    {
-        BarrierPot barrierPot = null;
-        NavMeshAgent navMeshAgent = null;
-
-        public override void Enter()
-        {
-            if(barrierPot == null)
-            {
-                barrierPot = owner.GetComponent<BarrierPot>();
-            }
-
-            if(navMeshAgent == null && barrierPot != null)
-            {
-                navMeshAgent = barrierPot.agent;
-            }
-        }
-
-        public override void Exit()
-        {
-
-        }
-
-        public override string Update()
-        {
-            owner.transform.position = barrierPot.Waypoint.transform.position;
-            return null;
-        }
-    }
 
 }
