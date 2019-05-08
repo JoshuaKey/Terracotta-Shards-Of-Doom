@@ -14,6 +14,7 @@ public enum ESoundChannel
 
 public class AudioManager : MonoBehaviour
 {
+    [SerializeField] public float spatialBlend = 0.75f;
     [SerializeField] private int initialAudioSources = 10;
     #pragma warning disable 0649
     [SerializeField] public AudioMixer audioMixer;
@@ -63,7 +64,21 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySound(string soundName, ESoundChannel soundChannel, bool loop = false, UnityAction onFinish = null)
     {
-        return PlaySoundAtLocation(soundName, soundChannel, transform.position, loop, onFinish);
+        if (DEBUGGING) Debug.Log($"Playing Sound {soundName}");
+
+        SoundClip soundClip = new SoundClip(sounds[soundName]);
+        soundClip.soundChannel = soundChannel;
+        soundClip.loop = loop;
+
+        if (onFinish != null) { soundClip.onFinish += onFinish; }
+
+        AudioSource audioSource = soundClip.AttachToAudioSource(NextAudiosource());
+        audioSource.spatialBlend = 0;
+        soundClip.audioSource.Play();
+
+        if (!loop) { StartCoroutine(ExecuteAfterSeconds(soundClip.onFinish, soundClip.Length)); }
+
+        return soundClip;
     }
 
     /// <summary>
@@ -85,6 +100,7 @@ public class AudioManager : MonoBehaviour
         if (onFinish != null) { soundClip.onFinish += onFinish; }
 
         AudioSource audioSource = soundClip.AttachToAudioSource(NextAudiosource());
+        audioSource.spatialBlend = spatialBlend;
         audioSource.transform.position = location;
         soundClip.audioSource.Play();
 
@@ -112,6 +128,7 @@ public class AudioManager : MonoBehaviour
         if (onFinish != null) { soundClip.onFinish += onFinish; }
 
         AudioSource audioSource = soundClip.AttachToAudioSource(NextAudiosource());
+        audioSource.spatialBlend = spatialBlend;
         audioSource.transform.parent = parent.transform;
         soundClip.audioSource.Play();
 

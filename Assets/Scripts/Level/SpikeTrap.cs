@@ -31,7 +31,7 @@ public class SpikeTrap : MonoBehaviour {
 
     private IEnumerator Activate() {
         Trigger.enabled = false;
-        DamageCollider.enabled = true;
+        DamageCollider.enabled = false;
 
         float startTime = Time.time;
         while (Time.time < startTime + WaitTime) {
@@ -45,6 +45,9 @@ public class SpikeTrap : MonoBehaviour {
 
             float t = (Time.time - startTime) / SpringTime;
             t = Interpolation.ExpoIn(t);
+
+            DamageCollider.enabled = t > .1f;
+
             TrapModel.transform.position = Vector3.Lerp(WaitPos.position, SpringPos.position, t);
             yield return null;
         }
