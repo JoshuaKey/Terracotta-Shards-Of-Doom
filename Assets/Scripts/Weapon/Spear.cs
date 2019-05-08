@@ -107,6 +107,7 @@ public class Spear : Weapon {
                 }
             } else {
                 Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
+                if (rb == null) { rb = other.GetComponentInParent<Rigidbody>(); }
                 if (rb != null) {
                     Vector3 forward = this.transform.forward;
                     //forward.y = 0.0f;

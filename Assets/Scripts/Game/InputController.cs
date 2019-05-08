@@ -108,9 +108,6 @@ public class InputController : MonoBehaviour {
     public Sprite Xbox_LeftStick_Sprite;
     #endregion
 
-
-    private string currScheme = "";
-
     public static InputController Instance;
 
     private void Start() {
@@ -138,6 +135,7 @@ public class InputController : MonoBehaviour {
             newScheme = IsLeftHanded ? LeftHandedSchemeName : MouseAndKeyboardSchemeName;
         }
 
+        string currScheme = InputManager.PlayerOneControlScheme.Name;
         if (currScheme != newScheme) {
             InputManager.SetControlScheme(newScheme, PlayerID.One);
             currScheme = newScheme;
@@ -146,15 +144,16 @@ public class InputController : MonoBehaviour {
     }
 
     public Sprite GetActionIcon(string action) {
-        string schemeName = InputManager.PlayerOneControlScheme.Name;
-        InputAction interactAction = InputManager.GetAction(schemeName, action);
-        InputBinding actionBinding = interactAction.GetBinding(0);
+        ControlScheme scheme = InputManager.PlayerOneControlScheme;
+        InputAction inputAction = scheme.GetAction(action);
+        InputBinding actionBinding = inputAction.GetBinding(0);
         KeyCode code = actionBinding.Positive;
 
         return GetInputIcon(code);
     }
 
     public Sprite GetInputIcon(KeyCode k) {
+        string currScheme = InputManager.PlayerOneControlScheme.Name;
         if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
             return GetKeyboardIcon(k);
         } else if (currScheme == ControllerSchemeName) {
