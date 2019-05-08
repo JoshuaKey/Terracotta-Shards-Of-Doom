@@ -22,6 +22,10 @@ public class Bow : Weapon {
     public Transform ChargedArrowPos;
     public ArrowPool arrowPool;
 
+    [Header("Animation")]
+    public GameObject drawString;
+    private Vector3 drawStringDefaultPos;
+
     // Value between 0 and 1;
     private float charge;
     private Arrow currArrow = null;
@@ -34,6 +38,8 @@ public class Bow : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Bow";
+
+        drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -56,6 +62,8 @@ public class Bow : Weapon {
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
 
+        AnimateDrawString();
+
         // Debug
         Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
         Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
@@ -77,6 +85,11 @@ public class Bow : Weapon {
             Destroy(currArrow.gameObject);
         }
         charge = 0.0f;
+    }
+
+    public void AnimateDrawString()
+    {
+        drawString.transform.localPosition = drawStringDefaultPos + (Vector3.back * charge / 100);
     }
 
     public override void Charge() {

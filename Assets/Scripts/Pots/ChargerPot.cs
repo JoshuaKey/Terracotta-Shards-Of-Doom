@@ -144,7 +144,6 @@ public class Charger_Attack : TimedState
     {
         base.Init(owner);
         animator = owner.GetComponentInChildren<Animator>();
-        Debug.Log(animator != null);
     }
 
     public override void Enter()

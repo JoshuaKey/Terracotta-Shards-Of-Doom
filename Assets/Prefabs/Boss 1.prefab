@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6345030429288343397}
   - component: {fileID: 4777628239507331030}
-  - component: {fileID: 6345030429287955866}
   - component: {fileID: 6345030429287955864}
   - component: {fileID: 4829920887961136414}
   - component: {fileID: 6176816711259930239}
   - component: {fileID: 6176816711874492949}
+  - component: {fileID: 5285950824919458536}
   m_Layer: 0
   m_Name: Boss 1
   m_TagString: Boss
@@ -58,20 +58,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!136 &6345030429287955866
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6345030429287988037}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.7
-  m_Height: 2.5
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &6345030429287955864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,7 +102,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waddleAmplitude: 12.5
   hopHeight: 0.5
+  Phase1Health: 3
+  Phase1Resistance: 1
+  Phase2Health: 10
+  Phase2Resistance: 0
+  enemy: {fileID: 0}
   AISpawnPoint: {fileID: 8832224333948084491}
+  ArmorPieces: []
 --- !u!195 &6176816711874492949
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -127,7 +119,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 10
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -139,6 +131,20 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!64 &5285950824919458536
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6345030429287988037}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: 403c633a46e201a4eb635bd78a24a6df, type: 3}
 --- !u!1 &6345030429287988039
 GameObject:
   m_ObjectHideFlags: 0
