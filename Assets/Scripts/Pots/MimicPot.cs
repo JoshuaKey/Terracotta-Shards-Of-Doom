@@ -155,6 +155,10 @@ public class Mimic_Attack : TimedState
     {
         base.Update();
 
+        //turn pot towards player
+        Vector3 newForward = Player.Instance.transform.position - owner.transform.position;
+        owner.transform.forward = newForward;
+
         if (timer >= seconds)
         {
             return "POP";
