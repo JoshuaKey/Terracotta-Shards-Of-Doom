@@ -7,10 +7,6 @@ public class ChargerPot : Pot
     [SerializeField] public float aggroRadius = 5f;
     [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
-    [SerializeField] public float knockback = 20f;
-
-    [HideInInspector] public bool isAttacking = false;
-    [HideInInspector] public bool hasHitPlayer = false;
 
     //delete this later
     public static bool debugged = false;
@@ -34,14 +30,6 @@ public class ChargerPot : Pot
         if(gameObject.name == "Charger Pot Variant" && stateMachine.DEBUGGING)
         {
             Debug.Log(Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position));
-        }
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag(Game.Instance.PlayerTag) && isAttacking && !hasHitPlayer) {
-            hasHitPlayer = true;
-            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
-            Player.Instance.Knockback(this.transform.forward * knockback);
         }
     }
 }
@@ -135,6 +123,7 @@ public class Charger_Attack : TimedState
     //after a certain amount of time move to charger_charge
 
     Animator animator;
+    Attack attack;
 
     public Charger_Attack(float seconds)
         : base(seconds)
@@ -144,15 +133,21 @@ public class Charger_Attack : TimedState
     {
         base.Init(owner);
         animator = owner.GetComponentInChildren<Animator>();
+        attack = owner.GetComponentInChildren<Attack>();
     }
 
     public override void Enter()
     {
         base.Enter();
         animator.SetTrigger("Attack");
+        attack.isAttacking = true;
     }
 
-    public override void Exit() { }
+    public override void Exit()
+    {
+        attack.isAttacking = false;
+        attack.hasHitPlayer = false;
+    }
 
     public override string Update()
     {
