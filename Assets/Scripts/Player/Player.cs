@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
     public bool CanWalk = true;
     public float MaxSpeed = 7.5f; // + 2.5 Speed Boost
     public float AccelerationFactor = 0.1f;
+    public float MaxVelocity = 100.0f;
 
     [Header("Jump")]
     public bool CanJump = true;
@@ -32,14 +33,27 @@ public class Player : MonoBehaviour {
     public bool CanAttack = true;
     public bool CanSwapWeapon = false;
     public int CurrWeaponIndex = 0;
+    public float WeaponWheeltimeScale = .5f;
     public Health health;
     public GameObject WeaponParent;
 
     [Header("Interact")]
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
-    public CompassPot compass;
     public bool CanInteract = true;
+    
+    [Header("Compass")]
+    public CompassPot compass;
+    public Transform Shoulder;
+
+    [Space]
+    [Header("Debug")]
+    public Sword SwordPrefab;
+    public Bow BowPrefab;
+    public Hammer HammerPrefab;
+    public Spear SpearPrefab;
+    public CrossBow CrossBowPrefab;
+    public Magic MagicPrefab;
 
     public static Player Instance;
 
@@ -79,7 +93,13 @@ public class Player : MonoBehaviour {
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
-        PlayerHud.Instance.DisableWeaponToggle();
+        if (weapons.Count > 1) {
+            PlayerHud.Instance.EnableWeaponToggle();
+            CanSwapWeapon = true;
+        } else {       
+            PlayerHud.Instance.DisableWeaponToggle();
+            CanSwapWeapon = false;
+        }  
 
         // Physics
         layerMask = 1 << this.gameObject.layer;
@@ -87,6 +107,11 @@ public class Player : MonoBehaviour {
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
+
+        // Compass
+        compass.Origin = Shoulder;
+        compass.Base = camera.transform;
+        compass.transform.SetParent(Shoulder);
 
         PlayerHud.Instance.EnablePlayerHealthBar();
         this.health.OnDeath += this.Die;
@@ -102,10 +127,55 @@ public class Player : MonoBehaviour {
         if (CanInteract) {
             UpdateInteractable();
         }
-
-        if (Input.GetKeyDown(KeyCode.T) && Application.isEditor) {
-            this.health.TakeDamage(DamageType.TRUE, 0.5f);
+        if (InputManager.GetButtonDown("Pause Menu"))
+        {
+            if (Time.timeScale == 0)
+            {
+                PauseMenu.Instance.DeactivatePauseMenu();
+            }
+            else
+            {
+                PauseMenu.Instance.ActivatePauseMenu();
+            }
         }
+
+        // Debug...
+        if (Application.isEditor) {
+            if (Input.GetKeyDown(KeyCode.T)) {
+                this.health.TakeDamage(DamageType.TRUE, 0.5f);
+            }
+            if (Input.GetKeyDown(KeyCode.Z)) {
+                Weapon w = GameObject.Instantiate(BowPrefab);
+                w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Bow";
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.X)) {
+                Weapon w = GameObject.Instantiate(HammerPrefab);
+                w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Hammer";
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.C)) {
+                Weapon w = GameObject.Instantiate(SpearPrefab);
+                w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Spear";
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.V)) {
+                Weapon w = GameObject.Instantiate(CrossBowPrefab);
+                w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "CrossBow";
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.B)) {
+                Weapon w = GameObject.Instantiate(MagicPrefab);
+                w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Magic";
+                AddWeapon(w);
+            }
+        }
+
     }
     private void LateUpdate() {
         if (CanRotate) {
@@ -131,9 +201,7 @@ public class Player : MonoBehaviour {
         camera.transform.forward = Quaternion.Euler(rotation) * Vector3.forward;
     }
     public void UpdateMovement() {
-        if (CanWalk) {
-            Walk();
-        }
+        Walk();
 
         if (CanJump) {
             Jump();
@@ -144,12 +212,16 @@ public class Player : MonoBehaviour {
             velocity.y -= Gravity * Time.deltaTime;
         }
 
+        velocity = Vector3.ClampMagnitude(velocity, MaxVelocity);
+
         // Move with Delta Time
         controller.Move(velocity * Time.deltaTime);
     }
     public void UpdateCombat() {
+        Weapon weapon = GetCurrentWeapon();
+
         // Check for Weapon Swap
-        if(CanSwapWeapon) {
+        if (CanSwapWeapon && weapon.CanAttack()) {
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -162,11 +234,13 @@ public class Player : MonoBehaviour {
 
             // Weapon Wheel
             if (InputManager.GetButtonDown("Weapon Wheel")) {
+                Time.timeScale = WeaponWheeltimeScale;
                 PlayerHud.Instance.EnableWeaponWheel();
                 CanRotate = false;
                 CanAttack = false;
             } 
             else if (InputManager.GetButtonUp("Weapon Wheel")) {
+                Time.timeScale = 1f;
                 PlayerHud.Instance.DisableWeaponWheel();
                 CanRotate = true;
                 CanAttack = true;
@@ -188,22 +262,51 @@ public class Player : MonoBehaviour {
                     index = (int)(currAngle / weaponAngle);
                 }
                 PlayerHud.Instance.HighlightWeaponWheel(index, weaponWheelRotation);
-
-                if (InputManager.GetButtonDown("Submit") && weaponWheelRotation != Vector2.zero) {
-                    SwapWeapon(index);
+                if(index != -1) {
+                    this.SwapWeapon(index);
                 }
+            }
+
+            // Number Bar
+            if (InputManager.GetButtonDown("Weapon1")) { 
+                SwapWeapon(0);
+            }
+            if (InputManager.GetButtonDown("Weapon2")) {
+                SwapWeapon(1);
+            }
+            if (InputManager.GetButtonDown("Weapon3")) {
+                SwapWeapon(2);
+            }
+            if (InputManager.GetButtonDown("Weapon4")) {
+                SwapWeapon(3);
+            }
+            if (InputManager.GetButtonDown("Weapon5")) {
+                SwapWeapon(4);
+            }
+            if (InputManager.GetButtonDown("Weapon6")) {
+                SwapWeapon(5);
+            }
+
+            // Scroll Wheel
+            if (Input.GetAxis("Mouse ScrollWheel") != 0.0f) {
+                int index = (int)(CurrWeaponIndex + Input.mouseScrollDelta.y);
+                if(index >= weapons.Count) {
+                    index = 0;
+                } else if (index < 0) {
+                    index = weapons.Count - 1;
+                }
+                SwapWeapon(index);
             }
         }
 
         // Check for Attack
-        if (CanAttack) {
-            Weapon weapon = GetCurrentWeapon();
+        if (CanAttack) {          
             if (weapon.CanAttack()) {
                 if (weapon.CanCharge) {
                     if (InputManager.GetButton("Attack")) {
                         weapon.Charge();
-                    }
-                    if (InputManager.GetButtonUp("Attack")) {
+                    } else {
+                        print("here");
                         weapon.Attack();
                     }
                 } else {
@@ -218,7 +321,7 @@ public class Player : MonoBehaviour {
         // Check for Compass
         {
             if (InputManager.GetButtonDown("Compass")) {
-                compass.Activate(-camera.transform.forward);
+                compass.Activate();
             } 
             else if (compass.gameObject.activeInHierarchy) {
                 Transform target;
@@ -227,9 +330,7 @@ public class Player : MonoBehaviour {
                 } else {
                     target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
                 }
-                Vector3 dir = target.position - this.transform.position;
-                dir = dir.normalized;
-                compass.SetDirection(dir);
+                compass.Target = target;
             }
         }
 
@@ -243,7 +344,7 @@ public class Player : MonoBehaviour {
                 if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
                 if (interactable.CanInteract) {
-                    PlayerHud.Instance.SetInteractText("f", interactable.name);
+                    PlayerHud.Instance.EnableInteractText();
 
                     if (InputManager.GetButtonDown("Interact")) {
                         interactable.Interact();
@@ -259,9 +360,14 @@ public class Player : MonoBehaviour {
     }
 
     public void Walk() {
-        float rightMove = InputManager.GetAxisRaw("Vertical Movement");
-        float frontMove = InputManager.GetAxisRaw("Horizontal Movement");
         Vector3 movement = Vector3.zero;
+        float rightMove = 0.0f;
+        float frontMove = 0.0f;
+
+        if (CanWalk) {
+            rightMove = InputManager.GetAxisRaw("Vertical Movement");
+            frontMove = InputManager.GetAxisRaw("Horizontal Movement");
+        }      
 
         if (Mathf.Abs(rightMove) >= 0.1f || Mathf.Abs(frontMove) >= 0.1f) { // Hot Fix
             // Get Movement
@@ -288,22 +394,22 @@ public class Player : MonoBehaviour {
         if (controller.isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
-            } else {
-                velocity.y = -1;
-            }
+            } 
         }
         // By Default the Player does a "long jump" by holding the Jump Button
         else {
             // If we are falling, add more Gravity
             if (velocity.y < 0.0f) {
                 velocity.y -= Gravity * (FallStrength - 1f) * Time.deltaTime;
-                //Debug.Break();
             }
             // If we are not doing a "long jump", add more Gravity 
             else if (velocity.y > 0.0f && !InputManager.GetButton("Jump")) {
                 velocity.y -= Gravity * (LowJumpStrength - 1f) * Time.deltaTime;
             }
         }
+    }
+    public void Knockback(Vector3 force) {
+        velocity += force;
     }
 
     public void ChangeHealthUI(float val) {
@@ -333,17 +439,27 @@ public class Player : MonoBehaviour {
         return weaponWheelRotation;
     }
     public void AddWeapon(Weapon newWeapon) {
+        Player.Instance.CanSwapWeapon = true;
+        PlayerHud.Instance.EnableWeaponToggle();
+
         weapons.Add(newWeapon);
 
         newWeapon.gameObject.SetActive(false);
         newWeapon.transform.SetParent(WeaponParent.transform, false);
 
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
+        int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+
+        PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, 
+            weapons[CurrWeaponIndex].name, weapons[nextIndex].name);
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
     }
     public void SwapWeapon(int index) {
-        if(index == CurrWeaponIndex) { return; }
+        if (index == CurrWeaponIndex) { return; }
+        if(index < 0) { index = 0; }
+        if(index >= weapons.Count) { index = weapons.Count - 1; }
 
         Weapon oldWeapon = GetCurrentWeapon();
         oldWeapon.gameObject.SetActive(false);
@@ -356,7 +472,7 @@ public class Player : MonoBehaviour {
         newWeapon.transform.SetParent(camera.transform, false);
 
         int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count -1 : CurrWeaponIndex - 1;
+        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {

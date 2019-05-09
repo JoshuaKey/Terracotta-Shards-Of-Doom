@@ -23,8 +23,14 @@ public class LevelManager : MonoBehaviour {
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         print(scene.name + " was Loaded!");
+
+        Player.Instance.gameObject.SetActive(false);
+
         CheckPointSystem.Instance.LoadStartPoint();
-        Player.Instance.health.Heal(Player.Instance.health.MaxHealth);
+        Player.Instance.health.Reset();
+        PlayerHud.Instance.SetPlayerHealthBar(1.0f);
+
+        Player.Instance.gameObject.SetActive(true);
     }
 
     public void MoveToScene(GameObject obj) {

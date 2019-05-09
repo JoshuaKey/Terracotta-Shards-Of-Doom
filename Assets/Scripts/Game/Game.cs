@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Luminosity.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,14 +8,12 @@ public class Game : MonoBehaviour {
     public string PlayerTag = "Player";
 
     public static Game Instance;
-
-    // Start is called before the first frame update
-    void Start() {
+    
+    void Awake() {
         if(Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(this);    
+
+       
     }
-
-
-
 }

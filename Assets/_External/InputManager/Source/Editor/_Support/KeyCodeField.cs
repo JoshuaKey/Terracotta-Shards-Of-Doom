@@ -46,7 +46,8 @@ namespace LuminosityEditor.IO
 			bool hasFocus = (GUI.GetNameOfFocusedControl() == m_controlName);
 			if(!m_isEditing && hasFocus)
 			{
-				m_keyString = key == KeyCode.None ? "" : KeyCodeConverter.KeyToString(key);
+                
+				m_keyString = key == KeyCode.None ? "" : KeyToString(key);
 			}
 
 			m_isEditing = hasFocus;
@@ -56,24 +57,25 @@ namespace LuminosityEditor.IO
 			}
 			else
 			{
-				EditorGUILayout.TextField(label, key == KeyCode.None ? "" : KeyCodeConverter.KeyToString(key));
+				EditorGUILayout.TextField(label, key == KeyCode.None ? "" : KeyToString(key));
 			}
 
 			if(m_isEditing && Event.current.type == EventType.KeyUp)
 			{
-				key = KeyCodeConverter.StringToKey(m_keyString);
-				if(key == KeyCode.None)
+                key = StringToKey(m_keyString);
+
+                if (key == KeyCode.None)
 				{
 					m_keyString = "";
 				}
 				else
 				{
-					m_keyString = KeyCodeConverter.KeyToString(key);
-				}
+                    m_keyString = KeyToString(key);
+                }
 				m_isEditing = false;
 			}
 
-			return key;
+            return key;
 		}
 
 		public KeyCode OnGUI(Rect position, string label, KeyCode key)
@@ -82,7 +84,7 @@ namespace LuminosityEditor.IO
 			bool hasFocus = (GUI.GetNameOfFocusedControl() == m_controlName);
 			if(!m_isEditing && hasFocus)
 			{
-				m_keyString = key == KeyCode.None ? "" : KeyCodeConverter.KeyToString(key);
+				m_keyString = key == KeyCode.None ? "" : KeyToString(key);
 			}
 
 			m_isEditing = hasFocus;
@@ -92,20 +94,21 @@ namespace LuminosityEditor.IO
 			}
 			else
 			{
-				EditorGUI.TextField(position, label, key == KeyCode.None ? "" : KeyCodeConverter.KeyToString(key));
+				EditorGUI.TextField(position, label, key == KeyCode.None ? "" : KeyToString(key));
 			}
 
 			if(m_isEditing && Event.current.type == EventType.KeyUp)
 			{
-				key = KeyCodeConverter.StringToKey(m_keyString);
-				if(key == KeyCode.None)
+                key = StringToKey(m_keyString);
+
+                if (key == KeyCode.None)
 				{
 					m_keyString = "";
 				}
 				else
 				{
-					m_keyString = KeyCodeConverter.KeyToString(key);
-				}
+                    m_keyString = KeyToString(key);
+                }
 				m_isEditing = false;
 			}
 
@@ -117,5 +120,26 @@ namespace LuminosityEditor.IO
 			m_keyString = "";
 			m_isEditing = false;
 		}
-	}
+
+        public string KeyToString(KeyCode code) {
+            switch (code) {
+                case KeyCode.Backslash:
+                    return "\\";
+                case KeyCode.Quote:
+                    return "\"";
+                default:
+                    return KeyCodeConverter.KeyToString(code);
+            }
+        }
+        public KeyCode StringToKey(string code) {
+            switch (code) {
+                case "\\":
+                    return KeyCode.Backslash;
+                case "\"":
+                    return KeyCode.Quote;
+                default:
+                    return KeyCodeConverter.StringToKey(code);
+            }
+        }
+    }
 }

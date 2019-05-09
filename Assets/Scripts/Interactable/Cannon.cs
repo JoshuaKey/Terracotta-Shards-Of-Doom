@@ -21,6 +21,8 @@ public class Cannon : MonoBehaviour {
     [Header("Damage")]
     public float Damage;
     public float RadiusSize;
+    public float Knockback = 1;
+    public float RigidbodyKnockback = 5;
     public LayerMask EnemyLayer;
 
     [Header("Time")]
@@ -30,6 +32,7 @@ public class Cannon : MonoBehaviour {
     [Header("Object")]
     public GameObject Barrel;
     public GameObject Base;
+    public ParticleSystem LandingEffect;
 
     private Interactable interactable;
 
@@ -37,10 +40,14 @@ public class Cannon : MonoBehaviour {
     private WaitForSeconds leapWait;
     private bool aligning = false;
 
+	public new LineRenderer renderer;
+
     // Start is called before the first frame update
     void Start() {
         interactable = GetComponent<Interactable>();
         if (interactable == null) { interactable = GetComponentInChildren<Interactable>(); }
+
+		renderer = GetComponentInChildren<LineRenderer>();
 
         interactable.Subscribe(FirePlayer);
 
@@ -48,8 +55,30 @@ public class Cannon : MonoBehaviour {
         //BaseAngle = Base.transform.root.localEulerAngles.y;
         if (AutoAlign) {
             Align(Target.position, Peak.position);
-        }  
+        }
+
+        SetLineRenderPoints();
     }
+
+	public void SetLineRenderPoints()
+	{
+        int amo = 11;
+		renderer.positionCount = amo;
+
+        Vector3[] positions = {
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.0f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.1f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.2f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.3f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.4f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.5f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.6f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.7f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.8f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 0.9f),
+            Interpolation.BezierCurve((BarrelChargePos.position + BarrelChargePos.forward), Peak.position, Target.position, 1.0f) };
+        renderer.SetPositions(positions);
+	}
 
     public void Rotate(Transform target, Transform peak) => Rotate(target, peak, ChargeTime, LeapTime);
     public void Rotate(Transform target, Transform peak, float chargeTime, float leapTime) {
@@ -114,6 +143,11 @@ public class Cannon : MonoBehaviour {
         }
 
         aligning = false;
+
+		SetLineRenderPoints();
+
+        print("Here3");
+
     }
 
     private void Align(Vector3 target, Vector3 peak) {
@@ -131,10 +165,11 @@ public class Cannon : MonoBehaviour {
 
     public void FirePlayer() {
         Player player = Player.Instance;
+        renderer.enabled = false;
         StartCoroutine(Shoot(player));
     }
 
-    public IEnumerator Shoot(Player player) {
+	public IEnumerator Shoot(Player player) {
         Transform oldParent = player.transform.parent;
         Quaternion oldRot = player.transform.localRotation;
         DamageType resistance = player.health.Resistance;
@@ -150,6 +185,7 @@ public class Cannon : MonoBehaviour {
         player.CanWalk = false;
         player.CanMove = false;
         player.CanRotate = false;
+        player.CanAttack = false;
 
         while (aligning) {
             yield return null;
@@ -175,6 +211,7 @@ public class Cannon : MonoBehaviour {
         player.LookTowards(Barrel.transform.forward);
         player.CanRotate = true;
 
+
         // Launch Animation
         {
             Vector3 startPos = BarrelChargePos.position;
@@ -194,6 +231,7 @@ public class Cannon : MonoBehaviour {
 
         player.CanWalk = true;
         player.CanMove = true;
+        player.CanAttack = true;
         player.transform.SetParent(oldParent, true);
         player.transform.localRotation = oldRot;
         player.health.Resistance = resistance;
@@ -207,16 +245,26 @@ public class Cannon : MonoBehaviour {
     }
 
     public void Explosion(Vector3 pos) {
+        LandingEffect.transform.position = pos;
+        LandingEffect.Play();
+
         Collider[] colliders = Physics.OverlapSphere(pos, RadiusSize, EnemyLayer);
         foreach(Collider other in colliders) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
             if (enemy != null) {
-                print("Cannon hit " + other.name + " or " + enemy.name);
-                enemy.health.TakeDamage(DamageType.EXPLOSIVE, this.Damage);
-                //OnEnemyHit?.Invoke(enemy);
-            }
-        }
-    }
+                // Damage
+                float damage = enemy.health.TakeDamage(DamageType.EXPLOSIVE, this.Damage);
+                bool isDead = enemy.health.IsDead();
 
+                // Explosion
+                if (damage > 0 && isDead) {
+                    Vector3 forward = this.transform.forward;
+                    forward.y = 0.0f;
+                    forward = forward.normalized;
+                    enemy.Explode(forward * RigidbodyKnockback, pos);
+                }
+            }
+        }    
+    }
 }

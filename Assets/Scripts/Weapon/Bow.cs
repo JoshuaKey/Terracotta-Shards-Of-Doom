@@ -4,25 +4,27 @@ using UnityEngine;
 
 public class Bow : Weapon {
 
+    [Header("Damage")]
+    public float MinDamage = .5f;
+    public float MinCharge = .25f;
+
     [Header("Aim")]
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
-    public float ChargeTime = 1f;
-    public float BaseChargeTime = .2f;
+    public LayerMask AimLayer;
 
     [Header("Force")]
     public float MinSpeed = 0f;
-    public float MaxSpeed = 12f;
-
-    [Header("Damage")]
-    public float MinDamage = .25f; // Tap
-    public float BaseDamage = 1f; // .1f
-    public float MaxDamage = 3f; // Full Charge
+    public float MaxSpeed = 5f;
 
     [Header("Visuals")]
     public Arrow ArrowPrefab;
     public Transform ChargedArrowPos;
     public ArrowPool arrowPool;
+
+    [Header("Animation")]
+    public GameObject drawString;
+    private Vector3 drawStringDefaultPos;
 
     // Value between 0 and 1;
     private float charge;
@@ -34,6 +36,10 @@ public class Bow : Weapon {
     protected void Start() {
         CanCharge = true;
         Type = DamageType.BASIC;
+
+        this.name = "Bow";
+
+        drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -44,7 +50,7 @@ public class Bow : Weapon {
         Ray ray = new Ray(camera.transform.position + forward * MinDistance, forward);
         RaycastHit hit;
         Vector3 aimPoint = Vector3.zero;
-        if (Physics.Raycast(ray, out hit, MaxDistance)) {
+        if (Physics.Raycast(ray, out hit, MaxDistance, AimLayer)) {
             aimPoint = hit.point;
         } else {
             aimPoint = camera.transform.position + forward * MaxDistance;
@@ -56,18 +62,23 @@ public class Bow : Weapon {
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
 
+        AnimateDrawString();
+
         // Debug
         Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
-        Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
         Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
     }
 
     private void OnEnable() {
-        PlayerHud.Instance.EnableCrosshair();
+        if(Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
+            PlayerHud.Instance.EnableCrosshair();
+        }
     }
 
     private void OnDisable() {
-        PlayerHud.Instance.DisableCrosshair();
+        if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
+            PlayerHud.Instance.DisableCrosshair();
+        }
 
         StopAllCoroutines();
         if(currArrow != null) {
@@ -76,14 +87,19 @@ public class Bow : Weapon {
         charge = 0.0f;
     }
 
+    public void AnimateDrawString()
+    {
+        drawString.transform.localPosition = drawStringDefaultPos + (Vector3.back * charge / 100);
+    }
+
     public override void Charge() {
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
             //currArrow = arrowPool.Create();
             //currArrow.transform.SetParent(this.transform);
         }
-
-        charge += Time.deltaTime / ChargeTime;
+        
+        charge += Time.deltaTime / AttackSpeed;
         charge = Mathf.Min(charge, 1.0f);
 
         float t = Interpolation.CubicOut(charge);
@@ -92,23 +108,25 @@ public class Bow : Weapon {
     }
 
     public override void Attack() {
-        if (!CanAttack() || charge == 0.0f) { return; }
+        if (!CanAttack() || !currArrow) { return; }
 
-        base.Attack();
+        if(charge < MinCharge) {
+            Destroy(currArrow.gameObject);
+            charge = 0.0f;
+            currArrow = null;
+            return;
+        }
 
         float t = Interpolation.QuadraticIn(charge);
         currArrow.Impulse = Mathf.Lerp(MinSpeed, MaxSpeed, t);
         currArrow.LifeTime = 20f;
-        currArrow.Damage = charge == 1 ? MaxDamage : (charge >= BaseChargeTime ? BaseDamage : MinDamage);
+        currArrow.Damage = charge == 1 ? Damage : MinDamage;
         currArrow.Type = this.Type;
+        currArrow.Knockback = this.Knockback;
+        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
         currArrow.Fire();
 
         charge = 0.0f;
         currArrow = null;
-    }
-
-    private void OnGUI() {
-        GUI.Label(new Rect(160, 10, 150, 20), "Charge: " + charge);
-        GUI.Label(new Rect(160, 30, 150, 20), "Dist: " + dist);
     }
 }

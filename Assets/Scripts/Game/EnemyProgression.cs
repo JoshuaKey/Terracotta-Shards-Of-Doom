@@ -26,7 +26,9 @@ public class EnemyProgression : MonoBehaviour {
             }
         }
 
-        ProgressionObject.SetActive(!SetActive);
+        if(ProgressionObject) {
+            ProgressionObject.SetActive(!SetActive);
+        }      
 
         if (UseHud) {
             PlayerHud.Instance.SetEnemyCount(currKills, KillsNeeded);
@@ -40,7 +42,9 @@ public class EnemyProgression : MonoBehaviour {
 
     public void Check() {
         if(IsComplete()) {
-            ProgressionObject.SetActive(SetActive);
+            if (ProgressionObject) {
+                ProgressionObject.SetActive(SetActive);
+            }
         }
 
         if (UseHud) {
