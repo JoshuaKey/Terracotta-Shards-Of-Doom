@@ -153,7 +153,11 @@ public class Charger_Attack : TimedState
     {
         base.Update();
 
-        if(timer >= seconds)
+        //turn pot towards player
+        Vector3 newForward = Player.Instance.transform.position - owner.transform.position;
+        owner.transform.forward = newForward;
+
+        if (timer >= seconds)
         {
             return "Charger_Charge";
         }
