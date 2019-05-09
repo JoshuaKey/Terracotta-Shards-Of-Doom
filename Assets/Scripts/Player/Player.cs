@@ -40,8 +40,11 @@ public class Player : MonoBehaviour {
     [Header("Interact")]
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
-    public CompassPot compass;
     public bool CanInteract = true;
+    
+    [Header("Compass")]
+    public CompassPot compass;
+    public Transform Shoulder;
 
     [Space]
     [Header("Debug")]
@@ -105,6 +108,11 @@ public class Player : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
 
+        // Compass
+        compass.Origin = Shoulder;
+        compass.Base = camera.transform;
+        compass.transform.SetParent(Shoulder);
+
         PlayerHud.Instance.EnablePlayerHealthBar();
         this.health.OnDeath += this.Die;
         this.health.OnDamage += ChangeHealthUI;
@@ -139,26 +147,31 @@ public class Player : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.Z)) {
                 Weapon w = GameObject.Instantiate(BowPrefab);
                 w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Bow";
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.X)) {
                 Weapon w = GameObject.Instantiate(HammerPrefab);
                 w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Hammer";
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.C)) {
                 Weapon w = GameObject.Instantiate(SpearPrefab);
                 w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Spear";
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.V)) {
                 Weapon w = GameObject.Instantiate(CrossBowPrefab);
                 w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "CrossBow";
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.B)) {
                 Weapon w = GameObject.Instantiate(MagicPrefab);
                 w.transform.SetParent(WeaponParent.transform, false);
+                w.name = "Magic";
                 AddWeapon(w);
             }
         }
@@ -293,6 +306,7 @@ public class Player : MonoBehaviour {
                     if (InputManager.GetButton("Attack")) {
                         weapon.Charge();
                     } else {
+                        print("here");
                         weapon.Attack();
                     }
                 } else {
@@ -307,7 +321,7 @@ public class Player : MonoBehaviour {
         // Check for Compass
         {
             if (InputManager.GetButtonDown("Compass")) {
-                compass.Activate(-camera.transform.forward);
+                compass.Activate();
             } 
             else if (compass.gameObject.activeInHierarchy) {
                 Transform target;
@@ -316,9 +330,7 @@ public class Player : MonoBehaviour {
                 } else {
                     target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
                 }
-                Vector3 dir = target.position - this.transform.position;
-                dir = dir.normalized;
-                compass.SetDirection(dir);
+                compass.Target = target;
             }
         }
 
@@ -332,8 +344,7 @@ public class Player : MonoBehaviour {
                 if (interactable == null) { interactable = hit.collider.GetComponentInParent<Interactable>(); }
 
                 if (interactable.CanInteract) {
-                    Sprite inputIcon = InputController.Instance.GetActionIcon("Interact");
-                    PlayerHud.Instance.SetInteractText(inputIcon);
+                    PlayerHud.Instance.EnableInteractText();
 
                     if (InputManager.GetButtonDown("Interact")) {
                         interactable.Interact();
@@ -437,6 +448,11 @@ public class Player : MonoBehaviour {
         newWeapon.transform.SetParent(WeaponParent.transform, false);
 
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
+        int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+        int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+
+        PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, 
+            weapons[CurrWeaponIndex].name, weapons[nextIndex].name);
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
     }

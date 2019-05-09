@@ -90,8 +90,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339566e15bbd42044845e0d820147bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Origin: {fileID: 0}
+  Base: {fileID: 0}
+  Target: {fileID: 0}
+  PeripheralAngle: 45
   ActiveTime: 10
   CooldownTime: 10
+  MoveSpeed: 5
   Speed: 2.5
   Distance: 2.5
   MovingBobSpeed: 5
@@ -212,6 +217,36 @@ Transform:
   m_Father: {fileID: 4427983775954707087}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3065991618250651016
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3001636328724774057}
+  m_Layer: 9
+  m_Name: Shoulder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3001636328724774057
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3065991618250651016}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.25, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4427983775954707087}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4427983775954707072
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +282,7 @@ Transform:
   - {fileID: 7348822840720492200}
   - {fileID: 4540878466646778246}
   - {fileID: 50113011}
+  - {fileID: 3001636328724774057}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -336,8 +372,9 @@ MonoBehaviour:
   InteractLayer:
     serializedVersion: 2
     m_Bits: 2048
-  compass: {fileID: 50113012}
   CanInteract: 1
+  compass: {fileID: 50113012}
+  Shoulder: {fileID: 3001636328724774057}
   SwordPrefab: {fileID: 951680341231762631, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
     type: 3}
   BowPrefab: {fileID: 3726514527976357539, guid: 4b8accc48522646418e1a9badb82f823,

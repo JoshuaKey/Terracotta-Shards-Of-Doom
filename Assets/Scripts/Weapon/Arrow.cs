@@ -80,6 +80,7 @@ public class Arrow : PoolObject {
         } else {
             // Physics Impulse
             Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
+            if (rb == null) { rb = other.GetComponentInParent<Rigidbody>(); }
             if (rb != null) {
                 Vector3 forward = this.transform.forward;
                 forward.y = 0.0f;
@@ -90,5 +91,12 @@ public class Arrow : PoolObject {
 
         rigidbody.velocity = Vector3.zero;
         collider.isTrigger = false;
+
+        int layer = LayerMask.NameToLayer("Default");
+        this.gameObject.layer = layer;
+        for (int i = 0; i < this.transform.childCount; i++) {
+            Transform t = this.transform.GetChild(i);
+            t.gameObject.layer = layer;
+        }
     }
 }
