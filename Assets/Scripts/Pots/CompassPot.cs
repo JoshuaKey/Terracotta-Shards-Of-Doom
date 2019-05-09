@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class CompassPot : MonoBehaviour {
 
+    public Transform Origin; // Compass' Origin
+    public Transform Base; // Rotating Around
+    public Transform Target; // Rotating Towards
+    public float PeripheralAngle = 45f;
+
     [Header("Timer")]
     public float ActiveTime = 5.0f;
     public float CooldownTime = 5.0f;
 
     [Header("Moving")]
-    public float Speed = 5;
+    public float MoveSpeed = 5;
     public float Distance = 2;
     public float MovingBobSpeed = 1;
     public float MovingBobDistance = .5f;
@@ -17,30 +22,27 @@ public class CompassPot : MonoBehaviour {
     [Header("Rotating")]
     public float RotateSpeed = 3.14f;
 
-    [Header("Bobing")]
-    public float BobSpeed = 3f;
-    public float BobDistance = 1f;
-
     private string state;
     private IEnumerator routine;
-    private float baseY;
 
     private float bobTimer = 0.0f;
     private float bobDist = 0.0f;
 
-    private Vector3 dir;
+    float currXAngle;
+    float currYAngle;
+    Vector3 currPos;
 
     private float nextActiveTime;
 
     private void Start() {
-        baseY = this.transform.localPosition.y;
         this.gameObject.SetActive(false);
     }
 
-    public void Activate(Vector3 moveDir) {
+    public void Activate() {
         if (Time.time >= nextActiveTime) {
             this.gameObject.SetActive(true);
-            this.dir = moveDir;
+            this.transform.position = Origin.position;
+            currPos = Origin.position;
 
             StartCoroutine(ActivateAbility());
 
@@ -48,105 +50,215 @@ public class CompassPot : MonoBehaviour {
         }
     }
 
-    public void SetDirection(Vector3 dir) {
-        this.dir = dir;
-    }
-
-    private void Enable() {
-        if (routine != null) {
-            StopCoroutine(routine);
-            if (state != "") {
-                dir = this.transform.localPosition.normalized;
-            }
-        }   
-
-        routine = Move(dir * Distance, false);
-        StartCoroutine(routine);
-    }
-    private void Disable() {
-        if (routine != null) {
-            StopCoroutine(routine);
-        }
-
-        routine = Move(Vector3.zero, true);
-        StartCoroutine(routine);
-    }
-
     private IEnumerator ActivateAbility() {
-        Enable();
+        // Enable
+        if (routine != null) {
+            StopCoroutine(routine);
+            routine = null;
+        }
+        routine = MoveOut();
+        StartCoroutine(routine);
+
         yield return new WaitForSeconds(ActiveTime);
-        Disable();
+
+        // Disable
+        if (routine != null) {
+            StopCoroutine(routine);
+            routine = null;
+        }
+        routine = MoveIn();
+        StartCoroutine(routine);
     }
 
-    private IEnumerator Move(Vector3 dest, bool disable) {
-        Vector3 pos = this.transform.localPosition;
-        while (!IsCloseTo(pos, dest)) {
-            print("Moving");
-            state = "Move";
-            pos = this.transform.localPosition;
+    // Moves the Pot towards the Players Forward
+    private IEnumerator MoveOut() {
+        //Vector3 currPos = this.transform.position;
+        Vector3 dest = Base.position + Base.forward * Distance;
+        while (!IsCloseTo(currPos, dest)) {
+            // CURVE??
 
-            // Moving
-            Vector3 dir = (dest - pos).normalized;
-            pos += dir * Speed * Time.deltaTime;
+            Vector3 dir = (dest - currPos).normalized;
 
-            // Bobing
-            pos.y = baseY + Bob(MovingBobSpeed, MovingBobDistance);
+            currPos += dir * MoveSpeed * Time.deltaTime;
 
-            this.transform.localPosition = pos;
+            SetPosition(currPos);
 
             yield return null;
+
+            //currPos = this.transform.position;
+            dest = Base.position + Base.forward * Distance;
         }
 
-        
-        if (disable) {
-            routine = null;
-            this.gameObject.SetActive(false);
-            state = "";
-        } else {
-            routine = Rotate();
-            StartCoroutine(routine);
-        }
+        SetPosition(currPos);
+
+        routine = RotateAround();
+        StartCoroutine(routine);
     }
 
-    private IEnumerator Rotate() {
-        while (true) {
-            Vector3 pos = this.transform.localPosition;
-            Vector3 dest = dir * Distance;
+    // Moves the Pot towards it's Parent
+    private IEnumerator MoveIn() {
+        //Vector3 currPos = this.transform.position;
+        Vector3 dest = Origin.position;
+        while (!IsCloseTo(currPos, dest)) {
+            // CURVE??
 
-            if (dir == Vector3.zero) {
-                print("Circling");
-                state = "Circle";
+            Vector3 dir = (dest - currPos).normalized;
 
-                pos = Quaternion.Euler(RotateSpeed * Time.deltaTime, 0, 0) * pos;
-                pos.y = baseY + Bob(BobSpeed, BobDistance);
-            } else if(IsCloseTo(pos, dest)) {
-                print("Bobing");
-                state = "Bob";
+            currPos += dir * MoveSpeed * Time.deltaTime;
 
-                pos.y = baseY + Bob(BobSpeed, BobDistance);
+            SetPosition(currPos);
+
+            yield return null;
+
+            //currPos = this.transform.position;
+            dest = Origin.position;
+        }
+
+        SetPosition(currPos);
+
+        this.gameObject.SetActive(false);
+    }
+
+    private IEnumerator MoveToRotation(float angle, float e = .1f) {
+        //Vector3 currPos = this.transform.position;
+        Vector3 dest = Base.position + Quaternion.Euler(0, angle, 0) * Base.forward * Distance;
+        while (!IsCloseTo(currPos, dest)) {
+            Vector3 destDir = dest - currPos;
+            Vector3 dir = destDir.normalized;
+
+            Vector3 mvmt = dir * RotateSpeed * Time.deltaTime;
+            if(mvmt.sqrMagnitude > destDir.sqrMagnitude) {
+                currPos += destDir;
             } else {
-                print("Rotating");
-                state = "Rotate";
+                currPos += mvmt;
+            }        
 
-                Vector3 posDir = this.transform.localPosition.normalized;
-                pos = Vector3.RotateTowards(posDir, dir, RotateSpeed * Time.deltaTime, 0.0f);
-                pos = pos * Distance;
-                pos.y = baseY + Bob(MovingBobSpeed, MovingBobDistance);
+            SetPosition(currPos);
+
+            yield return null;
+
+            //currPos = this.transform.position;
+            dest = Base.position + Quaternion.Euler(0, angle, 0) * Base.forward * Distance;
+        }
+
+        SetPosition(dest);
+    }
+
+    // Moves around the Player's Vision
+    private IEnumerator RotateAround() {
+        float angleInc = 1;
+        float maxXAngle = PeripheralAngle;
+        currXAngle = 0;
+
+        // Rotate around player 6 times
+        for(int i = 0; i < 6; i++) {
+
+            // Keep rotating until we hit the maxAngle, aka PeripheralAngle
+            while (true) {
+
+                // Check if we are close to our current rotation dest, aka in a circle
+                yield return MoveToRotation(currXAngle);
+
+                // Change Rotation Direction
+                if (currXAngle == maxXAngle) {
+                    break;
+                }
+
+                // Next Rotation Position
+                currXAngle += angleInc;
             }
 
-            this.transform.localPosition = pos;
+            // Change Max Angle
+            angleInc = maxXAngle == PeripheralAngle ? -1 : 1;
+            maxXAngle = maxXAngle == PeripheralAngle ? -PeripheralAngle : PeripheralAngle;           
+        }
 
-            yield return null;
-        }  
+        routine = RotateTowards();
+        StartCoroutine(routine);
+    }
+
+    // Moves to the target's angle, but stays in the Player's vision
+    private IEnumerator RotateTowards() {
+        float angleInc = 1;
+        float maxXAngle = PeripheralAngle;
+
+        // Keep rotating until we hit the maxAngle
+        while (true) {
+            // Target Angle
+            Vector3 targetDir = (Target.position - Base.position).normalized;
+            float angle = Vector3.SignedAngle(Base.forward, targetDir, Vector3.up);
+
+            // Clamp Max Angle
+            if (angle > PeripheralAngle) {
+                maxXAngle = PeripheralAngle;
+            } else if (angle < -PeripheralAngle) {
+                maxXAngle = -PeripheralAngle;
+            } else {
+                maxXAngle = angle;
+            }
+
+            // Check if we are close to our current rotation dest, aka in a circle
+            yield return MoveToRotation(currXAngle, .01f);
+
+            // Rotate towards destination
+            if (currXAngle < maxXAngle) {
+                currXAngle += angleInc;
+            } else if(currXAngle > maxXAngle) {
+                currXAngle -= angleInc;
+            }
+        }
+    }
+
+    private void SetPosition(Vector3 pos) {
+        currPos = pos;
+
+        float bobPos = Bob(MovingBobSpeed, MovingBobDistance);
+
+        this.transform.position = currPos + Base.up * bobPos;
+
+        this.transform.rotation = Quaternion.LookRotation(-Base.forward, Vector3.up);
+
+        if(Target != null && Base != null) {
+            Debug.DrawLine(Base.position, Target.position, Color.green);
+        }
     }
 
     private float Bob(float speed, float distance) {
+        // Add onto Bob Timer (aka Sin Wave)
         bobTimer += Time.deltaTime * speed;
+
+        // Set new Bob Height to Lerp between previous and new Distance
+        // Aka, going from 1m to 3m will instantly change height magnitude.
         bobDist = Mathf.Lerp(bobDist, distance, Time.deltaTime);
+
+        // Bob Value
         return Mathf.Sin(bobTimer) * bobDist;
     }
+
+    // Determines whether 2 positions 
     private bool IsCloseTo(Vector3 pos, Vector3 point, float e = .1f) {
         pos.y = point.y = 0.0f;
         return (point - pos).sqrMagnitude <= e * e;
     }
+
+    private void OnGUI() {
+        GUI.Label(new Rect(170, 10, 150, 20), "Ang: " + currXAngle);
+        GUI.Label(new Rect(170, 30, 150, 20), "Pos: " + currPos);
+    }
 }
+
+// Compass States:
+//  Move Out
+//      Compass activates and moves out from player
+//  Rotate Around
+//      Compass rotates around player several times
+//  Rotate Towards
+//      Compass rotates toward the correct direction the player should go.
+//  Bob             
+//      Compass bobs up and down at a frequent speed to indicate it is pointing in the correct direction.
+//  Move In
+//      Compass travels towards the player and ends the ability.
+
+// DO NOT USE APPROXIMATION
+// LERP
+// ABSOULTE POSITIONS

@@ -47,7 +47,9 @@ public class EnemyManager : MonoBehaviour {
     }
 
     public Enemy SpawnPot() {
-        return SpawnPrefab(PotPrefab);
+
+        Enemy enemy = SpawnPrefab(PotPrefab);
+        return enemy;
     }
     public Enemy SpawnHealthPot() {
         return SpawnPrefab(HealthPotPrefab);
@@ -65,7 +67,7 @@ public class EnemyManager : MonoBehaviour {
     private void EnemyDeath() {
         enemiesKilled++;
         OnEnemyDeath?.Invoke();
-        print(EnemyManager.Instance.GetEnemiesKilled() + " Enemies Killed");
+        //print(EnemyManager.Instance.GetEnemiesKilled() + " Enemies Killed");
     }
 
     public Enemy GetClosestEnemy(Vector3 pos) {

@@ -11,9 +11,12 @@ public class Arrow : PoolObject {
     [Header("Damage")]
     public float Damage = 0f;
     public DamageType Type;
+    public float Knockback;
+    public float RigidbodyKnockback;
 
-    protected new Rigidbody rigidbody;
-    protected new Collider collider;
+    [Header("Components")]
+    public new Rigidbody rigidbody;
+    public new Collider collider;
 
     private float startLife;
 
@@ -63,11 +66,37 @@ public class Arrow : PoolObject {
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
-            enemy.health.TakeDamage(this.Type, this.Damage);
-            //OnEnemyHit?.Invoke(enemy);
+            // Damage
+            float damage = enemy.health.TakeDamage(this.Type, this.Damage);
+            bool isDead = enemy.health.IsDead();
+
+            // Explosion
+            if (damage > 0 && isDead) {
+                Vector3 forward = this.transform.forward;
+                forward.y = 0.0f;
+                forward = forward.normalized;
+                enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
+            }
+        } else {
+            // Physics Impulse
+            Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
+            if (rb == null) { rb = other.GetComponentInParent<Rigidbody>(); }
+            if (rb != null) {
+                Vector3 forward = this.transform.forward;
+                forward.y = 0.0f;
+                forward = forward.normalized;
+                rb.AddForce(forward * RigidbodyKnockback, ForceMode.Impulse);
+            }
         }
 
         rigidbody.velocity = Vector3.zero;
         collider.isTrigger = false;
+
+        int layer = LayerMask.NameToLayer("Default");
+        this.gameObject.layer = layer;
+        for (int i = 0; i < this.transform.childCount; i++) {
+            Transform t = this.transform.GetChild(i);
+            t.gameObject.layer = layer;
+        }
     }
 }

@@ -11,6 +11,7 @@ public class MimicPot : Pot
     [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
     [SerializeField] public float attackAngle = 70f;
+    [SerializeField] public float knockback = 20f;
 
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool hasHitPlayer = false;
@@ -39,6 +40,7 @@ public class MimicPot : Pot
         {
             hasHitPlayer = true;
             Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
+            Player.Instance.Knockback(this.transform.forward * knockback);
         }
     }
 
@@ -118,7 +120,7 @@ public class Mimic_Charge : State
             return "PUSH.Mimic_Attack";
         }
 
-        if (agent.isActiveAndEnabled)
+        if (agent.isActiveAndEnabled && !mp.stunned)
         {
             agent.SetDestination(player.transform.position);
         }

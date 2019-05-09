@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Magic : Weapon {
 
@@ -47,6 +48,10 @@ public class Magic : Weapon {
         if (collider != null) {
             collider.enabled = false;
         }
+
+        enemyList.Clear();
+        currMissiles.ForEach(x => Destroy(x.gameObject));
+        currMissiles.Clear();
     }
 
     public override void Charge() {
@@ -82,6 +87,8 @@ public class Magic : Weapon {
             m.LifeTime = 20f;
             m.Damage = this.Damage;
             m.Type = this.Type;
+            m.Knockback = this.Knockback;
+            m.RigidbodyKnockback = this.RigidbodyKnockback;
             m.Fire();
         }
 
