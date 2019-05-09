@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
 
-public class Boss2AI : Pot
+public class Boss2Pot : Pot
 {
     NavMeshAgent navMeshAgent = null;
 
@@ -85,7 +85,7 @@ public class Boss2AI : Pot
     {
         List<GameObject> waypoints = null;
         GameObject target = null;
-        Boss2AI boss2AI = null;
+        Boss2Pot boss2AI = null;
 
         bool running = false;
         bool reachedDestination = false;
@@ -99,7 +99,7 @@ public class Boss2AI : Pot
 
             if (boss2AI == null)
             {
-                boss2AI = owner.GetComponent<Boss2AI>();
+                boss2AI = owner.GetComponent<Boss2Pot>();
             }
             base.Init(owner);
         }
@@ -134,13 +134,13 @@ public class Boss2AI : Pot
 
         public override string Update()
         {
-            if (!running)
+            if (!running && !reachedDestination)
             {
                 boss2AI.StartCoroutine(Run());
             }
             else if (reachedDestination)
             {
-                return "Boss2AI+Animating";
+                return "Boss2Pot+Animating";
             }
             
             return null;
@@ -162,7 +162,7 @@ public class Boss2AI : Pot
 
     private class Animating : State
     {
-        Boss2AI boss2AI = null;
+        Boss2Pot boss2AI = null;
         List<Pot> Pots = null;
 
         private bool animating = false;
@@ -176,7 +176,7 @@ public class Boss2AI : Pot
         {
             if (boss2AI == null)
             {
-                boss2AI = owner.GetComponent<Boss2AI>();
+                boss2AI = owner.GetComponent<Boss2Pot>();
             }
 
             animating = false;
@@ -209,7 +209,7 @@ public class Boss2AI : Pot
             }
             else if (doneAnimating)
             {
-                return "Boss2AI+DoNothing";
+                return "Boss2Pot+DoNothing";
             }
             return null;
         }
