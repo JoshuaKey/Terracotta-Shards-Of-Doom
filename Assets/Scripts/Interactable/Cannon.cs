@@ -230,8 +230,6 @@ public class Cannon : MonoBehaviour {
         }
 
         if (DestoryObjectOnImpact && DestroyableObject) {
-            //DestroyableObject.AddComponent<Rigidbody>();
-            //NavMesh.
             StartCoroutine(MakeDestroyableObjectFall());
         }
 
@@ -253,19 +251,17 @@ public class Cannon : MonoBehaviour {
     }
 
     private IEnumerator MakeDestroyableObjectFall() {
-        NavMeshSurface surface = DestroyableObject.GetComponent<NavMeshSurface>();
-        Destroy(surface);
-        //NavMeshBuilder.UpdateNavMeshDataAsync();
-
         Vector3 vel = Vector3.zero;
         float startTime = Time.time;
         while (DestroyableObject.activeInHierarchy && Time.time < startTime + 10f) {
-            vel += Vector3.up * -9.8f;
+            vel += Vector3.up * -9.8f * Time.deltaTime;
 
-            DestroyableObject.transform.position += vel;
+            DestroyableObject.transform.position += vel * Time.deltaTime;
 
             yield return null;
         }
+
+        Destroy(DestroyableObject);
     }
 
     public void Explosion(Vector3 pos) {
