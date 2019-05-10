@@ -122,6 +122,7 @@ public class Sword : Weapon {
                 }
             } else {
                 Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
+                if (rb == null) { rb = other.GetComponentInParent<Rigidbody>(); }
                 if (rb != null) {
                     Vector3 forward = Player.Instance.camera.transform.forward;
                     //forward = forward.normalized;

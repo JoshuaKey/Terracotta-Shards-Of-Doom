@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
-    [HideInInspector]
+    //[HideInInspector]
     public Health health;
     [HideInInspector]
     public Pot pot;
@@ -35,6 +35,9 @@ public class Enemy : MonoBehaviour {
 
         if (agent == null) { agent = GetComponentInChildren<NavMeshAgent>(true); }
 
+    }
+
+    private void Start() {
         this.gameObject.tag = "Enemy";
         this.gameObject.layer = LayerMask.NameToLayer("Enemy");
 

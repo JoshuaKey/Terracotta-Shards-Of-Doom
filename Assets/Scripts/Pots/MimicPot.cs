@@ -10,12 +10,6 @@ public class MimicPot : Pot
     //This is all atack stuff and i currently dont wanna change it
     [SerializeField] public float attackRadius = 2.5f;
     [SerializeField] public float attackDuration = 0.25f;
-    [SerializeField] public float attackAngle = 70f;
-    [SerializeField] public float knockback = 20f;
-
-    [HideInInspector] public bool isAttacking = false;
-    [HideInInspector] public bool hasHitPlayer = false;
-
 
     void Start()
     {
@@ -23,7 +17,7 @@ public class MimicPot : Pot
         stateMachine.Init(gameObject,
             new Mimic_Idle(),
             new Mimic_Charge(),
-            new Mimic_Attack());
+            new Mimic_Attack(attackDuration));
     }
 
     public override void Animate()
@@ -32,18 +26,6 @@ public class MimicPot : Pot
         Hop();
         //but for now i Hop
     }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        //This is just the base Charger Pot code idk if i need to do anything special with this
-        if (other.CompareTag(Game.Instance.PlayerTag) && isAttacking && !hasHitPlayer)
-        {
-            hasHitPlayer = true;
-            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
-            Player.Instance.Knockback(this.transform.forward * knockback);
-        }
-    }
-
 }
 
 
@@ -68,6 +50,11 @@ public class Mimic_Idle : State
 
     public override string Update()
     {
+        if (owner.GetComponent<MimicPot>() == null || player == null)
+        {
+            return null;
+        }
+
         //This will check if it can wake up or not
         if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<MimicPot>().aggroRadius)
         {
@@ -132,28 +119,27 @@ public class Mimic_Charge : State
 public class Mimic_Attack : TimedState
 {
     GameObject player;
-    MimicPot mp;
+    Animator animator;
+    Attack attack;
+
+    public Mimic_Attack(float seconds)
+        :base(seconds)
+    { }
 
     public override void Init(GameObject owner)
     {
-        //why do i need this if im just checking for it in the Enter function?
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        animator = owner.GetComponentInChildren<Animator>();
+        attack = owner.GetComponentInChildren<Attack>();
     }
 
     public override void Enter()
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-        if (mp == null)
-        {
-            mp = owner.GetComponent<MimicPot>();
-        }
-        timer = 0;
-        mp.isAttacking = true;
-        mp.hasHitPlayer = false;
+        base.Enter();
+
+        animator.SetTrigger("Attack");
+        attack.isAttacking = true;
+
         if (agent.isActiveAndEnabled && agent.isOnNavMesh)
         {
             agent.isStopped = true;
@@ -162,8 +148,8 @@ public class Mimic_Attack : TimedState
 
     public override void Exit()
     {
-        mp.isAttacking = false;
-        mp.hasHitPlayer = false;
+        attack.isAttacking = false;
+        attack.hasHitPlayer = false;
         if (agent.isActiveAndEnabled && agent.isOnNavMesh)
         {
             agent.isStopped = false;
@@ -174,15 +160,11 @@ public class Mimic_Attack : TimedState
     {
         base.Update();
 
-        //This is for the headbutt ... we are eventually going to change this with an animation so i dont think i care enough to change this code
-        Vector3 newRotation = owner.transform.rotation.eulerAngles;
+        //turn pot towards player
+        Vector3 newForward = Player.Instance.transform.position - owner.transform.position;
+        owner.transform.forward = newForward;
 
-        newRotation.x = timer * (timer - mp.attackDuration) * (-4 * mp.attackAngle) / Mathf.Pow(mp.attackDuration, 2);
-        newRotation.y = Quaternion.LookRotation(player.transform.position - owner.transform.position).eulerAngles.y;
-
-        owner.transform.rotation = Quaternion.Euler(newRotation);
-
-        if (timer >= mp.attackDuration)
+        if (timer >= seconds)
         {
             return "POP";
         }
