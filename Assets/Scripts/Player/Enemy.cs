@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour {
     private new Rigidbody rigidbody;
     private new Collider collider;
 
-    void Start() {
+    void Awake() {
         collider = GetComponent<Collider>();
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
