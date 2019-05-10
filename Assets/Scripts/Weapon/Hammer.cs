@@ -105,6 +105,8 @@ public class Hammer : Weapon {
                         dir = dir.normalized;
                         enemy.Knockback(dir * Knockback);
                     }
+                } else {
+                    AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
                 }
             } else {
                 Rigidbody rb = c.GetComponentInChildren<Rigidbody>();
