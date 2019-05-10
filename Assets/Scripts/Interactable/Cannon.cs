@@ -211,9 +211,10 @@ public class Cannon : MonoBehaviour {
         player.LookTowards(Barrel.transform.forward);
         player.CanRotate = true;
 
-
         // Launch Animation
         {
+            AudioManager.Instance.PlaySoundWithParent("cannon", ESoundChannel.SFX, gameObject);
+
             Vector3 startPos = BarrelChargePos.position;
             float startTime = Time.time;
             while (Time.time < startTime + LeapTime) {
@@ -228,6 +229,7 @@ public class Cannon : MonoBehaviour {
         }
 
         Explosion(player.transform.position);
+        AudioManager.Instance.PlaySoundWithParent("thud", ESoundChannel.SFX, player.gameObject);
 
         player.CanWalk = true;
         player.CanMove = true;
