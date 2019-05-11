@@ -46,7 +46,7 @@ public class PlayerHud : MonoBehaviour {
     public Sprite HammerIcon;
     public Sprite SpearIcon;
     public Sprite CrossbowIcon;
-    public Sprite MagicMissleIcon;
+    public Sprite MagicIcon;
 
     [Header("Weapon Wheel")]
     public GameObject WeaponWheel;
@@ -184,6 +184,18 @@ public class PlayerHud : MonoBehaviour {
                 break;
             case "Bow":
                 retval = BowIcon;
+                break;
+            case "Hammer":
+                retval = HammerIcon;
+                break;
+            case "Spear":
+                retval = SpearIcon;
+                break;
+            case "Crossbow":
+                retval = CrossbowIcon;
+                break;
+            case "Magic":
+                retval = MagicIcon;
                 break;
             default:
                 retval = SwordIcon;
