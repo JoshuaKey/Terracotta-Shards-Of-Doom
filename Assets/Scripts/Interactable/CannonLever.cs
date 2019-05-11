@@ -21,6 +21,7 @@ public class CannonLever : Lever {
     }
 
     public void AlignCannon() {
+        AudioManager.Instance.PlaySoundWithParent("lever", ESoundChannel.SFX, gameObject);
         cannon.Rotate(Target, Peak, ChargeTime, LeapTime);
         //cannon.FirePlayer();
         interactable.CanInteract = false;
