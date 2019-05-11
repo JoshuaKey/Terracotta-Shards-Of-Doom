@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waddleAmplitude: 12.5
   hopHeight: 1
+  stunned: 0
   aggroRadius: 20
   attackRadius: 3
   attackDuration: 1
+  knockback: 20
   isAttacking: 0
   hasHitPlayer: 0
 --- !u!195 &8408229826733571263
@@ -35,7 +37,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0

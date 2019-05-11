@@ -16,6 +16,7 @@ public class Boss1Pot : Pot
     
     [Header("Spawning")]
     public int SpawnLimit = 50;
+    private List<Enemy> currSpawns = new List<Enemy>();
 
     [HideInInspector]
     public Enemy enemy;
@@ -26,7 +27,6 @@ public class Boss1Pot : Pot
     [SerializeField]
     Collider playerTrigger;
     private bool playerEnteredArena;
-    public int currSpawn = 0;
 
     public bool PlayerEnteredArena
     {
@@ -103,8 +103,11 @@ public class Boss1Pot : Pot
         type = -1;
 
         if (!CanSpawn()) {
-            return enemy;
+            currSpawns[0].health.TakeDamage(DamageType.TRUE, currSpawns[0].health.CurrentHealth);
+            currSpawns.RemoveAt(0);
         }
+
+        //print("Spawning");
 
         Player player = Player.Instance;
         float percent = Random.Range(0.0f, 99.0f);
@@ -139,14 +142,20 @@ public class Boss1Pot : Pot
             }
         }
 
-        currSpawn++;
+        currSpawns.Add(enemy);
         enemy.health.OnDeath += OnSpawnDeath;
 
         return enemy;
     }
 
     private void OnSpawnDeath() {
-        currSpawn--;
+        // ¯\_(ツ)_/¯
+        for (int i = 0; i < currSpawns.Count; i++) {
+            Enemy e = currSpawns[i];
+            if(e.gameObject == null || e.health.IsDead()) {
+                currSpawns.RemoveAt(i);
+            }
+        }
     }
 
     public float GetArmor()
@@ -155,7 +164,7 @@ public class Boss1Pot : Pot
     }
 
     public bool CanSpawn() {
-        return currSpawn < SpawnLimit;
+        return currSpawns.Count < SpawnLimit;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -199,7 +208,7 @@ public class Boss1Pot : Pot
                 {
                     return "Boss1Pot+Armored_Charging";
                 } 
-                else if (boss1Pot.CanSpawn()) 
+                else /*if (boss1Pot.CanSpawn()) */
                 {
                     return "Boss1Pot+Armored_Spawning";
                 }               
@@ -250,10 +259,9 @@ public class Boss1Pot : Pot
         {
             if (boss.GetArmor() > 0)
             {
-                Debug.Log("Armor: " + boss.GetArmor());
-                if (boss.CanSpawn()) {
-                    return "Boss1Pot+Armored_Idle";
-                }
+                //if (!boss.CanSpawn()) {
+                //    return "Boss1Pot+Armored_Idle";
+                //}
 
                 if (numberOfShotsFired < 3)
                 {
@@ -405,7 +413,33 @@ public class Boss1Pot : Pot
             NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 25.0f, NavMesh.AllAreas);
             targetPosition = hit.position;
 
-            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 150.0f - (startPosition - targetPosition).magnitude);
+            // Other Stuff...
+            {
+                //float heightMulti = 150;
+                //float curveTime = 1.5f;
+
+                //heightMulti = heightMulti - (startPosition - targetPosition).magnitude;
+                //Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, heightMulti);
+
+                //float startTime = Time.time;
+                ////while (time != 1.5f)
+                //while (Time.time < startTime + curveTime) {
+                //    float t = (startTime - Time.time) / curveTime;
+                //    //time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.5f);
+
+                //    Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, t);
+                //    //Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time / 1.5f);
+
+                //    // pos is NaN (?)
+                //    enemy.transform.position = newPosition;
+
+                //    yield return null;
+                //}
+                //enemy.transform.position = targetPosition;
+            }
+
+            float heightMulti = Mathf.Max(150.0f - (startPosition - targetPosition).magnitude, 50);
+            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, heightMulti);
 
             while (time != 1.5f)
             {
@@ -478,11 +512,6 @@ public class Boss1Pot : Pot
 
         public override string Update()
         {
-            if (!boss.CanSpawn()) {
-                return "Boss1Pot+Armored_Idle";
-            }
-
-
             if (!firing && numberOfBurstsFired != 3)
             {
                 if (numberOfBurstsFired == 0)
@@ -548,56 +577,6 @@ public class Boss1Pot : Pot
             float time = 0.0f;
 
             Player player = Player.Instance;
-            //Enemy enemy = null;
-
-            //float percent = Random.Range(0.0f, 100.0f);
-            //int type = -1;
-            //if (player.health.CurrentHealth / player.health.MaxHealth <= .40f)
-            //{
-            //    if (percent <= 9.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnPot();
-            //        type = 0;
-            //    }
-            //    else if (percent <= 39.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnHealthPot();
-            //        type = 1;
-            //    }
-            //    else if (percent <= 79.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnChargerPot();
-            //        type = 2;
-            //    }
-            //    else if (percent <= 99.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnRunnerPot();
-            //        type = 3;
-            //    }
-            //}
-            //else
-            //{
-            //    if (percent <= 14.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnPot();
-            //        type = 0;
-            //    }
-            //    else if (percent <= 29.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnHealthPot();
-            //        type = 1;
-            //    }
-            //    else if (percent <= 79.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnChargerPot();
-            //        type = 2;
-            //    }
-            //    else if (percent <= 99.0f)
-            //    {
-            //        enemy = EnemyManager.Instance.SpawnRunnerPot();
-            //        type = 3;
-            //    }
-            //}
             int type;
             Enemy enemy = boss.SpawnRandomPot(out type);
             if(enemy == null) {
@@ -637,7 +616,8 @@ public class Boss1Pot : Pot
                 targetPosition = hit.position;
             } while (!(NavMesh.CalculatePath(Vector3.zero, targetPosition, NavMesh.AllAreas, path)));
 
-            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, 100.0f - (startPosition - targetPosition).magnitude);
+            float heightMulti = Mathf.Max(100.0f - (startPosition - targetPosition).magnitude, 50);
+            Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, heightMulti);
 
             while (time != 1.5f)
             {

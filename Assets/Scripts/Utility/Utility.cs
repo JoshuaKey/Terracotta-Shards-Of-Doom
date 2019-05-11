@@ -29,7 +29,7 @@ public static class Utility {
 
     public static Vector3 CreatePeak(Vector3 p0, Vector3 p1, float heightMult)
     {
-        Vector3 midpoint = ((p1 - p0) * .5f) + p0;
+        Vector3 midpoint = BezierCurve(p0, p1, 0.5f);
         Vector3 peak = (Vector3.up * heightMult) + midpoint;
         return peak;
     }

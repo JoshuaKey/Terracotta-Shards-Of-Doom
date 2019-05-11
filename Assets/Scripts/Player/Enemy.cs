@@ -46,14 +46,14 @@ public class Enemy : MonoBehaviour {
         health.OnDeath += this.Die;
     }
 
-    private void Update() {
-        print(agent.isOnNavMesh);
-        if (!agent.isOnNavMesh) {
-            rigidbody.constraints = RigidbodyConstraints.None;
-        } else {
-            rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-        }
-    }
+    //private void Update() {
+    //    //print(agent.isOnNavMesh);
+    //    if (!agent.isOnNavMesh) {
+    //        rigidbody.constraints = RigidbodyConstraints.None;
+    //    } else {
+    //        rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+    //    }
+    //}
 
     public void Knockback(Vector3 force) {
         StartCoroutine(KnockbackRoutine(force));
