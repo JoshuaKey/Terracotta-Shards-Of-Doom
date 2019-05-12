@@ -1,0 +1,22 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerStats : MonoBehaviour {
+
+    public static PlayerStats Instance;
+
+    void Awake() {
+        if (Instance != null) { Destroy(this.gameObject); return; }
+        Instance = this;
+        DontDestroyOnLoad(this);
+    }
+
+    public void Save(string file) {
+        print("Saving Player Stats to " + file);
+    }
+    public void Load(string file) {
+        print("Loading Player Stats to " + file);
+    }
+
+}

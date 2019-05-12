@@ -20,6 +20,7 @@ public class EnemyManager : MonoBehaviour {
     public Action OnEnemyDeath;
 
     public EnemyProgression MainProgression;
+    public bool ChildEnemiesToManager = false;
 
     // Start is called before the first frame update
     void Awake() {
@@ -34,7 +35,9 @@ public class EnemyManager : MonoBehaviour {
         enemies.AddRange(enemiesArray);
 
         for (int i = 0; i < enemies.Count; i++) {
-            enemies[i].transform.SetParent(this.transform, true);
+            if (ChildEnemiesToManager) {
+                enemies[i].transform.SetParent(this.transform, true);
+            }        
             enemies[i].health.OnDeath += EnemyDeath;
         }
     }
