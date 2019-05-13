@@ -1,6 +1,8 @@
 ﻿using Luminosity.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class InputController : MonoBehaviour {
@@ -10,6 +12,7 @@ public class InputController : MonoBehaviour {
     public string ControllerSchemeName;
 
     [Header("Settings")]
+    public string InputConfigurationFile = "input.xml";
     public bool IsLeftHanded = false;
 
 #region Input Icons
@@ -115,6 +118,25 @@ public class InputController : MonoBehaviour {
         Instance = this;
 
         StartCoroutine(CheckControllerStatus());
+
+        CheckFile();
+
+        Settings.OnLoad += OnSettingsLoad;
+    }
+
+    private void OnSettingsLoad(Settings settings) {
+        IsLeftHanded = settings.IsLeftHanded;
+        if(InputConfigurationFile != settings.InputConfigurationFile) {
+            InputManager.Load(Application.dataPath + "/" + InputConfigurationFile);
+        }
+    }
+
+    public void CheckFile() {
+        if(File.Exists(Application.dataPath + "/" + InputConfigurationFile)) {
+            InputManager.Load(Application.dataPath + "/" + InputConfigurationFile);
+        } else {
+            InputManager.Save(Application.dataPath + "/" + InputConfigurationFile);
+        }
     }
 
     private IEnumerator CheckControllerStatus() {

@@ -34,19 +34,8 @@ public class PlayerStats {
     }
     [NonSerialized] public Action OnSave;
     [NonSerialized] public Action OnLoad;
-    [NonSerialized] public Action OnUpdate;
+    //[NonSerialized] public Action OnUpdate;
     [NonSerialized] public Action OnReset;
-
-    /// <summary>
-    /// Creates a copy of the current Player Stats.
-    /// Can then be used to update by reassigning values.
-    /// </summary>
-    /// <returns>Clone of current Player Stats</returns>
-    public PlayerStats CreateCopy() {
-        PlayerStats stats = new PlayerStats();
-
-        return stats;
-    }
 
     /// <summary>
     /// Changes the Current Player Stats.
@@ -54,7 +43,7 @@ public class PlayerStats {
     /// Invokes OnUpdate Event.
     /// </summary>
     /// <param name="settings">New Player Stats</param>
-    public void UpdatePlayerStats(PlayerStats stats) {
+    private void UpdatePlayerStats(PlayerStats stats) {
         this.Coins = stats.Coins;
 
         this.Weapons.Clear();
@@ -81,8 +70,8 @@ public class PlayerStats {
 
             this.Levels.Add(levelData.Key, level);
         }
-
     }
+
     /// <summary>
     /// Saves the current Player Stats to the specific file. 
     /// 

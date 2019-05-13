@@ -25,6 +25,8 @@ public class Player : MonoBehaviour {
     public bool CanRotate = true;
     public float XRotationSpeed = 60f;
     public float YRotationSpeed = 60f;
+    public float HorizontalRotationSensitivity = 1.0f;
+    public float VerticalRotationSensitivity = 1.0f;
     public float YMinRotation = -40f;
     public float YMaxRotation = 40f;
     public new Camera camera;
@@ -113,10 +115,16 @@ public class Player : MonoBehaviour {
         compass.Base = camera.transform;
         compass.transform.SetParent(Shoulder);
 
+        // Input Scheme Rotation
+        CheckInputScheme();
+
         PlayerHud.Instance.EnablePlayerHealthBar();
         this.health.OnDeath += this.Die;
         this.health.OnDamage += ChangeHealthUI;
         this.health.OnHeal += ChangeHealthUI;
+        Settings.OnLoad += OnSettingsLoad;
+        InputManager.ControlSchemesChanged += OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged += OnPlayerControlChanged;
     }
 
     void Update() {
@@ -185,8 +193,10 @@ public class Player : MonoBehaviour {
 
     public void UpdateCamera() {
         // Rotation Input
-        float xRot = InputManager.GetAxis("Vertical Rotation") * YRotationSpeed * Time.deltaTime;
-        float yRot = InputManager.GetAxis("Horizontal Rotation") * XRotationSpeed * Time.deltaTime;
+        float xRot = InputManager.GetAxis("Vertical Rotation");
+        xRot *= YRotationSpeed * HorizontalRotationSensitivity * Time.deltaTime;
+        float yRot = InputManager.GetAxis("Horizontal Rotation");
+        yRot *= XRotationSpeed * VerticalRotationSensitivity * Time.deltaTime;
 
         // Add to Existing Rotation
         rotation += new Vector3(xRot, yRot, 0.0f);
@@ -478,15 +488,21 @@ public class Player : MonoBehaviour {
         return weapons[CurrWeaponIndex];
     }
 
-    [ContextMenu("Setup Controller")]
-    public void SetupControllerRotation() {
-        XRotationSpeed = 150f;
-        YRotationSpeed = 100f;
+    private void OnPlayerControlChanged(PlayerID id) { CheckInputScheme(); }
+    private void OnControlSchemeChanged() { CheckInputScheme(); }
+    public void CheckInputScheme() {
+        if(InputManager.PlayerOneControlScheme.Name == InputController.Instance.ControllerSchemeName) {
+            XRotationSpeed = 150f;
+            YRotationSpeed = 100f;
+        } else {
+            XRotationSpeed = 60f;
+            YRotationSpeed = 60f;
+        }
     }
-    [ContextMenu("Setup Mouse and Keyboard")]
-    public void SetupMouseRotation() {
-        XRotationSpeed = 75f;
-        YRotationSpeed = 75f;
+    private void OnSettingsLoad(Settings settings) {
+        Player.Instance.camera.fieldOfView = settings.FOV;
+        Player.Instance.VerticalRotationSensitivity = settings.VerticalSensitivity;
+        Player.Instance.HorizontalRotationSensitivity = settings.HorizontalSensitivity;
     }
 
     // Testing --------------------------------------------------------------
