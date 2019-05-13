@@ -9,7 +9,6 @@ public class SpecialPot : MonoBehaviour {
     [Header("Components")]
     public Enemy enemy;
 
-    // Start is called before the first frame update
     void Start() {
         if(enemy == null) { enemy = GetComponentInChildren<Enemy>(); }
 

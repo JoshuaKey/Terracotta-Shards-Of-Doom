@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 97764430560784390}
   - component: {fileID: 1565638112}
-  - component: {fileID: 3448926876054683650}
-  - component: {fileID: 4622104885812178623}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -56,31 +54,46 @@ MonoBehaviour:
   SettingsFile: settings.config
   LoadPlayerStatsOnStart: 0
   LoadSettingsOnStart: 0
---- !u!114 &3448926876054683650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 97764430560784389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f05b4cd777bfdd942bbf1ee3d9d2d6eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4622104885812178623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 97764430560784389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1de7e378e0a75c34881b0dfeee03a89a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InputConfigurationFile: 
+  settings:
+    InputConfigurationFile: input.xml
+    IsLeftHanded: 0
+    MasterVolume: 1
+    SoundVolume: 1
+    MusicVolume: 1
+    FOV: 60
+    VerticalSensitivity: 1
+    HorizontalSensitivity: 1
+    ScreenMode: 0
+    GraphicsLevel: 0
+  playerStats:
+    Coins: 0
+    Weapons: 
+    Levels:
+      reorderableList:
+        canAdd: 1
+        canRemove: 1
+        draggable: 1
+        expandable: 1
+        multipleSelection: 1
+        isExpanded: 0
+        label:
+          m_Text: Keys
+          m_Image: {fileID: 0}
+          m_Tooltip: 
+        headerHeight: 18
+        footerHeight: 13
+        slideEasing: 0.15
+        verticalSpacing: 2
+        showDefaultBackground: 1
+        elementDisplayType: 0
+        elementNameProperty: 
+        elementNameOverride: 
+        elementIcon: {fileID: 0}
+      reqReferences: {fileID: 0}
+      isExpanded: 0
+      _keyValues: []
+      _keys: []
+      _values: []
 --- !u!114 &1906646760
 MonoBehaviour:
   m_ObjectHideFlags: 0
