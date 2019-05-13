@@ -33,8 +33,7 @@ public class PlayerStats {
         }
     }
     [NonSerialized] public Action OnSave;
-    [NonSerialized] public Action OnLoad;
-    //[NonSerialized] public Action OnUpdate;
+    [NonSerialized] public Action<PlayerStats> OnLoad;
     [NonSerialized] public Action OnReset;
 
     /// <summary>
@@ -85,7 +84,7 @@ public class PlayerStats {
     public void Save(string file) {
         Debug.Log("Saving Player Stats to " + file);
 
-        string data = JsonUtility.ToJson(this);
+        string data = JsonUtility.ToJson(this, true);
 
         File.WriteAllText(file, data);
 
@@ -98,7 +97,7 @@ public class PlayerStats {
     /// 
     /// Use Game.LoadPlayerStats() instead.
     /// 
-    /// Invokes OnUpdate and OnLoad Event.
+    /// Invokes OnLoad Event.
     /// </summary>
     /// <param name="file"></param>
     public void Load(string file) {
@@ -111,7 +110,7 @@ public class PlayerStats {
 
             UpdatePlayerStats(data);
 
-            OnLoad?.Invoke();
+            OnLoad?.Invoke(data);
         }
     }
     /// <summary>
@@ -122,6 +121,7 @@ public class PlayerStats {
     public void Reset() {
         Debug.Log("Reseting PlayerStats");
 
+        OnReset?.Invoke();
     }
 
 }

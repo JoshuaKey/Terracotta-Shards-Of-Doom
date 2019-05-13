@@ -56,7 +56,7 @@ public class Settings {
         settings.ScreenMode = Screen.fullScreenMode;
         settings.GraphicsLevel = QualitySettings.GetQualityLevel();
 
-        string data = JsonUtility.ToJson(settings);
+        string data = JsonUtility.ToJson(settings, true);
 
         File.WriteAllText(file, data);
 
