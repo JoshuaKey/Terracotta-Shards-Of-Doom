@@ -117,6 +117,8 @@ public class Bow : Weapon {
             return;
         }
 
+        AudioManager.Instance.PlaySoundWithParent("arrow_flying", ESoundChannel.SFX, gameObject);
+
         float t = Interpolation.QuadraticIn(charge);
         currArrow.Impulse = Mathf.Lerp(MinSpeed, MaxSpeed, t);
         currArrow.LifeTime = 20f;
