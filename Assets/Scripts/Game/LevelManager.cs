@@ -18,6 +18,14 @@ public class LevelManager : MonoBehaviour {
             SceneManager.LoadScene(StartingSceneName);
         } 
         Instance = this;
+
+        string levelName = GetLevelName();
+        print("Level: " + levelName);
+        if (!Game.Instance.playerStats.Levels.ContainsKey(levelName)) {
+            Game.Instance.playerStats.Levels[levelName] = new LevelData();
+            print("Here");
+        }
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -31,6 +39,10 @@ public class LevelManager : MonoBehaviour {
         PlayerHud.Instance.SetPlayerHealthBar(1.0f);
 
         Player.Instance.gameObject.SetActive(true);
+
+        if (!Game.Instance.playerStats.Levels.ContainsKey(scene.name)) {
+            Game.Instance.playerStats.Levels[scene.name] = new LevelData();
+        }
     }
 
     public void MoveToScene(GameObject obj) {
@@ -48,5 +60,9 @@ public class LevelManager : MonoBehaviour {
     }
     public void LoadScene(string scene) {
         SceneManager.LoadScene(scene);
+    }
+
+    public string GetLevelName() {
+        return SceneManager.GetActiveScene().name;
     }
 }
