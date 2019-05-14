@@ -19,6 +19,7 @@ public class Arrow : PoolObject {
     public new Collider collider;
 
     private float startLife;
+    private int layerMask;
 
     // Start is called before the first frame update
     void Start() {
@@ -28,19 +29,21 @@ public class Arrow : PoolObject {
 
         collider.enabled = false;
         rigidbody.isKinematic = true;
+        layerMask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
+        //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
-    //private void FixedUpdate() {
-        //if (!rigidbody.isKinematic) {
-        //    Vector3 start = this.transform.position;
-        //    Vector3 end = start + rigidbody.velocity;
-        //    int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
-        //    RaycastHit hit;
-        //    if(Physics.Linecast(start, end, out hit, layermask)) {
-        //        OnTriggerEnter(hit.collider);
-        //    }
-        //}
-    //}
+    private void FixedUpdate() {
+        if (!rigidbody.isKinematic && collider.isTrigger) {
+            Vector3 start = this.transform.position;
+            Vector3 end = start + rigidbody.velocity;
+            RaycastHit hit;
+            if (Physics.Linecast(start, end, out hit, layerMask)) {
+                this.transform.position = hit.point;
+                OnTriggerEnter(hit.collider);
+            }
+        }
+    }
 
     public void Fire() {
         collider.enabled = true;

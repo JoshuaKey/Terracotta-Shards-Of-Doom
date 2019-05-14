@@ -99,7 +99,9 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
         if (weapons.Count > 1) {
-            PlayerHud.Instance.EnableWeaponToggle();
+            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
             CanSwapWeapon = true;
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
