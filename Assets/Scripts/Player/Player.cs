@@ -131,6 +131,9 @@ public class Player : MonoBehaviour {
         Game.Instance.playerStats.OnLoad += OnStatsLoad;
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+
+        // On Damage
+        health.OnDamage += OnDamage;
     }
 
     void Update() {
@@ -195,6 +198,10 @@ public class Player : MonoBehaviour {
         }   
     }
 
+    public void OnDamage(float damage)
+    {
+        AudioManager.Instance.PlaySoundWithParent("player_hit", ESoundChannel.SFX, gameObject);
+    }
     public void UpdateCamera() {
         // Rotation Input
         float xRot = InputManager.GetAxis("Vertical Rotation");
@@ -235,7 +242,7 @@ public class Player : MonoBehaviour {
         Weapon weapon = GetCurrentWeapon();
 
         // Check for Weapon Swap
-        if (CanSwapWeapon && weapon.CanAttack()) {
+        if (CanSwapWeapon && weapon.CanSwap()) {
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -559,6 +566,7 @@ public class Player : MonoBehaviour {
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
         GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
+        GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded);
     }
 
 }

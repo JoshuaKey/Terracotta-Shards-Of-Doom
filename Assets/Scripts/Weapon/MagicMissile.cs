@@ -81,8 +81,6 @@ public class MagicMissile : PoolObject {
                 forward.y = 0.0f;
                 forward = forward.normalized;
                 enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
-            } else {
-                AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
             }
         } 
 

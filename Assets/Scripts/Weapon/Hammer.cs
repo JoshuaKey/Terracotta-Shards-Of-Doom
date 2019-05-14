@@ -93,20 +93,22 @@ public class Hammer : Weapon {
                 bool isDead = enemy.health.IsDead();
 
                 // Knockback
-                if (damage > 0) {
-                    if (isDead) {
+                if (damage > 0)
+                {
+                    if (isDead)
+                    {
                         Vector3 dir = c.transform.position - SlamCenter.position;
                         //dir.y = 0.0f;
                         dir = dir.normalized;
                         enemy.Explode(dir * RigidbodyKnockback, SlamCenter.position);
-                    } else {
+                    }
+                    else
+                    {
                         Vector3 dir = c.transform.position - SlamCenter.position;
                         dir.y = 0.0f;
                         dir = dir.normalized;
                         enemy.Knockback(dir * Knockback);
                     }
-                } else {
-                    AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
                 }
             } else {
                 Rigidbody rb = c.GetComponentInChildren<Rigidbody>();

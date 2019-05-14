@@ -25,9 +25,10 @@ public class Weapon : MonoBehaviour {
     public virtual void Charge() { }
     public virtual void Attack() { nextAttackTime = Time.time + AttackSpeed;  }
 
-    public bool CanAttack() {
+    public virtual bool CanAttack() {
         return Time.time > nextAttackTime;
     }
+    public virtual bool CanSwap() { return CanAttack(); }
 }
 
 // Sword - Simple Swing

@@ -36,7 +36,7 @@ public class Arrow : PoolObject {
     private void FixedUpdate() {
         if (!rigidbody.isKinematic && collider.isTrigger) {
             Vector3 start = this.transform.position;
-            Vector3 end = start + rigidbody.velocity;
+            Vector3 end = start + rigidbody.velocity * Time.fixedDeltaTime;
             RaycastHit hit;
             if (Physics.Linecast(start, end, out hit, layerMask)) {
                 this.transform.position = hit.point;
@@ -79,8 +79,6 @@ public class Arrow : PoolObject {
                 forward.y = 0.0f;
                 forward = forward.normalized;
                 enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
-            } else {
-                AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
             }
         } else {
             // Physics Impulse

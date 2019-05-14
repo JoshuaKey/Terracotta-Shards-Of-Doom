@@ -24,10 +24,10 @@ public class Boss1Pot : Pot
 
     [Header("AI")]
     public GameObject AISpawnPoint = null;
-#pragma warning disable 0649
+    #pragma warning disable 0649
     [SerializeField]
     Collider playerTrigger;
-#pragma warning restore 0649
+    #pragma warning restore 0649
     private bool playerEnteredArena;
 
     public bool PlayerEnteredArena
