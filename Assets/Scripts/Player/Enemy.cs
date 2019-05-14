@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
-    [HideInInspector]
+    //[HideInInspector]
     public Health health;
     [HideInInspector]
     public Pot pot;
@@ -13,11 +13,16 @@ public class Enemy : MonoBehaviour {
     public BrokenPot brokenPot;
     [HideInInspector]
     public NavMeshAgent agent;
+    [HideInInspector]
+    public new MeshRenderer renderer;
+
+    public bool CanBeKnockedBack = true;
 
     private new Rigidbody rigidbody;
     private new Collider collider;
 
-    void Start() {
+
+    void Awake() {
         collider = GetComponent<Collider>();
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
@@ -35,6 +40,11 @@ public class Enemy : MonoBehaviour {
 
         if (agent == null) { agent = GetComponentInChildren<NavMeshAgent>(true); }
 
+        if(renderer == null) { renderer = GetComponentInChildren<MeshRenderer>(true); }
+
+    }
+
+    private void Start() {
         this.gameObject.tag = "Enemy";
         this.gameObject.layer = LayerMask.NameToLayer("Enemy");
 
@@ -43,8 +53,19 @@ public class Enemy : MonoBehaviour {
         health.OnDeath += this.Die;
     }
 
+    //private void Update() {
+    //    //print(agent.isOnNavMesh);
+    //    if (!agent.isOnNavMesh) {
+    //        rigidbody.constraints = RigidbodyConstraints.None;
+    //    } else {
+    //        rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+    //    }
+    //}
+
     public void Knockback(Vector3 force) {
-        StartCoroutine(KnockbackRoutine(force));
+        if (CanBeKnockedBack) {
+            StartCoroutine(KnockbackRoutine(force));
+        }     
     }
 
     public void Explode(Vector3 force, Vector3 pos) {
@@ -66,6 +87,8 @@ public class Enemy : MonoBehaviour {
         brokenPot.transform.parent = null;
 
         health.OnDeath -= this.Die;
+
+        Destroy(this.gameObject);
     }
 
     protected IEnumerator KnockbackRoutine(Vector3 force) {

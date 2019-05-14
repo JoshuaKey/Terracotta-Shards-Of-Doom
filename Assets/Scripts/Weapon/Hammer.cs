@@ -84,37 +84,41 @@ public class Hammer : Weapon {
         int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
         foreach (Collider c in colliders) {
-                Enemy enemy = c.GetComponentInChildren<Enemy>();
-                if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
-                if (enemy != null) {
+            Enemy enemy = c.GetComponentInChildren<Enemy>();
+            if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
+            if (enemy != null) {
 
-                    // Damage
-                    float damage = enemy.health.TakeDamage(this.Type, this.Damage);
-                    bool isDead = enemy.health.IsDead();
+                // Damage
+                float damage = enemy.health.TakeDamage(this.Type, this.Damage);
+                bool isDead = enemy.health.IsDead();
 
-                    // Knockback
-                    if (damage > 0) {
-                        if (isDead) {
-                            Vector3 dir = c.transform.position - SlamCenter.position;
-                            //dir.y = 0.0f;
-                            dir = dir.normalized;
-                            enemy.Explode(dir * RigidbodyKnockback, SlamCenter.position);
-                        } else {
-                            Vector3 dir = c.transform.position - SlamCenter.position;
-                            dir.y = 0.0f;
-                            dir = dir.normalized;
-                            enemy.Knockback(dir * Knockback);
-                        }
-                    }
-                } else {
-                    Rigidbody rb = c.GetComponentInChildren<Rigidbody>();
-                    if (rb != null) {
+                // Knockback
+                if (damage > 0) {
+                    if (isDead) {
                         Vector3 dir = c.transform.position - SlamCenter.position;
                         //dir.y = 0.0f;
                         dir = dir.normalized;
-                        rb.AddForceAtPosition(dir * RigidbodyKnockback, SlamCenter.position, ForceMode.Impulse);
+                        enemy.Explode(dir * RigidbodyKnockback, SlamCenter.position);
+                    } else {
+                        Vector3 dir = c.transform.position - SlamCenter.position;
+                        dir.y = 0.0f;
+                        dir = dir.normalized;
+                        enemy.Knockback(dir * Knockback);
                     }
+                } else {
+                    AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
                 }
+            } else {
+                Rigidbody rb = c.GetComponentInChildren<Rigidbody>();
+                if (rb == null) { rb = c.GetComponentInParent<Rigidbody>(); }
+
+            if (rb != null) {
+                    Vector3 dir = c.transform.position - SlamCenter.position;
+                    //dir.y = 0.0f;
+                    dir = dir.normalized;
+                    rb.AddForceAtPosition(dir * RigidbodyKnockback, SlamCenter.position, ForceMode.Impulse);
+                }
+            }
         }
     }
 

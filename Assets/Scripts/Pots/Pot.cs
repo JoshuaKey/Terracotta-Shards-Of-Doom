@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract class Pot : MonoBehaviour
+public class Pot : MonoBehaviour
 {
     //these variables are for the animations
     [SerializeField] float waddleAmplitude = 12.5f; //in degrees
@@ -22,7 +22,9 @@ public abstract class Pot : MonoBehaviour
 
     private void Update()
     {
-        stateMachine.Update();
+        if(stateMachine != null){
+            stateMachine.Update();
+        }       
         if (agent.desiredVelocity.magnitude > 0)
         {
             Animate();

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Magic : Weapon {
 
@@ -47,6 +48,10 @@ public class Magic : Weapon {
         if (collider != null) {
             collider.enabled = false;
         }
+
+        enemyList.Clear();
+        currMissiles.ForEach(x => Destroy(x.gameObject));
+        currMissiles.Clear();
     }
 
     public override void Charge() {
@@ -95,8 +100,9 @@ public class Magic : Weapon {
 
     private void OnTriggerEnter(Collider other) {
         if (!enemyList.Contains(other.gameObject)) {
-            Enemy enemy = other.GetComponent<Enemy>();
-            if(enemy != null){
+            Enemy enemy = other.GetComponentInChildren<Enemy>();
+            if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
+            if (enemy != null) {
                 print("Target " + other.name);
                 enemyList.Add(other.gameObject);
             }
