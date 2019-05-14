@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 5619984945578253817}
   - component: {fileID: 5619984945578253814}
   - component: {fileID: 382181201597217252}
+  - component: {fileID: 8661490457059326555}
   m_Layer: 0
   m_Name: BarrierPot
   m_TagString: Untagged
@@ -213,6 +214,27 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
+--- !u!114 &8661490457059326555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5619984945578253815}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc4af871eec59041b11d80a1e545700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waddleAmplitude: 12.5
+  hopHeight: 0.5
+  stunned: 0
+  aggroRadius: 30
+  attackRadius: 2.5
+  attackDuration: 0.25
+  knockback: 20
+  isAttacking: 0
+  hasHitPlayer: 0
 --- !u!1001 &5663753112887004433
 PrefabInstance:
   m_ObjectHideFlags: 0

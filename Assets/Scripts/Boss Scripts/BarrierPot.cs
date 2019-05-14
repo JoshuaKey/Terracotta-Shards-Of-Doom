@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BarrierPot : Pot
+public class BarrierPot : ChargerPot
 {
     private Waypoint waypoint;
 
@@ -27,15 +27,21 @@ public class BarrierPot : Pot
         }
     }
 
+    private StateMachine ChargerPotStateMachine = null;
 
     private void OnEnable()
     {
         stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
-            new EnterFormation());
+            new BarrierPot_EnterFormation());
+
+        ChargerPotStateMachine = new StateMachine();
+        ChargerPotStateMachine.Init(gameObject,
+            new Charger_Idle(),
+            new Charger_Charge(),
+            new Charger_Attack(attackDuration));
     }
 
-    // Start is called before the first frame update
     void Start()
     {
 
@@ -47,59 +53,63 @@ public class BarrierPot : Pot
         stateMachine.Update();
     }
 
-    class EnterFormation : State
+    public void ChangeStateMachine()
     {
-        BarrierPot barrierPot = null;
-        Waypoint waypoint = null;
-        bool moving = false;
+        stateMachine = ChargerPotStateMachine;
+        transform.parent = EnemyManager.Instance.transform;
+    }
 
-        public override void Enter()
+}
+class BarrierPot_EnterFormation : State
+{
+    BarrierPot barrierPot = null;
+    Waypoint waypoint = null;
+    bool moving = false;
+
+    public override void Enter()
+    {
+        moving = false;
+        if (barrierPot == null)
         {
-            moving = false;
-            if (barrierPot == null)
-            {
-                barrierPot = owner.GetComponent<BarrierPot>();
-            }
-            if (waypoint == null && barrierPot != null)
-            {
-                waypoint = barrierPot.Waypoint;
-            }
+            barrierPot = owner.GetComponent<BarrierPot>();
         }
-
-        public override void Exit()
+        if (waypoint == null && barrierPot != null)
         {
-            moving = false;
-        }
-
-        public override string Update()
-        {
-            
-            if (!moving)
-            {
-                barrierPot.StartCoroutine(MoveToWaypoint());
-            }
-     
-            return null;
-        }
-
-        IEnumerator MoveToWaypoint()
-        {
-            moving = true;
-
-            Transform transform = owner.transform;
-            Vector3 waypointPosition = waypoint.transform.position;
-
-            while ((transform.position - waypointPosition).magnitude > .01f)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
-                yield return null;
-            }
-
-            barrierPot.InPosition = true;
-            barrierPot.transform.parent = waypoint.transform;
-            barrierPot.enabled = false;
+            waypoint = barrierPot.Waypoint;
         }
     }
 
+    public override void Exit()
+    {
+        moving = false;
+    }
 
+    public override string Update()
+    {
+
+        if (!moving)
+        {
+            barrierPot.StartCoroutine(MoveToWaypoint());
+        }
+
+        return null;
+    }
+
+    IEnumerator MoveToWaypoint()
+    {
+        moving = true;
+
+        Transform transform = owner.transform;
+        Vector3 waypointPosition = waypoint.transform.position;
+
+        while ((transform.position - waypointPosition).magnitude > .01f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
+            yield return null;
+        }
+
+        barrierPot.InPosition = true;
+        barrierPot.transform.parent = waypoint.transform;
+        barrierPot.enabled = false;
+    }
 }
