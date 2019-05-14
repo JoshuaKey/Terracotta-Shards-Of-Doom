@@ -193,10 +193,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
-      propertyPath: MaxHealth
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_Constraints
@@ -206,6 +202,10 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
+      propertyPath: MaxHealth
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
@@ -242,10 +242,6 @@ PrefabInstance:
       value: ShoulderPlate_Left
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
@@ -296,7 +292,11 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+      objectReference: {fileID: 2100000, guid: 32b4180a5d6b3a54ebf1a76d958779ef, type: 2}
+    - target: {fileID: 100000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
 --- !u!1001 &4985836196246302603
@@ -306,15 +306,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988088890821600041}
     m_Modifications:
+    - target: {fileID: 100000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
       propertyPath: m_Name
       value: ShoulderPlate_Right
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
@@ -365,7 +365,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+      objectReference: {fileID: 2100000, guid: 32b4180a5d6b3a54ebf1a76d958779ef, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
 --- !u!1001 &9026928927107815017
@@ -375,18 +375,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988088890821600041}
     m_Modifications:
-    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
-      propertyPath: m_Name
-      value: ChestPlate
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -431,9 +419,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
+      propertyPath: m_Name
+      value: ChestPlate
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+      objectReference: {fileID: 2100000, guid: 32b4180a5d6b3a54ebf1a76d958779ef, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
