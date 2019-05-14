@@ -33,7 +33,8 @@ public class BarrierPot : ChargerPot
     {
         stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
-            new BarrierPot_EnterFormation());
+            new BarrierPot_EnterFormation(),
+            new BarrierPot_DoNothing());
 
         ChargerPotStateMachine = new StateMachine();
         ChargerPotStateMachine.Init(gameObject,
@@ -60,7 +61,7 @@ public class BarrierPot : ChargerPot
     }
 
 }
-class BarrierPot_EnterFormation : State
+public class BarrierPot_EnterFormation : State
 {
     BarrierPot barrierPot = null;
     Waypoint waypoint = null;
@@ -87,11 +88,14 @@ class BarrierPot_EnterFormation : State
     public override string Update()
     {
 
-        if (!moving)
+        if (!moving && !barrierPot.InPosition)
         {
             barrierPot.StartCoroutine(MoveToWaypoint());
         }
-
+        else if (barrierPot.InPosition)
+        {
+            return "BarrierPot_DoNothing";
+        }
         return null;
     }
 
@@ -110,6 +114,21 @@ class BarrierPot_EnterFormation : State
 
         barrierPot.InPosition = true;
         barrierPot.transform.parent = waypoint.transform;
-        barrierPot.enabled = false;
+    }
+}
+
+public class BarrierPot_DoNothing : State
+{
+    public override void Enter()
+    {
+    }
+
+    public override void Exit()
+    {
+    }
+
+    public override string Update()
+    {
+        return null;
     }
 }
