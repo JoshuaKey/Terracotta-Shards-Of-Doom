@@ -11,9 +11,10 @@ public class Pot : MonoBehaviour
     [Space]
     [SerializeField] public bool stunned = false;
 
-
-    protected StateMachine stateMachine;
-    protected NavMeshAgent agent;
+    
+    public StateMachine stateMachine;
+    [HideInInspector]
+    public NavMeshAgent agent;
     
     private void Awake()
     {

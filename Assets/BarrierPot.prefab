@@ -183,6 +183,8 @@ MonoBehaviour:
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
   agent: {fileID: 0}
+  renderer: {fileID: 0}
+  CanBeKnockedBack: 1
 --- !u!114 &5619984945578253814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,6 +215,10 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
+  agent: {fileID: 0}
+  aggroRadius: 50
+  attackRadius: 2.5
+  attackDuration: 0.25
 --- !u!1001 &5663753112887004433
 PrefabInstance:
   m_ObjectHideFlags: 0

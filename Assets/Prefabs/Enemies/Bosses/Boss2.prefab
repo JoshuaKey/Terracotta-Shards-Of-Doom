@@ -565,6 +565,9 @@ MonoBehaviour:
   health: {fileID: 7771920364346972976}
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
+  agent: {fileID: 0}
+  renderer: {fileID: 0}
+  CanBeKnockedBack: 1
 --- !u!114 &7771920364346972976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,8 +580,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77660f3d0d02e942905e332b5cba421, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentHealth: 3
-  MaxHealth: 1
+  CurrentHealth: 72
+  MaxHealth: 72
   Resistance: 0
 --- !u!114 &8129604941350047082
 MonoBehaviour:
@@ -594,6 +597,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waddleAmplitude: 12.5
   hopHeight: 0.5
+  stunned: 0
+  agent: {fileID: 0}
+  currentWaypoint: {fileID: 0}
   Barrier: {fileID: 750066309860978030}
 --- !u!1001 &8129604942551708818
 PrefabInstance:
