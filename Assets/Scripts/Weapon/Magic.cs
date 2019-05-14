@@ -109,4 +109,7 @@ public class Magic : Weapon {
         }
     }
 
+    public override bool CanSwap() {
+        return true;
+    }
 }
