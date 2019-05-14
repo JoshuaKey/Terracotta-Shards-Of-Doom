@@ -36,12 +36,12 @@ public class SpecialPot : MonoBehaviour {
         this.enemy.health.OnDeath += OnDeath;
     }
 
-    private void Spawn() {
-        this.gameObject.SetActive(true);
-    }
-
     private void OnDeath() {
         string levelName = LevelManager.Instance.GetLevelName();
         Game.Instance.playerStats.Levels[levelName].SpecialPots[name] = true;
+    }
+
+    private void Spawn() {
+        this.gameObject.SetActive(true);
     }
 }

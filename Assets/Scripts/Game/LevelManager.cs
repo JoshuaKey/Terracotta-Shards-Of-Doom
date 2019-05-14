@@ -11,22 +11,18 @@ public class LevelManager : MonoBehaviour {
     public static LevelManager Instance;
 
     // Start is called before the first frame update
-    void Start() {
+    void Awake() {
         if(Instance != null) { Destroy(this.gameObject); return; }
+        Instance = this;
+    }
 
+    private void Start() {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         if (SceneManager.GetActiveScene().name == PersistentSceneName) {
             SceneManager.LoadScene(StartingSceneName);
-        } 
-        Instance = this;
-
-        string levelName = GetLevelName();
-        print("Level: " + levelName);
-        if (!Game.Instance.playerStats.Levels.ContainsKey(levelName)) {
-            Game.Instance.playerStats.Levels[levelName] = new LevelData();
-            print("Here");
         }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        Game.Instance.playerStats.OnLoad += OnStatsLoad;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -36,12 +32,23 @@ public class LevelManager : MonoBehaviour {
 
         CheckPointSystem.Instance.LoadStartPoint();
         Player.Instance.health.Reset();
+        PauseMenu.Instance.DeactivatePauseMenu();
+        PlayerHud.Instance.EnablePlayerHud();
         PlayerHud.Instance.SetPlayerHealthBar(1.0f);
 
         Player.Instance.gameObject.SetActive(true);
 
         if (!Game.Instance.playerStats.Levels.ContainsKey(scene.name)) {
             Game.Instance.playerStats.Levels[scene.name] = new LevelData();
+        }
+    }
+
+    private void OnStatsLoad(PlayerStats stats) {
+        LevelData level = null;
+        if (!stats.Levels.TryGetValue("Tutorial", out level)){
+            LoadScene("Tutorial");
+        } else {
+            LoadScene("Hub");
         }
     }
 

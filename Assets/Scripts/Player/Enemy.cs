@@ -13,9 +13,14 @@ public class Enemy : MonoBehaviour {
     public BrokenPot brokenPot;
     [HideInInspector]
     public NavMeshAgent agent;
+    [HideInInspector]
+    public new MeshRenderer renderer;
+
+    public bool CanBeKnockedBack = true;
 
     private new Rigidbody rigidbody;
     private new Collider collider;
+
 
     void Awake() {
         collider = GetComponent<Collider>();
@@ -34,6 +39,8 @@ public class Enemy : MonoBehaviour {
         if (health == null) { health = GetComponentInChildren<Health>(true); }
 
         if (agent == null) { agent = GetComponentInChildren<NavMeshAgent>(true); }
+
+        if(renderer == null) { renderer = GetComponentInChildren<MeshRenderer>(true); }
 
     }
 
@@ -56,7 +63,9 @@ public class Enemy : MonoBehaviour {
     //}
 
     public void Knockback(Vector3 force) {
-        StartCoroutine(KnockbackRoutine(force));
+        if (CanBeKnockedBack) {
+            StartCoroutine(KnockbackRoutine(force));
+        }     
     }
 
     public void Explode(Vector3 force, Vector3 pos) {

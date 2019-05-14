@@ -16,7 +16,7 @@ public class LevelData {
     public int TotalPots;
     public StringBoolDictionary CollectedPots = new StringBoolDictionary();
     public StringBoolDictionary SpecialPots = new StringBoolDictionary();
-    public bool HasDestroyedCrate;
+    public bool IsCompleted;
 }
 
 [Serializable]
@@ -25,13 +25,13 @@ public class PlayerStats {
     public StringBoolDictionary Weapons = new StringBoolDictionary();
     public StringLevelDictionary Levels = new StringLevelDictionary();
 
-    [NonSerialized] private static PlayerStats instance;
-    public static PlayerStats Instance {
-        get {
-            if (instance == null) { instance = new PlayerStats(); }
-            return instance;
-        }
-    }
+    //[NonSerialized] private static PlayerStats instance;
+    //public static PlayerStats Instance {
+    //    get {
+    //        if (instance == null) { instance = new PlayerStats(); }
+    //        return instance;
+    //    }
+    //}
     [NonSerialized] public Action OnSave;
     [NonSerialized] public Action<PlayerStats> OnLoad;
     [NonSerialized] public Action OnReset;
@@ -64,8 +64,6 @@ public class PlayerStats {
             foreach (KeyValuePair<string, bool> data in oldLevel.SpecialPots) {
                 level.SpecialPots.Add(data.Key, data.Value);
             }
-
-            level.HasDestroyedCrate = levelData.Value.HasDestroyedCrate;
 
             this.Levels.Add(levelData.Key, level);
         }

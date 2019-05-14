@@ -58,6 +58,7 @@ public class WeaponManager : MonoBehaviour {
             case "IceBow":
                 break;
             case "EarthHammer":
+            case "RockHammer":
                 break;
             case "LightningSpear":
                 break;
