@@ -33,20 +33,8 @@ public class PlayerStats {
         }
     }
     [NonSerialized] public Action OnSave;
-    [NonSerialized] public Action OnLoad;
-    [NonSerialized] public Action OnUpdate;
+    [NonSerialized] public Action<PlayerStats> OnLoad;
     [NonSerialized] public Action OnReset;
-
-    /// <summary>
-    /// Creates a copy of the current Player Stats.
-    /// Can then be used to update by reassigning values.
-    /// </summary>
-    /// <returns>Clone of current Player Stats</returns>
-    public PlayerStats CreateCopy() {
-        PlayerStats stats = new PlayerStats();
-
-        return stats;
-    }
 
     /// <summary>
     /// Changes the Current Player Stats.
@@ -54,7 +42,7 @@ public class PlayerStats {
     /// Invokes OnUpdate Event.
     /// </summary>
     /// <param name="settings">New Player Stats</param>
-    public void UpdatePlayerStats(PlayerStats stats) {
+    private void UpdatePlayerStats(PlayerStats stats) {
         this.Coins = stats.Coins;
 
         this.Weapons.Clear();
@@ -81,8 +69,8 @@ public class PlayerStats {
 
             this.Levels.Add(levelData.Key, level);
         }
-
     }
+
     /// <summary>
     /// Saves the current Player Stats to the specific file. 
     /// 
@@ -96,7 +84,7 @@ public class PlayerStats {
     public void Save(string file) {
         Debug.Log("Saving Player Stats to " + file);
 
-        string data = JsonUtility.ToJson(this);
+        string data = JsonUtility.ToJson(this, true);
 
         File.WriteAllText(file, data);
 
@@ -109,7 +97,7 @@ public class PlayerStats {
     /// 
     /// Use Game.LoadPlayerStats() instead.
     /// 
-    /// Invokes OnUpdate and OnLoad Event.
+    /// Invokes OnLoad Event.
     /// </summary>
     /// <param name="file"></param>
     public void Load(string file) {
@@ -122,7 +110,7 @@ public class PlayerStats {
 
             UpdatePlayerStats(data);
 
-            OnLoad?.Invoke();
+            OnLoad?.Invoke(data);
         }
     }
     /// <summary>
@@ -133,6 +121,7 @@ public class PlayerStats {
     public void Reset() {
         Debug.Log("Reseting PlayerStats");
 
+        OnReset?.Invoke();
     }
 
 }

@@ -53,6 +53,14 @@ public class AudioManager : MonoBehaviour
         {
             CreateNewAudioSource();
         }
+
+        Settings.OnLoad += OnSettingsLoad;
+    }
+
+    private void OnSettingsLoad(Settings settings) {
+        AudioManager.Instance.audioMixer.SetFloat("MasterVolume", settings.MasterVolume);
+        AudioManager.Instance.audioMixer.SetFloat("SoundVolume", settings.SoundVolume);
+        AudioManager.Instance.audioMixer.SetFloat("MusicVolume", settings.MusicVolume);
     }
 
     /// <summary>

@@ -12,9 +12,6 @@ public class Game : MonoBehaviour {
     public bool LoadSettingsOnStart = false;
 
     [Space]
-    public Settings settings = new Settings();
-
-    [Space]
     public PlayerStats playerStats = new PlayerStats();
 
     public static Game Instance;
@@ -51,10 +48,16 @@ public class Game : MonoBehaviour {
         //print(playerStats);
         //print(PlayerStats.Instance.Levels["1-1"]);
 
-        print(Application.dataPath); // Assets Folder
-        print(Application.persistentDataPath); // Local Low
-        print(Application.temporaryCachePath); // Cache...
-        print(Application.streamingAssetsPath); // Assets/StreamsAssets Folder
+        //print(Application.dataPath); // Assets Folder
+        //print(Application.persistentDataPath); // Local Low
+        //print(Application.temporaryCachePath); // Cache...
+        //print(Application.streamingAssetsPath); // Assets/StreamsAssets Folder
+        Settings.OnLoad += OnSettingsLoad;
+    }
+
+    private void OnSettingsLoad(Settings settings) {
+        Screen.SetResolution(settings.ResolutionWidth, settings.ResolutionHeight, settings.ScreenMode);
+        QualitySettings.SetQualityLevel(settings.GraphicsLevel);
     }
 
     [ContextMenu("Save Player Stats")]
@@ -67,11 +70,11 @@ public class Game : MonoBehaviour {
     }
     [ContextMenu("Save Settings")]
     public void SaveSettings() {
-        Settings.Instance.Save(Application.dataPath + "/" + SettingsFile);
+        Settings.Save(Application.dataPath + "/" + SettingsFile);
     }
     [ContextMenu("Load Settings")]
     public void LoadSettings() {
-        Settings.Instance.Load(Application.dataPath + "/" + SettingsFile);
+        Settings.Load(Application.dataPath + "/" + SettingsFile);
     }
 }
 
@@ -134,3 +137,5 @@ public class Game : MonoBehaviour {
 //  Coins could (should) go in Player
 //  Weapons is stored in Player (Unfriendly) (Make it friendly?)
 //  
+
+// Settings 
