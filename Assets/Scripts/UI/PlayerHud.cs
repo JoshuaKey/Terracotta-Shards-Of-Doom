@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Luminosity.IO;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -36,8 +37,8 @@ public class PlayerHud : MonoBehaviour {
     public TextMeshProUGUI NextWeaponText;
     public TextMeshProUGUI CurrWeaponText;
     public TextMeshProUGUI PrevWeaponText;
-    public TextMeshProUGUI NextWeaponInputIcon;
-    public TextMeshProUGUI PrevWeaponInputIcon;
+    public Image NextWeaponInputIcon;
+    public Image PrevWeaponInputIcon;
 
     [Header("Weapon Icons")]
     public Sprite SwordIcon;
@@ -45,7 +46,7 @@ public class PlayerHud : MonoBehaviour {
     public Sprite HammerIcon;
     public Sprite SpearIcon;
     public Sprite CrossbowIcon;
-    public Sprite MagicMissleIcon;
+    public Sprite MagicIcon;
 
     [Header("Weapon Wheel")]
     public GameObject WeaponWheel;
@@ -73,6 +74,19 @@ public class PlayerHud : MonoBehaviour {
     }
     private void Start() {
         if(eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
+
+        InputManager.ControlSchemesChanged += OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+    }
+
+    private void OnPlayerControlChanged(PlayerID id) { UpdateInputIcons(); }
+    private void OnControlSchemeChanged() { UpdateInputIcons(); }
+    public void UpdateInputIcons() {
+        NextWeaponInputIcon.sprite = InputController.Instance.GetActionIcon("Next Weapon");
+
+        PrevWeaponInputIcon.sprite = InputController.Instance.GetActionIcon("Prev Weapon");
+
+        InteractImage.sprite = InputController.Instance.GetActionIcon("Interact");
     }
 
     // Hud
@@ -110,12 +124,6 @@ public class PlayerHud : MonoBehaviour {
     // Interact Text
     public void EnableInteractText() {
         InteractImage.gameObject.SetActive(true);
-    }
-    public void SetInteractText(Sprite icon) {
-        EnableInteractText();
-        //InteractText.text = "Press <sprite name=\"" + button + "\"> to interact with '" + name + "'";
-
-        InteractImage.sprite = icon;
     }
     public void DisableInteractText() {
         InteractImage.gameObject.SetActive(false);
@@ -177,6 +185,18 @@ public class PlayerHud : MonoBehaviour {
             case "Bow":
                 retval = BowIcon;
                 break;
+            case "Hammer":
+                retval = HammerIcon;
+                break;
+            case "Spear":
+                retval = SpearIcon;
+                break;
+            case "Crossbow":
+                retval = CrossbowIcon;
+                break;
+            case "Magic":
+                retval = MagicIcon;
+                break;
             default:
                 retval = SwordIcon;
                 break;
@@ -223,19 +243,29 @@ public class PlayerHud : MonoBehaviour {
                 
                 // Weapon Text
                 {
-                    text.text = weapons[i];
+                    text.gameObject.SetActive(false);
 
-                    Vector3 rot = text.rectTransform.localRotation.eulerAngles;
-                    rot.z = -zRot;
-                    text.transform.localRotation = Quaternion.Euler(rot);
-                    
-                    Vector3 pos = Quaternion.Euler(0, 0, -rotIncrease / 2f) * new Vector3(0, 100, 0);
-                    text.rectTransform.localPosition = pos;
+                    //text.text = weapons[i];
+
+                    //Vector3 rot = text.rectTransform.localRotation.eulerAngles;
+                    //rot.z = -zRot;
+                    //text.transform.localRotation = Quaternion.Euler(rot);
+
+                    //Vector3 pos = Quaternion.Euler(0, 0, -rotIncrease / 2f) * new Vector3(0, 100, 0);
+                    //text.rectTransform.localPosition = pos;
                 }
 
                 // Weapon Icon
                 {
-                    image.gameObject.SetActive(false);
+                    //image.gameObject.SetActive(false);
+                    image.sprite = GetIcon(weapons[i]);
+
+                    Vector3 rot = image.rectTransform.localRotation.eulerAngles;
+                    rot.z = -zRot;
+                    image.transform.localRotation = Quaternion.Euler(rot);
+
+                    Vector3 pos = Quaternion.Euler(0, 0, -rotIncrease / 2f) * new Vector3(0, 100, 0);
+                    image.rectTransform.localPosition = pos;
                 }
                 
                 zRot -= rotIncrease;

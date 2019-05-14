@@ -1,6 +1,8 @@
 ﻿using Luminosity.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class InputController : MonoBehaviour {
@@ -10,6 +12,7 @@ public class InputController : MonoBehaviour {
     public string ControllerSchemeName;
 
     [Header("Settings")]
+    public string InputConfigurationFile = "input.xml";
     public bool IsLeftHanded = false;
 
 #region Input Icons
@@ -108,9 +111,6 @@ public class InputController : MonoBehaviour {
     public Sprite Xbox_LeftStick_Sprite;
     #endregion
 
-
-    private string currScheme = "";
-
     public static InputController Instance;
 
     private void Start() {
@@ -118,6 +118,25 @@ public class InputController : MonoBehaviour {
         Instance = this;
 
         StartCoroutine(CheckControllerStatus());
+
+        CheckFile();
+
+        Settings.OnLoad += OnSettingsLoad;
+    }
+
+    private void OnSettingsLoad(Settings settings) {
+        IsLeftHanded = settings.IsLeftHanded;
+        if(InputConfigurationFile != settings.InputConfigurationFile) {
+            InputManager.Load(Application.dataPath + "/" + InputConfigurationFile);
+        }
+    }
+
+    public void CheckFile() {
+        if(File.Exists(Application.dataPath + "/" + InputConfigurationFile)) {
+            InputManager.Load(Application.dataPath + "/" + InputConfigurationFile);
+        } else {
+            InputManager.Save(Application.dataPath + "/" + InputConfigurationFile);
+        }
     }
 
     private IEnumerator CheckControllerStatus() {
@@ -138,6 +157,7 @@ public class InputController : MonoBehaviour {
             newScheme = IsLeftHanded ? LeftHandedSchemeName : MouseAndKeyboardSchemeName;
         }
 
+        string currScheme = InputManager.PlayerOneControlScheme.Name;
         if (currScheme != newScheme) {
             InputManager.SetControlScheme(newScheme, PlayerID.One);
             currScheme = newScheme;
@@ -146,15 +166,16 @@ public class InputController : MonoBehaviour {
     }
 
     public Sprite GetActionIcon(string action) {
-        string schemeName = InputManager.PlayerOneControlScheme.Name;
-        InputAction interactAction = InputManager.GetAction(schemeName, action);
-        InputBinding actionBinding = interactAction.GetBinding(0);
+        ControlScheme scheme = InputManager.PlayerOneControlScheme;
+        InputAction inputAction = scheme.GetAction(action);
+        InputBinding actionBinding = inputAction.GetBinding(0);
         KeyCode code = actionBinding.Positive;
 
         return GetInputIcon(code);
     }
 
     public Sprite GetInputIcon(KeyCode k) {
+        string currScheme = InputManager.PlayerOneControlScheme.Name;
         if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
             return GetKeyboardIcon(k);
         } else if (currScheme == ControllerSchemeName) {

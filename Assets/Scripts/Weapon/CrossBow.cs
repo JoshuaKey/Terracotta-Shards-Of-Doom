@@ -15,7 +15,11 @@ public class CrossBow : Weapon {
     public Transform ArrowPos;
     public Transform ChargedArrowPos;
     public ArrowPool arrowPool;
-    
+
+    [Header("Animation")]
+    public GameObject drawString;
+    private Vector3 drawStringDefaultPos;
+
     private Arrow currArrow = null;
 
     void Start() {
@@ -23,6 +27,8 @@ public class CrossBow : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Crossbow";
+
+        drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -45,6 +51,8 @@ public class CrossBow : Weapon {
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
 
+        AnimateDrawString();
+
         // Debug
         Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
         Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
@@ -65,6 +73,18 @@ public class CrossBow : Weapon {
             PlayerHud.Instance.DisableCrosshair();
         }
         StopAllCoroutines();
+    }
+
+    public void AnimateDrawString()
+    {
+        if(currArrow == null)
+        {
+            drawString.transform.localPosition = drawStringDefaultPos;
+        }
+        else
+        {
+            drawString.transform.position = currArrow.transform.position - transform.forward * 0.225f;
+        }
     }
 
     public override void Attack() {
