@@ -27,6 +27,9 @@ public class EnemyProgression : MonoBehaviour {
         }
 
         if(ProgressionObject) {
+            print("Here");
+            print(SetActive);
+            print(ProgressionObject.name);
             ProgressionObject.SetActive(!SetActive);
         }      
 

@@ -50,6 +50,11 @@ public class Mimic_Idle : State
 
     public override string Update()
     {
+        if (owner.GetComponent<MimicPot>() == null || player == null)
+        {
+            return null;
+        }
+
         //This will check if it can wake up or not
         if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<MimicPot>().aggroRadius)
         {
