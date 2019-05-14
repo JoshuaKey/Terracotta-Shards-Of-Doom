@@ -126,16 +126,13 @@ public class Boss2Pot_ChangingRooms : State
                 waypoint.GetComponent<Waypoint>().Visited = false;
             }
         }
-        base.Init(owner);
-    }
-
         List<GameObject> possibleWaypoints = null;
         possibleWaypoints = waypoints.Where(w => !w.GetComponent<Waypoint>().Visited).ToList();
 
         int randomIndex = Random.Range(0, possibleWaypoints.Count - 1);
         target = possibleWaypoints[randomIndex];
         boss2AI.currentWaypoint = target.GetComponent<Waypoint>();
-
+        base.Init(owner);
     }
 
     public override void Exit()
