@@ -20,6 +20,15 @@ public class WeaponPickup : MonoBehaviour {
         interactable.OnInteract += this.Pickup;
 
         string name = WeaponPrefab.name;
+        // Initialize
+        if (!Game.Instance.playerStats.Weapons.ContainsKey(name)) {
+            Game.Instance.playerStats.Weapons[name] = false;
+        }
+        // Destory if already collected
+        if (Game.Instance.playerStats.Weapons[name]) {
+            Destroy(this.gameObject);
+        }
+
         WeaponPrefab = GameObject.Instantiate(WeaponPrefab);
         WeaponPrefab.transform.SetParent(this.transform, false);
         WeaponPrefab.gameObject.SetActive(false);

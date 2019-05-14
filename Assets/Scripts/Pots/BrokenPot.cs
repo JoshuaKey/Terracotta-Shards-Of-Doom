@@ -7,10 +7,12 @@ public class BrokenPot : MonoBehaviour {
     private Rigidbody[] pieces;
     private MeshRenderer[] renderers;
 
-    void Start() {
-        pieces = GetComponentsInChildren<Rigidbody>();
-        renderers = GetComponentsInChildren<MeshRenderer>();
+    private void Awake() {
+        pieces = GetComponentsInChildren<Rigidbody>(true);
+        renderers = GetComponentsInChildren<MeshRenderer>(true);
+    }
 
+    void Start() {
         this.gameObject.SetActive(false);
     }
 
