@@ -13,9 +13,17 @@ public class Enemy : MonoBehaviour {
     public BrokenPot brokenPot;
     [HideInInspector]
     public NavMeshAgent agent;
+    [HideInInspector]
+    public new MeshRenderer renderer;
+
+    public bool CanBeKnockedBack = true;
+
+    [HideInInspector]
+    public Animator animator;
 
     private new Rigidbody rigidbody;
     private new Collider collider;
+
 
     void Awake() {
         collider = GetComponent<Collider>();
@@ -34,7 +42,10 @@ public class Enemy : MonoBehaviour {
         if (health == null) { health = GetComponentInChildren<Health>(true); }
 
         if (agent == null) { agent = GetComponentInChildren<NavMeshAgent>(true); }
+        
+        if(renderer == null) { renderer = GetComponentInChildren<MeshRenderer>(true); }
 
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Start() {
@@ -46,17 +57,10 @@ public class Enemy : MonoBehaviour {
         health.OnDeath += this.Die;
     }
 
-    //private void Update() {
-    //    //print(agent.isOnNavMesh);
-    //    if (!agent.isOnNavMesh) {
-    //        rigidbody.constraints = RigidbodyConstraints.None;
-    //    } else {
-    //        rigidbody.constraints = RigidbodyConstraints.FreezeAll;
-    //    }
-    //}
-
     public void Knockback(Vector3 force) {
-        StartCoroutine(KnockbackRoutine(force));
+        if (CanBeKnockedBack) {
+            StartCoroutine(KnockbackRoutine(force));
+        }
     }
 
     public void Explode(Vector3 force, Vector3 pos) {
@@ -82,20 +86,36 @@ public class Enemy : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
-    protected IEnumerator KnockbackRoutine(Vector3 force) {
-        if (agent != null) {
-            agent.SetDestination(this.transform.position + force);
+    protected IEnumerator KnockbackRoutine(Vector3 force)
+    {
+        float angularSpeed = 0;
+        if (agent != null)
+        {
+            agent.SetDestination(transform.position + force);
+            agent.speed *= 2;
+            angularSpeed = agent.angularSpeed;
+            agent.angularSpeed = 0;
+            agent.acceleration *= 2;
         }
-        if (pot != null) {
+        if (pot != null)
+        {
             pot.stunned = true;
+        }
+        if(animator != null)
+        {
+            animator.SetTrigger("Knockback");
         }
 
         yield return new WaitForSeconds(1f);
 
+        if(agent != null)
+        {
+            agent.speed *= 0.5f;
+            agent.angularSpeed = angularSpeed;
+            agent.acceleration *= 0.5f;
+        }
         if (pot != null) {
             pot.stunned = false;
         }
     }
 }
-
-

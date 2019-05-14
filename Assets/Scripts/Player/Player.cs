@@ -86,7 +86,7 @@ public class Player : MonoBehaviour {
 
         weapons.AddRange(GetComponentsInChildren<Weapon>(true));
         foreach (Weapon w in weapons) {
-            PlayerStats.Instance.Weapons[w.name] = true;
+            Game.Instance.playerStats.Weapons[w.name] = true;
             w.gameObject.SetActive(false);
         }
         CurrWeaponIndex = Mathf.Min(weapons.Count - 1, CurrWeaponIndex);
@@ -99,7 +99,9 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
         if (weapons.Count > 1) {
-            PlayerHud.Instance.EnableWeaponToggle();
+            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
             CanSwapWeapon = true;
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
@@ -126,9 +128,12 @@ public class Player : MonoBehaviour {
         this.health.OnDamage += ChangeHealthUI;
         this.health.OnHeal += ChangeHealthUI;
         Settings.OnLoad += OnSettingsLoad;
-        PlayerStats.Instance.OnLoad += OnStatsLoad;
+        Game.Instance.playerStats.OnLoad += OnStatsLoad;
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+
+        // On Damage
+        health.OnDamage += OnDamage;
     }
 
     void Update() {
@@ -155,6 +160,9 @@ public class Player : MonoBehaviour {
         if (Application.isEditor) {
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
+            }
+            if (Input.GetKeyDown(KeyCode.Equals)) {
+                LevelManager.Instance.LoadScene("Combat Scene");
             }
             if (Input.GetKeyDown(KeyCode.Z)) {
                 Weapon w = WeaponManager.Instance.GetWeapon("Bow");
@@ -190,6 +198,10 @@ public class Player : MonoBehaviour {
         }   
     }
 
+    public void OnDamage(float damage)
+    {
+        AudioManager.Instance.PlaySoundWithParent("player_hit", ESoundChannel.SFX, gameObject);
+    }
     public void UpdateCamera() {
         // Rotation Input
         float xRot = InputManager.GetAxis("Vertical Rotation");
@@ -230,7 +242,7 @@ public class Player : MonoBehaviour {
         Weapon weapon = GetCurrentWeapon();
 
         // Check for Weapon Swap
-        if (CanSwapWeapon && weapon.CanAttack()) {
+        if (CanSwapWeapon && weapon.CanSwap()) {
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -447,7 +459,7 @@ public class Player : MonoBehaviour {
         return weaponWheelRotation;
     }
     public void AddWeapon(Weapon newWeapon, Weapon oldWeapon = null) {
-        PlayerStats.Instance.Weapons[newWeapon.name] = true;
+        Game.Instance.playerStats.Weapons[newWeapon.name] = true;
 
         if(oldWeapon == null) {
             weapons.Add(newWeapon);
@@ -537,7 +549,9 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
         if (weapons.Count > 1) {
-            PlayerHud.Instance.EnableWeaponToggle();
+            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
             CanSwapWeapon = true;
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
@@ -552,6 +566,7 @@ public class Player : MonoBehaviour {
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
         GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
+        GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded);
     }
 
 }

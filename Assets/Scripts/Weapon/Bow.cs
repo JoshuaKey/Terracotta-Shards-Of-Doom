@@ -131,4 +131,8 @@ public class Bow : Weapon {
         charge = 0.0f;
         currArrow = null;
     }
+
+    public override bool CanSwap() {
+        return true;
+    }
 }

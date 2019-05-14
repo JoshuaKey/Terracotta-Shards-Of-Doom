@@ -40,25 +40,6 @@ MonoBehaviour:
   aggroRadius: 20
   attackRadius: 2.5
   attackDuration: 1
---- !u!95 &4467311786474838681
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 988088890821312265}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!54 &5111658971360397531
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -89,6 +70,25 @@ CapsuleCollider:
   m_Height: 1.9
   m_Direction: 1
   m_Center: {x: 0, y: 0.95, z: 0}
+--- !u!95 &4467311786474838681
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988088890821312265}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &6600088844125870910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,14 +193,14 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
+      propertyPath: MaxHealth
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_Constraints
       value: 126
-      objectReference: {fileID: 0}
-    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
-      propertyPath: MaxHealth
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1948159762795503105, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
@@ -210,6 +210,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
     - {fileID: 1948159762795534556, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
+    - {fileID: 8320168974033532814, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
 --- !u!1 &988088890821312267 stripped
 GameObject:

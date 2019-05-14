@@ -30,6 +30,11 @@ public class Game : MonoBehaviour {
             LoadSettings();
         }
 
+        string levelName = LevelManager.Instance.GetLevelName();
+        if (!playerStats.Levels.ContainsKey(levelName)) {
+            playerStats.Levels[levelName] = new LevelData();
+        }
+
         //LevelData level = new LevelData();
         //level.TotalPots = 26;
         //level.CollectedPots.Add("Pot", false);
@@ -62,11 +67,11 @@ public class Game : MonoBehaviour {
 
     [ContextMenu("Save Player Stats")]
     public void SavePlayerStats() {
-        PlayerStats.Instance.Save(Application.dataPath + "/" + PlayerStatsFile);
+        playerStats.Save(Application.dataPath + "/" + PlayerStatsFile);
     }
     [ContextMenu("Load Player Stats")]
     public void LoadPlayerStats() {
-        PlayerStats.Instance.Load(Application.dataPath + "/" + PlayerStatsFile);
+        playerStats.Load(Application.dataPath + "/" + PlayerStatsFile);
     }
     [ContextMenu("Save Settings")]
     public void SaveSettings() {

@@ -21,6 +21,7 @@ public class CrossBow : Weapon {
     private Vector3 drawStringDefaultPos;
 
     private Arrow currArrow = null;
+    private bool hasReloaded = false;
 
     void Start() {
         CanCharge = false;
@@ -64,9 +65,13 @@ public class CrossBow : Weapon {
             PlayerHud.Instance.EnableCrosshair();
         }
         if (!currArrow) {
-            currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
+            currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);     
+        }
+        if (!hasReloaded) {
+            StartCoroutine(Reload());
+        } else {
             currArrow.transform.position = ChargedArrowPos.position;
-        }       
+        }
     }
     private void OnDisable() {
         if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
@@ -88,7 +93,7 @@ public class CrossBow : Weapon {
     }
 
     public override void Attack() {
-        if (!CanAttack()) { return; }
+        if (!CanAttack() && !hasReloaded) { return; }
 
         base.Attack();
         Shoot();
@@ -107,7 +112,16 @@ public class CrossBow : Weapon {
         currArrow = null;
     }
 
+    public override bool CanAttack() {
+        return Time.time > nextAttackTime && hasReloaded;
+    }
+
+    public override bool CanSwap() {
+        return true;
+    }
+
     private IEnumerator Reload() {
+        hasReloaded = false;
         if (!currArrow) {
             currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
             currArrow.transform.position = ArrowPos.position;
@@ -124,5 +138,6 @@ public class CrossBow : Weapon {
         }
 
         currArrow.transform.position = ChargedArrowPos.position;
+        hasReloaded = true;
     }
 }

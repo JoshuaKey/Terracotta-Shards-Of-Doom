@@ -83,6 +83,7 @@ public class Spear : Weapon {
         this.transform.localRotation = StartRotQuat;
     }
 
+
     protected void OnTriggerEnter(Collider other) {
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
@@ -104,8 +105,6 @@ public class Spear : Weapon {
                         forward = forward.normalized;
                         enemy.Knockback(forward * Knockback);
                     }
-                } else {
-                    AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
                 }
             } else {
                 Rigidbody rb = other.GetComponentInChildren<Rigidbody>();
