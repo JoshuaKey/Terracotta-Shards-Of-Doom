@@ -11,13 +11,15 @@ public class Pot : MonoBehaviour
     [Space]
     [SerializeField] public bool stunned = false;
 
-
+    protected Health health;
     protected StateMachine stateMachine;
     protected NavMeshAgent agent;
     
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        health = GetComponent<Health>();
+        health.OnDamage += PlayTink;
     }
 
     private void Update()
@@ -70,5 +72,13 @@ public class Pot : MonoBehaviour
     }
     public StateMachine GetStateMachine() {
         return stateMachine;
+    }
+
+    public void PlayTink(float damage)
+    {
+        if(!health.IsDead())
+        {
+            AudioManager.Instance.PlaySoundWithParent("ceramic_tink", ESoundChannel.SFX, gameObject);
+        }
     }
 }
