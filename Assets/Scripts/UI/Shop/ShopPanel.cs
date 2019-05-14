@@ -11,14 +11,12 @@ public class ShopPanel : MonoBehaviour
     [HideInInspector] public RectTransform rectTransform;
 
     HubShop hubShop;
-    Image image;
     RawImage rawImage;
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         hubShop = GetComponentInParent<HubShop>();
-        image = GetComponentsInChildren<Image>()[1];
         rawImage = GetComponentInChildren<RawImage>();
 
         BlackOut(!HubShop.GetWeaponInfo(weaponName).isUnlocked);
@@ -44,15 +42,17 @@ public class ShopPanel : MonoBehaviour
         rectTransform.localScale = scale;
         this.isMainPanel = isMainPanel;
 
-        if (isMainPanel) hubShop.mainPanel = this;
+        if (isMainPanel)
+        {
+            hubShop.mainPanel = this;
+            BlackOut(!HubShop.GetWeaponInfo(weaponName).isUnlocked);
+        }
 
-        BlackOut(!HubShop.GetWeaponInfo(weaponName).isUnlocked);
         hubShop.isMovingPanels = false;
     }
 
     public void BlackOut(bool isBlackedOut)
     {
-        if(image != null) image.color = isBlackedOut ? Color.black : Color.white;
-        if (rawImage != null) rawImage.color = isBlackedOut ? Color.black : Color.white;
+        rawImage.color = isBlackedOut ? Color.black : Color.white;
     }
 }
