@@ -12,9 +12,10 @@ public class Pot : MonoBehaviour
     [SerializeField] public bool stunned = false;
 
     protected Health health;
-    protected StateMachine stateMachine;
-    protected NavMeshAgent agent;
-    
+    public StateMachine stateMachine;
+    [HideInInspector]
+    public NavMeshAgent agent;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -24,9 +25,10 @@ public class Pot : MonoBehaviour
 
     private void Update()
     {
-        if(stateMachine != null){
+        if (stateMachine != null)
+        {
             stateMachine.Update();
-        }       
+        }
         if (agent.desiredVelocity.magnitude > 0)
         {
             Animate();
@@ -67,16 +69,18 @@ public class Pot : MonoBehaviour
         }
     }
 
-    public NavMeshAgent GetAgent() {
+    public NavMeshAgent GetAgent()
+    {
         return agent;
     }
-    public StateMachine GetStateMachine() {
+    public StateMachine GetStateMachine()
+    {
         return stateMachine;
     }
 
     public void PlayTink(float damage)
     {
-        if(!health.IsDead())
+        if (!health.IsDead())
         {
             AudioManager.Instance.PlaySoundWithParent("ceramic_tink", ESoundChannel.SFX, gameObject);
         }

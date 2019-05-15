@@ -157,6 +157,9 @@ public class AudioManager : MonoBehaviour
             case "2-3":
                 musicName = "572651_-The-Sword-is-Mightier-";
                 break;
+            default:
+                musicName = "612328_Unfortunate-Situation";
+                break;
         }
 
         return PlaySound(musicName, ESoundChannel.MUSIC, true);
