@@ -95,7 +95,7 @@ public class Boss2Pot_ChangingRooms : State
 {
     List<GameObject> waypoints = null;
     GameObject target = null;
-    Boss2Pot boss2AI = null;
+    Boss2Pot boss = null;
 
     bool running = false;
     bool reachedDestination = false;
@@ -107,31 +107,26 @@ public class Boss2Pot_ChangingRooms : State
             waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
         }
 
-        if(boss2AI == null)
+        if(boss == null)
         {
-            boss2AI = owner.GetComponent<Boss2Pot>();
+            boss = owner.GetComponent<Boss2Pot>();
         }
         base.Init(owner);
     }
 
     public override void Enter()
     {
+        boss.agent.enabled = true;
+
         running = false;
         reachedDestination = false;
-        //If every waypoint has been visited, reset them  all
-        if(waypoints.Where(w => w.GetComponent<Waypoint>().Visited).Count() == waypoints.Count)
-        {
-            foreach (GameObject waypoint in waypoints)
-            {
-                waypoint.GetComponent<Waypoint>().Visited = false;
-            }
-        }
+
         List<GameObject> possibleWaypoints = null;
         possibleWaypoints = waypoints.Where(w => !w.GetComponent<Waypoint>().Visited).ToList();
 
         int randomIndex = Random.Range(0, possibleWaypoints.Count - 1);
         target = possibleWaypoints[randomIndex];
-        boss2AI.currentWaypoint = target.GetComponent<Waypoint>();
+        boss.currentWaypoint = target.GetComponent<Waypoint>();
         base.Init(owner);
     }
 
@@ -139,13 +134,15 @@ public class Boss2Pot_ChangingRooms : State
     {
         running = false;
         reachedDestination = false;
+        boss.agent.enabled = false;
+
     }
 
     public override string Update()
     {
         if(!running && !reachedDestination)
         {
-            boss2AI.StartCoroutine(Run());
+            boss.StartCoroutine(Run());
         }
         else if(reachedDestination)
         {
@@ -158,8 +155,8 @@ public class Boss2Pot_ChangingRooms : State
     IEnumerator Run()
     {
         running = true;
-        boss2AI.agent.SetDestination(target.transform.position);
-        while ((boss2AI.agent.destination - owner.transform.position).magnitude > .1f)
+        boss.agent.SetDestination(target.transform.position);
+        while ((boss.agent.destination - owner.transform.position).magnitude > .1f)
         {
             yield return null;
         }

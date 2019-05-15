@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waddleAmplitude: 12.5
   hopHeight: 1
+  stunned: 0
+  agent: {fileID: 0}
   aggroRadius: 20
   attackRadius: 3
   attackDuration: 0.5
-  attackAngle: 70
 --- !u!195 &1125140875
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -40,6 +41,25 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!95 &40542853383405415
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3642877364659203771}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &2992458686467682490
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -112,6 +132,12 @@ PrefabInstance:
 --- !u!1 &3642877364659203769 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1948159762795503107, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2992458686467682490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3642877364659203771 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1948159762795503105, guid: 7af5e528f545bc34d9140e685d17ceb2,
     type: 3}
   m_PrefabInstance: {fileID: 2992458686467682490}
   m_PrefabAsset: {fileID: 0}

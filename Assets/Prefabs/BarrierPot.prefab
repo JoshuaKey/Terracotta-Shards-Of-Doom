@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 5619984944830751357}
   - component: {fileID: 5619984944830751359}
   - component: {fileID: 5619984944830751356}
+  - component: {fileID: 4194270498685272849}
+  - component: {fileID: 1188416103959031574}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -77,6 +79,42 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!95 &4194270498685272849
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5619984944830751354}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1188416103959031574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5619984944830751354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2ffcf1720dcaf24d85b9a6d62d77193, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  damageType: 1
+  knockback: 20
+  isAttacking: 0
+  hasHitPlayer: 0
 --- !u!1 &5619984945578253815
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,8 +194,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 10
-  m_Acceleration: 0
+  m_Speed: 3.5
+  m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -186,6 +224,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   renderer: {fileID: 0}
   CanBeKnockedBack: 1
+  animator: {fileID: 0}
 --- !u!114 &5619984945578253814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,6 +255,10 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
+  agent: {fileID: 0}
+  aggroRadius: 5
+  attackRadius: 2.5
+  attackDuration: 0.25
 --- !u!114 &8661490457059326555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,12 +274,10 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
-  aggroRadius: 30
+  agent: {fileID: 0}
+  aggroRadius: 50
   attackRadius: 2.5
   attackDuration: 0.25
-  knockback: 20
-  isAttacking: 0
-  hasHitPlayer: 0
 --- !u!1001 &5663753112887004433
 PrefabInstance:
   m_ObjectHideFlags: 0
