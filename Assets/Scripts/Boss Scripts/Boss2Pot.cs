@@ -6,6 +6,8 @@ using System.Linq;
 
 public class Boss2Pot : Pot
 {
+    [HideInInspector]
+    public Enemy enemy;
     NavMeshAgent navMeshAgent = null;
 
     [HideInInspector]
@@ -56,7 +58,9 @@ public class Boss2Pot : Pot
 
     void Start()
     {
+        if (enemy == null) { enemy = GetComponentInChildren<Enemy>(true); }
         navMeshAgent = GetComponent<NavMeshAgent>();
+
         barrierWaypoints = Barrier.GetComponentsInChildren<Waypoint>();
         barrierPots = new List<BarrierPot>(8);
         stateMachine = new StateMachine();
@@ -64,11 +68,34 @@ public class Boss2Pot : Pot
             new Boss2Pot_ChangingRooms(),
             new Boss2Pot_Animating(),
             new Boss2Pot_Running());
+
+        enemy.health.OnDamage += ChangeHealthUI;
+        enemy.health.OnDamage += PlayClang;
+        enemy.health.OnDeath += OnDeath;
+        ChangeHealthUI(0);
     }
 
     void Update()
     {
         stateMachine.Update();
+    }
+
+    public void ChangeHealthUI(float damage) 
+    {
+        PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
+    }
+
+    public void OnDeath() 
+    {
+        PlayerHud.Instance.DisableBossHealthBar();
+    }
+
+    public void PlayClang(float damage) 
+    {
+        if (!health.IsDead()) 
+        {
+            AudioManager.Instance.PlaySoundWithParent("clang", ESoundChannel.SFX, gameObject);
+        }
     }
 
     public void ConvertBarrierPots()
