@@ -592,6 +592,7 @@ public class Player : MonoBehaviour {
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
         GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
         GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded + " " + wasGrounded);
+        GUI.Label(new Rect(10, 110, 150, 20), "Coins: " + Game.Instance.playerStats.Coins);
     }
 
 }

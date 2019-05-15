@@ -5,6 +5,10 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
+    //[Header("Coins")]
+    //public CoinPool coinPool;
+    //public Vector2Int CoinDropRange;
+
     //[HideInInspector]
     public Health health;
     [HideInInspector]
@@ -84,6 +88,12 @@ public class Enemy : MonoBehaviour {
         health.OnDeath -= this.Die;
 
         Destroy(this.gameObject);
+
+        //int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
+        //for(int i = 0; i < amo; i++) {
+        //    Coin coin = coinPool.Create();
+        //    coin.Value = LevelManager.Instance.GetWorld();
+        //}   
     }
 
     protected IEnumerator KnockbackRoutine(Vector3 force)
