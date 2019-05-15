@@ -80,6 +80,7 @@ public class Hammer : Weapon {
         Player.Instance.velocity.y = PlayerJump;
 
         DustEffect.Play();
+        AudioManager.Instance.PlaySoundWithParent("hammer", ESoundChannel.SFX, gameObject);
 
         int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
