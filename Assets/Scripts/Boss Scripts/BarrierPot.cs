@@ -41,6 +41,8 @@ public class BarrierPot : ChargerPot
             new Charger_Idle(),
             new Charger_Charge(),
             new Charger_Attack(attackDuration));
+
+        agent.enabled = false;
     }
 
     void Start()
@@ -57,6 +59,7 @@ public class BarrierPot : ChargerPot
     public void ChangeStateMachine()
     {
         stateMachine = ChargerPotStateMachine;
+        agent.enabled = true;
         transform.parent = EnemyManager.Instance.transform;
     }
 

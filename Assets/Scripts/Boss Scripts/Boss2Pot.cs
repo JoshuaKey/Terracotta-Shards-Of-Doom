@@ -53,6 +53,7 @@ public class Boss2Pot : Pot
         set { phase = value; }
     }
 
+    public float speed = 10.0f;
 
     void Start()
     {
@@ -177,7 +178,7 @@ public class Boss2Pot_Animating : State
 
     Vector3 offset = new Vector3(0.0f, .5f, 0.0f);
 
-    Vector3 halfExtents = new Vector3(12.0f, .5f, 12.0f);
+    Vector3 halfExtents = new Vector3(12.0f, 0.0f, 12.0f);
 
     public override void Init(GameObject owner)
     {
@@ -197,7 +198,7 @@ public class Boss2Pot_Animating : State
         Pot p;
         foreach (Collider c in colliders)
         {
-            if((p = c.GetComponent<Pot>()) && (c.gameObject != owner))
+            if((p = c.GetComponentInParent<Pot>()) && (c.gameObject != owner))
             {
                 Pots.Add(p);
             }
@@ -348,7 +349,7 @@ public class Boss2Pot_Running : State
 
         while ((owner.transform.position - targetPosition).magnitude > .25f)
         {
-            owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * 5.0f);
+            owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * boss.speed);
             yield return null;
         }
         moving = false;
