@@ -31,6 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5837058983579213233}
+  - {fileID: 6072732253836160699}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -81,6 +82,81 @@ MonoBehaviour:
   WeaponDisplay: {fileID: 5837058983579213238}
   WeaponPrefab: {fileID: 7386883575333685265, guid: 749b4a3b106d3a949b320cbad9f00278,
     type: 3}
+--- !u!1001 &1607355019636138844
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2895695407635026723}
+    m_Modifications:
+    - target: {fileID: 4758287273842986468, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_Name
+      value: Pickup Sparkle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6c341bb53ae378741b18227bb14761ae, type: 3}
+--- !u!4 &6072732253836160699 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4758287273842986471, guid: 6c341bb53ae378741b18227bb14761ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 1607355019636138844}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7965438686803506954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88,11 +164,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2895695407635026723}
     m_Modifications:
-    - target: {fileID: 4578905661373311676, guid: 361a203d19c356d4db962609399a48b4,
-        type: 3}
-      propertyPath: m_Name
-      value: MagicModel
-      objectReference: {fileID: 0}
     - target: {fileID: 4578905661373311675, guid: 361a203d19c356d4db962609399a48b4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -147,6 +218,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4578905661373311676, guid: 361a203d19c356d4db962609399a48b4,
+        type: 3}
+      propertyPath: m_Name
+      value: MagicModel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 361a203d19c356d4db962609399a48b4, type: 3}
