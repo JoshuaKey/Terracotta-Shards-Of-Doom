@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class CoinPool : Pool<Coin> {
 
+    public static CoinPool Instance;
+
+    private void Awake() {
+        if (Instance != null) { Destroy(this.gameObject); return; }
+        Instance = this;
+    }
+
     public Coin CreateBigCoin() {
         Coin coin = Create();
 
@@ -11,4 +18,5 @@ public class CoinPool : Pool<Coin> {
 
         return coin;
     }
+
 }

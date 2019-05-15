@@ -9,8 +9,8 @@ public class Pool<T> : PoolBase where T : PoolObject {
     [SerializeField] protected T Prefab = null;
     [SerializeField] protected int MaxAmo = 0;
 
-    protected List<T> ObjectPool;
-    protected int CurrAmo;
+    [SerializeField] protected List<T> ObjectPool;
+    [SerializeField] protected int CurrAmo;
 
     void Start() {
         ObjectPool = new List<T>(MaxAmo);
@@ -19,6 +19,7 @@ public class Pool<T> : PoolBase where T : PoolObject {
         for (int i = 0; i < MaxAmo; i++) {
             T obj = Instantiate(Prefab, this.transform);
             obj.gameObject.SetActive(false);
+            obj.name += "" + i;
 
             ObjectPool.Add(obj);
         }
@@ -27,8 +28,10 @@ public class Pool<T> : PoolBase where T : PoolObject {
     }
 
     private void OnSceneChange(Scene scene, LoadSceneMode mode) {
-        CurrAmo = 0;
-        ObjectPool.ForEach(o => { if (o != null) { o.Destroy(); } });
+        while(CurrAmo > 0) {
+            T obj = ObjectPool[0];
+            obj.gameObject.SetActive(false);
+        }
     }
 
     public T Create() {
@@ -46,10 +49,14 @@ public class Pool<T> : PoolBase where T : PoolObject {
             return;
         }
 
-        T obj = ObjectPool[CurrAmo];
-        Swap(index, CurrAmo--);
-
-        obj.transform.SetParent(this.transform, false);
+        T obj = ObjectPool[index];
+        if (obj.IsActive()) {
+            Swap(index, --CurrAmo);
+            ObjectPool[index].SetIndex(index);
+            ObjectPool[CurrAmo].SetIndex(CurrAmo);
+        }
+        obj.Reset();
+        obj.gameObject.SetActive(false);
     }
 
     private void Swap(int a, int b) {

@@ -18,24 +18,38 @@ public class Coin : PoolObject {
     public new Collider collider;
     public Transform coinModel;
 
-    private Vector3 currPos;
-    private float bobTimer = 0.0f;
-    private float bobDist = 0.0f;
+    [SerializeField] private Vector3 currPos;
+    [SerializeField] private Vector3 offset;
+    [SerializeField] private float bobTimer = 0.0f;
+    [SerializeField] private float bobDist = 0.0f;
 
-    void Start() {
+    protected override void Start() {
+        base.Start();
         currPos = this.transform.position;
+        offset = Random.insideUnitSphere * .5f;
+        bobTimer = Random.Range(0.0f, 10.0f);
     }
 
     void Update() {
         Player player = Player.Instance;
 
-        Vector3 pos = Vector3.Lerp(currPos, player.transform.position, LerpSpeed * Time.deltaTime);
+        Vector3 pos = Vector3.Lerp(currPos, player.transform.position + offset, LerpSpeed * Time.deltaTime);
         SetPosition(pos);
 
         this.transform.Rotate(Vector3.up * RotateSpeed * Time.deltaTime, Space.Self);
     }
 
-    private void SetPosition(Vector3 pos) {
+    public override void Reset() {
+        base.Reset();
+        this.transform.position = Vector3.zero;
+        this.transform.rotation = Quaternion.identity;
+        currPos = Vector3.zero;
+        offset = Vector3.zero;
+        bobTimer = 0.0f;
+        bobDist = 0.0f;
+    }
+
+    public void SetPosition(Vector3 pos) {
         currPos = pos;
 
         float bobPos = Bob(BobSpeed, BobDist);
@@ -43,12 +57,6 @@ public class Coin : PoolObject {
         this.transform.position = currPos + Vector3.up * bobPos;
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="speed"></param>
-    /// <param name="distance"></param>
-    /// <returns></returns>
     private float Bob(float speed, float distance) {
         // Add onto Bob Timer (aka Sin Wave)
         bobTimer += Time.deltaTime * speed;
@@ -65,7 +73,18 @@ public class Coin : PoolObject {
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             print("Coin Collected: " + Value);
             Game.Instance.playerStats.Coins += Value;
-            Destroy(this.gameObject);
+            Value = 0;
+            this.gameObject.SetActive(false);
+        }
+    }
+
+    protected override void OnDisable() {
+        print("Coin Disabled");
+        base.OnDisable();
+        if(Value != 0) {
+            print("Coin Collected: " + Value);
+            Game.Instance.playerStats.Coins += Value;
+            Value = 0;
         }
     }
 }

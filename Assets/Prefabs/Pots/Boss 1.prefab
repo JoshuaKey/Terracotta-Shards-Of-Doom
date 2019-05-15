@@ -131,10 +131,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce612b11c8facec4c91b74e4cabf331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CoinDropRange: {x: 10, y: 10}
+  BaseValue: 50
+  UseBigCoins: 1
   health: {fileID: 4829920887961136414}
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
   agent: {fileID: 0}
+  renderer: {fileID: 0}
+  CanBeKnockedBack: 0
+  animator: {fileID: 0}
 --- !u!114 &4829920887961136414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +171,7 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
+  knockback: 50
   Phase1Health: 3
   Phase1Resistance: 1
   Phase2Health: 10

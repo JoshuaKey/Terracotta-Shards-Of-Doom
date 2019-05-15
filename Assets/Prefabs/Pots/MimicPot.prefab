@@ -32,7 +32,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: [{fileID: 4365779655806677611}]
+  m_Children:
+  - {fileID: 4365779655806677611}
   m_Father: {fileID: 69771414996784834}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -195,10 +196,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce612b11c8facec4c91b74e4cabf331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CoinDropRange: {x: 7, y: 13}
+  BaseValue: 1
   health: {fileID: 3670099540283306008}
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
   agent: {fileID: 0}
+  renderer: {fileID: 0}
+  CanBeKnockedBack: 1
+  animator: {fileID: 0}
 --- !u!114 &3670099540283306008
 MonoBehaviour:
   m_ObjectHideFlags: 0
