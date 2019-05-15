@@ -24,8 +24,10 @@ public class Boss1Pot : Pot
 
     [Header("AI")]
     public GameObject AISpawnPoint = null;
+    #pragma warning disable 0649
     [SerializeField]
     Collider playerTrigger;
+    #pragma warning restore 0649
     private bool playerEnteredArena;
 
     public bool PlayerEnteredArena
@@ -59,6 +61,7 @@ public class Boss1Pot : Pot
 
         enemy.health.OnDamage += ChangeHealthUI;
         enemy.health.OnDamage += ChangePhase;
+        enemy.health.OnDamage += PlayClang;
         enemy.health.OnDeath += OnDeath;
         ChangeHealthUI(0);
     }
@@ -66,6 +69,14 @@ public class Boss1Pot : Pot
     void Update()
     {
         stateMachine.Update();
+    }
+
+    public void PlayClang(float damage)
+    {
+        if (!health.IsDead())
+        {
+            AudioManager.Instance.PlaySoundWithParent("clang", ESoundChannel.SFX, gameObject);
+        }
     }
 
     private void ChangeHealthUI(float val)
@@ -85,6 +96,8 @@ public class Boss1Pot : Pot
         {
             enemy.health.Resistance = Phase2Resistance;
             enemy.health.OnDamage -= ChangePhase;
+            enemy.health.OnDamage -= PlayClang;
+            enemy.health.OnDamage += PlayTink;
         }
 
         // Phase 1 - Remove Armor

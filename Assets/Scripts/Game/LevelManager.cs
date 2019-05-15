@@ -38,6 +38,8 @@ public class LevelManager : MonoBehaviour {
 
         Player.Instance.gameObject.SetActive(true);
 
+        AudioManager.Instance.PlaySceneMusic(scene.name);
+
         if (!Game.Instance.playerStats.Levels.ContainsKey(scene.name)) {
             Game.Instance.playerStats.Levels[scene.name] = new LevelData();
         }

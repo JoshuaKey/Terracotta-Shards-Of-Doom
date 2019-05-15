@@ -121,8 +121,6 @@ public class Sword : Weapon {
                         forward = forward.normalized;
                         enemy.Knockback(forward * Knockback);
                     }
-                } else {
-                    AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
                 }
             } else {
                 Rigidbody rb = other.GetComponentInChildren<Rigidbody>();

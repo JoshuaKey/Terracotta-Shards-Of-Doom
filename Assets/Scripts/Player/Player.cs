@@ -137,6 +137,9 @@ public class Player : MonoBehaviour {
         Game.Instance.playerStats.OnLoad += OnStatsLoad;
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+
+        // On Damage
+        health.OnDamage += OnDamage;
     }
 
     void Update() {
@@ -206,6 +209,10 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void OnDamage(float damage)
+    {
+        AudioManager.Instance.PlaySoundWithParent("player_hit", ESoundChannel.SFX, gameObject);
+    }
     public void UpdateCamera() {
         // Rotation Input
         float xRot = InputManager.GetAxis("Vertical Rotation");
