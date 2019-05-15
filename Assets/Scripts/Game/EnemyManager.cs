@@ -14,11 +14,15 @@ public class EnemyManager : MonoBehaviour {
 
     public static EnemyManager Instance;
 
-    private List<Enemy> enemies = new List<Enemy>();
+    [Space]
+    public bool CollectAllPotsInScene = true;
+    public Material HasCollectedMaterial;
+    public List<Enemy> enemies = new List<Enemy>();
     private int enemiesKilled;
 
     public Action OnEnemyDeath;
 
+    [Space]
     public EnemyProgression MainProgression;
     public bool ChildEnemiesToManager = false;
 
@@ -30,15 +34,31 @@ public class EnemyManager : MonoBehaviour {
     void Start() {
         if (MainProgression == null) { MainProgression = GetComponentInChildren<EnemyProgression>(true); }
 
-        Enemy[] enemiesArray = GameObject.FindObjectsOfType<Enemy>();
+        if (CollectAllPotsInScene) {
+            Pot[] potArray = GameObject.FindObjectsOfType<Pot>();
+            foreach (Pot p in potArray) {
+                Enemy e = p.GetComponent<Enemy>();
+                enemies.Add(e);
+            }
+        }
 
-        enemies.AddRange(enemiesArray);
-
+        string levelName = LevelManager.Instance.GetLevelName();
+        Game.Instance.playerStats.Levels[levelName].TotalPots = enemies.Count;
         for (int i = 0; i < enemies.Count; i++) {
             if (ChildEnemiesToManager) {
                 enemies[i].transform.SetParent(this.transform, true);
-            }        
+            }
             enemies[i].health.OnDeath += EnemyDeath;
+            string name = enemies[i].name;
+            
+            if (!Game.Instance.playerStats.Levels[levelName].CollectedPots.ContainsKey(name)) {
+                Game.Instance.playerStats.Levels[levelName].CollectedPots[name] = false;
+            }
+            // If already collected, modify material
+            if (Game.Instance.playerStats.Levels[levelName].CollectedPots[name]) {
+                enemies[i].renderer.material = HasCollectedMaterial;
+                enemies[i].brokenPot.SetMaterial(HasCollectedMaterial);
+            }
         }
     }
 
@@ -50,7 +70,6 @@ public class EnemyManager : MonoBehaviour {
     }
 
     public Enemy SpawnPot() {
-
         Enemy enemy = SpawnPrefab(PotPrefab);
         return enemy;
     }
@@ -70,7 +89,12 @@ public class EnemyManager : MonoBehaviour {
     private void EnemyDeath() {
         enemiesKilled++;
         OnEnemyDeath?.Invoke();
-        //print(EnemyManager.Instance.GetEnemiesKilled() + " Enemies Killed");
+
+        int index = enemies.FindIndex(x => x.health.IsDead());
+        Enemy enemyKilled = enemies[index];
+        string levelName = LevelManager.Instance.GetLevelName();
+        Game.Instance.playerStats.Levels[levelName].CollectedPots[enemyKilled.name] = true;
+        enemies.RemoveAt(index);
     }
 
     public Enemy GetClosestEnemy(Vector3 pos) {

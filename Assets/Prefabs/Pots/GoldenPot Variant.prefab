@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PreviousPot: {fileID: 0}
+  HasCollectedMaterial: {fileID: 2100000, guid: e89c5a3735113de43acfe580ef76c85b,
+    type: 2}
   enemy: {fileID: 3819797450437700752}
+  renderer: {fileID: 3819797450439996559}
 --- !u!1001 &3317997821842109518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81,11 +84,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: a13e4ebaa5a967d44b6836ec8e9e2f89, type: 2}
     - target: {fileID: 1948159762795659809, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_LocalRotation.x
@@ -106,6 +104,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -78.79
       objectReference: {fileID: 0}
+    - target: {fileID: 8870305759068366866, guid: 7af5e528f545bc34d9140e685d17ceb2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a13e4ebaa5a967d44b6836ec8e9e2f89, type: 2}
     - target: {fileID: 8870305759070369474, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -606,7 +614,8 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a13e4ebaa5a967d44b6836ec8e9e2f89, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8320168974033532814, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
 --- !u!1 &3819797450437798477 stripped
 GameObject:
@@ -626,3 +635,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce612b11c8facec4c91b74e4cabf331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!23 &3819797450439996559 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 3317997821842109518}
+  m_PrefabAsset: {fileID: 0}

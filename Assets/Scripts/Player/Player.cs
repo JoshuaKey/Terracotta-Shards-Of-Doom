@@ -48,6 +48,9 @@ public class Player : MonoBehaviour {
     public CompassPot compass;
     public Transform Shoulder;
 
+    [Header("IsGrounded")]
+    public float MinJumpAngle = 30f;
+
     [Space]
     [Header("Debug")]
     public Sword SwordPrefab;
@@ -67,6 +70,9 @@ public class Player : MonoBehaviour {
     public List<Weapon> weapons = new List<Weapon>();
     [HideInInspector]
     public int layerMask;
+    [HideInInspector]
+    private bool wasGrounded = false;
+    private bool isGrounded = false;
 
     private new Collider collider;
     private CharacterController controller;
@@ -86,7 +92,7 @@ public class Player : MonoBehaviour {
 
         weapons.AddRange(GetComponentsInChildren<Weapon>(true));
         foreach (Weapon w in weapons) {
-            PlayerStats.Instance.Weapons[w.name] = true;
+            Game.Instance.playerStats.Weapons[w.name] = true;
             w.gameObject.SetActive(false);
         }
         CurrWeaponIndex = Mathf.Min(weapons.Count - 1, CurrWeaponIndex);
@@ -99,7 +105,9 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
         if (weapons.Count > 1) {
-            PlayerHud.Instance.EnableWeaponToggle();
+            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
             CanSwapWeapon = true;
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
@@ -126,15 +134,22 @@ public class Player : MonoBehaviour {
         this.health.OnDamage += ChangeHealthUI;
         this.health.OnHeal += ChangeHealthUI;
         Settings.OnLoad += OnSettingsLoad;
-        PlayerStats.Instance.OnLoad += OnStatsLoad;
+        Game.Instance.playerStats.OnLoad += OnStatsLoad;
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+
+        // On Damage
+        health.OnDamage += OnDamage;
     }
 
     void Update() {
         if (CanMove) {
             UpdateMovement();
         }
+
+        wasGrounded = isGrounded;
+        isGrounded = false;
+
         UpdateCombat();
         if (CanInteract) {
             UpdateInteractable();
@@ -151,10 +166,14 @@ public class Player : MonoBehaviour {
             }
         }
 
+
         // Debug...
         if (Application.isEditor) {
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
+            }
+            if (Input.GetKeyDown(KeyCode.Equals)) {
+                LevelManager.Instance.LoadScene("Combat Scene");
             }
             if (Input.GetKeyDown(KeyCode.Z)) {
                 Weapon w = WeaponManager.Instance.GetWeapon("Bow");
@@ -187,9 +206,13 @@ public class Player : MonoBehaviour {
     private void LateUpdate() {
         if (CanRotate) {
             UpdateCamera();
-        }   
+        }
     }
 
+    public void OnDamage(float damage)
+    {
+        AudioManager.Instance.PlaySoundWithParent("player_hit", ESoundChannel.SFX, gameObject);
+    }
     public void UpdateCamera() {
         // Rotation Input
         float xRot = InputManager.GetAxis("Vertical Rotation");
@@ -230,7 +253,7 @@ public class Player : MonoBehaviour {
         Weapon weapon = GetCurrentWeapon();
 
         // Check for Weapon Swap
-        if (CanSwapWeapon && weapon.CanAttack()) {
+        if (CanSwapWeapon && weapon.CanSwap()) {
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -399,7 +422,7 @@ public class Player : MonoBehaviour {
     }
     public void Jump() {
         // Check for Jump
-        if (controller.isGrounded) {
+        if (wasGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
             } 
@@ -447,7 +470,7 @@ public class Player : MonoBehaviour {
         return weaponWheelRotation;
     }
     public void AddWeapon(Weapon newWeapon, Weapon oldWeapon = null) {
-        PlayerStats.Instance.Weapons[newWeapon.name] = true;
+        Game.Instance.playerStats.Weapons[newWeapon.name] = true;
 
         if(oldWeapon == null) {
             weapons.Add(newWeapon);
@@ -537,11 +560,27 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponWheel(weaponNames);
         PlayerHud.Instance.DisableWeaponWheel();
         if (weapons.Count > 1) {
-            PlayerHud.Instance.EnableWeaponToggle();
+            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
+            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
+            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
             CanSwapWeapon = true;
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
             CanSwapWeapon = false;
+        }
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit) {
+        // If we are touching the "ground"
+        if ((hit.controller.collisionFlags & CollisionFlags.Below) != 0) {
+            velocity.y = Mathf.Max(velocity.y, -1.0f);
+            float angle = Vector3.Angle(Vector3.down, -hit.normal);
+
+            // Can we jump based off the collision normal...
+            if (angle < MinJumpAngle) {
+                isGrounded = true;
+                return;
+            }
         }
     }
 
@@ -552,6 +591,14 @@ public class Player : MonoBehaviour {
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
         GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
+        GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded + " " + wasGrounded);
     }
 
 }
+// We can jump on flat ground
+// We can not jump when falling
+// We can not jump when jumping
+// We can jump on rope
+// we can jump on bridge
+// we can not jump on mounting 3
+// we can not jump on rocks

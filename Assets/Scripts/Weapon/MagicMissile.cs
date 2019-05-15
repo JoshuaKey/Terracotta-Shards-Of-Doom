@@ -64,6 +64,9 @@ public class MagicMissile : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
+
+        print(other.name);
+
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
@@ -78,8 +81,6 @@ public class MagicMissile : PoolObject {
                 forward.y = 0.0f;
                 forward = forward.normalized;
                 enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
-            } else {
-                AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
             }
         } 
 
