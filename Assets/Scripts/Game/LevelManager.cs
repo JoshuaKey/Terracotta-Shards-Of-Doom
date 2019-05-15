@@ -38,6 +38,8 @@ public class LevelManager : MonoBehaviour {
 
         Player.Instance.gameObject.SetActive(true);
 
+        AudioManager.Instance.PlaySceneMusic(scene.name);
+
         if (!Game.Instance.playerStats.Levels.ContainsKey(scene.name)) {
             Game.Instance.playerStats.Levels[scene.name] = new LevelData();
         }
@@ -72,5 +74,62 @@ public class LevelManager : MonoBehaviour {
     public string GetLevelName() {
         return SceneManager.GetActiveScene().name;
     }
-    
+    public int GetWorld() {
+        int world = 0;
+        switch (GetLevelName()) {
+            case "Hub":
+                world = 0;
+                break;
+            case "1-1":
+            case "1-2":
+            case "1-3":
+            case "tutorial":
+                world = 1;
+                break;
+            case "2-1":
+            case "2-2":
+            case "2-3":
+                world = 2;
+                break;
+            case "3-1":
+            case "3-2":
+            case "3-3":
+                world = 3;
+                break;
+            case "4-1":
+            case "4-2":
+            case "4-3":
+                world = 4;
+                break;
+        }
+        return world;
+    }
+    public int GetLevel() {
+        int level = 0;
+        switch (GetLevelName()) {
+            case "Hub":
+                level = 0;
+                break;
+            case "1-1":
+            case "2-1":
+            case "3-1":
+            case "4-1":
+            case "tutorial":
+                level = 1;
+                break;
+            case "1-2":
+            case "2-2":
+            case "3-2":
+            case "4-2":
+                level = 2;
+                break;
+            case "1-3":
+            case "2-3":
+            case "3-3":
+            case "4-3":
+                level = 3;
+                break;
+        }
+        return level;
+    }
 }
