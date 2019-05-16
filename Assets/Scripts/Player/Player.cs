@@ -78,10 +78,12 @@ public class Player : MonoBehaviour {
     private CharacterController controller;
     private Vector2 weaponWheelRotation = Vector2.zero;
 
-    void Start() {
+    private void Awake() {
         if (Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
+    }
 
+    void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
         if (controller == null) { controller = GetComponentInChildren<CharacterController>(true); }
@@ -519,7 +521,7 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
-        return weapons[CurrWeaponIndex];
+        return CurrWeaponIndex >= weapons.Count ? null : weapons[CurrWeaponIndex];
     }
 
     private void OnPlayerControlChanged(PlayerID id) { CheckInputScheme(); }

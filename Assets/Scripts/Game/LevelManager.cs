@@ -19,7 +19,8 @@ public class LevelManager : MonoBehaviour {
     private void Start() {
         SceneManager.sceneLoaded += OnSceneLoaded;
         if (SceneManager.GetActiveScene().name == PersistentSceneName) {
-            SceneManager.LoadScene(StartingSceneName);
+            //SceneManager.LoadScene(StartingSceneName);
+            SceneManager.LoadSceneAsync(StartingSceneName);
         }
 
         Game.Instance.playerStats.OnLoad += OnStatsLoad;
@@ -59,16 +60,20 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void RestartLevel() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);    
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
     public void LoadLevel(int world, int level) {
-        SceneManager.LoadScene(world + "-" + level);
+        //SceneManager.LoadScene(world + "-" + level);
+        SceneManager.LoadSceneAsync(world + "-" + level);
     }
     public void LoadHub() {
-        SceneManager.LoadScene("Hub");    
+        //SceneManager.LoadScene("Hub");    
+        SceneManager.LoadSceneAsync("Hub");    
     }
     public void LoadScene(string scene) {
-        SceneManager.LoadScene(scene);
+        //SceneManager.LoadScene(scene);
+        SceneManager.LoadSceneAsync(scene);
     }
 
     public string GetLevelName() {
