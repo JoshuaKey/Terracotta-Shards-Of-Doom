@@ -861,10 +861,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8129604941350047083, guid: 167a9ea808706ea44a304b143d0120c6,
+    - target: {fileID: 1207739254203202426, guid: 167a9ea808706ea44a304b143d0120c6,
         type: 3}
-      propertyPath: m_Name
-      value: Boss2
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771920364346972976, guid: 167a9ea808706ea44a304b143d0120c6,
+        type: 3}
+      propertyPath: CurrentHealth
+      value: 72
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771920364346972976, guid: 167a9ea808706ea44a304b143d0120c6,
+        type: 3}
+      propertyPath: MaxHealth
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 8129604941349753163, guid: 167a9ea808706ea44a304b143d0120c6,
         type: 3}
@@ -956,30 +966,20 @@ PrefabInstance:
       propertyPath: m_ObstacleAvoidanceType
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1207739254203202426, guid: 167a9ea808706ea44a304b143d0120c6,
+    - target: {fileID: 8129604941350047082, guid: 167a9ea808706ea44a304b143d0120c6,
         type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      propertyPath: speed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8129604941350047083, guid: 167a9ea808706ea44a304b143d0120c6,
+        type: 3}
+      propertyPath: m_Name
+      value: Boss2
       objectReference: {fileID: 0}
     - target: {fileID: 8129604941350144950, guid: 167a9ea808706ea44a304b143d0120c6,
         type: 3}
       propertyPath: CanBeKnockedBack
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7771920364346972976, guid: 167a9ea808706ea44a304b143d0120c6,
-        type: 3}
-      propertyPath: CurrentHealth
-      value: 72
-      objectReference: {fileID: 0}
-    - target: {fileID: 7771920364346972976, guid: 167a9ea808706ea44a304b143d0120c6,
-        type: 3}
-      propertyPath: MaxHealth
-      value: 72
-      objectReference: {fileID: 0}
-    - target: {fileID: 8129604941350047082, guid: 167a9ea808706ea44a304b143d0120c6,
-        type: 3}
-      propertyPath: speed
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 167a9ea808706ea44a304b143d0120c6, type: 3}

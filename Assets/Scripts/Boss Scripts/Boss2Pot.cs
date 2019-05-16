@@ -55,6 +55,8 @@ public class Boss2Pot : Pot
 
     public float speed = 10.0f;
 
+    public GameObject ParticlePrefab = null;
+
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -236,26 +238,35 @@ public class Boss2Pot_Animating : State
         animating = true;
         boss.animator.SetTrigger("Animate_Pots");
         BarrierPot bp = null;
+        List<Pot> otherPots = new List<Pot>();
         foreach (Pot p in Pots)
         {
             if(!p.enabled)
-            {
-                p.enabled = true;
+            {           
                 p.animator.SetTrigger("Awake");
 
                 bp = p as BarrierPot;
                 if(bp != null)
                 {
+                    p.enabled = true;
                     boss.BarrierPots.Add(bp);
                 }
             }
         }
 
-        while(boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Animate_Pots"))
+        while (boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Idle"))
+        {
+            yield return null;
+        }
+
+        GameObject particleSystem = GameObject.Instantiate(boss.ParticlePrefab, boss.transform.position, boss.ParticlePrefab.transform.rotation);
+
+        while (boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Animate_Pots"))
         {
 
             yield return null;
         }
+
 
         foreach(BarrierPot barrierPot in boss.BarrierPots)
         {
@@ -268,10 +279,21 @@ public class Boss2Pot_Animating : State
             }
         }
 
+
         while (boss.BarrierPots.Exists(p => !p.InPosition))
         {
             yield return null;
         }
+
+        foreach(Pot p in Pots)
+        {
+            if(!p.enabled)
+            {
+                p.enabled = true;
+            }
+        }
+
+        yield return new WaitForSeconds(.2f);
         doneAnimating = true;
         yield break;
     }

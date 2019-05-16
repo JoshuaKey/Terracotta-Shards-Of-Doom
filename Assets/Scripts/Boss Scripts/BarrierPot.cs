@@ -104,19 +104,23 @@ public class BarrierPot_EnterFormation : State
 
     IEnumerator MoveToWaypoint()
     {
-        moving = true;
-
-        Transform transform = owner.transform;
-        Vector3 waypointPosition = waypoint.transform.position;
-
-        while ((transform.position - waypointPosition).magnitude > .01f)
+        if (waypoint != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
-            yield return null;
-        }
 
-        barrierPot.InPosition = true;
-        barrierPot.transform.parent = waypoint.transform;
+            moving = true;
+
+            Transform transform = owner.transform;
+            Vector3 waypointPosition = waypoint.transform.position;
+
+            while ((transform.position - waypointPosition).magnitude > .01f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
+                yield return null;
+            }
+
+            barrierPot.InPosition = true;
+            barrierPot.transform.parent = waypoint.transform;
+        }
     }
 }
 
