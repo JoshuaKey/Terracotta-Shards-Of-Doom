@@ -6,6 +6,8 @@ using System.Linq;
 
 public class Boss2Pot : Pot
 {
+    [SerializeField] public float knockback = 50f;
+
     [HideInInspector]
     public Enemy enemy;
     NavMeshAgent navMeshAgent = null;
@@ -113,6 +115,16 @@ public class Boss2Pot : Pot
             }
         }
         barrierPots.Clear();
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag(Game.Instance.PlayerTag)) {
+            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
+            Vector3 dir = Player.Instance.transform.position - this.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            Player.Instance.Knockback(dir * knockback);
+        }
     }
 
 }

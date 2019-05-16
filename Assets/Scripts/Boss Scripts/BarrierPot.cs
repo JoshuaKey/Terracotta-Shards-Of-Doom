@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 public class BarrierPot : ChargerPot
 {
+    [SerializeField] public float knockback = 20f;
+
     private Waypoint waypoint;
 
     public Waypoint Waypoint
@@ -58,6 +60,16 @@ public class BarrierPot : ChargerPot
     {
         stateMachine = ChargerPotStateMachine;
         transform.parent = EnemyManager.Instance.transform;
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag(Game.Instance.PlayerTag)) {
+            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
+            Vector3 dir = Player.Instance.transform.position - this.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            Player.Instance.Knockback(dir * knockback);
+        }
     }
 
 }
