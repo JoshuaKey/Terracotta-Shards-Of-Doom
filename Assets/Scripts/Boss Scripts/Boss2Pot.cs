@@ -234,28 +234,40 @@ public class Boss2Pot_Animating : State
     IEnumerator AnimatePots()
     {
         animating = true;
+        boss.animator.SetTrigger("Animate_Pots");
         BarrierPot bp = null;
         foreach (Pot p in Pots)
         {
             if(!p.enabled)
             {
-
                 p.enabled = true;
+                p.animator.SetTrigger("Awake");
+
                 bp = p as BarrierPot;
                 if(bp != null)
                 {
                     boss.BarrierPots.Add(bp);
-                    Waypoint w = FindBestEmptyBarrierWaypoint(bp.transform.position);
-                    if(w != null)
-                    {
-                        w.Visited = true;
-                        bp.Waypoint = w;
-                        bp.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
-                        boss.BarrierPots.Add(bp);
-                    }
                 }
             }
         }
+
+        while(boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Animate_Pots"))
+        {
+
+            yield return null;
+        }
+
+        foreach(BarrierPot barrierPot in boss.BarrierPots)
+        {
+            Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
+            if (w != null)
+            {
+                w.Visited = true;
+                barrierPot.Waypoint = w;
+                barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
+            }
+        }
+
         while (boss.BarrierPots.Exists(p => !p.InPosition))
         {
             yield return null;

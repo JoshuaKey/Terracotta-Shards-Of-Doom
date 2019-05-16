@@ -15,10 +15,13 @@ public class Pot : MonoBehaviour
     public StateMachine stateMachine;
     [HideInInspector]
     public NavMeshAgent agent;
+    [HideInInspector]
+    public Animator animator;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
         health = GetComponent<Health>();
         health.OnDamage += PlayTink;
     }
