@@ -57,6 +57,9 @@ public class Boss2Pot : Pot
         set { phase = value; }
     }
 
+    public float speed = 10.0f;
+
+    public GameObject ParticlePrefab = null;
 
     void Start()
     {
@@ -216,7 +219,7 @@ public class Boss2Pot_Animating : State
 
     Vector3 offset = new Vector3(0.0f, .5f, 0.0f);
 
-    Vector3 halfExtents = new Vector3(12.0f, .5f, 12.0f);
+    Vector3 halfExtents = new Vector3(12.0f, 0.0f, 12.0f);
 
     public override void Init(GameObject owner)
     {
@@ -236,7 +239,7 @@ public class Boss2Pot_Animating : State
         Pot p;
         foreach (Collider c in colliders)
         {
-            if((p = c.GetComponent<Pot>()) && (c.gameObject != owner))
+            if((p = c.GetComponentInParent<Pot>()) && (c.gameObject != owner))
             {
                 Pots.Add(p);
             }
@@ -272,32 +275,64 @@ public class Boss2Pot_Animating : State
     IEnumerator AnimatePots()
     {
         animating = true;
+        boss.animator.SetTrigger("Animate_Pots");
         BarrierPot bp = null;
+        List<Pot> otherPots = new List<Pot>();
         foreach (Pot p in Pots)
         {
             if(!p.enabled)
-            {
+            {           
+                p.animator.SetTrigger("Awake");
 
-                p.enabled = true;
                 bp = p as BarrierPot;
                 if(bp != null)
                 {
+                    p.enabled = true;
                     boss.BarrierPots.Add(bp);
-                    Waypoint w = FindBestEmptyBarrierWaypoint(bp.transform.position);
-                    if(w != null)
-                    {
-                        w.Visited = true;
-                        bp.Waypoint = w;
-                        bp.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
-                        boss.BarrierPots.Add(bp);
-                    }
                 }
             }
         }
+
+        while (boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Idle"))
+        {
+            yield return null;
+        }
+
+        GameObject particleSystem = GameObject.Instantiate(boss.ParticlePrefab, boss.transform.position, boss.ParticlePrefab.transform.rotation);
+
+        while (boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Animate_Pots"))
+        {
+
+            yield return null;
+        }
+
+
+        foreach(BarrierPot barrierPot in boss.BarrierPots)
+        {
+            Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
+            if (w != null)
+            {
+                w.Visited = true;
+                barrierPot.Waypoint = w;
+                barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
+            }
+        }
+
+
         while (boss.BarrierPots.Exists(p => !p.InPosition))
         {
             yield return null;
         }
+
+        foreach(Pot p in Pots)
+        {
+            if(!p.enabled)
+            {
+                p.enabled = true;
+            }
+        }
+
+        yield return new WaitForSeconds(.2f);
         doneAnimating = true;
         yield break;
     }
@@ -387,7 +422,7 @@ public class Boss2Pot_Running : State
 
         while ((owner.transform.position - targetPosition).magnitude > .25f)
         {
-            owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * 5.0f);
+            owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * boss.speed);
             yield return null;
         }
         moving = false;
