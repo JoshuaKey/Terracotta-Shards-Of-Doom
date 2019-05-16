@@ -15,17 +15,17 @@ public class Boss2Pot : Pot
     [HideInInspector]
     public Waypoint currentWaypoint = null;
 
-    public Waypoint CurrentWaypoint
-    {
-        get
-        {
-            return currentWaypoint;
-        }
-        set
-        {
-            currentWaypoint = value;
-        }
-    }
+    //public Waypoint CurrentWaypoint
+    //{
+    //    get
+    //    {
+    //        return currentWaypoint;
+    //    }
+    //    set
+    //    {
+    //        currentWaypoint = value;
+    //    }
+    //}
 
     public GameObject Barrier = null;
 
@@ -38,6 +38,8 @@ public class Boss2Pot : Pot
             return barrierWaypoints;
         }
     }
+
+    public Arena[] Arenas;
 
     private List<BarrierPot> barrierPots = null;
 
@@ -135,7 +137,7 @@ public class Boss2Pot : Pot
 
 public class Boss2Pot_ChangingRooms : State
 {
-    List<GameObject> waypoints = null;
+    List<Waypoint> waypoints = null;
     GameObject target = null;
     Boss2Pot boss = null;
 
@@ -146,7 +148,9 @@ public class Boss2Pot_ChangingRooms : State
     {
         if(waypoints == null)
         {
-            waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
+            //waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
+            waypoints = new List<Waypoint>(
+                GameObject.FindGameObjectsWithTag("Waypoint").Select(x => x.GetComponent<Waypoint>()));
         }
 
         if(boss == null)
@@ -163,13 +167,18 @@ public class Boss2Pot_ChangingRooms : State
         running = false;
         reachedDestination = false;
 
-        List<GameObject> possibleWaypoints = null;
-        possibleWaypoints = waypoints.Where(w => !w.GetComponent<Waypoint>().Visited).ToList();
+        List<Waypoint> possibleWaypoints = null;
+        possibleWaypoints = waypoints.Where(w => !w.Visited).ToList();
 
         int randomIndex = Random.Range(0, possibleWaypoints.Count - 1);
-        target = possibleWaypoints[randomIndex];
-        boss.currentWaypoint = target.GetComponent<Waypoint>();
+        target = possibleWaypoints[randomIndex].gameObject;
+        boss.currentWaypoint = possibleWaypoints[randomIndex];
         base.Init(owner);
+          
+        foreach (Waypoint w in waypoints) {
+            w.arena.gameObject.SetActive(false);
+            //w.arena.walls.ForEach(X => X.Open());
+        }
     }
 
     public override void Exit()
@@ -188,6 +197,8 @@ public class Boss2Pot_ChangingRooms : State
         }
         else if(reachedDestination)
         {
+            Debug.Log("Reached Destination");
+            boss.currentWaypoint.arena.gameObject.SetActive(true);
             return "Boss2Pot_Animating";
         }
 
@@ -264,6 +275,8 @@ public class Boss2Pot_Animating : State
             if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
             {
                 boss.ConvertBarrierPots();
+                boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
+                boss.currentWaypoint.arena.gameObject.SetActive(false);
                 return "Boss2Pot_ChangingRooms";
             }
             return "Boss2Pot_Running";
@@ -398,6 +411,8 @@ public class Boss2Pot_Running : State
         if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
         {
             boss.ConvertBarrierPots();
+            boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
+            boss.currentWaypoint.arena.gameObject.SetActive(false);
             return "Boss2Pot_ChangingRooms";
         }
         else if(!moving)
