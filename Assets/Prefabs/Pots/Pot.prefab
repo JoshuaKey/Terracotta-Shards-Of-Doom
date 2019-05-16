@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 1948159762795534558}
   - component: {fileID: 2110392408}
   - component: {fileID: 7373189467384676231}
+  - component: {fileID: 8320168974033532814}
   m_Layer: 10
   m_Name: Pot
   m_TagString: Untagged
@@ -156,10 +157,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce612b11c8facec4c91b74e4cabf331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CoinDropRange: {x: 7, y: 13}
+  BaseValue: 1
   health: {fileID: 2110392408}
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
   agent: {fileID: 0}
+  renderer: {fileID: 0}
+  CanBeKnockedBack: 1
+  animator: {fileID: 0}
 --- !u!114 &2110392408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +203,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8320168974033532814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948159762795503107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9730d208958e19b4ba965f8a734ea109, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waddleAmplitude: 12.5
+  hopHeight: 0.5
+  stunned: 0
 --- !u!1001 &1948159764005480442
 PrefabInstance:
   m_ObjectHideFlags: 0

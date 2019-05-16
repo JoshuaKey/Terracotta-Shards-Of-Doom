@@ -40,25 +40,6 @@ MonoBehaviour:
   aggroRadius: 20
   attackRadius: 2.5
   attackDuration: 1
---- !u!95 &4467311786474838681
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 988088890821312265}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!54 &5111658971360397531
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -89,6 +70,25 @@ CapsuleCollider:
   m_Height: 1.9
   m_Direction: 1
   m_Center: {x: 0, y: 0.95, z: 0}
+--- !u!95 &4467311786474838681
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988088890821312265}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddbc543242bc3454da5df9232521e996, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &6600088844125870910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,18 +198,19 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 126
       objectReference: {fileID: 0}
-    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
-      propertyPath: MaxHealth
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 1948159762795503105, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_Name
       value: Model
       objectReference: {fileID: 0}
+    - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
+      propertyPath: MaxHealth
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
     - {fileID: 1948159762795534556, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
+    - {fileID: 8320168974033532814, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
 --- !u!1 &988088890821312267 stripped
 GameObject:
@@ -241,10 +242,6 @@ PrefabInstance:
       value: ShoulderPlate_Left
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
@@ -295,7 +292,11 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+      objectReference: {fileID: 2100000, guid: 32b4180a5d6b3a54ebf1a76d958779ef, type: 2}
+    - target: {fileID: 100000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7de6f32585eb2c488a8127d2fba1138, type: 3}
 --- !u!1001 &4985836196246302603
@@ -305,15 +306,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988088890821600041}
     m_Modifications:
+    - target: {fileID: 100000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
       propertyPath: m_Name
       value: ShoulderPlate_Right
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
@@ -364,7 +365,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+      objectReference: {fileID: 2100000, guid: 32b4180a5d6b3a54ebf1a76d958779ef, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 440d5ac7da0bfe4448c2d29aa71422e8, type: 3}
 --- !u!1001 &9026928927107815017
@@ -374,18 +375,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 988088890821600041}
     m_Modifications:
-    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
-      propertyPath: m_Name
-      value: ChestPlate
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -430,9 +419,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
+      propertyPath: m_Name
+      value: ChestPlate
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 87e3e60863dcc3147b36460b2f6033ac, type: 2}
+      objectReference: {fileID: 2100000, guid: 32b4180a5d6b3a54ebf1a76d958779ef, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f7fa0030065a6d40b38a310f1ecc02c, type: 3}

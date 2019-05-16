@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7698139140284644628}
   - component: {fileID: 7698139140283645908}
   - component: {fileID: 6241478050565764953}
+  - component: {fileID: 3356647274448203123}
   m_Layer: 0
   m_Name: BridgeSmall
   m_TagString: Untagged
@@ -91,4 +92,33 @@ MeshCollider:
   serializedVersion: 3
   m_Convex: 0
   m_CookingOptions: 14
-  m_Mesh: {fileID: 4300000, guid: c74e9af58ffa35842a19426679356b1d, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 41b791874ff930248822f71c9abb3686, type: 3}
+--- !u!114 &3356647274448203123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7698139140281442582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 23800000, guid: e7a6021d0644fb542a0b92ed1752b4df, type: 2}

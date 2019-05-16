@@ -83,6 +83,7 @@ public class Spear : Weapon {
         this.transform.localRotation = StartRotQuat;
     }
 
+
     protected void OnTriggerEnter(Collider other) {
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();

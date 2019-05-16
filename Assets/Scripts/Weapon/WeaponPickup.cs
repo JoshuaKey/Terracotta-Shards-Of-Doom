@@ -10,6 +10,7 @@ public class WeaponPickup : MonoBehaviour {
     public float Magnitude = 3;
 
     public Interactable interactable;
+    public GameObject WeaponDisplay;
     public Weapon WeaponPrefab;
 
     private Vector3 origin;
@@ -20,6 +21,15 @@ public class WeaponPickup : MonoBehaviour {
         interactable.OnInteract += this.Pickup;
 
         string name = WeaponPrefab.name;
+        // Initialize
+        if (!Game.Instance.playerStats.Weapons.ContainsKey(name)) {
+            Game.Instance.playerStats.Weapons[name] = false;
+        }
+        // Destory if already collected
+        if (Game.Instance.playerStats.Weapons[name]) {
+            Destroy(this.gameObject);
+        }
+
         WeaponPrefab = GameObject.Instantiate(WeaponPrefab);
         WeaponPrefab.transform.SetParent(this.transform, false);
         WeaponPrefab.gameObject.SetActive(false);
@@ -30,10 +40,10 @@ public class WeaponPickup : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        this.transform.Rotate(Axis, RotateSpeed * Time.deltaTime);
+        WeaponDisplay.transform.Rotate(Axis, RotateSpeed * Time.deltaTime);
 
         Vector3 up = Vector3.up *  Mathf.Sin(Time.time * Speed) * Magnitude;
-        this.transform.position = origin + up;
+        WeaponDisplay.transform.position = origin + up;
     }
 
     public void Pickup() {

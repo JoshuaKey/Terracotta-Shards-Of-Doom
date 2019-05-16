@@ -53,6 +53,14 @@ public class AudioManager : MonoBehaviour
         {
             CreateNewAudioSource();
         }
+
+        Settings.OnLoad += OnSettingsLoad;
+    }
+
+    private void OnSettingsLoad(Settings settings) {
+        AudioManager.Instance.audioMixer.SetFloat("MasterVolume", settings.MasterVolume);
+        AudioManager.Instance.audioMixer.SetFloat("SoundVolume", settings.SoundVolume);
+        AudioManager.Instance.audioMixer.SetFloat("MusicVolume", settings.MusicVolume);
     }
 
     /// <summary>
@@ -135,6 +143,32 @@ public class AudioManager : MonoBehaviour
         if (!loop) { StartCoroutine(ExecuteAfterSeconds(soundClip.onFinish, soundClip.Length)); }
 
         return soundClip;
+    }
+
+    public SoundClip PlaySceneMusic(string sceneName)
+    {
+        string musicName = string.Empty;
+        switch(sceneName)
+        {
+            case "2-1":
+            case "2-2":
+                musicName = "612328_Unfortunate-Situation";
+                break;
+            case "2-3":
+                musicName = "572651_-The-Sword-is-Mightier-";
+                break;
+            default:
+                musicName = "612328_Unfortunate-Situation";
+                break;
+        }
+
+        foreach(AudioSource au in audioSources) {
+            if(au.loop) {
+                au.Stop();
+            }
+        }
+
+        return PlaySound(musicName, ESoundChannel.MUSIC, true);
     }
 
     /// <summary>
@@ -242,6 +276,7 @@ public class SoundClip
     {
         this.audioSource = audioSource;
         audioSource.clip = audioClip;
+        audioSource.loop = loop;
         audioSource.transform.position = Vector3.zero;
         audioSource.transform.parent = null;
         audioSource.gameObject.SetActive(true);

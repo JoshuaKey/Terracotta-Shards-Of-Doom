@@ -80,9 +80,11 @@ public class Hammer : Weapon {
         Player.Instance.velocity.y = PlayerJump;
 
         DustEffect.Play();
+        AudioManager.Instance.PlaySoundWithParent("hammer", ESoundChannel.SFX, gameObject);
 
         int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
-        Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
+        //Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
+        Collider[] colliders = Physics.OverlapSphere(SlamCenter.position, SlamRadius, layermask);
         foreach (Collider c in colliders) {
             Enemy enemy = c.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
@@ -93,13 +95,17 @@ public class Hammer : Weapon {
                 bool isDead = enemy.health.IsDead();
 
                 // Knockback
-                if (damage > 0) {
-                    if (isDead) {
+                if (damage > 0)
+                {
+                    if (isDead)
+                    {
                         Vector3 dir = c.transform.position - SlamCenter.position;
                         //dir.y = 0.0f;
                         dir = dir.normalized;
                         enemy.Explode(dir * RigidbodyKnockback, SlamCenter.position);
-                    } else {
+                    }
+                    else
+                    {
                         Vector3 dir = c.transform.position - SlamCenter.position;
                         dir.y = 0.0f;
                         dir = dir.normalized;

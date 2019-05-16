@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Cannon : MonoBehaviour {
 
@@ -33,6 +34,11 @@ public class Cannon : MonoBehaviour {
     public GameObject Barrel;
     public GameObject Base;
     public ParticleSystem LandingEffect;
+    public new LineRenderer renderer;
+
+    [Header("Destroy Object")]
+    public bool DestoryObjectOnImpact;
+    public GameObject DestroyableObject;
 
     private Interactable interactable;
 
@@ -40,7 +46,7 @@ public class Cannon : MonoBehaviour {
     private WaitForSeconds leapWait;
     private bool aligning = false;
 
-	public new LineRenderer renderer;
+
 
     // Start is called before the first frame update
     void Start() {
@@ -145,9 +151,6 @@ public class Cannon : MonoBehaviour {
         aligning = false;
 
 		SetLineRenderPoints();
-
-        print("Here3");
-
     }
 
     private void Align(Vector3 target, Vector3 peak) {
@@ -228,6 +231,10 @@ public class Cannon : MonoBehaviour {
             player.transform.position = Target.position;
         }
 
+        if (DestoryObjectOnImpact && DestroyableObject) {
+            StartCoroutine(MakeDestroyableObjectFall());
+        }
+
         Explosion(player.transform.position);
         AudioManager.Instance.PlaySoundWithParent("thud", ESoundChannel.SFX, player.gameObject);
 
@@ -244,6 +251,20 @@ public class Cannon : MonoBehaviour {
         Vector3 mid = Barrel.transform.position + .5f * (Target.position - Barrel.transform.position);
         Peak.position = mid;
         Peak.forward = (Target.position - Barrel.transform.position).normalized;
+    }
+
+    private IEnumerator MakeDestroyableObjectFall() {
+        Vector3 vel = Vector3.zero;
+        float startTime = Time.time;
+        while (DestroyableObject.activeInHierarchy && Time.time < startTime + 10f) {
+            vel += Vector3.up * -9.8f * Time.deltaTime;
+
+            DestroyableObject.transform.position += vel * Time.deltaTime;
+
+            yield return null;
+        }
+
+        Destroy(DestroyableObject);
     }
 
     public void Explosion(Vector3 pos) {
