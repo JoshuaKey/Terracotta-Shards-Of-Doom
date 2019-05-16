@@ -83,7 +83,8 @@ public class Hammer : Weapon {
         AudioManager.Instance.PlaySoundWithParent("hammer", ESoundChannel.SFX, gameObject);
 
         int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
-        Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
+        //Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
+        Collider[] colliders = Physics.OverlapSphere(SlamCenter.position, SlamRadius, layermask);
         foreach (Collider c in colliders) {
             Enemy enemy = c.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }

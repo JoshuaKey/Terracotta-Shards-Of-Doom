@@ -89,7 +89,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -251,7 +251,12 @@ PrefabInstance:
     - target: {fileID: 7617246204335974664, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
       propertyPath: StartingSceneName
-      value: 2-1
+      value: Tutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 4516349273732035774, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: CurrWeaponIndex
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1303546387481897896, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
@@ -267,11 +272,6 @@ PrefabInstance:
         type: 3}
       propertyPath: ControllerSchemeName
       value: Xbox One
-      objectReference: {fileID: 0}
-    - target: {fileID: 4516349273732035774, guid: 6979a3951b3bf78409753834b80cc430,
-        type: 3}
-      propertyPath: CurrWeaponIndex
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6979a3951b3bf78409753834b80cc430, type: 3}
