@@ -53,6 +53,7 @@ public class Boss2Pot : Pot
         set { phase = value; }
     }
 
+    public float speed = 10.0f;
 
     void Start()
     {
@@ -95,7 +96,7 @@ public class Boss2Pot_ChangingRooms : State
 {
     List<GameObject> waypoints = null;
     GameObject target = null;
-    Boss2Pot boss2AI = null;
+    Boss2Pot boss = null;
 
     bool running = false;
     bool reachedDestination = false;
@@ -107,31 +108,26 @@ public class Boss2Pot_ChangingRooms : State
             waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
         }
 
-        if(boss2AI == null)
+        if(boss == null)
         {
-            boss2AI = owner.GetComponent<Boss2Pot>();
+            boss = owner.GetComponent<Boss2Pot>();
         }
         base.Init(owner);
     }
 
     public override void Enter()
     {
+        boss.agent.enabled = true;
+
         running = false;
         reachedDestination = false;
-        //If every waypoint has been visited, reset them  all
-        if(waypoints.Where(w => w.GetComponent<Waypoint>().Visited).Count() == waypoints.Count)
-        {
-            foreach (GameObject waypoint in waypoints)
-            {
-                waypoint.GetComponent<Waypoint>().Visited = false;
-            }
-        }
+
         List<GameObject> possibleWaypoints = null;
         possibleWaypoints = waypoints.Where(w => !w.GetComponent<Waypoint>().Visited).ToList();
 
         int randomIndex = Random.Range(0, possibleWaypoints.Count - 1);
         target = possibleWaypoints[randomIndex];
-        boss2AI.currentWaypoint = target.GetComponent<Waypoint>();
+        boss.currentWaypoint = target.GetComponent<Waypoint>();
         base.Init(owner);
     }
 
@@ -139,13 +135,15 @@ public class Boss2Pot_ChangingRooms : State
     {
         running = false;
         reachedDestination = false;
+        boss.agent.enabled = false;
+
     }
 
     public override string Update()
     {
         if(!running && !reachedDestination)
         {
-            boss2AI.StartCoroutine(Run());
+            boss.StartCoroutine(Run());
         }
         else if(reachedDestination)
         {
@@ -158,8 +156,8 @@ public class Boss2Pot_ChangingRooms : State
     IEnumerator Run()
     {
         running = true;
-        boss2AI.agent.SetDestination(target.transform.position);
-        while ((boss2AI.agent.destination - owner.transform.position).magnitude > .1f)
+        boss.agent.SetDestination(target.transform.position);
+        while ((boss.agent.destination - owner.transform.position).magnitude > .1f)
         {
             yield return null;
         }
@@ -180,7 +178,7 @@ public class Boss2Pot_Animating : State
 
     Vector3 offset = new Vector3(0.0f, .5f, 0.0f);
 
-    Vector3 halfExtents = new Vector3(12.0f, .5f, 12.0f);
+    Vector3 halfExtents = new Vector3(12.0f, 0.0f, 12.0f);
 
     public override void Init(GameObject owner)
     {
@@ -200,7 +198,7 @@ public class Boss2Pot_Animating : State
         Pot p;
         foreach (Collider c in colliders)
         {
-            if((p = c.GetComponent<Pot>()) && (c.gameObject != owner))
+            if((p = c.GetComponentInParent<Pot>()) && (c.gameObject != owner))
             {
                 Pots.Add(p);
             }
@@ -236,28 +234,40 @@ public class Boss2Pot_Animating : State
     IEnumerator AnimatePots()
     {
         animating = true;
+        boss.animator.SetTrigger("Animate_Pots");
         BarrierPot bp = null;
         foreach (Pot p in Pots)
         {
             if(!p.enabled)
             {
-
                 p.enabled = true;
+                p.animator.SetTrigger("Awake");
+
                 bp = p as BarrierPot;
                 if(bp != null)
                 {
                     boss.BarrierPots.Add(bp);
-                    Waypoint w = FindBestEmptyBarrierWaypoint(bp.transform.position);
-                    if(w != null)
-                    {
-                        w.Visited = true;
-                        bp.Waypoint = w;
-                        bp.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
-                        boss.BarrierPots.Add(bp);
-                    }
                 }
             }
         }
+
+        while(boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Animate_Pots"))
+        {
+
+            yield return null;
+        }
+
+        foreach(BarrierPot barrierPot in boss.BarrierPots)
+        {
+            Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
+            if (w != null)
+            {
+                w.Visited = true;
+                barrierPot.Waypoint = w;
+                barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
+            }
+        }
+
         while (boss.BarrierPots.Exists(p => !p.InPosition))
         {
             yield return null;
@@ -351,7 +361,7 @@ public class Boss2Pot_Running : State
 
         while ((owner.transform.position - targetPosition).magnitude > .25f)
         {
-            owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * 5.0f);
+            owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * boss.speed);
             yield return null;
         }
         moving = false;

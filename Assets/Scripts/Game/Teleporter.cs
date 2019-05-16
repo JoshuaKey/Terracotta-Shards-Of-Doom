@@ -4,8 +4,20 @@ using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 public class Teleporter : MonoBehaviour {
+    public string previousScene = "";
     public string sceneName;
     public bool HasPlayerCompletedLevel;
+
+    private void Start() {
+        if(previousScene != null && previousScene != "") {
+            string levelName = LevelManager.Instance.GetLevelName();
+            LevelData level;
+            if (!Game.Instance.playerStats.Levels.TryGetValue(previousScene, out level) || !level.IsCompleted) {
+                print("Teleporter " + this.name + " Shutting off. Level " + previousScene + " is not completed");
+                this.gameObject.SetActive(false);
+            }
+        }
+    }
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag(Game.Instance.PlayerTag)) {

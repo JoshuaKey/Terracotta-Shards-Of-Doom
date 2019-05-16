@@ -48,6 +48,9 @@ public class Player : MonoBehaviour {
     public CompassPot compass;
     public Transform Shoulder;
 
+    [Header("IsGrounded")]
+    public float MinJumpAngle = 30f;
+
     [Space]
     [Header("Debug")]
     public Sword SwordPrefab;
@@ -67,6 +70,9 @@ public class Player : MonoBehaviour {
     public List<Weapon> weapons = new List<Weapon>();
     [HideInInspector]
     public int layerMask;
+    [HideInInspector]
+    private bool wasGrounded = false;
+    private bool isGrounded = false;
 
     private new Collider collider;
     private CharacterController controller;
@@ -140,6 +146,10 @@ public class Player : MonoBehaviour {
         if (CanMove) {
             UpdateMovement();
         }
+
+        wasGrounded = isGrounded;
+        isGrounded = false;
+
         UpdateCombat();
         if (CanInteract) {
             UpdateInteractable();
@@ -155,6 +165,7 @@ public class Player : MonoBehaviour {
                 PauseMenu.Instance.ActivatePauseMenu();
             }
         }
+
 
         // Debug...
         if (Application.isEditor) {
@@ -195,7 +206,7 @@ public class Player : MonoBehaviour {
     private void LateUpdate() {
         if (CanRotate) {
             UpdateCamera();
-        }   
+        }
     }
 
     public void OnDamage(float damage)
@@ -411,7 +422,7 @@ public class Player : MonoBehaviour {
     }
     public void Jump() {
         // Check for Jump
-        if (controller.isGrounded) {
+        if (wasGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
             } 
@@ -559,6 +570,20 @@ public class Player : MonoBehaviour {
         }
     }
 
+    void OnControllerColliderHit(ControllerColliderHit hit) {
+        // If we are touching the "ground"
+        if ((hit.controller.collisionFlags & CollisionFlags.Below) != 0) {
+            velocity.y = Mathf.Max(velocity.y, -1.0f);
+            float angle = Vector3.Angle(Vector3.down, -hit.normal);
+
+            // Can we jump based off the collision normal...
+            if (angle < MinJumpAngle) {
+                isGrounded = true;
+                return;
+            }
+        }
+    }
+
     // Testing --------------------------------------------------------------
     private void OnGUI() {
         GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
@@ -566,7 +591,14 @@ public class Player : MonoBehaviour {
 
         GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
         GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
-        GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded);
+        GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded + " " + wasGrounded);
     }
 
 }
+// We can jump on flat ground
+// We can not jump when falling
+// We can not jump when jumping
+// We can jump on rope
+// we can jump on bridge
+// we can not jump on mounting 3
+// we can not jump on rocks

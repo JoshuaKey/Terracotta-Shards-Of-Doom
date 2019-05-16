@@ -393,8 +393,9 @@ GameObject:
   - component: {fileID: 8129604941349753161}
   - component: {fileID: 8129604941348983145}
   - component: {fileID: 8129604941347853225}
+  - component: {fileID: 7727953707420306069}
   m_Layer: 0
-  m_Name: default
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -459,6 +460,25 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!95 &7727953707420306069
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8129604941350047081}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 053c0092abfbc144faf164bd941987d4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8129604941350047083
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,6 +588,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   renderer: {fileID: 0}
   CanBeKnockedBack: 1
+  animator: {fileID: 0}
 --- !u!114 &7771920364346972976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,16 +629,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8129604941349753163}
     m_Modifications:
-    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
-        type: 3}
-      propertyPath: m_Name
-      value: Broken_Pot_1_Prefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6922288729744331720, guid: 56530f3a335e3bc448b1244eed7c9174,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -671,6 +682,16 @@ PrefabInstance:
     - target: {fileID: 6922288729744331720, guid: 56530f3a335e3bc448b1244eed7c9174,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
+        type: 3}
+      propertyPath: m_Name
+      value: Broken_Pot_1_Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
