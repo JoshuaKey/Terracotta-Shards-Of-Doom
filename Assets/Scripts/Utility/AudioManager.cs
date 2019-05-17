@@ -145,6 +145,32 @@ public class AudioManager : MonoBehaviour
         return soundClip;
     }
 
+    public SoundClip PlaySceneMusic(string sceneName)
+    {
+        string musicName = string.Empty;
+        switch(sceneName)
+        {
+            case "2-1":
+            case "2-2":
+                musicName = "612328_Unfortunate-Situation";
+                break;
+            case "2-3":
+                musicName = "572651_-The-Sword-is-Mightier-";
+                break;
+            default:
+                musicName = "612328_Unfortunate-Situation";
+                break;
+        }
+
+        foreach(AudioSource au in audioSources) {
+            if(au.loop) {
+                au.Stop();
+            }
+        }
+
+        return PlaySound(musicName, ESoundChannel.MUSIC, true);
+    }
+
     /// <summary>
     /// Returns the next AudioSource in the List audioSources not being used. If there isn't one it creates one and adds it to the List.
     /// </summary>
@@ -250,6 +276,7 @@ public class SoundClip
     {
         this.audioSource = audioSource;
         audioSource.clip = audioClip;
+        audioSource.loop = loop;
         audioSource.transform.position = Vector3.zero;
         audioSource.transform.parent = null;
         audioSource.gameObject.SetActive(true);

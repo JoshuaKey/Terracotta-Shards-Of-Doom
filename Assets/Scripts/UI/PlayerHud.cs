@@ -192,6 +192,7 @@ public class PlayerHud : MonoBehaviour {
                 retval = SpearIcon;
                 break;
             case "Crossbow":
+            case "CrossBow":
                 retval = CrossbowIcon;
                 break;
             case "Magic":

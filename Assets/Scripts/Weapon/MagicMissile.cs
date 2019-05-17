@@ -23,7 +23,7 @@ public class MagicMissile : PoolObject {
     private float startLife;
 
     // Start is called before the first frame update
-    void Start() {
+    protected override void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
@@ -81,8 +81,6 @@ public class MagicMissile : PoolObject {
                 forward.y = 0.0f;
                 forward = forward.normalized;
                 enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
-            } else {
-                AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
             }
         } 
 

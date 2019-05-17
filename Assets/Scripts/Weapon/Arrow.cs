@@ -19,28 +19,31 @@ public class Arrow : PoolObject {
     public new Collider collider;
 
     private float startLife;
+    private int layerMask;
 
     // Start is called before the first frame update
-    void Start() {
+    protected override void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
 
         collider.enabled = false;
         rigidbody.isKinematic = true;
+        layerMask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
+        //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
-    //private void FixedUpdate() {
-        //if (!rigidbody.isKinematic) {
-        //    Vector3 start = this.transform.position;
-        //    Vector3 end = start + rigidbody.velocity;
-        //    int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
-        //    RaycastHit hit;
-        //    if(Physics.Linecast(start, end, out hit, layermask)) {
-        //        OnTriggerEnter(hit.collider);
-        //    }
-        //}
-    //}
+    private void FixedUpdate() {
+        if (!rigidbody.isKinematic && collider.isTrigger) {
+            Vector3 start = this.transform.position;
+            Vector3 end = start + rigidbody.velocity * Time.fixedDeltaTime;
+            RaycastHit hit;
+            if (Physics.Linecast(start, end, out hit, layerMask)) {
+                this.transform.position = hit.point;
+                OnTriggerEnter(hit.collider);
+            }
+        }
+    }
 
     public void Fire() {
         collider.enabled = true;
@@ -76,8 +79,6 @@ public class Arrow : PoolObject {
                 forward.y = 0.0f;
                 forward = forward.normalized;
                 enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
-            } else {
-                AudioManager.Instance.PlaySound("ceramic_tink", ESoundChannel.SFX, gameObject);
             }
         } else {
             // Physics Impulse

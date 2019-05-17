@@ -30,28 +30,16 @@ public class Game : MonoBehaviour {
             LoadSettings();
         }
 
-        //LevelData level = new LevelData();
-        //level.TotalPots = 26;
-        //level.CollectedPots.Add("Pot", false);
-        //level.CollectedPots.Add("Pot (1)", false);
-        //level.CollectedPots.Add("Pot (2)", false);
-        //level.CollectedPots.Add("Charger Pot", false);
-        //level.CollectedPots.Add("Health Pot", false);
-        //level.SpecialPots.Add("Bronze Pot", false);
-        //level.SpecialPots.Add("Silver Pot", false);
-        //level.SpecialPots.Add("Gold Pot", false);
-        //level.HasDestroyedCrate = false;
+        string levelName = LevelManager.Instance.GetLevelName();
+        if (!playerStats.Levels.ContainsKey(levelName)) {
+            playerStats.Levels[levelName] = new LevelData();
+        }
 
-        //PlayerStats.Instance.Levels.Add("1-1", level);
-        //PlayerStats.Instance.Levels.Add("1-2", level);
-        //print("Here");
-        //print(playerStats);
-        //print(PlayerStats.Instance.Levels["1-1"]);
+        //DialogueSystem.Instance.SetCharacterImage(image...);
+        //DialogueSystem.Instance.SetCharacterName("nAVi thE pOt!");
+        //DialogueSystem.Instance.QueueDialogue("WhY dO I eXisT?", true);
+        //DialogueSystem.Instance.QueueDialogue(new string["WhY dO I eXisT?", "WhYyyYyY!?"], true);
 
-        //print(Application.dataPath); // Assets Folder
-        //print(Application.persistentDataPath); // Local Low
-        //print(Application.temporaryCachePath); // Cache...
-        //print(Application.streamingAssetsPath); // Assets/StreamsAssets Folder
         Settings.OnLoad += OnSettingsLoad;
     }
 
@@ -62,11 +50,11 @@ public class Game : MonoBehaviour {
 
     [ContextMenu("Save Player Stats")]
     public void SavePlayerStats() {
-        PlayerStats.Instance.Save(Application.dataPath + "/" + PlayerStatsFile);
+        playerStats.Save(Application.dataPath + "/" + PlayerStatsFile);
     }
     [ContextMenu("Load Player Stats")]
     public void LoadPlayerStats() {
-        PlayerStats.Instance.Load(Application.dataPath + "/" + PlayerStatsFile);
+        playerStats.Load(Application.dataPath + "/" + PlayerStatsFile);
     }
     [ContextMenu("Save Settings")]
     public void SaveSettings() {

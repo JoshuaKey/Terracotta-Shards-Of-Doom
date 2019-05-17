@@ -26,6 +26,9 @@ public class Cannon : MonoBehaviour {
     public float RigidbodyKnockback = 5;
     public LayerMask EnemyLayer;
 
+    [Header("Player")]
+    public float PlayerRotateSpeed = 30;
+
     [Header("Time")]
     public float ChargeTime = 2.5f;
     public float LeapTime = 10.0f;
@@ -45,8 +48,6 @@ public class Cannon : MonoBehaviour {
     private WaitForSeconds chargedWait;
     private WaitForSeconds leapWait;
     private bool aligning = false;
-
-
 
     // Start is called before the first frame update
     void Start() {
@@ -226,6 +227,9 @@ public class Cannon : MonoBehaviour {
                 Vector3 pos = Utility.BezierCurve(startPos, Peak.position, Target.position, t);
 
                 player.transform.position = pos;
+
+                player.rotation += Vector3.right * PlayerRotateSpeed * Time.deltaTime;
+
                 yield return null;
             }
             player.transform.position = Target.position;

@@ -78,6 +78,8 @@ MonoBehaviour:
   LifeTime: 20
   Damage: 0
   Type: 0
+  Knockback: 0
+  RigidbodyKnockback: 0
   rigidbody: {fileID: 875288164}
   collider: {fileID: 4360568053836596902}
 --- !u!1001 &8133218216099502636
@@ -93,6 +95,11 @@ PrefabInstance:
       value: ArrowModel
       objectReference: {fileID: 0}
     - target: {fileID: 2620628892889176297, guid: 9eb075a6110eff74f916803931eae9fd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2620628892889176299, guid: 9eb075a6110eff74f916803931eae9fd,
         type: 3}
       propertyPath: m_Layer
       value: 13
@@ -151,11 +158,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2620628892889176299, guid: 9eb075a6110eff74f916803931eae9fd,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9eb075a6110eff74f916803931eae9fd, type: 3}
