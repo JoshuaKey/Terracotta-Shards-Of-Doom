@@ -14,7 +14,7 @@ public class CoinPool : Pool<Coin> {
     public Coin CreateBigCoin() {
         Coin coin = Create();
 
-        coin.coinModel.localScale = Vector3.one;
+        coin.transform.localScale = Vector3.one * 2;
 
         return coin;
     }

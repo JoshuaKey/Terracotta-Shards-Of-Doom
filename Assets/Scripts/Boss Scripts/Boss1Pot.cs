@@ -499,7 +499,11 @@ public class Boss1Pot : Pot
                 Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time / 1.5f);
                 // pos is NaN
                 float xPos = newPosition.x;
-                if(float.IsNaN(xPos)) {
+                if(float.IsNaN(xPos) || float.IsInfinity(xPos)) {
+                    Debug.Log(startPosition);
+                    Debug.Log(peak);
+                    Debug.Log(targetPosition);
+                    Debug.Log(time / 1.5f);
                     Debug.Break();
                 }
                 enemy.transform.position = newPosition;

@@ -126,7 +126,7 @@ public class Sword : Weapon {
                         Vector3 forward = Player.Instance.camera.transform.forward;
                         forward.y = 0.0f;
                         forward = forward.normalized;
-                        enemy.Knockback(forward * Knockback);
+                        enemy.Knockback(forward * Knockback, KnockbackDuration);
                     }
                 }
             } else {
