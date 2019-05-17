@@ -35,9 +35,10 @@ public class Game : MonoBehaviour {
             playerStats.Levels[levelName] = new LevelData();
         }
 
-        //DialogueSystem.Instance.SetCharacterImage();
+        //DialogueSystem.Instance.SetCharacterImage(image...);
         //DialogueSystem.Instance.SetCharacterName("nAVi thE pOt!");
-        DialogueSystem.Instance.QueueDialogue("WhY dO I eXisT?", true);
+        //DialogueSystem.Instance.QueueDialogue("WhY dO I eXisT?", true);
+        //DialogueSystem.Instance.QueueDialogue(new string["WhY dO I eXisT?", "WhYyyYyY!?"], true);
 
         Settings.OnLoad += OnSettingsLoad;
     }
