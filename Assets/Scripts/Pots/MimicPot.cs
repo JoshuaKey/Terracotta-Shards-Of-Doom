@@ -5,6 +5,7 @@ using UnityEngine;
 public class MimicPot : Pot
 {
 
+
     [SerializeField] public float aggroRadius = 5f; // this is when the pot first wakes up
     [SerializeField] public float chaseRadius = 10.0f; // this is after the pot is awake
     //This is all atack stuff and i currently dont wanna change it
@@ -26,6 +27,11 @@ public class MimicPot : Pot
         Hop();
         //but for now i Hop
     }
+
+    //public override void SetMaterial(Material m) {
+    //    renderer.material = m;
+    //}
+
 }
 
 

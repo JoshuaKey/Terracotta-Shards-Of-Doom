@@ -13,8 +13,7 @@ public class Enemy : MonoBehaviour {
     public BrokenPot brokenPot;
     [HideInInspector]
     public NavMeshAgent agent;
-    [HideInInspector]
-    public new MeshRenderer renderer;
+
 
     public bool CanBeKnockedBack = true;
 
@@ -41,8 +40,6 @@ public class Enemy : MonoBehaviour {
         if (health == null) { health = GetComponentInChildren<Health>(true); }
 
         if (agent == null) { agent = GetComponentInChildren<NavMeshAgent>(true); }
-        
-        if(renderer == null) { renderer = GetComponentInChildren<MeshRenderer>(true); }
 
         animator = GetComponentInChildren<Animator>();
     }
@@ -83,6 +80,11 @@ public class Enemy : MonoBehaviour {
         health.OnDeath -= this.Die;
 
         Destroy(this.gameObject);
+    }
+
+    public void SetMaterial(Material m) {
+        pot.SetMaterial(m);
+        brokenPot.SetMaterial(m);
     }
 
     protected IEnumerator KnockbackRoutine(Vector3 force, float duration)

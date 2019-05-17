@@ -39,11 +39,13 @@ MonoBehaviour:
   stunned: 0
   agent: {fileID: 0}
   animator: {fileID: 0}
+  potRenderers:
+  - {fileID: 988088890819305929}
   aggroRadius: 5
   attackRadius: 2.5
   attackDuration: 0.25
   enemy: {fileID: 0}
-  ArmorHealth: 6
+  ArmorHealth: 2
   ArmorPieces:
   - {fileID: 3989218279441317212}
   - {fileID: 8447644841114439202}
@@ -305,6 +307,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Model
       objectReference: {fileID: 0}
+    - target: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
     - {fileID: 1948159762795534556, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
@@ -325,6 +332,12 @@ GameObject:
 --- !u!4 &988088890821600041 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1948159762795659809, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1639069917670760712}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &988088890819305929 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
     type: 3}
   m_PrefabInstance: {fileID: 1639069917670760712}
   m_PrefabAsset: {fileID: 0}
