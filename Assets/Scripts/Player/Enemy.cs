@@ -26,12 +26,6 @@ public class Enemy : MonoBehaviour {
     [HideInInspector]
     public Animator animator;
 
-
-    public bool CanBeKnockedBack = true;
-
-    [HideInInspector]
-    public Animator animator;
-
     private new Rigidbody rigidbody;
     private new Collider collider;
 
