@@ -5,10 +5,10 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
-    [Header("Coins")]
-    public Vector2Int CoinDropRange;
-    public int BaseValue;
-    public bool UseBigCoins = false;
+    //[Header("Coins")]
+    //public Vector2Int CoinDropRange;
+    //public int BaseValue;
+    //public bool UseBigCoins = false;
 
     //[HideInInspector]
     public Health health;
@@ -89,14 +89,14 @@ public class Enemy : MonoBehaviour {
 
         Destroy(this.gameObject);
 
-        int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
-        for (int i = 0; i < amo; i++) {
-            Coin coin = UseBigCoins ? CoinPool.Instance.CreateBigCoin() : CoinPool.Instance.Create();
-            Vector3 pos = this.transform.position + Random.insideUnitSphere * Random.value * 2.0f;
-            pos += Vector3.up;
-            coin.SetPosition(pos);
-            coin.Value = BaseValue * LevelManager.Instance.GetWorld();
-        }
+        //int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
+        //for (int i = 0; i < amo; i++) {
+        //    Coin coin = UseBigCoins ? CoinPool.Instance.CreateBigCoin() : CoinPool.Instance.Create();
+        //    Vector3 pos = this.transform.position + Random.insideUnitSphere * Random.value * 2.0f;
+        //    pos += Vector3.up;
+        //    coin.SetPosition(pos);
+        //    coin.Value = BaseValue * LevelManager.Instance.GetWorld();
+        //}
         //Debug.Break();
     }
 

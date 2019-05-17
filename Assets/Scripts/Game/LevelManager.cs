@@ -60,19 +60,15 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void RestartLevel() {
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
     public void LoadLevel(int world, int level) {
-        //SceneManager.LoadScene(world + "-" + level);
         SceneManager.LoadSceneAsync(world + "-" + level);
     }
-    public void LoadHub() {
-        //SceneManager.LoadScene("Hub");    
+    public void LoadHub() {  
         SceneManager.LoadSceneAsync("Hub");    
     }
     public void LoadScene(string scene) {
-        //SceneManager.LoadScene(scene);
         SceneManager.LoadSceneAsync(scene);
     }
 
@@ -82,13 +78,11 @@ public class LevelManager : MonoBehaviour {
     public int GetWorld() {
         int world = 0;
         switch (GetLevelName()) {
-            case "Hub":
-                world = 0;
-                break;
             case "1-1":
             case "1-2":
             case "1-3":
-            case "tutorial":
+            case "Tutorial":
+            case "Hub":
                 world = 1;
                 break;
             case "2-1":
