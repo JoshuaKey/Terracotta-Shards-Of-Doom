@@ -15,18 +15,6 @@ public class Boss2Pot : Pot
     [HideInInspector]
     public Waypoint currentWaypoint = null;
 
-    //public Waypoint CurrentWaypoint
-    //{
-    //    get
-    //    {
-    //        return currentWaypoint;
-    //    }
-    //    set
-    //    {
-    //        currentWaypoint = value;
-    //    }
-    //}
-
     public GameObject Barrier = null;
 
     Waypoint[] barrierWaypoints = null;
@@ -41,15 +29,8 @@ public class Boss2Pot : Pot
 
     public Arena[] Arenas;
 
-    private List<BarrierPot> barrierPots = null;
-
-    public List<BarrierPot> BarrierPots
-    {
-        get
-        {
-            return barrierPots;
-        }
-    }
+    [HideInInspector]
+    public List<BarrierPot> barrierPots = null;
 
     private byte phase = 1;
 
@@ -131,7 +112,6 @@ public class Boss2Pot : Pot
             Player.Instance.Knockback(dir * knockback);
         }
     }
-
 }
 #region Boss States
 
@@ -148,7 +128,6 @@ public class Boss2Pot_ChangingRooms : State
     {
         if(waypoints == null)
         {
-            //waypoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Waypoint"));
             waypoints = new List<Waypoint>(
                 GameObject.FindGameObjectsWithTag("Waypoint").Select(x => x.GetComponent<Waypoint>()));
         }
@@ -174,12 +153,6 @@ public class Boss2Pot_ChangingRooms : State
         target = possibleWaypoints[randomIndex].gameObject;
         boss.currentWaypoint = possibleWaypoints[randomIndex];
         base.Init(owner);
-
-        //Debug.Log("Reseting");
-        //foreach (Waypoint w in waypoints) {
-        //    w.arena.gameObject.SetActive(false);
-        //    w.arena.walls.ForEach(X => X.Open());
-        //}
     }
 
     public override void Exit()
@@ -292,7 +265,6 @@ public class Boss2Pot_Animating : State
         animating = true;
         boss.animator.SetTrigger("Animate_Pots");
         BarrierPot bp = null;
-        List<Pot> otherPots = new List<Pot>();
         foreach (Pot p in Pots)
         {
             if(!p.enabled)
@@ -303,7 +275,8 @@ public class Boss2Pot_Animating : State
                 if(bp != null)
                 {
                     p.enabled = true;
-                    boss.BarrierPots.Add(bp);
+                    bp.owningBoss = boss;
+                    boss.barrierPots.Add(bp);
                 }
             }
         }
@@ -317,31 +290,33 @@ public class Boss2Pot_Animating : State
 
         while (boss.animator.GetCurrentAnimatorStateInfo(0).IsName("Boss2_Animate_Pots"))
         {
-
             yield return null;
         }
 
-
-        foreach(BarrierPot barrierPot in boss.BarrierPots)
+        foreach(BarrierPot barrierPot in boss.barrierPots)
         {
             Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
             if (w != null)
             {
+
                 w.Visited = true;
                 barrierPot.Waypoint = w;
                 barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
             }
         }
 
+        //Found problem. If a barrier pot dies during the animation phase, it is null and will never enter position.
+        //This causes this check to always fail.
+        //TODO: ^
 
-        while (boss.BarrierPots.Exists(p => !p.InPosition))
+        while (boss.barrierPots.Exists(p => !p.InPosition))
         {
             yield return null;
         }
 
         foreach(Pot p in Pots)
         {
-            if(!p.enabled)
+            if(p != null && !p.enabled)
             {
                 p.enabled = true;
             }
@@ -349,7 +324,6 @@ public class Boss2Pot_Animating : State
 
         yield return new WaitForSeconds(.2f);
         doneAnimating = true;
-        yield break;
     }
 
     public Waypoint FindBestEmptyBarrierWaypoint(Vector3 position)
