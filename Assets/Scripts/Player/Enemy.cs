@@ -26,6 +26,12 @@ public class Enemy : MonoBehaviour {
     [HideInInspector]
     public Animator animator;
 
+
+    public bool CanBeKnockedBack = true;
+
+    [HideInInspector]
+    public Animator animator;
+
     private new Rigidbody rigidbody;
     private new Collider collider;
 
@@ -61,9 +67,9 @@ public class Enemy : MonoBehaviour {
         health.OnDeath += this.Die;
     }
 
-    public void Knockback(Vector3 force) {
+    public void Knockback(Vector3 force, float duration) {
         if (CanBeKnockedBack) {
-            StartCoroutine(KnockbackRoutine(force));
+            StartCoroutine(KnockbackRoutine(force, duration));
         }
     }
 
@@ -100,7 +106,12 @@ public class Enemy : MonoBehaviour {
         //Debug.Break();
     }
 
-    protected IEnumerator KnockbackRoutine(Vector3 force)
+    public void SetMaterial(Material m) {
+        pot.SetMaterial(m);
+        brokenPot.SetMaterial(m);
+    }
+
+    protected IEnumerator KnockbackRoutine(Vector3 force, float duration)
     {
         float angularSpeed = 0;
         if (agent != null)
@@ -120,7 +131,15 @@ public class Enemy : MonoBehaviour {
             animator.SetTrigger("Knockback");
         }
 
-        yield return new WaitForSeconds(1f);
+        if (agent != null) {
+            while(agent.remainingDistance != 0.0f){
+                yield return null;
+            }
+        } else {
+            yield return new WaitForSeconds(1f);
+            //yield return new WaitForSeconds(duration);
+        }
+            
 
         if(agent != null)
         {

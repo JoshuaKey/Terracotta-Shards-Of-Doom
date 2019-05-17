@@ -18,6 +18,8 @@ public class Pot : MonoBehaviour
     [HideInInspector]
     public Animator animator;
 
+    public MeshRenderer[] potRenderers;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -88,4 +90,13 @@ public class Pot : MonoBehaviour
             AudioManager.Instance.PlaySoundWithParent("ceramic_tink", ESoundChannel.SFX, gameObject);
         }
     }
+<<<<<<< HEAD
+=======
+
+    public void SetMaterial(Material m) {
+        foreach(MeshRenderer r in potRenderers) {
+            r.material = m;
+        }
+    }
+>>>>>>> develop
 }
