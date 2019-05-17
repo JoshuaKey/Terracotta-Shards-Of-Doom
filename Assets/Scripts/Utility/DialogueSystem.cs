@@ -7,17 +7,12 @@ using UnityEngine.UI;
 public class DialogueSystem : MonoBehaviour {
 
     [Header("Components")]
-    [SerializeField] Image characterImage;
-    [SerializeField] TextMeshProUGUI dialogueText;
-    [SerializeField] TextMeshProUGUI nameText;
-
-    [SerializeField] RectTransform nameRect;
-    [SerializeField] Image background;
-    [SerializeField] Button textButton;
-    [SerializeField] AudioSource dialogueSource;
+    [SerializeField] Image characterImage = null;
+    [SerializeField] TextMeshProUGUI dialogueText = null;
+    [SerializeField] TextMeshProUGUI nameText = null;
 
     [Header("Values")]
-    [SerializeField] float characterDisplayTime;
+    [SerializeField] float characterDisplayTime = .05f;
 
     private bool isFinished = true;
     private bool displaying = false;
@@ -64,6 +59,8 @@ public class DialogueSystem : MonoBehaviour {
     }
     public void SetCharacterName(string name) {
         nameText.text = name;
+
+        RectTransform nameRect = nameText.rectTransform;
 
         var size = nameText.GetPreferredValues(name, Mathf.Infinity, nameRect.rect.height);
         size.y = nameRect.sizeDelta.y;
@@ -118,7 +115,8 @@ public class DialogueSystem : MonoBehaviour {
         skip = false;
         displaying = true;
         dialogueText.text = "";
-        dialogueSource.Play();
+
+        //dialogueSource.Play(); // Audio
 
         float nextDisplayTime = 0f;
         string text = dialogueQueue[index];
@@ -133,7 +131,7 @@ public class DialogueSystem : MonoBehaviour {
         }
 
         displaying = false;
-        dialogueSource.Stop();
+        //dialogueSource.Stop();
     }
 
     public bool IsFinished() { return isFinished; }
