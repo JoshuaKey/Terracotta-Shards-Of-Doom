@@ -11,6 +11,7 @@ public class ArmorPot : ChargerPot
     public int ArmorHealth = 2; 
     public List<Rigidbody> ArmorPieces;
 
+    private int defaultLayer;
     private int armorCount = 3;
 
     protected override void Start()
@@ -19,19 +20,10 @@ public class ArmorPot : ChargerPot
 
         if (enemy == null) { enemy = GetComponentInChildren<Enemy>(true); }
 
+        defaultLayer = LayerMask.NameToLayer("Default");
         armorCount = ArmorPieces.Count;
 
         enemy.health.OnDamage += RemoveArmor;
-
-        print("Testing (8, 8): " + TestArmor(8, 8));
-        print("Testing (8, 7): " + TestArmor(8, 7));
-        print("Testing (8, 6): " + TestArmor(8, 6));
-        print("Testing (8, 5): " + TestArmor(8, 5));
-        print("Testing (8, 4): " + TestArmor(8, 4));
-        print("Testing (8, 3): " + TestArmor(8, 3));
-        print("Testing (8, 2): " + TestArmor(8, 2));
-        print("Testing (8, 1): " + TestArmor(8, 1));
-        print("Testing (8, 0): " + TestArmor(8, 0));
     }
 
     public void RemoveArmor(float value) {
@@ -40,6 +32,8 @@ public class ArmorPot : ChargerPot
             Rigidbody armor = ArmorPieces[index];
             armor.isKinematic = false;
             armor.transform.parent = null;
+            armor.gameObject.layer = defaultLayer;
+            //armor.AddForce(armor.transform.position - this.transform.position);
             ArmorPieces.RemoveAt(index);
         }
     }

@@ -107,8 +107,6 @@ public class Sword : Weapon {
     }
 
     protected void OnTriggerEnter(Collider other) {
-        
-
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if(enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
