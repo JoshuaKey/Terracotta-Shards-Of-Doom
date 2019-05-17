@@ -109,6 +109,7 @@ MonoBehaviour:
   AttackSpeed: 3
   Damage: 6
   Knockback: 0
+  KnockbackDuration: 0
   RigidbodyKnockback: 5
   MinDistance: 5
   MaxDistance: 100
@@ -134,6 +135,11 @@ PrefabInstance:
       value: CrossbowModel
       objectReference: {fileID: 0}
     - target: {fileID: 6534359957123445270, guid: f3b7dfc910a84f04e98a6ad107989d65,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510433204259371286, guid: f3b7dfc910a84f04e98a6ad107989d65,
         type: 3}
       propertyPath: m_Layer
       value: 13
@@ -193,22 +199,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2510433204259371284, guid: f3b7dfc910a84f04e98a6ad107989d65,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 2510433204259371292, guid: f3b7dfc910a84f04e98a6ad107989d65,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 2510433204259371286, guid: f3b7dfc910a84f04e98a6ad107989d65,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 2510433204259371290, guid: f3b7dfc910a84f04e98a6ad107989d65,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 2510433204259371294, guid: f3b7dfc910a84f04e98a6ad107989d65,
         type: 3}
       propertyPath: m_Layer
       value: 13
@@ -218,7 +214,12 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 13
       objectReference: {fileID: 0}
-    - target: {fileID: 2510433204259371284, guid: f3b7dfc910a84f04e98a6ad107989d65,
+    - target: {fileID: 2510433204259371294, guid: f3b7dfc910a84f04e98a6ad107989d65,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510433204259371290, guid: f3b7dfc910a84f04e98a6ad107989d65,
         type: 3}
       propertyPath: m_Layer
       value: 13

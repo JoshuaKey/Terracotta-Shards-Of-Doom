@@ -78,10 +78,12 @@ public class Player : MonoBehaviour {
     private CharacterController controller;
     private Vector2 weaponWheelRotation = Vector2.zero;
 
-    void Start() {
+    private void Awake() {
         if (Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
+    }
 
+    void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
         if (controller == null) { controller = GetComponentInChildren<CharacterController>(true); }
@@ -253,7 +255,7 @@ public class Player : MonoBehaviour {
         Weapon weapon = GetCurrentWeapon();
 
         // Check for Weapon Swap
-        if (CanSwapWeapon && weapon.CanSwap()) {
+        if (CanSwapWeapon && weapon.CanSwap()) { 
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -497,7 +499,7 @@ public class Player : MonoBehaviour {
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
             Player.Instance.CanSwapWeapon = false;
-        }   
+        }
     }
     public void SwapWeapon(int index) {
         if (index == CurrWeaponIndex) { return; }
@@ -519,7 +521,7 @@ public class Player : MonoBehaviour {
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
     }
     public Weapon GetCurrentWeapon() {
-        return weapons[CurrWeaponIndex];
+        return CurrWeaponIndex >= weapons.Count ? null : weapons[CurrWeaponIndex];
     }
 
     private void OnPlayerControlChanged(PlayerID id) { CheckInputScheme(); }
@@ -586,19 +588,15 @@ public class Player : MonoBehaviour {
 
     // Testing --------------------------------------------------------------
     private void OnGUI() {
-        GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
-        GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
+        if (Application.isEditor) {
+            GUI.Label(new Rect(10, 10, 150, 20), "Vel: " + velocity);
+            GUI.Label(new Rect(10, 30, 150, 20), "Rot: " + rotation);
 
-        GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
-        GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
-        GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded + " " + wasGrounded);
+            GUI.Label(new Rect(10, 50, 150, 20), "Inp: " + new Vector2(InputManager.GetAxisRaw("Vertical Movement"), InputManager.GetAxisRaw("Horizontal Movement")));
+            GUI.Label(new Rect(10, 70, 150, 20), "Wea Rot: " + weaponWheelRotation);
+            GUI.Label(new Rect(10, 90, 150, 20), "Grounded: " + controller.isGrounded + " " + wasGrounded);
+            GUI.Label(new Rect(10, 110, 150, 20), "Coins: " + Game.Instance.playerStats.Coins);
+        }
     }
 
 }
-// We can jump on flat ground
-// We can not jump when falling
-// We can not jump when jumping
-// We can jump on rope
-// we can jump on bridge
-// we can not jump on mounting 3
-// we can not jump on rocks

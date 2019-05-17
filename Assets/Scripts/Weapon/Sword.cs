@@ -31,6 +31,13 @@ public class Sword : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Sword";
+        Player.Instance.health.OnDeath += OnDeath;
+    }
+
+    private void OnDeath() {
+        if (animator != null) {
+            animator.Play("Sword_Still");
+        }
     }
 
     private void OnEnable() {
@@ -41,7 +48,7 @@ public class Sword : Weapon {
         StopAllCoroutines();
         if (collider) {
             collider.enabled = false;
-        }
+        }      
     }
 
     public override void Attack() {
@@ -119,7 +126,7 @@ public class Sword : Weapon {
                         Vector3 forward = Player.Instance.camera.transform.forward;
                         forward.y = 0.0f;
                         forward = forward.normalized;
-                        enemy.Knockback(forward * Knockback);
+                        enemy.Knockback(forward * Knockback, KnockbackDuration);
                     }
                 }
             } else {

@@ -103,7 +103,6 @@ public class Magic : Weapon {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
             if (enemy != null) {
-                print("Target " + other.name);
                 enemyList.Add(other.gameObject);
             }
         }

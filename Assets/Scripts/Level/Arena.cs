@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Arena : MonoBehaviour
 {
-
     public Collider arenaCollider;
     public List<Wall> walls = new List<Wall>();
 

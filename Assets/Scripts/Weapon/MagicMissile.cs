@@ -23,7 +23,7 @@ public class MagicMissile : PoolObject {
     private float startLife;
 
     // Start is called before the first frame update
-    void Start() {
+    protected override void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
@@ -64,13 +64,9 @@ public class MagicMissile : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
-
-        print(other.name);
-
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
-			print("Daamage" + enemy.name);
             // Damage
             float damage = enemy.health.TakeDamage(this.Type, this.Damage);
             bool isDead = enemy.health.IsDead();

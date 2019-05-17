@@ -79,7 +79,8 @@ MonoBehaviour:
   Speed: 1.5
   Magnitude: 0.5
   interactable: {fileID: 3509462665118024034}
-  WeaponPrefab: {fileID: 1070653790102783926, guid: 843f5d44cb9d5f345b284237aa77a20e,
+  WeaponDisplay: {fileID: 2543747041823088683}
+  WeaponPrefab: {fileID: 7565068706352736989, guid: 843f5d44cb9d5f345b284237aa77a20e,
     type: 3}
 --- !u!1001 &931136103011704078
 PrefabInstance:
@@ -88,6 +89,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3509462665118024032}
     m_Modifications:
+    - target: {fileID: 3432089465086885157, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+        type: 3}
+      propertyPath: m_Name
+      value: SpearModel
+      objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -106,22 +112,22 @@ PrefabInstance:
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.17364825
+      value: -0.17362936
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.0025608703
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.014523411
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9848078
+      value: 0.9847007
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
@@ -141,12 +147,32 @@ PrefabInstance:
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 1.69
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432089465086714119, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432089465086714119, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+        type: 3}
+      propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3432089465086885157, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+    - target: {fileID: 3432089465086714119, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
-      propertyPath: m_Name
-      value: SpearModel
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432089465086714119, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3432089465086714119, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465089139687, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
@@ -155,6 +181,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 6f1cd722143dc9b4e95b1bf71d85e02e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71ac7aa2a8363b24c856858a3bf6efce, type: 3}
+--- !u!1 &2543747041823088683 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3432089465086885157, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+    type: 3}
+  m_PrefabInstance: {fileID: 931136103011704078}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2543747041823521803 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
