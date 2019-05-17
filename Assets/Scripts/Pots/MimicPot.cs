@@ -18,6 +18,7 @@ public class MimicPot : Pot
             new Mimic_Idle(),
             new Mimic_Charge(),
             new Mimic_Attack(attackDuration));
+        stateMachine.DEBUGGING = true;
     }
 
     public override void Animate()
@@ -32,12 +33,17 @@ public class MimicPot : Pot
 
 public class Mimic_Idle : State
 {
-    GameObject player;
+    MimicPot mimicPot;
+    Player player;
+    Health hp;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
+        mimicPot = owner.GetComponent<MimicPot>();
+        player = Player.Instance;
+        hp = owner.GetComponent<Health>();
     }
 
     public override void Enter()
@@ -50,22 +56,25 @@ public class Mimic_Idle : State
 
     public override string Update()
     {
-        if (owner.GetComponent<MimicPot>() == null || player == null)
-        {
-            return null;
-        }
+        //if (owner.GetComponent<MimicPot>() == null || player == null)
+        //{
+        //    return null;
+        //}
+        //Debug.Log(owner.GetComponent<MimicPot>());
+        //Debug.Log(player);
+
 
         //This will check if it can wake up or not
-        if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<MimicPot>().aggroRadius)
+        if (Vector3.Distance(owner.transform.position, player.transform.position) <mimicPot.aggroRadius)
         {
             return "Mimic_Charge";
         }
 
         //This will check if the player is in the chase radius and has hit the pot 
         //(so if they attack it from range it will charge them)
-        if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<MimicPot>().chaseRadius
+        if (Vector3.Distance(owner.transform.position, player.transform.position) < mimicPot.chaseRadius
             //this is awful and i hate it
-            && owner.GetComponent<Health>().CurrentHealth != owner.GetComponent<Health>().MaxHealth)
+            && hp.CurrentHealth != hp.MaxHealth)
         {
             return "Mimic_Charge";
         }
@@ -76,12 +85,13 @@ public class Mimic_Idle : State
 
 public class Mimic_Charge : State
 {
-    GameObject player;
+    Player player;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
+        player = Player.Instance;
     }
 
     public override void Enter()
