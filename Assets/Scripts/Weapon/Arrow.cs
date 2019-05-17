@@ -22,7 +22,7 @@ public class Arrow : PoolObject {
     private int layerMask;
 
     // Start is called before the first frame update
-    void Start() {
+    protected override void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
 
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }

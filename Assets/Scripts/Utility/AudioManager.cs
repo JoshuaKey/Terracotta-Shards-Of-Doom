@@ -162,6 +162,12 @@ public class AudioManager : MonoBehaviour
                 break;
         }
 
+        foreach(AudioSource au in audioSources) {
+            if(au.loop) {
+                au.Stop();
+            }
+        }
+
         return PlaySound(musicName, ESoundChannel.MUSIC, true);
     }
 

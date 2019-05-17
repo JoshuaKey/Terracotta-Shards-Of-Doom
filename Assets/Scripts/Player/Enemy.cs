@@ -5,6 +5,11 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
+    //[Header("Coins")]
+    //public Vector2Int CoinDropRange;
+    //public int BaseValue;
+    //public bool UseBigCoins = false;
+
     //[HideInInspector]
     public Health health;
     [HideInInspector]
@@ -23,7 +28,6 @@ public class Enemy : MonoBehaviour {
 
     private new Rigidbody rigidbody;
     private new Collider collider;
-
 
     void Awake() {
         collider = GetComponent<Collider>();
@@ -84,6 +88,16 @@ public class Enemy : MonoBehaviour {
         health.OnDeath -= this.Die;
 
         Destroy(this.gameObject);
+
+        //int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
+        //for (int i = 0; i < amo; i++) {
+        //    Coin coin = UseBigCoins ? CoinPool.Instance.CreateBigCoin() : CoinPool.Instance.Create();
+        //    Vector3 pos = this.transform.position + Random.insideUnitSphere * Random.value * 2.0f;
+        //    pos += Vector3.up;
+        //    coin.SetPosition(pos);
+        //    coin.Value = BaseValue * LevelManager.Instance.GetWorld();
+        //}
+        //Debug.Break();
     }
 
     protected IEnumerator KnockbackRoutine(Vector3 force)
