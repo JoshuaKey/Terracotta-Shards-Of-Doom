@@ -168,7 +168,6 @@ public class Player : MonoBehaviour {
             }
         }
 
-
         // Debug...
         if (Application.isEditor) {
             if (Input.GetKeyDown(KeyCode.T)) {
@@ -255,7 +254,7 @@ public class Player : MonoBehaviour {
         Weapon weapon = GetCurrentWeapon();
 
         // Check for Weapon Swap
-        if (CanSwapWeapon && weapon.CanSwap()) {
+        if (CanSwapWeapon && weapon.CanSwap()) { 
             // Weapon Toggle
             if (InputManager.GetButtonDown("Next Weapon")) {
                 int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -499,7 +498,7 @@ public class Player : MonoBehaviour {
         } else {
             PlayerHud.Instance.DisableWeaponToggle();
             Player.Instance.CanSwapWeapon = false;
-        }   
+        }
     }
     public void SwapWeapon(int index) {
         if (index == CurrWeaponIndex) { return; }

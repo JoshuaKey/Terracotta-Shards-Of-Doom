@@ -25,6 +25,7 @@ public class Hammer : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Hammer";
+        
     }
 
     private void OnEnable() {
@@ -83,8 +84,8 @@ public class Hammer : Weapon {
         AudioManager.Instance.PlaySoundWithParent("hammer", ESoundChannel.SFX, gameObject);
 
         int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
-        //Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
-        Collider[] colliders = Physics.OverlapSphere(SlamCenter.position, SlamRadius, layermask);
+        Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
+        //Collider[] colliders = Physics.OverlapSphere(SlamCenter.position, SlamRadius, layermask);
         foreach (Collider c in colliders) {
             Enemy enemy = c.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
@@ -99,17 +100,19 @@ public class Hammer : Weapon {
                 {
                     if (isDead)
                     {
-                        Vector3 dir = c.transform.position - SlamCenter.position;
+                        //Vector3 dir = c.transform.position - SlamCenter.position;
+                        Vector3 dir = c.transform.position - Player.Instance.transform.position;
                         //dir.y = 0.0f;
                         dir = dir.normalized;
                         enemy.Explode(dir * RigidbodyKnockback, SlamCenter.position);
                     }
                     else
                     {
-                        Vector3 dir = c.transform.position - SlamCenter.position;
+                        //Vector3 dir = c.transform.position - SlamCenter.position;
+                        Vector3 dir = c.transform.position - Player.Instance.transform.position;
                         dir.y = 0.0f;
                         dir = dir.normalized;
-                        enemy.Knockback(dir * Knockback);
+                        enemy.Knockback(dir * Knockback, KnockbackDuration);
                     }
                 }
             } else {
@@ -117,7 +120,8 @@ public class Hammer : Weapon {
                 if (rb == null) { rb = c.GetComponentInParent<Rigidbody>(); }
 
             if (rb != null) {
-                    Vector3 dir = c.transform.position - SlamCenter.position;
+                    //Vector3 dir = c.transform.position - SlamCenter.position;
+                    Vector3 dir = c.transform.position - Player.Instance.transform.position;
                     //dir.y = 0.0f;
                     dir = dir.normalized;
                     rb.AddForceAtPosition(dir * RigidbodyKnockback, SlamCenter.position, ForceMode.Impulse);

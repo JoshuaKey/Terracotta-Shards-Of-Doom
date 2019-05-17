@@ -5,6 +5,7 @@ using UnityEngine;
 public class MimicPot : Pot
 {
 
+
     [SerializeField] public float aggroRadius = 5f; // this is when the pot first wakes up
     [SerializeField] public float chaseRadius = 10.0f; // this is after the pot is awake
     //This is all atack stuff and i currently dont wanna change it
@@ -26,6 +27,11 @@ public class MimicPot : Pot
         Hop();
         //but for now i Hop
     }
+
+    //public override void SetMaterial(Material m) {
+    //    renderer.material = m;
+    //}
+
 }
 
 
@@ -121,6 +127,7 @@ public class Mimic_Attack : TimedState
     GameObject player;
     Animator animator;
     Attack attack;
+    MimicPot mp;
 
     public Mimic_Attack(float seconds)
         :base(seconds)
@@ -131,6 +138,7 @@ public class Mimic_Attack : TimedState
         base.Init(owner);
         animator = owner.GetComponentInChildren<Animator>();
         attack = owner.GetComponentInChildren<Attack>();
+        mp = owner.GetComponent<MimicPot>();
     }
 
     public override void Enter()
@@ -164,7 +172,7 @@ public class Mimic_Attack : TimedState
         Vector3 newForward = Player.Instance.transform.position - owner.transform.position;
         owner.transform.forward = newForward;
 
-        if (timer >= seconds)
+        if (timer >= seconds || mp.stunned)
         {
             return "POP";
         }

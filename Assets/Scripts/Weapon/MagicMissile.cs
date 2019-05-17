@@ -64,13 +64,9 @@ public class MagicMissile : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
-
-        print(other.name);
-
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
-			print("Daamage" + enemy.name);
             // Damage
             float damage = enemy.health.TakeDamage(this.Type, this.Damage);
             bool isDead = enemy.health.IsDead();

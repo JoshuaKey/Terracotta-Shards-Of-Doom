@@ -47,6 +47,7 @@ public class Coin : PoolObject {
     public override void Reset() {
         base.Reset();
         this.transform.position = Vector3.zero;
+        this.transform.localScale = Vector3.one;
         this.transform.rotation = Quaternion.identity;
         currPos = Vector3.zero;
         offset = Vector3.zero;

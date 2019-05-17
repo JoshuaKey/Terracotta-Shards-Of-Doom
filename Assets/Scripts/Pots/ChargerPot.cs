@@ -12,7 +12,7 @@ public class ChargerPot : Pot
     public static bool debugged = false;
     //delete this later
 
-    private void Start()
+    protected virtual void Start()
     {
         stateMachine = new StateMachine();
         stateMachine.Init(gameObject,
@@ -102,7 +102,8 @@ public class Charger_Charge : State
 
     public override string Update()
     {
-        if(Vector3.Distance(owner.transform.position, Player.Instance.transform.position) < chargerPot.attackRadius)
+        if(Vector3.Distance(owner.transform.position, Player.Instance.transform.position) < chargerPot.attackRadius && 
+            !chargerPot.stunned)
         {
             return "Charger_Attack";
         }
@@ -124,6 +125,7 @@ public class Charger_Attack : TimedState
 
     Animator animator;
     Attack attack;
+    ChargerPot chargerPot;
 
     public Charger_Attack(float seconds)
         : base(seconds)
@@ -134,6 +136,7 @@ public class Charger_Attack : TimedState
         base.Init(owner);
         animator = owner.GetComponentInChildren<Animator>();
         attack = owner.GetComponentInChildren<Attack>();
+        chargerPot = owner.GetComponent<ChargerPot>();
     }
 
     public override void Enter()
@@ -157,7 +160,7 @@ public class Charger_Attack : TimedState
         Vector3 newForward = Player.Instance.transform.position - owner.transform.position;
         owner.transform.forward = newForward;
 
-        if (timer >= seconds)
+        if (timer >= seconds || chargerPot.stunned)
         {
             return "Charger_Charge";
         }
