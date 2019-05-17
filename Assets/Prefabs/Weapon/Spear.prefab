@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1070653790103214995}
-  - component: {fileID: 1070653790102783920}
-  - component: {fileID: 1070653790102783926}
+  - component: {fileID: 3576482301504511413}
+  - component: {fileID: 7565068706352736989}
   m_Layer: 13
   m_Name: Spear
   m_TagString: Untagged
@@ -25,15 +25,16 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1070653790102783923}
-  m_LocalRotation: {x: -0.087072834, y: -0.04345342, z: -0.0038016832, w: 0.9952466}
-  m_LocalPosition: {x: 0.06, y: -0.12, z: 1.6}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 2987737130536630612}
   - {fileID: 7679099409555593391}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -10, y: -5, z: 0}
---- !u!54 &1070653790102783920
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &3576482301504511413
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,7 +50,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &1070653790102783926
+--- !u!114 &7565068706352736989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,17 +64,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanCharge: 0
   Type: 0
-  AttackSpeed: 0.25
-  Damage: 1
-  Knockback: 1.5
-  KnockbackDuration: 0.5
+  AttackSpeed: 2
+  Damage: 4
+  Knockback: 2
   RigidbodyKnockback: 5
+  MinDamage: 0.25
+  MinCharge: 0.25
   StartPos: {x: 0.2, y: -0.4, z: 0}
   EndPos: {x: 0.06, y: -0.12, z: 1.6}
   AnimationSwingTime: 0.1
   StartRot: {x: -10, y: -5, z: 0}
   EndRot: {x: -10, y: -5, z: 0}
   AnimationRecoilTime: 0.15
+  spearChargePos: {fileID: 2987737130536630612}
+  spearModel: {fileID: 7679099409555948687}
+--- !u!1 &3340625331592070380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2987737130536630612}
+  m_Layer: 0
+  m_Name: ChargeSpearPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2987737130536630612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3340625331592070380}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.316, y: -0.262, z: -0.14899996}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1070653790103214995}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &397011515432864730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -142,7 +176,7 @@ PrefabInstance:
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
@@ -171,6 +205,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 6f1cd722143dc9b4e95b1bf71d85e02e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71ac7aa2a8363b24c856858a3bf6efce, type: 3}
+--- !u!1 &7679099409555948687 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3432089465086885157, guid: 71ac7aa2a8363b24c856858a3bf6efce,
+    type: 3}
+  m_PrefabInstance: {fileID: 4985659700287879594}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7679099409555593391 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,

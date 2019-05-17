@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Spear : Weapon {
 
-    [Header("Swing Animation")]
+	[Header("Damage")]
+	public float MinDamage = .5f;
+	public float MinCharge = .25f;
+
+	[Header("Swing Animation")]
     public Vector3 StartPos = new Vector3(0.4f, -1, 0.77f);
     public Vector3 EndPos = new Vector3(0.4f, -1, 0.77f);
     public float AnimationSwingTime;
@@ -19,21 +23,28 @@ public class Spear : Weapon {
 
     private List<GameObject> enemiesHit = new List<GameObject>();
 
+	[SerializeField] Transform spearChargePos;
+	private float charge;
+	private float currentDamage;
+	[SerializeField] GameObject spearModel;
+	[SerializeField] float MinKnockback;
+	private float currentKnockback;
+
     protected void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
 
         collider.enabled = false;
 
-        CanCharge = false;
+        CanCharge = true;
         Type = DamageType.BASIC;
 
         this.name = "Spear";
     }
 
     private void OnEnable() {
-        this.transform.localPosition = StartPos;
-        this.transform.localRotation = Quaternion.Euler(StartRot);
+        spearModel.transform.localPosition = StartPos;
+        spearModel.transform.localRotation = Quaternion.Euler(StartRot);
     }
     private void OnDisable() {
         StopAllCoroutines();
@@ -42,14 +53,31 @@ public class Spear : Weapon {
         }
     }
 
-    public override void Attack() {
-        if (!CanAttack()) { return; }
+	public override void Charge(){
+		charge += Time.deltaTime / AttackSpeed;
+		charge = Mathf.Min(charge, 1.0f);
 
-        base.Attack();
-        StartCoroutine(Stab());
-    }
+		float t = Interpolation.CubicOut(charge);
+		Vector3 spearPos = Interpolation.BezierCurve(StartPos, spearChargePos.localPosition, t);
+		spearModel.transform.localPosition = spearPos;
+		this.currentDamage = charge == 1 ? Damage : MinDamage;
+		this.currentKnockback = charge == 1 ? Knockback : MinKnockback;
+	}
+
+	public override void Attack() {
+        if (!CanAttack() || charge == 0) {
+			return;
+		}
+		Debug.Log("OH GOD WHY AM I JABBING WITH THIS SPEAR");
+
+		//base.Attack();
+		StartCoroutine(Stab());
+		charge = 0.0f;
+		return;
+	}
 
     private IEnumerator Stab() {
+		Debug.Log("BIG STAB");
         collider.enabled = true;
         Quaternion StartRotQuat = Quaternion.Euler(StartRot);
         Quaternion EndRotQuat = Quaternion.Euler(EndRot);
@@ -59,12 +87,12 @@ public class Spear : Weapon {
         while (Time.time < startTime + AnimationSwingTime) {
             float t = (Time.time - startTime) / AnimationSwingTime;
             t = Interpolation.ExpoIn(t);
-            this.transform.localPosition = Vector3.LerpUnclamped(StartPos, EndPos, t);
-            this.transform.localRotation = Quaternion.SlerpUnclamped(StartRotQuat, EndRotQuat, t);
+            spearModel.transform.localPosition = Vector3.LerpUnclamped(spearChargePos.localPosition, EndPos, t);
+            spearModel.transform.localRotation = Quaternion.SlerpUnclamped(StartRotQuat, EndRotQuat, t);
             yield return null;
         }
-        this.transform.localPosition = EndPos;
-        this.transform.localRotation = EndRotQuat;
+        spearModel.transform.localPosition = EndPos;
+        spearModel.transform.localRotation = EndRotQuat;
 
         collider.enabled = false;
         enemiesHit.Clear();
@@ -74,13 +102,13 @@ public class Spear : Weapon {
         while (Time.time < startTime + AnimationRecoilTime) {
             float t = (Time.time - startTime) / AnimationRecoilTime;
 
-            this.transform.localPosition = Vector3.LerpUnclamped(EndPos, StartPos, t);
-            this.transform.localRotation = Quaternion.SlerpUnclamped(EndRotQuat, StartRotQuat, t);
+            spearModel.transform.localPosition = Vector3.LerpUnclamped(EndPos, StartPos, t);
+            spearModel.transform.localRotation = Quaternion.SlerpUnclamped(EndRotQuat, StartRotQuat, t);
             yield return null;
         }
 
-        this.transform.localPosition = StartPos;
-        this.transform.localRotation = StartRotQuat;
+        spearModel.transform.localPosition = StartPos;
+        spearModel.transform.localRotation = StartRotQuat;
     }
 
 
@@ -91,14 +119,14 @@ public class Spear : Weapon {
             if (enemy != null) {
                 enemiesHit.Add(other.gameObject);
 
-                float damage = enemy.health.TakeDamage(this.Type, this.Damage);
+                float damage = enemy.health.TakeDamage(this.Type, this.currentDamage);
                 bool isDead = enemy.health.IsDead();
                 if (damage > 0) {
                     if (isDead) {
                         Vector3 forward = this.transform.forward;
                         //forward.y = 0.0f;
                         //forward = forward.normalized;
-                        enemy.Explode(forward * RigidbodyKnockback, this.transform.position);
+                        enemy.Explode(forward * RigidbodyKnockback, spearModel.transform.position);
                     } else {
                         Vector3 forward = Player.Instance.camera.transform.forward;
                         forward.y = 0.0f;
