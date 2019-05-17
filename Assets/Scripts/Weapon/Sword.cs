@@ -31,6 +31,13 @@ public class Sword : Weapon {
         Type = DamageType.BASIC;
 
         this.name = "Sword";
+        Player.Instance.health.OnDeath += OnDeath;
+    }
+
+    private void OnDeath() {
+        if (animator != null) {
+            animator.Play("Sword_Still");
+        }
     }
 
     private void OnEnable() {
@@ -41,7 +48,7 @@ public class Sword : Weapon {
         StopAllCoroutines();
         if (collider) {
             collider.enabled = false;
-        }
+        }      
     }
 
     public override void Attack() {

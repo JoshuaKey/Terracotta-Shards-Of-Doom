@@ -35,28 +35,11 @@ public class Game : MonoBehaviour {
             playerStats.Levels[levelName] = new LevelData();
         }
 
-        //LevelData level = new LevelData();
-        //level.TotalPots = 26;
-        //level.CollectedPots.Add("Pot", false);
-        //level.CollectedPots.Add("Pot (1)", false);
-        //level.CollectedPots.Add("Pot (2)", false);
-        //level.CollectedPots.Add("Charger Pot", false);
-        //level.CollectedPots.Add("Health Pot", false);
-        //level.SpecialPots.Add("Bronze Pot", false);
-        //level.SpecialPots.Add("Silver Pot", false);
-        //level.SpecialPots.Add("Gold Pot", false);
-        //level.HasDestroyedCrate = false;
+        //DialogueSystem.Instance.SetCharacterImage(image...);
+        //DialogueSystem.Instance.SetCharacterName("nAVi thE pOt!");
+        //DialogueSystem.Instance.QueueDialogue("WhY dO I eXisT?", true);
+        //DialogueSystem.Instance.QueueDialogue(new string["WhY dO I eXisT?", "WhYyyYyY!?"], true);
 
-        //PlayerStats.Instance.Levels.Add("1-1", level);
-        //PlayerStats.Instance.Levels.Add("1-2", level);
-        //print("Here");
-        //print(playerStats);
-        //print(PlayerStats.Instance.Levels["1-1"]);
-
-        //print(Application.dataPath); // Assets Folder
-        //print(Application.persistentDataPath); // Local Low
-        //print(Application.temporaryCachePath); // Cache...
-        //print(Application.streamingAssetsPath); // Assets/StreamsAssets Folder
         Settings.OnLoad += OnSettingsLoad;
     }
 

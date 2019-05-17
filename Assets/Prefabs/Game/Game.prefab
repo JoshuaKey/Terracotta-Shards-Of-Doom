@@ -229,6 +229,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 2470778359708163569, guid: 9a9f89b2741db8645aefc3aab2d0e45f, type: 3}
   MaxAmo: 100
+  ObjectPool: []
+  CurrAmo: 0
 --- !u!1 &5156660471739725310
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,6 +462,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 97764430560784390}
     m_Modifications:
+    - target: {fileID: 8174703002669780136, guid: 18ac0a6f21c1edf419fde8719501b946,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8174703002660929416, guid: 18ac0a6f21c1edf419fde8719501b946,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3970892244110160741, guid: 18ac0a6f21c1edf419fde8719501b946,
         type: 3}
       propertyPath: m_Name

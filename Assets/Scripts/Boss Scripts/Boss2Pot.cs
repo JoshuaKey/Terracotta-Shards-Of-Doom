@@ -174,11 +174,12 @@ public class Boss2Pot_ChangingRooms : State
         target = possibleWaypoints[randomIndex].gameObject;
         boss.currentWaypoint = possibleWaypoints[randomIndex];
         base.Init(owner);
-          
-        foreach (Waypoint w in waypoints) {
-            w.arena.gameObject.SetActive(false);
-            //w.arena.walls.ForEach(X => X.Open());
-        }
+
+        //Debug.Log("Reseting");
+        //foreach (Waypoint w in waypoints) {
+        //    w.arena.gameObject.SetActive(false);
+        //    w.arena.walls.ForEach(X => X.Open());
+        //}
     }
 
     public override void Exit()
@@ -198,7 +199,7 @@ public class Boss2Pot_ChangingRooms : State
         else if(reachedDestination)
         {
             Debug.Log("Reached Destination");
-            boss.currentWaypoint.arena.gameObject.SetActive(true);
+            //boss.currentWaypoint.arena.gameObject.SetActive(true);
             return "Boss2Pot_Animating";
         }
 
@@ -274,9 +275,10 @@ public class Boss2Pot_Animating : State
         {
             if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
             {
+                Debug.Log("Reseting _Animating");
                 boss.ConvertBarrierPots();
-                boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
-                boss.currentWaypoint.arena.gameObject.SetActive(false);
+                //boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
+                //boss.currentWaypoint.arena.gameObject.SetActive(false);
                 return "Boss2Pot_ChangingRooms";
             }
             return "Boss2Pot_Running";
@@ -411,8 +413,8 @@ public class Boss2Pot_Running : State
         if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
         {
             boss.ConvertBarrierPots();
-            boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
-            boss.currentWaypoint.arena.gameObject.SetActive(false);
+            //boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
+            //boss.currentWaypoint.arena.gameObject.SetActive(false);
             return "Boss2Pot_ChangingRooms";
         }
         else if(!moving)
