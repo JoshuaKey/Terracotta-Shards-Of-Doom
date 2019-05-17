@@ -81,6 +81,9 @@ public class Coin : PoolObject {
             Game.Instance.playerStats.Coins += Value;
             Value = 0;
             this.gameObject.SetActive(false);
+
+            PlayerHud.Instance.SetCoinCount(Game.Instance.playerStats.Coins);
+            PlayerHud.Instance.PlayCoinAnimation();
         }
     }
 

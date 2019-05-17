@@ -97,13 +97,10 @@ MonoBehaviour:
   ActiveTime: 10
   CooldownTime: 10
   MoveSpeed: 5
-  Speed: 2.5
   Distance: 2.5
   MovingBobSpeed: 5
   MovingBobDistance: 0.5
   RotateSpeed: 3
-  BobSpeed: 10
-  BobDistance: 0.75
 --- !u!1 &1022673656995045009
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,7 +163,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32567
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -359,6 +356,8 @@ MonoBehaviour:
   CanRotate: 1
   XRotationSpeed: 75
   YRotationSpeed: 75
+  HorizontalRotationSensitivity: 1
+  VerticalRotationSensitivity: 1
   YMinRotation: -85
   YMaxRotation: 85
   camera: {fileID: 4503244970851167805}
@@ -375,6 +374,7 @@ MonoBehaviour:
   CanInteract: 1
   compass: {fileID: 50113012}
   Shoulder: {fileID: 3001636328724774057}
+  MinJumpAngle: 30
   SwordPrefab: {fileID: 951680341231762631, guid: bc4bf2df4c17b694dbe8c6d997ee0461,
     type: 3}
   BowPrefab: {fileID: 3726514527976357539, guid: 4b8accc48522646418e1a9badb82f823,
