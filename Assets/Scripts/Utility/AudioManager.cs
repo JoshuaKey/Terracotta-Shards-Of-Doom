@@ -299,6 +299,10 @@ public class SoundClip
     /// </summary>
     private void DeactivateAudioSource()
     {
+        if (audioSource == null)
+        {
+            throw new System.ComponentModel.WarningException("An AudioSource was destroyed before it was done playing.");
+        }
         audioSource.gameObject.SetActive(false);
         audioSource.transform.parent = AudioManager.Instance.transform;
         onFinish = DeactivateAudioSource;
