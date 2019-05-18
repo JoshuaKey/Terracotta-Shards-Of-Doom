@@ -1,4 +1,5 @@
 ﻿using Luminosity.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -28,11 +29,18 @@ public class PlayerHud : MonoBehaviour {
     [Header("Enemy Count")]
     public GameObject EnemyCount;
     public TextMeshProUGUI EnemyCountText;
+    public Animator uiPot;
+
+    [Header("Coin Count")]
+    public GameObject CoinCount;
+    public TextMeshProUGUI CoinCountText;
+    public Animator uiCoin;
 
     [Header("Weapon Toggle")]
     public GameObject WeaponToggle;
     public Image NextWeaponIcon;
     public Image CurrWeaponIcon;
+
     public Image PrevWeaponIcon;
     public TextMeshProUGUI NextWeaponText;
     public TextMeshProUGUI CurrWeaponText;
@@ -77,6 +85,16 @@ public class PlayerHud : MonoBehaviour {
 
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+    }
+
+    public void PlayCoinAnimation()
+    {
+        uiCoin.SetTrigger("Bounce");
+    }
+
+    public void PlayPotAnimation()
+    {
+        uiPot.SetTrigger("Bounce");
     }
 
     private void OnPlayerControlChanged(PlayerID id) { UpdateInputIcons(); }
@@ -148,10 +166,19 @@ public class PlayerHud : MonoBehaviour {
     }
     public void SetEnemyCount(int currEnemyCount, int maxEnemyCount) {
         EnableEnemyCount();
-        EnemyCountText.text = currEnemyCount + " / " + maxEnemyCount + " Pots";
+        EnemyCountText.text = currEnemyCount + " / " + maxEnemyCount;
     }
     public void DisableEnemyCount() {
         EnemyCount.SetActive(false);
+    }
+
+    // Coin Count
+    public void EnableCoinCount() {
+        CoinCount.SetActive(true);
+    }
+    public void SetCoinCount(int currCoinCount) {
+        EnableCoinCount();
+        CoinCountText.text = currCoinCount.ToString();
     }
 
     // Weapon toggle
@@ -192,6 +219,7 @@ public class PlayerHud : MonoBehaviour {
                 retval = SpearIcon;
                 break;
             case "Crossbow":
+            case "CrossBow":
                 retval = CrossbowIcon;
                 break;
             case "Magic":

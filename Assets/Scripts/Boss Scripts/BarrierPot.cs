@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 public class BarrierPot : ChargerPot
 {
+    [SerializeField] public float knockback = 20f;
+
     private Waypoint waypoint;
 
     public Waypoint Waypoint
@@ -41,6 +43,8 @@ public class BarrierPot : ChargerPot
             new Charger_Idle(),
             new Charger_Charge(),
             new Charger_Attack(attackDuration));
+
+        agent.enabled = false;
     }
 
     void Start()
@@ -57,7 +61,18 @@ public class BarrierPot : ChargerPot
     public void ChangeStateMachine()
     {
         stateMachine = ChargerPotStateMachine;
+        agent.enabled = true;
         transform.parent = EnemyManager.Instance.transform;
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag(Game.Instance.PlayerTag)) {
+            Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
+            Vector3 dir = Player.Instance.transform.position - this.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            Player.Instance.Knockback(dir * knockback);
+        }
     }
 
 }
@@ -101,19 +116,23 @@ public class BarrierPot_EnterFormation : State
 
     IEnumerator MoveToWaypoint()
     {
-        moving = true;
-
-        Transform transform = owner.transform;
-        Vector3 waypointPosition = waypoint.transform.position;
-
-        while ((transform.position - waypointPosition).magnitude > .01f)
+        if (waypoint != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
-            yield return null;
-        }
 
-        barrierPot.InPosition = true;
-        barrierPot.transform.parent = waypoint.transform;
+            moving = true;
+
+            Transform transform = owner.transform;
+            Vector3 waypointPosition = waypoint.transform.position;
+
+            while ((transform.position - waypointPosition).magnitude > .01f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
+                yield return null;
+            }
+
+            barrierPot.InPosition = true;
+            barrierPot.transform.parent = waypoint.transform;
+        }
     }
 }
 

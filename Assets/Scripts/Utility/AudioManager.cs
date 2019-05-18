@@ -162,6 +162,12 @@ public class AudioManager : MonoBehaviour
                 break;
         }
 
+        foreach(AudioSource au in audioSources) {
+            if(au.loop) {
+                au.Stop();
+            }
+        }
+
         return PlaySound(musicName, ESoundChannel.MUSIC, true);
     }
 
@@ -293,6 +299,10 @@ public class SoundClip
     /// </summary>
     private void DeactivateAudioSource()
     {
+        if (audioSource == null)
+        {
+            throw new System.ComponentModel.WarningException("An AudioSource was destroyed before it was done playing.");
+        }
         audioSource.gameObject.SetActive(false);
         audioSource.transform.parent = AudioManager.Instance.transform;
         onFinish = DeactivateAudioSource;

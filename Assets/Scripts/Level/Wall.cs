@@ -29,12 +29,16 @@ public class Wall : MonoBehaviour
 
     public void Open() 
     {
-        StartCoroutine(MoveWall(closedPos, openPos));
+        if (!isOpen) {
+            StartCoroutine(MoveWall(closedPos, openPos));
+        }      
     }
 
     public void Close() 
     {
-        StartCoroutine(MoveWall(openPos, closedPos));
+        if (isOpen) {
+            StartCoroutine(MoveWall(openPos, closedPos));
+        }      
     }
 
     private IEnumerator MoveWall(Vector3 startPos, Vector3 endPos) 

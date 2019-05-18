@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
-    
+    public Arena arena;
     private bool visited;
 
     public bool Visited
