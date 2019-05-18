@@ -10,20 +10,24 @@ public class PauseMenu : MonoBehaviour
     [Space]
     [SerializeField] GameObject PlayerHUD;
     [Space]
-    [SerializeField] GameObject PauseStart;
-    [SerializeField] GameObject Progress;
-    [SerializeField] GameObject Options;
-    [SerializeField] GameObject Video;
-    [SerializeField] GameObject Audio;
-    [SerializeField] GameObject Controls;
+    [SerializeField] GameObject pauseStart;
+    [SerializeField] GameObject progress;
+    [SerializeField] GameObject options;
+    [SerializeField] GameObject video;
+    [SerializeField] new GameObject audio;
+    [SerializeField] GameObject controls;
+    [SerializeField] GameObject quit;
     [Space]
-    [SerializeField] Button ContinueButton;
+    [SerializeField] Button continueButton;
     #pragma warning restore 0649
 
     [Header("Other")]
     public EventSystem eventSystem;
 
     public static PauseMenu Instance;
+
+    private bool playerCanAttack = true;
+    private bool playerCanSwapWeapon = false;
 
     private void Start()
     {
@@ -38,9 +42,13 @@ public class PauseMenu : MonoBehaviour
 
     public void ActivatePauseMenu()
     {
-        PauseStart.SetActive(true);
-        Progress.SetActive(false);
-        Options.SetActive(false);
+        pauseStart.SetActive(true);
+        progress.SetActive(false);
+        options.SetActive(false);
+        video.SetActive(false);
+        audio.SetActive(false);
+        controls.SetActive(false);
+        quit.SetActive(false);
 
         Time.timeScale = 0;
 
@@ -49,12 +57,15 @@ public class PauseMenu : MonoBehaviour
 
         if (Player.Instance != null)
         {
+            playerCanAttack = Player.Instance.CanAttack;
             Player.Instance.CanAttack = false;
+
+            playerCanSwapWeapon = Player.Instance.CanSwapWeapon;
             Player.Instance.CanSwapWeapon = false;
         }
         PlayerHUD.SetActive(false);
 
-        eventSystem.SetSelectedGameObject(ContinueButton.gameObject);
+        eventSystem.SetSelectedGameObject(continueButton.gameObject);
 
         gameObject.SetActive(true);
     }
@@ -67,8 +78,9 @@ public class PauseMenu : MonoBehaviour
 
         if (Player.Instance != null)
         {
-            Player.Instance.CanAttack = true;
-            Player.Instance.CanSwapWeapon = true;
+            Player.Instance.CanAttack = playerCanAttack;
+
+            Player.Instance.CanSwapWeapon = playerCanSwapWeapon;
         }
 
         PlayerHUD.SetActive(true);
@@ -81,34 +93,38 @@ public class PauseMenu : MonoBehaviour
     {
         menuName = menuName.ToLower();
 
-        PauseStart.SetActive(false);
-        Progress.SetActive(false);
-        Options.SetActive(false);
-        Video.SetActive(false);
-        Audio.SetActive(false);
-        Controls.SetActive(false);
+        pauseStart.SetActive(false);
+        progress.SetActive(false);
+        options.SetActive(false);
+        video.SetActive(false);
+        audio.SetActive(false);
+        controls.SetActive(false);
+        quit.SetActive(false);
 
         Debug.Log($"BUtton pressed. Going to {menuName}.");
 
         switch(menuName)
         {
             case "pausestart":
-                PauseStart.SetActive(true);
+                pauseStart.SetActive(true);
                 break;
             case "progress":
-                Progress.SetActive(true);
+                progress.SetActive(true);
                 break;
             case "options":
-                Options.SetActive(true);
+                options.SetActive(true);
                 break;
             case "video":
-                Video.SetActive(true);
+                video.SetActive(true);
                 break;
             case "audio":
-                Audio.SetActive(true);
+                audio.SetActive(true);
                 break;
             case "controls":
-                Controls.SetActive(true);
+                controls.SetActive(true);
+                break;
+            case "quit":
+                quit.SetActive(true);
                 break;
         }
     }
@@ -116,6 +132,11 @@ public class PauseMenu : MonoBehaviour
     public void Continue()
     {
         DeactivatePauseMenu();
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        LevelManager.Instance.LoadScene(sceneName);
     }
 
     public void Quit()
