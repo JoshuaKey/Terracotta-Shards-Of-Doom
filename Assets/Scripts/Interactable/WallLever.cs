@@ -15,6 +15,7 @@ public class WallLever : Lever {
 
     public void MoveWall() {
         interactable.CanInteract = false;
+        AudioManager.Instance.PlaySoundWithParent("lever", ESoundChannel.SFX, gameObject);
         wall.Open();
     }
 }
