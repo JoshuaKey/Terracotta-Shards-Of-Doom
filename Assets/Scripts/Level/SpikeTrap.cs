@@ -40,7 +40,7 @@ public class SpikeTrap : MonoBehaviour {
         }
 
         startTime = Time.time;
-        AudioManager.Instance.PlaySound("spikes", ESoundChannel.SFX);
+        AudioManager.Instance.PlaySoundWithParent("spikes", ESoundChannel.SFX, gameObject);
         while (Time.time < startTime + SpringTime) {
             //print("Springing");
 
@@ -55,7 +55,7 @@ public class SpikeTrap : MonoBehaviour {
         TrapModel.transform.position = SpringPos.position;
 
         startTime = Time.time;
-        AudioManager.Instance.PlaySound("gears", ESoundChannel.SFX, true);
+        AudioManager.Instance.PlaySoundWithParent("gears", ESoundChannel.SFX, gameObject, true);
         while (Time.time < startTime + RecoilTime) {
             //print("Recoiling");
 
