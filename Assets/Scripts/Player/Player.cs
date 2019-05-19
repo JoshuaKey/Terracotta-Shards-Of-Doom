@@ -470,12 +470,11 @@ public class Player : MonoBehaviour {
         camera.transform.localPosition = cameraPosition;
 
         // Show Weapon
-        SwapWeapon(CurrWeaponIndex);
+        Weapon newWeapon = GetCurrentWeapon();
+        newWeapon.gameObject.SetActive(true);
+        newWeapon.transform.SetParent(camera.transform, false);
 
         // Reset Broken Pot
-        //brokenPot.transform.SetParent(this.transform, false);
-        //brokenPot.gameObject.SetActive(false);
-        //brokenPot.Reset(); // Honestly, maybe we should just reinstantiate...
         brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform);
 
         // UI
