@@ -26,18 +26,18 @@ public class PauseMenu : MonoBehaviour
 
     public static PauseMenu Instance;
 
+    // player bools
     private bool playerCanAttack = true;
     private bool playerCanSwapWeapon = false;
 
     private void Start()
     {
         if (Instance != null) { Destroy(this); return; }
-
         Instance = this;
 
-        DeactivatePauseMenu();
-
         if (eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
+
+        DeactivatePauseMenu();
     }
 
     public void ActivatePauseMenu()
@@ -101,8 +101,6 @@ public class PauseMenu : MonoBehaviour
         controls.SetActive(false);
         quit.SetActive(false);
 
-        Debug.Log($"BUtton pressed. Going to {menuName}.");
-
         switch(menuName)
         {
             case "pausestart":
@@ -132,6 +130,60 @@ public class PauseMenu : MonoBehaviour
     public void Continue()
     {
         DeactivatePauseMenu();
+    }
+
+    public void SetResolution(int option)
+    {
+        switch(option)
+        {
+            case 0:
+                Screen.SetResolution(2560, 1440, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 2560 x 1440.");
+                break;
+            case 1:
+                Screen.SetResolution(1920, 1080, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 1920 x 1080.");
+                break;
+            case 2:
+                Screen.SetResolution(1600, 900, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 1600 x 900.");
+                break;
+            case 3:
+                Screen.SetResolution(1280, 720, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 1280 x 720.");
+                break;
+            case 4:
+                Screen.SetResolution(1024, 576, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 1024 x 576.");
+                break;
+            case 5:
+                Screen.SetResolution(800, 450, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 800 x 450.");
+                break;
+            case 6:
+                Screen.SetResolution(256, 144, Screen.fullScreenMode);
+                Debug.Log("Resolution changed to 256 x 144.");
+                break;
+        }
+    }
+
+    public void SetFullScreen(int option)
+    {
+        switch(option)
+        {
+            case 0:
+                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                Debug.Log("Screen mode set to Exclusive Full Screen.");
+                break;
+            case 1:
+                Screen.fullScreenMode = FullScreenMode.MaximizedWindow;
+                Debug.Log("Screen mode set to Maximized Window.");
+                break;
+            case 2:
+                Screen.fullScreenMode = FullScreenMode.Windowed;
+                Debug.Log("Screen mode set to Windowed.");
+                break;
+        }
     }
 
     public void LoadScene(string sceneName)
