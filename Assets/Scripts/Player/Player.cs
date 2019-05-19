@@ -552,7 +552,7 @@ public class Player : MonoBehaviour {
             this.camera.transform.position = pos;
             this.camera.transform.LookAt(this.transform);
 
-            if (InputManager.GetButton("UI_Submit")) {
+            if (InputManager.GetButtonDown("UI_Submit")) {
                 LevelManager.Instance.RestartLevel();
             }
 
@@ -564,7 +564,7 @@ public class Player : MonoBehaviour {
 
         // Check for restart
         while (true) {
-            if (InputManager.GetButton("UI_Submit")) {
+            if (InputManager.GetButtonDown("UI_Submit")) {
                 LevelManager.Instance.RestartLevel();
             }
 
