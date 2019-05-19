@@ -51,14 +51,13 @@ public class Player : MonoBehaviour {
     [Header("IsGrounded")]
     public float MinJumpAngle = 30f;
 
-    [Space]
-    [Header("Debug")]
-    public Sword SwordPrefab;
-    public Bow BowPrefab;
-    public Hammer HammerPrefab;
-    public Spear SpearPrefab;
-    public CrossBow CrossBowPrefab;
-    public Magic MagicPrefab;
+    [Header("Death")]
+    public float CameraDeathRotation = 30;
+    public float CameraDeathDistance = 3.0f;
+    public float CameraDeathAnimationSpeed = 1.0f;
+    public float MinDeathTimeScale = .01f;
+    public BrokenPot PlayerBrokenPotPrefab;
+    public BrokenPot brokenPot;
 
     public static Player Instance;
 
@@ -78,9 +77,11 @@ public class Player : MonoBehaviour {
     private CharacterController controller;
     private Vector2 weaponWheelRotation = Vector2.zero;
 
+    private Vector3 cameraPosition;
+
     private void Awake() {
         if (Instance != null) { Destroy(this.gameObject); return; }
-        Instance = this;
+        Instance = this;      
     }
 
     void Start() {
@@ -91,6 +92,9 @@ public class Player : MonoBehaviour {
         if (health == null) { health = GetComponentInChildren<Health>(true); }
 
         if (camera == null) { camera = GetComponentInChildren<Camera>(true); }
+
+        if (brokenPot == null) { brokenPot = GetComponentInChildren<BrokenPot>(true); }
+        if (brokenPot == null) { brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform); }
 
         weapons.AddRange(GetComponentsInChildren<Weapon>(true));
         foreach (Weapon w in weapons) {
@@ -122,6 +126,7 @@ public class Player : MonoBehaviour {
         // Camera
         Cursor.lockState = CursorLockMode.Locked;
         rotation = this.transform.rotation.eulerAngles;
+        cameraPosition = camera.transform.localPosition;
 
         // Compass
         compass.Origin = Shoulder;
@@ -132,16 +137,16 @@ public class Player : MonoBehaviour {
         CheckInputScheme();
 
         PlayerHud.Instance.EnablePlayerHealthBar();
+        this.health.OnHeal += this.ChangeHealthUI;
+        this.health.OnDamage += this.ChangeHealthUI;
+        this.health.OnDamage += this.OnDamage;
         this.health.OnDeath += this.Die;
-        this.health.OnDamage += ChangeHealthUI;
-        this.health.OnHeal += ChangeHealthUI;
+
         Settings.OnLoad += OnSettingsLoad;
         Game.Instance.playerStats.OnLoad += OnStatsLoad;
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
 
-        // On Damage
-        health.OnDamage += OnDamage;
     }
 
     void Update() {
@@ -448,10 +453,125 @@ public class Player : MonoBehaviour {
     public void ChangeHealthUI(float val) {
         PlayerHud.Instance.SetPlayerHealthBar(this.health.CurrentHealth / this.health.MaxHealth);
     }
-    public void Die() {
-        LevelManager.Instance.RestartLevel();
-    }
+    public void Respawn() {
+        StopAllCoroutines();
 
+        // Enable Player
+        this.enabled = true;
+        collider.enabled = true;
+        Time.timeScale = 1.0f;
+
+        // Reset Player Stats
+        CheckPointSystem.Instance.LoadStartPoint();
+        health.Reset();
+
+        // Reattach Camera
+        this.camera.transform.parent = this.transform;
+        camera.transform.localPosition = cameraPosition;
+
+        // Show Weapon
+        SwapWeapon(CurrWeaponIndex);
+
+        // Reset Broken Pot
+        //brokenPot.transform.SetParent(this.transform, false);
+        //brokenPot.gameObject.SetActive(false);
+        //brokenPot.Reset(); // Honestly, maybe we should just reinstantiate...
+        brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform);
+
+        // UI
+        PauseMenu.Instance.DeactivatePauseMenu();
+        DeathScreen.Instance.DisableDeathScreen();
+        PlayerHud.Instance.EnablePlayerHud();
+        PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
+    }
+    public void Die() {
+        StartCoroutine(CameraDeathAnimation());      
+    }
+    private IEnumerator CameraDeathAnimation() {
+        // Play Sound
+        string[] sounds = {
+            "ceramic_shatter1",
+            "ceramic_shatter2",
+            "ceramic_shatter3",
+        };
+        AudioManager.Instance.PlaySoundAtLocation(sounds[Random.Range(0, sounds.Length)], ESoundChannel.SFX, transform.position);
+
+        // Disable Player
+        this.enabled = false;
+        collider.enabled = false;
+
+        // Enable Broken Pot
+        brokenPot.transform.parent = null;
+        brokenPot.gameObject.SetActive(true);
+        LevelManager.Instance.MoveToScene(brokenPot.gameObject);
+        brokenPot.Explode(3.0f, this.camera.transform.position);
+
+        // Explosion Effect?
+        int layermask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
+        Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, 2.0f, layermask);
+        foreach (Collider c in colliders) {
+            Enemy enemy = c.GetComponentInChildren<Enemy>();
+            if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
+            if (enemy != null) {
+                Vector3 dir = c.transform.position - Player.Instance.transform.position;
+                dir = dir.normalized;
+                enemy.Knockback(dir * 5, 1.0f);
+            }
+        }
+
+        // Deparent camera
+        this.camera.transform.parent = null;
+
+        // Hide Weapon
+        Weapon currWeapon = GetCurrentWeapon();
+        currWeapon.gameObject.SetActive(false);
+        currWeapon.transform.SetParent(WeaponParent.transform, false);
+
+        PlayerHud.Instance.DisablePlayerHud();
+        DeathScreen.Instance.EnableDeathScreen();
+
+        // Determine Camera Destination
+        float length = 1.0f;
+        float startTime = Time.time;
+        Vector3 startPos = -this.transform.forward + camera.transform.position;
+
+        Vector3 endPos = -this.transform.forward * CameraDeathDistance;
+        endPos = Quaternion.Euler(CameraDeathRotation, 0.0f, 0.0f) * endPos;
+        endPos += camera.transform.position;
+
+        while (Time.time < startTime + length) {
+            float t = (Time.time - startTime) / length;
+
+            Time.timeScale = Mathf.Max(1 - t, MinDeathTimeScale);
+
+            float alpha = Mathf.Lerp(0, 128, t);
+            DeathScreen.Instance.SetBackgroundAlpha(alpha);
+
+            t = Interpolation.CubicOut(t);
+            Vector3 pos = Vector3.Lerp(startPos, endPos, t);
+            this.camera.transform.position = pos;
+            this.camera.transform.LookAt(this.transform);
+
+            if (InputManager.GetButton("UI_Submit")) {
+                LevelManager.Instance.RestartLevel();
+            }
+
+            yield return null;
+        }
+
+        DeathScreen.Instance.SetBackgroundAlpha(128);
+        Time.timeScale = 0.0f;
+
+        // Check for restart
+        while (true) {
+            if (InputManager.GetButton("UI_Submit")) {
+                LevelManager.Instance.RestartLevel();
+            }
+
+            yield return null;
+        }
+    }
+ 
     public void LookTowards(Vector3 forward) {
         camera.transform.forward = forward;
         rotation = camera.transform.rotation.eulerAngles;
@@ -502,7 +622,6 @@ public class Player : MonoBehaviour {
         }
     }
     public void SwapWeapon(int index) {
-        if (index == CurrWeaponIndex) { return; }
         if(index < 0) { index = 0; }
         if(index >= weapons.Count) { index = weapons.Count - 1; }
 

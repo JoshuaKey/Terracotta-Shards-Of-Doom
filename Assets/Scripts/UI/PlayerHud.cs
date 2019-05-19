@@ -119,21 +119,29 @@ public class PlayerHud : MonoBehaviour {
     public void EnablePlayerHealthBar() {
         PlayerHealthBar.SetActive(true);
     }
-    public void SetPlayerHealthBar(float percent) {
+    public void SetPlayerHealthBar(float percent, bool instant = false) {
         EnablePlayerHealthBar();
 
         if (PlayerHealthRoutine != null) {
             StopCoroutine(PlayerHealthRoutine);
         }
 
-        if (percent > PlayerHealthForegroundSlider.value) { // Healing
+        // Animation
+        if (!instant) {
+            if (percent > PlayerHealthForegroundSlider.value) { // Healing
+                PlayerHealthBackgroundSlider.value = percent;
+                PlayerHealthRoutine = SliderTransition(PlayerHealthForegroundSlider, percent);
+            } else { // Taking Damage
+                PlayerHealthForegroundSlider.value = percent;
+                PlayerHealthRoutine = SliderTransition(PlayerHealthBackgroundSlider, percent);
+            }
+            StartCoroutine(PlayerHealthRoutine);
+        } 
+        // Instant Effect
+        else {
             PlayerHealthBackgroundSlider.value = percent;
-            PlayerHealthRoutine = SliderTransition(PlayerHealthForegroundSlider, percent);
-        } else { // Taking Damage
             PlayerHealthForegroundSlider.value = percent;
-            PlayerHealthRoutine = SliderTransition(PlayerHealthBackgroundSlider, percent);
-        }
-        StartCoroutine(PlayerHealthRoutine);
+        }     
     }
     public void DisablePlayerHealthBar() {
         PlayerHealthBar.SetActive(false);

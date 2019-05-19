@@ -30,13 +30,7 @@ public class LevelManager : MonoBehaviour {
         print(scene.name + " was Loaded!");
 
         Player.Instance.gameObject.SetActive(false);
-
-        CheckPointSystem.Instance.LoadStartPoint();
-        Player.Instance.health.Reset();
-        PauseMenu.Instance.DeactivatePauseMenu();
-        PlayerHud.Instance.EnablePlayerHud();
-        PlayerHud.Instance.SetPlayerHealthBar(1.0f);
-
+        Player.Instance.Respawn();
         Player.Instance.gameObject.SetActive(true);
 
         AudioManager.Instance.PlaySceneMusic(scene.name);
