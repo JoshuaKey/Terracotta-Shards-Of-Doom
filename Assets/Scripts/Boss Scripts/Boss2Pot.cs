@@ -152,7 +152,6 @@ public class Boss2Pot_ChangingRooms : State
         int randomIndex = Random.Range(0, possibleWaypoints.Count - 1);
         target = possibleWaypoints[randomIndex].gameObject;
         boss.currentWaypoint = possibleWaypoints[randomIndex];
-        base.Init(owner);
     }
 
     public override void Exit()
@@ -160,7 +159,6 @@ public class Boss2Pot_ChangingRooms : State
         running = false;
         reachedDestination = false;
         boss.agent.enabled = false;
-
     }
 
     public override string Update()
@@ -171,8 +169,7 @@ public class Boss2Pot_ChangingRooms : State
         }
         else if(reachedDestination)
         {
-            Debug.Log("Reached Destination");
-            //boss.currentWaypoint.arena.gameObject.SetActive(true);
+            boss.currentWaypoint.arena.gameObject.SetActive(true);
             return "Boss2Pot_Animating";
         }
 
@@ -203,7 +200,6 @@ public class Boss2Pot_Animating : State
     private bool doneAnimating = false;
 
     Vector3 offset = new Vector3(0.0f, .5f, 0.0f);
-
     Vector3 halfExtents = new Vector3(12.0f, 0.0f, 12.0f);
 
     public override void Init(GameObject owner)
@@ -217,7 +213,6 @@ public class Boss2Pot_Animating : State
     {
         animating = false;
         doneAnimating = false;
-
         Pots = new List<Pot>();
         Collider[] colliders = Physics.OverlapBox(owner.transform.position + offset, halfExtents);
 
@@ -248,7 +243,6 @@ public class Boss2Pot_Animating : State
         {
             if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
             {
-                Debug.Log("Reseting _Animating");
                 boss.ConvertBarrierPots();
                 //boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
                 //boss.currentWaypoint.arena.gameObject.SetActive(false);
@@ -298,16 +292,11 @@ public class Boss2Pot_Animating : State
             Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
             if (w != null)
             {
-
                 w.Visited = true;
                 barrierPot.Waypoint = w;
                 barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
             }
         }
-
-        //Found problem. If a barrier pot dies during the animation phase, it is null and will never enter position.
-        //This causes this check to always fail.
-        //TODO: ^
 
         while (boss.barrierPots.Exists(p => !p.InPosition))
         {
@@ -343,11 +332,6 @@ public class Boss2Pot_Animating : State
                     waypoint = w;
                 }
             }
-        }
-        if(waypoint == null)
-        {
-            Debug.Log("All waypoints are occupied or something went wrong");
-
         }
         return waypoint;
     }
@@ -387,8 +371,6 @@ public class Boss2Pot_Running : State
         if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
         {
             boss.ConvertBarrierPots();
-            //boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
-            //boss.currentWaypoint.arena.gameObject.SetActive(false);
             return "Boss2Pot_ChangingRooms";
         }
         else if(!moving)
