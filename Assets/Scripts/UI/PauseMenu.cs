@@ -1,15 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     #pragma warning disable 0649
-    [Space]
-    [SerializeField] GameObject PlayerHUD;
-    [Space]
+    [Header("Menus")]
     [SerializeField] GameObject pauseStart;
     [SerializeField] GameObject progress;
     [SerializeField] GameObject options;
@@ -18,11 +17,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject controls;
     [SerializeField] GameObject quit;
     [Space]
-    [SerializeField] Button continueButton;
-    #pragma warning restore 0649
-
+    [Header("Audio")]
+    [SerializeField] AudioMixer audioMixer;
+    [Space]
     [Header("Other")]
+    [SerializeField] Button continueButton;
+    [SerializeField] GameObject playerHud;
     public EventSystem eventSystem;
+    #pragma warning restore 0649
 
     public static PauseMenu Instance;
 
@@ -40,6 +42,7 @@ public class PauseMenu : MonoBehaviour
         DeactivatePauseMenu();
     }
 
+    #region Navigation
     public void ActivatePauseMenu()
     {
         pauseStart.SetActive(true);
@@ -63,7 +66,7 @@ public class PauseMenu : MonoBehaviour
             playerCanSwapWeapon = Player.Instance.CanSwapWeapon;
             Player.Instance.CanSwapWeapon = false;
         }
-        PlayerHUD.SetActive(false);
+        playerHud.SetActive(false);
 
         eventSystem.SetSelectedGameObject(continueButton.gameObject);
 
@@ -83,7 +86,7 @@ public class PauseMenu : MonoBehaviour
             Player.Instance.CanSwapWeapon = playerCanSwapWeapon;
         }
 
-        PlayerHUD.SetActive(true);
+        playerHud.SetActive(true);
         eventSystem.SetSelectedGameObject(null);
 
         gameObject.SetActive(false);
@@ -101,7 +104,7 @@ public class PauseMenu : MonoBehaviour
         controls.SetActive(false);
         quit.SetActive(false);
 
-        switch(menuName)
+        switch (menuName)
         {
             case "pausestart":
                 pauseStart.SetActive(true);
@@ -132,6 +135,18 @@ public class PauseMenu : MonoBehaviour
         DeactivatePauseMenu();
     }
 
+    public void LoadScene(string sceneName)
+    {
+        LevelManager.Instance.LoadScene(sceneName);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+    #endregion
+
+    #region Video
     public void SetResolution(int option)
     {
         switch(option)
@@ -185,14 +200,25 @@ public class PauseMenu : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
-    public void LoadScene(string sceneName)
+    #region Volume
+    public void ChangeMasterVolume(float volume)
     {
-        LevelManager.Instance.LoadScene(sceneName);
+        volume = (volume * 100) - 80;
+        audioMixer.SetFloat("MasterVolume", volume);
     }
 
-    public void Quit()
+    public void ChangeMusicVolume(float volume)
     {
-        Application.Quit();
+        volume = (volume * 100) - 80;
+        audioMixer.SetFloat("MusicVolume", volume);
     }
+
+    public void ChangeSFXVolume(float volume)
+    {
+        volume = (volume * 100) - 80;
+        audioMixer.SetFloat("SFXVolume", volume);
+    }
+    #endregion
 }
