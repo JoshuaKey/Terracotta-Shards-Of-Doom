@@ -180,10 +180,13 @@ public class AudioManager : MonoBehaviour
     /// <returns> An inactive AudioSource </returns>
     private AudioSource NextAudiosource()
     {
+        audioSources.RemoveAll(item => item == null);
+        if (audioSources.Count == 0) audioSources.Add(CreateNewAudioSource());
+
         AudioSource audioSource = audioSources[0];
 
         int iter = 0;
-        while(audioSource.gameObject.activeSelf)
+        while (audioSource.gameObject.activeSelf)
         {
             if(++iter >= audioSources.Count)
             {
