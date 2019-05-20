@@ -63,7 +63,6 @@ public class Enemy : MonoBehaviour {
 
     public void Knockback(Vector3 force, float duration) {
         if (CanBeKnockedBack) {
-            print("Knockback");
             StartCoroutine(KnockbackRoutine(force, duration));
         }
     }

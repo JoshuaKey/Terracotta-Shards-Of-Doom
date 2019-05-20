@@ -32,6 +32,7 @@ public class Sword : Weapon {
 
         this.name = "Sword";
         Player.Instance.health.OnDeath += OnDeath;
+        animator.keepAnimatorControllerStateOnDisable = false;
     }
 
     private void OnDeath() {
@@ -43,6 +44,7 @@ public class Sword : Weapon {
     private void OnEnable() {
         this.transform.localPosition = StartPos;
         this.transform.localRotation = Quaternion.Euler(StartRot);
+        //animator.keepAnimatorControllerStateOnDisable = false;
     }
     private void OnDisable() {
         StopAllCoroutines();
@@ -50,7 +52,8 @@ public class Sword : Weapon {
             collider.enabled = false;
         }
         if (animator != null) {
-            animator.Play("Sword_Still");
+            //animator.Play("Sword_Still");
+            
         }
     }
 
