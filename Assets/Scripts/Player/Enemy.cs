@@ -63,6 +63,7 @@ public class Enemy : MonoBehaviour {
 
     public void Knockback(Vector3 force, float duration) {
         if (CanBeKnockedBack) {
+            print("Knockback");
             StartCoroutine(KnockbackRoutine(force, duration));
         }
     }
@@ -125,14 +126,14 @@ public class Enemy : MonoBehaviour {
             animator.SetTrigger("Knockback");
         }
 
-        if (agent != null) {
-            while(agent.remainingDistance != 0.0f){
-                yield return null;
-            }
-        } else {
-            yield return new WaitForSeconds(1f);
-            //yield return new WaitForSeconds(duration);
-        }
+        //if (agent == null) {
+        //    while(agent.remainingDistance != 0.0f){
+        //        yield return null;
+        //    }
+        //} else {
+            //yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(duration);
+        //}
             
 
         if(agent != null)
