@@ -81,6 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &3083924266952048104
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,6 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &4152766229430733996
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,6 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &4731557514181445289
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &5592257005154481342
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,6 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &6803060795582667591
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,6 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &6960976461673368523
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &7339319389382434914
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,6 +389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e286bb916eb654f8876eedee9cbd76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arena: {fileID: 0}
 --- !u!1 &8129604941350047081
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,7 +518,7 @@ Transform:
   m_GameObject: {fileID: 8129604941350047083}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_Children:
   - {fileID: 1285728647264571270}
   - {fileID: 8129604941349753161}
@@ -621,8 +629,13 @@ MonoBehaviour:
   stunned: 0
   agent: {fileID: 0}
   animator: {fileID: 0}
+  knockback: 50
+  enemy: {fileID: 0}
   currentWaypoint: {fileID: 0}
   Barrier: {fileID: 750066309860978030}
+  barrierWaypoints: []
+  Arenas: []
+  barrierPots: []
   speed: 10
   ParticlePrefab: {fileID: 7376678798009732772, guid: a37ac23b236d8b54596ac908c7f9273a,
     type: 3}
@@ -633,6 +646,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8129604941349753163}
     m_Modifications:
+    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
+        type: 3}
+      propertyPath: m_Name
+      value: Broken_Pot_1_Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6922288729744331720, guid: 56530f3a335e3bc448b1244eed7c9174,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -686,16 +709,6 @@ PrefabInstance:
     - target: {fileID: 6922288729744331720, guid: 56530f3a335e3bc448b1244eed7c9174,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
-        type: 3}
-      propertyPath: m_Name
-      value: Broken_Pot_1_Prefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 6922288729744625640, guid: 56530f3a335e3bc448b1244eed7c9174,
-        type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
