@@ -17,15 +17,8 @@ public class Boss2Pot : Pot
 
     public GameObject Barrier = null;
 
-    Waypoint[] barrierWaypoints = null;
-
-    public Waypoint[] BarrierWaypoints
-    {
-        get
-        {
-            return barrierWaypoints;
-        }
-    }
+    [HideInInspector]
+    public Waypoint[] barrierWaypoints = null;
 
     public Arena[] Arenas;
 
@@ -68,19 +61,19 @@ public class Boss2Pot : Pot
         stateMachine.Update();
     }
 
-    public void ChangeHealthUI(float damage) 
+    public void ChangeHealthUI(float damage)
     {
         PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
     }
 
-    public void OnDeath() 
+    public void OnDeath()
     {
         PlayerHud.Instance.DisableBossHealthBar();
     }
 
-    public void PlayClang(float damage) 
+    public void PlayClang(float damage)
     {
-        if (!health.IsDead()) 
+        if (!health.IsDead())
         {
             AudioManager.Instance.PlaySoundWithParent("clang", ESoundChannel.SFX, gameObject);
         }
@@ -95,7 +88,7 @@ public class Boss2Pot : Pot
 
         foreach (BarrierPot bp in barrierPots)
         {
-            if(bp != null)
+            if (bp != null)
             {
                 bp.ChangeStateMachine();
             }
@@ -103,8 +96,10 @@ public class Boss2Pot : Pot
         barrierPots.Clear();
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag(Game.Instance.PlayerTag)) {
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(Game.Instance.PlayerTag))
+        {
             Player.Instance.health.TakeDamage(DamageType.BASIC, 1);
             Vector3 dir = Player.Instance.transform.position - this.transform.position;
             dir.y = 0.0f;
@@ -126,13 +121,13 @@ public class Boss2Pot_ChangingRooms : State
 
     public override void Init(GameObject owner)
     {
-        if(waypoints == null)
+        if (waypoints == null)
         {
             waypoints = new List<Waypoint>(
                 GameObject.FindGameObjectsWithTag("Waypoint").Select(x => x.GetComponent<Waypoint>()));
         }
 
-        if(boss == null)
+        if (boss == null)
         {
             boss = owner.GetComponent<Boss2Pot>();
         }
@@ -142,6 +137,15 @@ public class Boss2Pot_ChangingRooms : State
     public override void Enter()
     {
         boss.agent.enabled = true;
+        if (boss.currentWaypoint != null)
+        {
+            boss.currentWaypoint.arena.gameObject.SetActive(false);
+            foreach(Wall w in boss.currentWaypoint.arena.walls)
+            {
+                w.gameObject.SetActive(false);
+                w.Open();
+            }
+        }
 
         running = false;
         reachedDestination = false;
@@ -163,13 +167,17 @@ public class Boss2Pot_ChangingRooms : State
 
     public override string Update()
     {
-        if(!running && !reachedDestination)
+        if (!running && !reachedDestination)
         {
             boss.StartCoroutine(Run());
         }
-        else if(reachedDestination)
+        else if (reachedDestination)
         {
             boss.currentWaypoint.arena.gameObject.SetActive(true);
+            foreach (Wall w in boss.currentWaypoint.arena.walls)
+            {
+                w.gameObject.SetActive(true);
+            }
             return "Boss2Pot_Animating";
         }
 
@@ -219,7 +227,7 @@ public class Boss2Pot_Animating : State
         Pot p;
         foreach (Collider c in colliders)
         {
-            if((p = c.GetComponentInParent<Pot>()) && (c.gameObject != owner))
+            if ((p = c.GetComponentInParent<Pot>()) && (c.gameObject != owner))
             {
                 Pots.Add(p);
             }
@@ -235,17 +243,15 @@ public class Boss2Pot_Animating : State
 
     public override string Update()
     {
-        if(!animating)
+        if (!animating && boss.currentWaypoint.arena.playerEnteredArena)
         {
             boss.StartCoroutine(AnimatePots());
         }
-        else if(doneAnimating)
+        else if (doneAnimating)
         {
-            if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
+            if (healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
             {
                 boss.ConvertBarrierPots();
-                //boss.currentWaypoint.arena.walls.ForEach(X => X.Open());
-                //boss.currentWaypoint.arena.gameObject.SetActive(false);
                 return "Boss2Pot_ChangingRooms";
             }
             return "Boss2Pot_Running";
@@ -261,12 +267,12 @@ public class Boss2Pot_Animating : State
         BarrierPot bp = null;
         foreach (Pot p in Pots)
         {
-            if(!p.enabled)
-            {           
+            if (!p.enabled)
+            {
                 p.animator.SetTrigger("Awake");
 
                 bp = p as BarrierPot;
-                if(bp != null)
+                if (bp != null)
                 {
                     p.enabled = true;
                     bp.owningBoss = boss;
@@ -287,7 +293,7 @@ public class Boss2Pot_Animating : State
             yield return null;
         }
 
-        foreach(BarrierPot barrierPot in boss.barrierPots)
+        foreach (BarrierPot barrierPot in boss.barrierPots)
         {
             Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
             if (w != null)
@@ -303,9 +309,9 @@ public class Boss2Pot_Animating : State
             yield return null;
         }
 
-        foreach(Pot p in Pots)
+        foreach (Pot p in Pots)
         {
-            if(p != null && !p.enabled)
+            if (p != null && !p.enabled)
             {
                 p.enabled = true;
             }
@@ -321,12 +327,12 @@ public class Boss2Pot_Animating : State
         Waypoint waypoint = null;
         float shortestDistanceSquared = float.MaxValue;
 
-        foreach (Waypoint w in boss.BarrierWaypoints)
+        foreach (Waypoint w in boss.barrierWaypoints)
         {
-            if(!w.Visited)
+            if (!w.Visited)
             {
                 float distanceSquared = (position - w.gameObject.transform.position).sqrMagnitude;
-                if(distanceSquared < shortestDistanceSquared)
+                if (distanceSquared < shortestDistanceSquared)
                 {
                     shortestDistanceSquared = distanceSquared;
                     waypoint = w;
@@ -368,12 +374,12 @@ public class Boss2Pot_Running : State
 
     public override string Update()
     {
-        if(healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
+        if (healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
         {
             boss.ConvertBarrierPots();
             return "Boss2Pot_ChangingRooms";
         }
-        else if(!moving)
+        else if (!moving)
         {
             boss.StartCoroutine(Run());
         }
