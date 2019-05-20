@@ -15,10 +15,15 @@ public class Pot : MonoBehaviour
     public StateMachine stateMachine;
     [HideInInspector]
     public NavMeshAgent agent;
+    [HideInInspector]
+    public Animator animator;
+
+    public MeshRenderer[] potRenderers;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
         health = GetComponent<Health>();
         health.OnDamage += PlayTink;
     }
@@ -83,6 +88,12 @@ public class Pot : MonoBehaviour
         if (!health.IsDead())
         {
             AudioManager.Instance.PlaySoundWithParent("ceramic_tink", ESoundChannel.SFX, gameObject);
+        }
+    }
+
+    public void SetMaterial(Material m) {
+        foreach(MeshRenderer r in potRenderers) {
+            r.material = m;
         }
     }
 }

@@ -24,8 +24,10 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     private Dictionary<string, SoundClip> sounds;
+    private Dictionary<string, SoundClip> currentlyPlaying;
     private List<AudioSource> audioSources;
     private int audioSourceID;
+    private SoundClip curMusic;
 
     private readonly bool DEBUGGING = false;
     
@@ -46,7 +48,7 @@ public class AudioManager : MonoBehaviour
         foreach (AudioClip ac in audioClips)
         {
             if (DEBUGGING) Debug.Log($"New SoundClip {ac.name} added.");
-            sounds.Add(ac.name, new SoundClip(ac));
+            sounds.Add(ac.name, new SoundClip(ac.name, ac));
         }
         
         for (int i = 0; i < initialAudioSources; i++)
@@ -58,9 +60,9 @@ public class AudioManager : MonoBehaviour
     }
 
     private void OnSettingsLoad(Settings settings) {
-        AudioManager.Instance.audioMixer.SetFloat("MasterVolume", settings.MasterVolume);
-        AudioManager.Instance.audioMixer.SetFloat("SoundVolume", settings.SoundVolume);
-        AudioManager.Instance.audioMixer.SetFloat("MusicVolume", settings.MusicVolume);
+        audioMixer.SetFloat("MasterVolume", settings.MasterVolume);
+        audioMixer.SetFloat("SoundVolume", settings.SoundVolume);
+        audioMixer.SetFloat("MusicVolume", settings.MusicVolume);
     }
 
     /// <summary>
@@ -145,10 +147,15 @@ public class AudioManager : MonoBehaviour
         return soundClip;
     }
 
+    /// <summary>
+    /// Stops the current music that's playing and plays the music associated with the scene
+    /// </summary>
+    /// <param name="sceneName"> The name of the scene </param>
+    /// <returns> The played Soundclip </returns>
     public SoundClip PlaySceneMusic(string sceneName)
     {
         string musicName = string.Empty;
-        switch(sceneName)
+        switch (sceneName)
         {
             case "2-1":
             case "2-2":
@@ -162,7 +169,10 @@ public class AudioManager : MonoBehaviour
                 break;
         }
 
-        return PlaySound(musicName, ESoundChannel.MUSIC, true);
+        if (curMusic != null) { curMusic.DeactivateAudioSource(); }
+        curMusic = PlaySound(musicName, ESoundChannel.MUSIC, true);
+
+        return curMusic;
     }
 
     /// <summary>
@@ -184,6 +194,17 @@ public class AudioManager : MonoBehaviour
         }
 
         return audioSource;
+    }
+
+    public void StopLoopingSound(string soundName)
+    {
+        if (!currentlyPlaying[soundName].loop)
+        {
+            throw new WarningException("StopLoopingSound was called on a non-looping sound. This will cause some problems but might be fine.");
+        }
+
+        currentlyPlaying[soundName].audioSource.Stop();
+        currentlyPlaying[soundName].onFinish();
     }
 
     /// <summary>
@@ -214,6 +235,7 @@ public class AudioManager : MonoBehaviour
 
 public class SoundClip
 {
+    public string name;
     public bool loop;
     public UnityAction onFinish;
     public AudioSource audioSource;
@@ -251,14 +273,15 @@ public class SoundClip
         get { return audioClip.length; }
     }
 
-    public SoundClip(AudioClip audioClip)
+    public SoundClip(string name, AudioClip audioClip)
     {
+        this.name = name;
         this.audioClip = audioClip;
         onFinish += DeactivateAudioSource;
     }
 
     public SoundClip(SoundClip soundClip) 
-        : this(soundClip.audioClip)
+        : this(soundClip.name, soundClip.audioClip)
     { }
 
     /// <summary>
@@ -274,6 +297,7 @@ public class SoundClip
         audioSource.transform.position = Vector3.zero;
         audioSource.transform.parent = null;
         audioSource.gameObject.SetActive(true);
+        audioSource.name = name;
         
         switch(soundChannel)
         {
@@ -291,8 +315,12 @@ public class SoundClip
     /// <summary>
     /// Set audioSource inactive. Clears onFinish and adds this function back.
     /// </summary>
-    private void DeactivateAudioSource()
+    public void DeactivateAudioSource()
     {
+        if (audioSource == null || !audioSource.gameObject.activeSelf)
+        {
+            throw new WarningException("An AudioSource was destroyed or deactivated before it was done playing.");
+        }
         audioSource.gameObject.SetActive(false);
         audioSource.transform.parent = AudioManager.Instance.transform;
         onFinish = DeactivateAudioSource;

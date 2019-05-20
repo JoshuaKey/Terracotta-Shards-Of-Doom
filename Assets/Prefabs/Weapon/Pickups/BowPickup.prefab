@@ -79,6 +79,7 @@ MonoBehaviour:
   Speed: 1.5
   Magnitude: 0.5
   interactable: {fileID: 1740220624744741551}
+  WeaponDisplay: {fileID: 8137962058844460126}
   WeaponPrefab: {fileID: 3726514527976357539, guid: 4b8accc48522646418e1a9badb82f823,
     type: 3}
 --- !u!1001 &34169406152247665
@@ -88,6 +89,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1740220624744741549}
     m_Modifications:
+    - target: {fileID: 8112880157194444079, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
+        type: 3}
+      propertyPath: m_Name
+      value: BowModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4014795260387210119, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8112880157194469647, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -143,11 +154,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8112880157194444079, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
-        type: 3}
-      propertyPath: m_Name
-      value: BowModel
-      objectReference: {fileID: 0}
     - target: {fileID: 4014795260387210119, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
         type: 3}
       propertyPath: m_Controller
@@ -155,6 +161,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e, type: 3}
+--- !u!1 &8137962058844460126 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8112880157194444079, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,
+    type: 3}
+  m_PrefabInstance: {fileID: 34169406152247665}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8137962058843965566 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8112880157194469647, guid: 6c18fcaf2e3b46d40ab39502f9fdb72e,

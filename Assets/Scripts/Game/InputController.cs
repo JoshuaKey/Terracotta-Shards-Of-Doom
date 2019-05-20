@@ -113,10 +113,12 @@ public class InputController : MonoBehaviour {
 
     public static InputController Instance;
 
-    private void Start() {
+    private void Awake() {
         if (Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
+    }
 
+    private void Start() {
         StartCoroutine(CheckControllerStatus());
 
         CheckFile();
