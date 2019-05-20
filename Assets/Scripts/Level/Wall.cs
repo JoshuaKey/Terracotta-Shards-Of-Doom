@@ -43,6 +43,7 @@ public class Wall : MonoBehaviour
 
     private IEnumerator MoveWall(Vector3 startPos, Vector3 endPos) 
     {
+        AudioManager.Instance.PlaySoundWithParent("door_opening", ESoundChannel.SFX, gameObject);
         wallCollider.transform.localPosition = endPos;
 
         float startTime = Time.time;
