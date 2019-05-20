@@ -24,7 +24,6 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     private Dictionary<string, SoundClip> sounds;
-    private Dictionary<string, SoundClip> currentlyPlaying;
     private List<AudioSource> audioSources;
     private int audioSourceID;
     private SoundClip curMusic;
@@ -196,17 +195,6 @@ public class AudioManager : MonoBehaviour
         return audioSource;
     }
 
-    public void StopLoopingSound(string soundName)
-    {
-        if (!currentlyPlaying[soundName].loop)
-        {
-            throw new WarningException("StopLoopingSound was called on a non-looping sound. This will cause some problems but might be fine.");
-        }
-
-        currentlyPlaying[soundName].audioSource.Stop();
-        currentlyPlaying[soundName].onFinish();
-    }
-
     /// <summary>
     /// Creates a new AudioSource and addes it to audioSources.
     /// </summary>
@@ -226,7 +214,7 @@ public class AudioManager : MonoBehaviour
         return audioSource;
     }
 
-    private static IEnumerator ExecuteAfterSeconds(UnityAction action, float seconds)
+    public static IEnumerator ExecuteAfterSeconds(UnityAction action, float seconds)
     {
         yield return new WaitForSeconds(seconds);
         action();
@@ -324,5 +312,17 @@ public class SoundClip
         audioSource.gameObject.SetActive(false);
         audioSource.transform.parent = AudioManager.Instance.transform;
         onFinish = DeactivateAudioSource;
+    }
+
+    public void Play()
+    {
+        audioSource.Play();
+        if (!loop) { AudioManager.Instance.StartCoroutine(AudioManager.ExecuteAfterSeconds(onFinish, Length)); }
+    }
+
+    public void Stop()
+    {
+        audioSource.Stop();
+        onFinish();
     }
 }
