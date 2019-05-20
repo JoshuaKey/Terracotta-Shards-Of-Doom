@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
+public class LevelData {
+    public int TotalPots;
+    public StringBoolDictionary CollectedPots = new StringBoolDictionary();
+    public StringBoolDictionary SpecialPots = new StringBoolDictionary();
+    public bool IsCompleted;
+}
+
 public class LevelManager : MonoBehaviour {
 
     public string PersistentSceneName = "Persistent";
     public string StartingSceneName = "Hub";
+
+    //public StringLevelDictionary Levels = new StringLevelDictionary();
 
     public static LevelManager Instance;
 

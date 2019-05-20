@@ -59,6 +59,10 @@ public class Player : MonoBehaviour {
     public BrokenPot PlayerBrokenPotPrefab;
     public BrokenPot brokenPot;
 
+    [Header("Player Stats")]
+    //public int Coins = 0;
+    //public StringBoolDictionary CollectedWeapons = new StringBoolDictionary();
+
     public static Player Instance;
 
     [HideInInspector]
@@ -184,9 +188,6 @@ public class Player : MonoBehaviour {
             }
             if (Input.GetKeyDown(KeyCode.Equals)) {
                 LevelManager.Instance.LoadScene("Combat Scene");
-            }
-            if (Input.GetKeyDown(KeyCode.UpArrow)) {
-                this.velocity = this.camera.transform.forward * 300;
             }
             if (Input.GetKeyDown(KeyCode.Z)) {
                 Weapon w = WeaponManager.Instance.GetWeapon("Bow");
