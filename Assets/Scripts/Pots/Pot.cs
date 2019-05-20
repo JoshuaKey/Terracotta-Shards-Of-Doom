@@ -90,13 +90,10 @@ public class Pot : MonoBehaviour
             AudioManager.Instance.PlaySoundWithParent("ceramic_tink", ESoundChannel.SFX, gameObject);
         }
     }
-<<<<<<< HEAD
-=======
 
     public void SetMaterial(Material m) {
         foreach(MeshRenderer r in potRenderers) {
             r.material = m;
         }
     }
->>>>>>> develop
 }

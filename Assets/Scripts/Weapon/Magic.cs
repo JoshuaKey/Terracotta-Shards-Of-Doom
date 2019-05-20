@@ -6,6 +6,7 @@ using System.Linq;
 public class Magic : Weapon {
 
     [Header("Visuals")]
+    public float MissileShootDelay = .2f;
     public float MagicMissileImpulse = 10f;
     public MagicMissile MagicMissilePrefab;
     public Transform[] MagicMissilePositions;
@@ -14,11 +15,13 @@ public class Magic : Weapon {
     protected new Rigidbody rigidbody;
     protected new Collider collider;
 
-    private List<GameObject> enemyList = new List<GameObject>();
+    private List<Enemy> enemyList = new List<Enemy>();
+    private List<GameObject> targetList = new List<GameObject>();
     private List<MagicMissile> currMissiles = new List<MagicMissile>();
     private float charge = 0.0f;
     private float missileChargeInc = 0.0f;
     private int maxMissileCount = 0;
+    private IEnumerator routine;
 
     void Start() {
         if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
@@ -50,6 +53,7 @@ public class Magic : Weapon {
         }
 
         enemyList.Clear();
+        targetList.Clear();
         currMissiles.ForEach(x => Destroy(x.gameObject));
         currMissiles.Clear();
     }
@@ -78,11 +82,38 @@ public class Magic : Weapon {
     }
 
     public override void Attack() {
-        if (!CanAttack()) { return; }
+        if (!CanAttack() || currMissiles.Count == 0 || routine != null) { return; }
 
-        for(int i = 0; i < currMissiles.Count; i++) {
+        for(int i = 0; i < enemyList.Count; i++) {          
+            Enemy e = enemyList[i];
+            if (e.health.IsDead()) {
+                enemyList.RemoveAt(i);
+                targetList.RemoveAt(i);
+                i--;
+                continue;
+            }
+
+            RaycastHit hit;
+            int layerMask = LayerMask.GetMask("Default");
+            Vector3 pos = e.transform.position + Vector3.up;
+            if(Physics.Linecast(Player.Instance.camera.transform.position, pos, out hit, layerMask)) {
+                if(hit.collider.gameObject != e.gameObject) {
+                    enemyList.RemoveAt(i);
+                    targetList.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+            }
+        }
+
+        routine = Fire();
+        StartCoroutine(routine);
+    }
+
+    private IEnumerator Fire() {
+        for (int i = 0; i < currMissiles.Count; i++) {
             MagicMissile m = currMissiles[i];
-            m.Target = enemyList.Count == 0 ? null :  enemyList[i % enemyList.Count];
+            m.Target = targetList.Count == 0 ? null : targetList[i % targetList.Count];
             m.Impulse = m.Target == null ? Vector3.zero : Vector3.up * MagicMissileImpulse;
             m.LifeTime = 20f;
             m.Damage = this.Damage;
@@ -90,20 +121,25 @@ public class Magic : Weapon {
             m.Knockback = this.Knockback;
             m.RigidbodyKnockback = this.RigidbodyKnockback;
             m.Fire();
+
+            yield return new WaitForSeconds(MissileShootDelay);
         }
 
         charge = 0.0f;
         currMissiles.Clear();
         enemyList.Clear();
+        targetList.Clear();
         collider.enabled = false;
+        routine = null;
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (!enemyList.Contains(other.gameObject)) {
+        if (!targetList.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
             if (enemy != null) {
-                enemyList.Add(other.gameObject);
+                targetList.Add(other.gameObject);
+                enemyList.Add(enemy);
             }
         }
     }

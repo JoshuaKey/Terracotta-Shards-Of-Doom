@@ -1,4 +1,5 @@
 ﻿using Luminosity.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -28,11 +29,18 @@ public class PlayerHud : MonoBehaviour {
     [Header("Enemy Count")]
     public GameObject EnemyCount;
     public TextMeshProUGUI EnemyCountText;
+    public Animator uiPot;
+
+    [Header("Coin Count")]
+    public GameObject CoinCount;
+    public TextMeshProUGUI CoinCountText;
+    public Animator uiCoin;
 
     [Header("Weapon Toggle")]
     public GameObject WeaponToggle;
     public Image NextWeaponIcon;
     public Image CurrWeaponIcon;
+
     public Image PrevWeaponIcon;
     public TextMeshProUGUI NextWeaponText;
     public TextMeshProUGUI CurrWeaponText;
@@ -79,6 +87,16 @@ public class PlayerHud : MonoBehaviour {
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
     }
 
+    public void PlayCoinAnimation()
+    {
+        uiCoin.SetTrigger("Bounce");
+    }
+
+    public void PlayPotAnimation()
+    {
+        uiPot.SetTrigger("Bounce");
+    }
+
     private void OnPlayerControlChanged(PlayerID id) { UpdateInputIcons(); }
     private void OnControlSchemeChanged() { UpdateInputIcons(); }
     public void UpdateInputIcons() {
@@ -101,21 +119,29 @@ public class PlayerHud : MonoBehaviour {
     public void EnablePlayerHealthBar() {
         PlayerHealthBar.SetActive(true);
     }
-    public void SetPlayerHealthBar(float percent) {
+    public void SetPlayerHealthBar(float percent, bool instant = false) {
         EnablePlayerHealthBar();
 
         if (PlayerHealthRoutine != null) {
             StopCoroutine(PlayerHealthRoutine);
         }
 
-        if (percent > PlayerHealthForegroundSlider.value) { // Healing
+        // Animation
+        if (!instant) {
+            if (percent > PlayerHealthForegroundSlider.value) { // Healing
+                PlayerHealthBackgroundSlider.value = percent;
+                PlayerHealthRoutine = SliderTransition(PlayerHealthForegroundSlider, percent);
+            } else { // Taking Damage
+                PlayerHealthForegroundSlider.value = percent;
+                PlayerHealthRoutine = SliderTransition(PlayerHealthBackgroundSlider, percent);
+            }
+            StartCoroutine(PlayerHealthRoutine);
+        } 
+        // Instant Effect
+        else {
             PlayerHealthBackgroundSlider.value = percent;
-            PlayerHealthRoutine = SliderTransition(PlayerHealthForegroundSlider, percent);
-        } else { // Taking Damage
             PlayerHealthForegroundSlider.value = percent;
-            PlayerHealthRoutine = SliderTransition(PlayerHealthBackgroundSlider, percent);
-        }
-        StartCoroutine(PlayerHealthRoutine);
+        }     
     }
     public void DisablePlayerHealthBar() {
         PlayerHealthBar.SetActive(false);
@@ -148,10 +174,19 @@ public class PlayerHud : MonoBehaviour {
     }
     public void SetEnemyCount(int currEnemyCount, int maxEnemyCount) {
         EnableEnemyCount();
-        EnemyCountText.text = currEnemyCount + " / " + maxEnemyCount + " Pots";
+        EnemyCountText.text = currEnemyCount + " / " + maxEnemyCount;
     }
     public void DisableEnemyCount() {
         EnemyCount.SetActive(false);
+    }
+
+    // Coin Count
+    public void EnableCoinCount() {
+        CoinCount.SetActive(true);
+    }
+    public void SetCoinCount(int currCoinCount) {
+        EnableCoinCount();
+        CoinCountText.text = currCoinCount.ToString();
     }
 
     // Weapon toggle
