@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 6176816711874492949}
   - component: {fileID: 5285950824919458536}
   - component: {fileID: 6176816711259930212}
+  - component: {fileID: 1745839137256847698}
   m_Layer: 0
   m_Name: Boss 1
   m_TagString: Boss
@@ -131,14 +132,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce612b11c8facec4c91b74e4cabf331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CoinDropRange: {x: 10, y: 10}
-  BaseValue: 50
-  UseBigCoins: 1
   health: {fileID: 4829920887961136414}
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
   agent: {fileID: 0}
-  renderer: {fileID: 0}
   CanBeKnockedBack: 0
   animator: {fileID: 0}
 --- !u!114 &4829920887961136414
@@ -171,12 +168,20 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
+  agent: {fileID: 0}
+  animator: {fileID: 0}
+  potRenderers:
+  - {fileID: 6345030429290243463}
   knockback: 50
   Phase1Health: 3
   Phase1Resistance: 1
   Phase2Health: 10
   Phase2Resistance: 0
   SpawnLimit: 50
+  SpawnCoinDropRange: {x: 1, y: 5}
+  MaxSpawnsThatDropCoins: 100
+  totalSpawns: 0
+  currSpawns: []
   enemy: {fileID: 0}
   AISpawnPoint: {fileID: 8832224333948084491}
   playerTrigger: {fileID: 6176816711259930212}
@@ -233,6 +238,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7, y: 0.5, z: 7}
   m_Center: {x: 0, y: 0.25, z: 0}
+--- !u!114 &1745839137256847698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6345030429287988037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94d69dede03309c4b913bf17835ac1e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 4829920887961136414}
+  CoinDropRange: {x: 10, y: 10}
+  BaseValue: 50
+  UseBigCoins: 1
 --- !u!1 &6345030429287988039
 GameObject:
   m_ObjectHideFlags: 0

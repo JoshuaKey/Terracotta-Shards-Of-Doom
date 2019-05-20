@@ -38,6 +38,7 @@ public class EnemyProgression : MonoBehaviour {
     private void OnEnemyDeath() {
         currKills++;
         Check();
+        PlayerHud.Instance.PlayPotAnimation();
     }
 
     public void Check() {

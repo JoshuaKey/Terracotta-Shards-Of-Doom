@@ -5,10 +5,10 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour {
 
-    [Header("Coins")]
-    public Vector2Int CoinDropRange;
-    public int BaseValue;
-    public bool UseBigCoins = false;
+    //[Header("Coins")]
+    //public Vector2Int CoinDropRange;
+    //public int BaseValue;
+    //public bool UseBigCoins = false;
 
     //[HideInInspector]
     public Health health;
@@ -61,9 +61,9 @@ public class Enemy : MonoBehaviour {
         health.OnDeath += this.Die;
     }
 
-    public void Knockback(Vector3 force) {
+    public void Knockback(Vector3 force, float duration) {
         if (CanBeKnockedBack) {
-            StartCoroutine(KnockbackRoutine(force));
+            StartCoroutine(KnockbackRoutine(force, duration));
         }
     }
 
@@ -89,18 +89,23 @@ public class Enemy : MonoBehaviour {
 
         Destroy(this.gameObject);
 
-        int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
-        for (int i = 0; i < amo; i++) {
-            Coin coin = UseBigCoins ? CoinPool.Instance.CreateBigCoin() : CoinPool.Instance.Create();
-            Vector3 pos = this.transform.position + Random.insideUnitSphere * Random.value * 2.0f;
-            pos += Vector3.up;
-            coin.SetPosition(pos);
-            coin.Value = BaseValue * LevelManager.Instance.GetWorld();
-        }
+        //int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
+        //for (int i = 0; i < amo; i++) {
+        //    Coin coin = UseBigCoins ? CoinPool.Instance.CreateBigCoin() : CoinPool.Instance.Create();
+        //    Vector3 pos = this.transform.position + Random.insideUnitSphere * Random.value * 2.0f;
+        //    pos += Vector3.up;
+        //    coin.SetPosition(pos);
+        //    coin.Value = BaseValue * LevelManager.Instance.GetWorld();
+        //}
         //Debug.Break();
     }
 
-    protected IEnumerator KnockbackRoutine(Vector3 force)
+    public void SetMaterial(Material m) {
+        pot.SetMaterial(m);
+        brokenPot.SetMaterial(m);
+    }
+
+    protected IEnumerator KnockbackRoutine(Vector3 force, float duration)
     {
         float angularSpeed = 0;
         if (agent != null)
@@ -120,7 +125,15 @@ public class Enemy : MonoBehaviour {
             animator.SetTrigger("Knockback");
         }
 
-        yield return new WaitForSeconds(1f);
+        if (agent != null) {
+            while(agent.remainingDistance != 0.0f){
+                yield return null;
+            }
+        } else {
+            yield return new WaitForSeconds(1f);
+            //yield return new WaitForSeconds(duration);
+        }
+            
 
         if(agent != null)
         {

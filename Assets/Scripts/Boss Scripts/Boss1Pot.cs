@@ -16,7 +16,10 @@ public class Boss1Pot : Pot
 
     [Header("Spawning")]
     public int SpawnLimit = 50;
-    private List<Enemy> currSpawns = new List<Enemy>();
+    public Vector2Int SpawnCoinDropRange = new Vector2Int(1,5);
+    public int MaxSpawnsThatDropCoins = 100;
+    [SerializeField] private int totalSpawns;
+    [SerializeField] private List<Enemy> currSpawns = new List<Enemy>();
 
     [HideInInspector]
     public Enemy enemy;
@@ -35,7 +38,6 @@ public class Boss1Pot : Pot
         get { return playerEnteredArena; }
         set { playerEnteredArena = value; }
     }
-
 
     [Header("Visual")]
     public List<Rigidbody> ArmorPieces;
@@ -118,11 +120,10 @@ public class Boss1Pot : Pot
 
         if (!CanSpawn())
         {
-            currSpawns[0].health.TakeDamage(DamageType.TRUE, currSpawns[0].health.CurrentHealth);
+            //currSpawns[0].health.TakeDamage(DamageType.TRUE, currSpawns[0].health.CurrentHealth);
+            Destroy(currSpawns[0].gameObject);
             currSpawns.RemoveAt(0);
         }
-
-        //print("Spawning");
 
         Player player = Player.Instance;
         float percent = Random.Range(0.0f, 99.0f);
@@ -174,8 +175,19 @@ public class Boss1Pot : Pot
             }
         }
 
+        // We could just make another prefab variant with different Variables...
+        CoinPowerUp coinPower = enemy.GetComponent<CoinPowerUp>();
+        if (coinPower != null) {
+            if (totalSpawns > MaxSpawnsThatDropCoins) {
+                Destroy(coinPower);
+            } else {
+                coinPower.CoinDropRange = SpawnCoinDropRange;
+            }
+        }
+
         currSpawns.Add(enemy);
         enemy.health.OnDeath += OnSpawnDeath;
+        totalSpawns++;
 
         return enemy;
     }
@@ -486,6 +498,14 @@ public class Boss1Pot : Pot
                 time = Mathf.Clamp(time += Time.deltaTime, 0.0f, 1.5f);
                 Vector3 newPosition = Utility.BezierCurve(startPosition, peak, targetPosition, time / 1.5f);
                 // pos is NaN
+                float xPos = newPosition.x;
+                if(float.IsNaN(xPos) || float.IsInfinity(xPos)) {
+                    Debug.Log(startPosition);
+                    Debug.Log(peak);
+                    Debug.Log(targetPosition);
+                    Debug.Log(time / 1.5f);
+                    Debug.Break();
+                }
                 enemy.transform.position = newPosition;
 
                 yield return null;

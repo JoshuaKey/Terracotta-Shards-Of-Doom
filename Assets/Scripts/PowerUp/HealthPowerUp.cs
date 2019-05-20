@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthPowerUp : PowerUp{
+public class HealthPowerUp : PowerUp {
 
     public float HealthGain = 1f;
 

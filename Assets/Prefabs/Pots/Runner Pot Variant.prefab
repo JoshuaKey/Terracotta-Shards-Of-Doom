@@ -15,6 +15,10 @@ MonoBehaviour:
   waddleAmplitude: 12.5
   hopHeight: 0.5
   stunned: 0
+  agent: {fileID: 0}
+  animator: {fileID: 0}
+  potRenderers:
+  - {fileID: 8494436296735738781}
   cowardRadius: 20
 --- !u!195 &1437326796
 NavMeshAgent:
@@ -116,6 +120,12 @@ PrefabInstance:
 --- !u!1 &8494436296737740127 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1948159762795503107, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 7992495389517171548}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8494436296735738781 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
     type: 3}
   m_PrefabInstance: {fileID: 7992495389517171548}
   m_PrefabAsset: {fileID: 0}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class MimicPot : Pot
 {
 
+
     [SerializeField] public float aggroRadius = 5f; // this is when the pot first wakes up
     [SerializeField] public float chaseRadius = 10.0f; // this is after the pot is awake
     //This is all atack stuff and i currently dont wanna change it
@@ -18,6 +19,7 @@ public class MimicPot : Pot
             new Mimic_Idle(),
             new Mimic_Charge(),
             new Mimic_Attack(attackDuration));
+        stateMachine.DEBUGGING = true;
     }
 
     public override void Animate()
@@ -26,18 +28,28 @@ public class MimicPot : Pot
         Hop();
         //but for now i Hop
     }
+
+    //public override void SetMaterial(Material m) {
+    //    renderer.material = m;
+    //}
+
 }
 
 
 
 public class Mimic_Idle : State
 {
-    GameObject player;
+    MimicPot mimicPot;
+    Player player;
+    Health hp;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
+        mimicPot = owner.GetComponent<MimicPot>();
+        player = Player.Instance;
+        hp = owner.GetComponent<Health>();
     }
 
     public override void Enter()
@@ -50,22 +62,25 @@ public class Mimic_Idle : State
 
     public override string Update()
     {
-        if (owner.GetComponent<MimicPot>() == null || player == null)
-        {
-            return null;
-        }
+        //if (owner.GetComponent<MimicPot>() == null || player == null)
+        //{
+        //    return null;
+        //}
+        //Debug.Log(owner.GetComponent<MimicPot>());
+        //Debug.Log(player);
+
 
         //This will check if it can wake up or not
-        if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<MimicPot>().aggroRadius)
+        if (Vector3.Distance(owner.transform.position, player.transform.position) <mimicPot.aggroRadius)
         {
             return "Mimic_Charge";
         }
 
         //This will check if the player is in the chase radius and has hit the pot 
         //(so if they attack it from range it will charge them)
-        if (Vector3.Distance(owner.transform.position, player.transform.position) < owner.GetComponent<MimicPot>().chaseRadius
+        if (Vector3.Distance(owner.transform.position, player.transform.position) < mimicPot.chaseRadius
             //this is awful and i hate it
-            && owner.GetComponent<Health>().CurrentHealth != owner.GetComponent<Health>().MaxHealth)
+            && hp.CurrentHealth != hp.MaxHealth)
         {
             return "Mimic_Charge";
         }
@@ -76,12 +91,13 @@ public class Mimic_Idle : State
 
 public class Mimic_Charge : State
 {
-    GameObject player;
+    Player player;
 
     public override void Init(GameObject owner)
     {
         base.Init(owner);
-        player = GameObject.FindGameObjectWithTag("Player");
+        //player = GameObject.FindGameObjectWithTag("Player");
+        player = Player.Instance;
     }
 
     public override void Enter()
@@ -121,6 +137,7 @@ public class Mimic_Attack : TimedState
     GameObject player;
     Animator animator;
     Attack attack;
+    MimicPot mp;
 
     public Mimic_Attack(float seconds)
         :base(seconds)
@@ -131,6 +148,7 @@ public class Mimic_Attack : TimedState
         base.Init(owner);
         animator = owner.GetComponentInChildren<Animator>();
         attack = owner.GetComponentInChildren<Attack>();
+        mp = owner.GetComponent<MimicPot>();
     }
 
     public override void Enter()
@@ -164,7 +182,7 @@ public class Mimic_Attack : TimedState
         Vector3 newForward = Player.Instance.transform.position - owner.transform.position;
         owner.transform.forward = newForward;
 
-        if (timer >= seconds)
+        if (timer >= seconds || mp.stunned)
         {
             return "POP";
         }

@@ -7,11 +7,13 @@ public class Coin : PoolObject {
     public int Value;
 
     [Header("Movement")]
-    public float MoveSpeed = 5.0f;
     public float LerpSpeed = 2.0f;
+    public float SpeedOverLifeMultiple = 2.0f;
     public float BobSpeed = 1.0f;
     public float BobDist = 1.0f;
     public float RotateSpeed = 30f;
+
+    private float currSpeed;
 
     [Header("Components")]
     public new Rigidbody rigidbody;
@@ -26,6 +28,7 @@ public class Coin : PoolObject {
     protected override void Start() {
         base.Start();
         currPos = this.transform.position;
+        currSpeed = LerpSpeed;
         offset = Random.insideUnitSphere * .5f;
         bobTimer = Random.Range(0.0f, 10.0f);
     }
@@ -33,8 +36,10 @@ public class Coin : PoolObject {
     void Update() {
         Player player = Player.Instance;
 
-        Vector3 pos = Vector3.Lerp(currPos, player.transform.position + offset, LerpSpeed * Time.deltaTime);
+        Vector3 pos = Vector3.Lerp(currPos, player.transform.position + offset, currSpeed * Time.deltaTime);
         SetPosition(pos);
+
+        currSpeed += SpeedOverLifeMultiple * Time.deltaTime;
 
         this.transform.Rotate(Vector3.up * RotateSpeed * Time.deltaTime, Space.Self);
     }
@@ -42,9 +47,11 @@ public class Coin : PoolObject {
     public override void Reset() {
         base.Reset();
         this.transform.position = Vector3.zero;
+        this.transform.localScale = Vector3.one;
         this.transform.rotation = Quaternion.identity;
         currPos = Vector3.zero;
         offset = Vector3.zero;
+        currSpeed = 0.0f;
         bobTimer = 0.0f;
         bobDist = 0.0f;
     }
@@ -75,11 +82,14 @@ public class Coin : PoolObject {
             Game.Instance.playerStats.Coins += Value;
             Value = 0;
             this.gameObject.SetActive(false);
+
+            PlayerHud.Instance.SetCoinCount(Game.Instance.playerStats.Coins);
+            PlayerHud.Instance.PlayCoinAnimation();
         }
     }
 
     protected override void OnDisable() {
-        print("Coin Disabled");
+        //print("Coin Disabled");
         base.OnDisable();
         if(Value != 0) {
             print("Coin Collected: " + Value);

@@ -64,13 +64,9 @@ public class MagicMissile : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
-
-        print(other.name);
-
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
-			print("Daamage" + enemy.name);
             // Damage
             float damage = enemy.health.TakeDamage(this.Type, this.Damage);
             bool isDead = enemy.health.IsDead();
@@ -87,11 +83,11 @@ public class MagicMissile : PoolObject {
         rigidbody.velocity = Vector3.zero;
         collider.isTrigger = false;
         rigidbody.useGravity = true;
+        rigidbody.AddForce(this.transform.position - other.transform.position);
         Target = null;
-
         int layer = LayerMask.NameToLayer("Default");
         this.gameObject.layer = layer;
-        for(int i = 0; i < this.transform.childCount; i++) {
+        for (int i = 0; i < this.transform.childCount; i++) {
             Transform t = this.transform.GetChild(i);
             t.gameObject.layer = layer;
         }
