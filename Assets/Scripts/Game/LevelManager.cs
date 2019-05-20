@@ -19,8 +19,7 @@ public class LevelManager : MonoBehaviour {
     private void Start() {
         SceneManager.sceneLoaded += OnSceneLoaded;
         if (SceneManager.GetActiveScene().name == PersistentSceneName) {
-            //SceneManager.LoadScene(StartingSceneName);
-            SceneManager.LoadSceneAsync(StartingSceneName);
+            LoadScene(StartingSceneName);
         }
 
         Game.Instance.playerStats.OnLoad += OnStatsLoad;
@@ -30,7 +29,8 @@ public class LevelManager : MonoBehaviour {
         print(scene.name + " was Loaded!");
 
         Player.Instance.gameObject.SetActive(false);
-        Player.Instance.Respawn();
+        CheckPointSystem.Instance.LoadStartPoint();
+        Player.Instance.health.Reset();
         Player.Instance.gameObject.SetActive(true);
 
         AudioManager.Instance.PlaySceneMusic(scene.name);
@@ -53,17 +53,33 @@ public class LevelManager : MonoBehaviour {
         SceneManager.MoveGameObjectToScene(obj, SceneManager.GetActiveScene());
     }
 
-    public void RestartLevel() {
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+    public void RestartLevel(bool async = false) {
+        if (async) {
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        } else {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }       
     }
-    public void LoadLevel(int world, int level) {
-        SceneManager.LoadSceneAsync(world + "-" + level);
+    public void LoadLevel(int world, int level, bool async = false) {
+        if (async) {
+            SceneManager.LoadSceneAsync(world + "-" + level);
+        } else {
+            SceneManager.LoadScene(world + "-" + level);
+        }
     }
-    public void LoadHub() {  
-        SceneManager.LoadSceneAsync("Hub");    
+    public void LoadHub(bool async = false) {  
+        if (async) {
+            SceneManager.LoadSceneAsync("Hub");
+        } else {
+            SceneManager.LoadScene("Hub");
+        }
     }
-    public void LoadScene(string scene) {
-        SceneManager.LoadSceneAsync(scene);
+    public void LoadScene(string scene, bool async = false) {    
+        if (async) {
+            SceneManager.LoadSceneAsync(scene);
+        } else {
+            SceneManager.LoadScene(scene);
+        }
     }
 
     public string GetLevelName() {

@@ -7,7 +7,6 @@ public class MagicMissile : PoolObject {
     [Header("Life")]
     public Vector3 Impulse;
     public float TargetSpeed = 5;
-    public float TargetLerpSpeed = 0.9f;
     public float LifeTime = 20f;
 
     [Header("Damage")]
