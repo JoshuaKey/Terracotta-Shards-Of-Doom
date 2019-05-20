@@ -126,15 +126,7 @@ public class Enemy : MonoBehaviour {
             animator.SetTrigger("Knockback");
         }
 
-        //if (agent == null) {
-        //    while(agent.remainingDistance != 0.0f){
-        //        yield return null;
-        //    }
-        //} else {
-            //yield return new WaitForSeconds(1f);
-            yield return new WaitForSeconds(duration);
-        //}
-            
+        yield return new WaitForSeconds(duration);           
 
         if(agent != null)
         {
