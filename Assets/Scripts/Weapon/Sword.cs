@@ -48,7 +48,10 @@ public class Sword : Weapon {
         StopAllCoroutines();
         if (collider) {
             collider.enabled = false;
-        }      
+        }
+        if (animator != null) {
+            animator.Play("Sword_Still");
+        }
     }
 
     public override void Attack() {
