@@ -23,11 +23,11 @@ public class Spear : Weapon {
 
     private List<GameObject> enemiesHit = new List<GameObject>();
 
-	[SerializeField] Transform spearChargePos;
+	[SerializeField] Transform spearChargePos = null;
 	private float charge;
 	private float currentDamage;
-	[SerializeField] GameObject spearModel;
-	[SerializeField] float MinKnockback;
+	[SerializeField] GameObject spearModel = null;
+	[SerializeField] float MinKnockback = 0.0f;
 	private float currentKnockback;
 
     protected void Start() {
