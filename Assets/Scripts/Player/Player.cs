@@ -179,8 +179,14 @@ public class Player : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
             }
+            if (Input.GetKeyDown(KeyCode.H)) {
+                this.health.Heal(3.0f);
+            }
             if (Input.GetKeyDown(KeyCode.Equals)) {
                 LevelManager.Instance.LoadScene("Combat Scene");
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow)) {
+                this.velocity = this.camera.transform.forward * 300;
             }
             if (Input.GetKeyDown(KeyCode.Z)) {
                 Weapon w = WeaponManager.Instance.GetWeapon("Bow");
