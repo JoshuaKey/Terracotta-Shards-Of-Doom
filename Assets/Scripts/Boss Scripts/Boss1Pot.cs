@@ -282,7 +282,7 @@ public class Boss1Pot : Pot
 
         public override void Init(GameObject owner)
         {
-            Target = GameObject.FindGameObjectWithTag("Player");
+            Target = Player.Instance.gameObject;
 
             boss = owner.GetComponent<Boss1Pot>();
 
@@ -543,7 +543,7 @@ public class Boss1Pot : Pot
 
         public override void Init(GameObject owner)
         {
-            Target = GameObject.FindGameObjectWithTag("Player");
+            Target = Player.Instance.gameObject;
 
             boss = owner.GetComponent<Boss1Pot>();
 
@@ -723,8 +723,9 @@ public class Boss1Pot : Pot
 
             armoredPot = owner.GetComponent<Boss1Pot>();
 
-            target = GameObject.FindGameObjectWithTag("Player");
+            target = Player.Instance.gameObject;
 
+            // For the Coroutine...
             monoBehaviour = owner.GetComponent<MonoBehaviour>();
 
             base.Init(owner);

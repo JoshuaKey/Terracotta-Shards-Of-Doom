@@ -16,12 +16,13 @@ public class SpikeTrap : MonoBehaviour {
     public GameObject TrapModel;
     public Transform WaitPos;
     public Transform SpringPos;
-    public float WaitTime = 0.2f;
-    public float ReloadTime = 0.5f;
+    public float WaitTime;
+    public float ReloadTime;
     public float SpringTime;
     public float RecoilTime;
 
     private List<GameObject> enemiesHit = new List<GameObject>();
+    private SoundClip gears;
 
     // Start is called before the first frame update
     void Start() {
@@ -55,7 +56,7 @@ public class SpikeTrap : MonoBehaviour {
         TrapModel.transform.position = SpringPos.position;
 
         startTime = Time.time;
-        AudioManager.Instance.PlaySoundWithParent("gears", ESoundChannel.SFX, gameObject, true);
+        gears = AudioManager.Instance.PlaySoundWithParent("gears", ESoundChannel.SFX, gameObject, true);
         while (Time.time < startTime + RecoilTime) {
             //print("Recoiling");
 
@@ -65,7 +66,6 @@ public class SpikeTrap : MonoBehaviour {
             yield return null;
         }
         TrapModel.transform.position = WaitPos.position;
-        AudioManager.Instance.StopLoopingSound("gears");
 
         DamageCollider.enabled = false;
 
@@ -74,6 +74,7 @@ public class SpikeTrap : MonoBehaviour {
             //print("Waiting");
             yield return null;
         }
+        gears.Stop();
 
         Trigger.enabled = true;
         enemiesHit.Clear();

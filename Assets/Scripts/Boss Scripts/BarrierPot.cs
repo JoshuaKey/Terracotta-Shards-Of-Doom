@@ -18,6 +18,7 @@ public class BarrierPot : ChargerPot
     private bool inPosition;
 
     public bool InPosition
+
     {
         get
         {
@@ -28,6 +29,9 @@ public class BarrierPot : ChargerPot
             inPosition = value;
         }
     }
+
+    [HideInInspector]
+    public Boss2Pot owningBoss;
 
     private StateMachine ChargerPotStateMachine = null;
 
@@ -44,10 +48,17 @@ public class BarrierPot : ChargerPot
             new Charger_Charge(),
             new Charger_Attack(attackDuration));
 
+        health.OnDeath += OnDeath;
         agent.enabled = false;
     }
 
-    void Start()
+    void OnDeath()
+    {
+        owningBoss.barrierPots.Remove(this);
+        //owningBoss.
+    }
+
+    new void Start()
     {
 
     }

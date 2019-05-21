@@ -19,6 +19,9 @@ public class PauseMenu : MonoBehaviour
     [Space]
     [Header("Audio")]
     [SerializeField] AudioMixer audioMixer;
+    [SerializeField] Slider masterSlider;
+    [SerializeField] Slider musicSlider;
+    [SerializeField] Slider sfxSlider;
     [Space]
     [Header("Other")]
     [SerializeField] Button continueButton;
@@ -31,6 +34,11 @@ public class PauseMenu : MonoBehaviour
     // player bools
     private bool playerCanAttack = true;
     private bool playerCanSwapWeapon = false;
+
+    // volumes
+    [HideInInspector] public float masterVolume = 0f;
+    [HideInInspector] public float musicVolume = 0f;
+    [HideInInspector] public float sfxVolume = 0f;
 
     private void Start()
     {
@@ -52,6 +60,11 @@ public class PauseMenu : MonoBehaviour
         audio.SetActive(false);
         controls.SetActive(false);
         quit.SetActive(false);
+
+        masterSlider.value = (masterVolume / 100) + 0.8f;
+        musicSlider.value = (musicVolume / 100) + 0.8f;
+        sfxSlider.value = (sfxVolume / 100) + 0.8f;
+        audioMixer.SetFloat("SFXVolume", -80f);
 
         Time.timeScale = 0;
 
@@ -78,6 +91,7 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        audioMixer.SetFloat("SFXVolume", sfxVolume);
 
         if (Player.Instance != null)
         {
@@ -205,20 +219,19 @@ public class PauseMenu : MonoBehaviour
     #region Volume
     public void ChangeMasterVolume(float volume)
     {
-        volume = (volume * 100) - 80;
-        audioMixer.SetFloat("MasterVolume", volume);
+        masterVolume = (volume * 100) - 80;
+        audioMixer.SetFloat("MasterVolume", masterVolume);
     }
 
     public void ChangeMusicVolume(float volume)
     {
-        volume = (volume * 100) - 80;
-        audioMixer.SetFloat("MusicVolume", volume);
+        musicVolume = (volume * 100) - 80;
+        audioMixer.SetFloat("MusicVolume", musicVolume);
     }
 
     public void ChangeSFXVolume(float volume)
     {
-        volume = (volume * 100) - 80;
-        audioMixer.SetFloat("SFXVolume", volume);
+        sfxVolume = (volume * 100) - 80;
     }
     #endregion
 }
