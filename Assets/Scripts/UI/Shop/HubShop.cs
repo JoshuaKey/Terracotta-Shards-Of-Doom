@@ -13,12 +13,11 @@ public class HubShop : MonoBehaviour
     [SerializeField] InformationPanel informationPanel;
     public ShopPanel mainPanel;
     [SerializeField] ShopPanel[] panels;
-    [Space]
-    [Header("Other")]
-    [SerializeField] PlayerHud playerHud;
     #pragma warning restore 0649
 
     [HideInInspector] public bool isMovingPanels;
+
+    private GameObject playerHud;
 
     #region weapon info
     [HideInInspector] public static WeaponInformation swordInfo 
@@ -53,9 +52,10 @@ public class HubShop : MonoBehaviour
             "Behold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         informationPanel.Show(mainPanel.weaponName);
+        if (playerHud == null) playerHud = FindObjectOfType<PlayerHud>().gameObject;
     }
 
     #region Navigation
@@ -137,7 +137,7 @@ public class HubShop : MonoBehaviour
 
     public void ActivateHubShop()
     {
-        playerHud.gameObject.SetActive(false);
+        playerHud.SetActive(false);
 
         Player.Instance.enabled = false;
         Cursor.lockState = CursorLockMode.None;
@@ -148,7 +148,7 @@ public class HubShop : MonoBehaviour
 
     public void DeactivateHubShop()
     {
-        playerHud.gameObject.SetActive(true);
+        playerHud.SetActive(true);
 
         Player.Instance.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;

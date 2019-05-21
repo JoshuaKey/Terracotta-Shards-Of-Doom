@@ -12,6 +12,17 @@ public class ShopKeeper : MonoBehaviour
     {
         interactable = GetComponent<Interactable>();
         interactable.Subscribe(OpenShop);
+        hubShopMenu.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        transform.LookAt(Player.Instance.transform, Vector3.up);
+
+        Vector3 eulers = transform.rotation.eulerAngles;
+        eulers.x = 0;
+
+        transform.rotation = Quaternion.Euler(eulers);
     }
 
     public void OpenShop()

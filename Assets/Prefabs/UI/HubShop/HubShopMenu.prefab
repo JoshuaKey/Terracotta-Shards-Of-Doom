@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2587181472050952528}
   - component: {fileID: 8191013402906445704}
   - component: {fileID: 1057493815013870708}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Crossbow Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,6 +90,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMainPanel: 0
   weaponName: Crossbow
+  weaponModel: {fileID: 0}
+  lockModel: {fileID: 0}
   rectTransform: {fileID: 0}
 --- !u!1 &638791778914483755
 GameObject:
@@ -102,7 +104,7 @@ GameObject:
   - component: {fileID: 2167991701138809170}
   - component: {fileID: 6191445349105418317}
   - component: {fileID: 7751171833756371110}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +176,7 @@ GameObject:
   - component: {fileID: 4463254419064226989}
   - component: {fileID: 1974858538301695463}
   - component: {fileID: 2415976320198024280}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Weapon Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -307,11 +309,11 @@ MonoBehaviour:
     lineCount: 2
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -336,7 +338,7 @@ GameObject:
   - component: {fileID: 4042937407191653203}
   - component: {fileID: 8219528320436267257}
   - component: {fileID: 221970035145841952}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,7 +411,7 @@ GameObject:
   - component: {fileID: 8697908817552935709}
   - component: {fileID: 3778682682327844396}
   - component: {fileID: 3614707383574115514}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Magic Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -487,6 +489,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMainPanel: 0
   weaponName: Magic
+  weaponModel: {fileID: 0}
+  lockModel: {fileID: 0}
   rectTransform: {fileID: 0}
 --- !u!1 &3555087012160422450
 GameObject:
@@ -500,7 +504,7 @@ GameObject:
   - component: {fileID: 2037386843940056546}
   - component: {fileID: 5563060433424916817}
   - component: {fileID: 1479349462403149226}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Spear Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -578,6 +582,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMainPanel: 0
   weaponName: Spear
+  weaponModel: {fileID: 0}
+  lockModel: {fileID: 0}
   rectTransform: {fileID: 0}
 --- !u!1 &4291810291179935864
 GameObject:
@@ -590,7 +596,7 @@ GameObject:
   - component: {fileID: 5674834031734349351}
   - component: {fileID: 8867465995645284566}
   - component: {fileID: 2213147911363979355}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Weapon Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -722,11 +728,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -752,7 +758,7 @@ GameObject:
   - component: {fileID: 7302586241882566866}
   - component: {fileID: 6116080167418641316}
   - component: {fileID: 3291119229598939983}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Information Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -845,7 +851,7 @@ GameObject:
   - component: {fileID: 3249409873923260555}
   - component: {fileID: 3755976044503562305}
   - component: {fileID: 536199442141648696}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Sword Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -923,6 +929,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMainPanel: 1
   weaponName: Sword
+  weaponModel: {fileID: 0}
+  lockModel: {fileID: 0}
   rectTransform: {fileID: 0}
 --- !u!1 &5033957037349309359
 GameObject:
@@ -937,13 +945,13 @@ GameObject:
   - component: {fileID: 2178530963513000908}
   - component: {fileID: 2948060688226741256}
   - component: {fileID: 1704721880059558276}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HubShopMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4193149514634295831
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1060,7 +1068,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 72768324731190686}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Weapon Panels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1104,7 +1112,7 @@ GameObject:
   - component: {fileID: 1309377953724802799}
   - component: {fileID: 49196972763113595}
   - component: {fileID: 9080436318240297611}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Bow Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1182,6 +1190,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMainPanel: 0
   weaponName: Bow
+  weaponModel: {fileID: 0}
+  lockModel: {fileID: 0}
   rectTransform: {fileID: 0}
 --- !u!1 &5650239096665951498
 GameObject:
@@ -1194,7 +1204,7 @@ GameObject:
   - component: {fileID: 7573338171325653064}
   - component: {fileID: 782283229174530623}
   - component: {fileID: 7113957015199343049}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1267,7 +1277,7 @@ GameObject:
   - component: {fileID: 1237385366177349356}
   - component: {fileID: 4319841536932221054}
   - component: {fileID: 5435449314461768095}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Hammer Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1345,6 +1355,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMainPanel: 0
   weaponName: Hammer
+  weaponModel: {fileID: 0}
+  lockModel: {fileID: 0}
   rectTransform: {fileID: 0}
 --- !u!1 &6683376424926296286
 GameObject:
@@ -1357,7 +1369,7 @@ GameObject:
   - component: {fileID: 2972586526002677447}
   - component: {fileID: 8531848950167393328}
   - component: {fileID: 870833744016956246}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1429,7 +1441,7 @@ GameObject:
   - component: {fileID: 4352589687955563042}
   - component: {fileID: 1785911638038143625}
   - component: {fileID: 3571944348997333975}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1501,7 +1513,7 @@ GameObject:
   - component: {fileID: 4410349842897924732}
   - component: {fileID: 1724668202078933611}
   - component: {fileID: 887542298718572128}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1573,7 +1585,7 @@ GameObject:
   - component: {fileID: 7081508255300534750}
   - component: {fileID: 2350653874175416554}
   - component: {fileID: 6782039157093580546}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1640,6 +1652,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Input Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 7437318940247898460, guid: 148bda47f704fad43b929bc7c0c847a3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4828423440878851680, guid: 148bda47f704fad43b929bc7c0c847a3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1695,21 +1712,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3714810332621400265, guid: 148bda47f704fad43b929bc7c0c847a3,
-        type: 3}
-      propertyPath: MouseAndKeyboardSchemeName
-      value: Mouse and Keyboard
-      objectReference: {fileID: 0}
-    - target: {fileID: 3714810332621400265, guid: 148bda47f704fad43b929bc7c0c847a3,
-        type: 3}
-      propertyPath: LeftHandedSchemeName
-      value: Left Handed
-      objectReference: {fileID: 0}
-    - target: {fileID: 3714810332621400265, guid: 148bda47f704fad43b929bc7c0c847a3,
-        type: 3}
-      propertyPath: ControllerSchemeName
-      value: Xbox One
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 148bda47f704fad43b929bc7c0c847a3, type: 3}
 --- !u!4 &5047284302984663069 stripped
@@ -1729,36 +1731,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Purchase
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3291119229598939983}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PurchaseUpgrade
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4662437501478017344, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
@@ -1865,15 +1837,35 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 0
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 0
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3291119229598939983}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PurchaseUpgrade
+      objectReference: {fileID: 0}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
@@ -1889,6 +1881,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.spaceCount
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510f612a7817b544eb1d5dc09a2af16e, type: 3}
@@ -1909,36 +1906,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Exit
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1704721880059558276}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DeactivateHubShop
-      objectReference: {fileID: 0}
-    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4662437501478017344, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
@@ -2045,15 +2012,35 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 0
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 0
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1704721880059558276}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DeactivateHubShop
+      objectReference: {fileID: 0}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 533530164630494190, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
         type: 3}
@@ -2069,6 +2056,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.spaceCount
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 853432974586321997, guid: 510f612a7817b544eb1d5dc09a2af16e,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510f612a7817b544eb1d5dc09a2af16e, type: 3}
