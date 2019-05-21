@@ -460,7 +460,7 @@ public class Boss1Pot : Pot
                 targetZ = player.transform.position.z + player.velocity.z;
             }
             targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
-
+            //TODO: Look at this to see if it is a useless check or uses the wrong data
             NavMeshHit hit;
             NavMesh.SamplePosition(owner.transform.position + targetPosition, out hit, 25.0f, NavMesh.AllAreas);
             targetPosition = hit.position;
