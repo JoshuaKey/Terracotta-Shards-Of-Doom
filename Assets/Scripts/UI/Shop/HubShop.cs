@@ -9,13 +9,18 @@ public class HubShop : MonoBehaviour
 {
 
     #pragma warning disable 0649
+    [Header("Shop Panels")]
     [SerializeField] InformationPanel informationPanel;
     public ShopPanel mainPanel;
     [SerializeField] ShopPanel[] panels;
+    [Space]
+    [Header("Other")]
+    [SerializeField] PlayerHud playerHud;
     #pragma warning restore 0649
 
     [HideInInspector] public bool isMovingPanels;
 
+    #region weapon info
     [HideInInspector] public static WeaponInformation swordInfo 
         = new WeaponInformation(
             "Sword", 
@@ -46,8 +51,7 @@ public class HubShop : MonoBehaviour
         = new WeaponInformation(
             "Magic",
             "Behold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
-
-
+    #endregion
 
     private void Start()
     {
@@ -57,6 +61,11 @@ public class HubShop : MonoBehaviour
     #region Navigation
     private void Update()
     {
+        if(InputManager.GetButtonDown("Pause Menu"))
+        {
+            DeactivateHubShop();
+        }
+
         CheckWeaponScroll();
 
         if (isMovingPanels)
@@ -124,6 +133,28 @@ public class HubShop : MonoBehaviour
     {
         Debug.Log($"Upgraded {weaponName}.");
         GetWeaponInfo(weaponName).isUpgraded = true;
+    }
+
+    public void ActivateHubShop()
+    {
+        playerHud.gameObject.SetActive(false);
+
+        Player.Instance.enabled = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        gameObject.SetActive(true);
+    }
+
+    public void DeactivateHubShop()
+    {
+        playerHud.gameObject.SetActive(true);
+
+        Player.Instance.enabled = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        gameObject.SetActive(false);
     }
     #endregion
 
