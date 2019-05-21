@@ -87,6 +87,15 @@ public class Hammer : Weapon {
         Collider[] colliders = Physics.OverlapSphere(Player.Instance.transform.position, SlamRadius, layermask);
         //Collider[] colliders = Physics.OverlapSphere(SlamCenter.position, SlamRadius, layermask);
         foreach (Collider c in colliders) {
+            TargetProjectile targetProj = c.GetComponentInChildren<TargetProjectile>();
+            if (targetProj != null) {
+                Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
+                dir.y = 0.0f;
+                dir = dir.normalized;
+                targetProj.Hit(this.gameObject, dir * Knockback);
+                continue;
+            }
+
             Enemy enemy = c.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
             if (enemy != null) {

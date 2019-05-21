@@ -6,8 +6,14 @@ using UnityEngine.AI;
 public class Boss3Pot : Pot {
 
     [Header("Snowball")]
-    public GameObject/*Snowball*/ SnowballPrefab;
+    public TargetProjectile SnowballPrefab;
+    public Transform SpawnPosition;
+    public TargetReceiver Reciever;
+
+    [Header("Snowball Values")]
     public float SnowballSpawnTime = 5.0f;
+    public float SnowballImpulse = 10.0f;
+    private List<TargetProjectile> snowballs = new List<TargetProjectile>();
 
     [Header("Blocks")]
     public List<GameObject> Blocks;
@@ -34,11 +40,12 @@ public class Boss3Pot : Pot {
         enemy.health.OnDamage += ChangeHealthUI;
         enemy.health.OnDamage += PlayClang;
         enemy.health.OnDeath += OnDeath;
-        ChangeHealthUI(0);
+        Reciever.OnReceive += ReceiveSnowball;
     }
 
     void Update() {
         stateMachine.Update();
+        print(stateMachine.GetCurrState().ToString());
     }
 
     public void PlayClang(float damage) {
@@ -62,10 +69,51 @@ public class Boss3Pot : Pot {
         }
     }
 
+    public void SpawnSnowball() {
+        TargetProjectile snowball = Instantiate(SnowballPrefab, SpawnPosition.position, SpawnPosition.rotation);
+        Vector3 dir = Player.Instance.transform.position - snowball.transform.position;
+        dir.y = 0.0f;
+        dir = dir.normalized;
+        snowball.Fire(this.gameObject, Player.Instance.gameObject, dir);
+        snowball.OnHit += HitSnowball;
+        snowball.OnMiss += MissSnowball;
+        snowballs.Add(snowball);
+        // Add coroutine
+    }
+
+    private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
+        print("Received " + snowballObj.name);
+
+        stateMachine.ChangeState("Boss3_Vulnerable");
+
+        for (int i = 0; i < snowballs.Count;) {
+            TargetProjectile snowball = snowballs[i];
+            DestroySnowball(snowball);
+        }      
+    }
+
+    private void HitSnowball(TargetProjectile snowball, GameObject hitObj) {
+        print("Hit");
+
+        DestroySnowball(snowball);
+    }
+
+    private void MissSnowball(TargetProjectile snowball) {
+        print("Missed");
+
+        DestroySnowball(snowball);
+    }
+
+    private void DestroySnowball(TargetProjectile snowball) {
+        snowballs.Remove(snowball);
+        Destroy(snowball.gameObject);
+    }
+
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             if (arenaCollider.enabled) {
                 arenaCollider.enabled = false;
+                PlayerHud.Instance.EnableBossHealthBar();
             } 
         }
     }
@@ -90,7 +138,13 @@ public class Boss3_Idle : State {
         if (!boss3Pot.arenaCollider.enabled) {
             return "Boss3_Snowball";
         }
-        boss3Pot.Waddle();
+
+        //Vector3 euler = boss3Pot.transform.rotation.eulerAngles;
+        //euler.z = 12.5 * Mathf.Sin(Mathf.PI * 1 * Time.time);
+        //euler.y += euler.z * -0.1f;
+
+        //boss3Pot.transform.rotation = Quaternion.Euler(euler);
+
         return null;
     }
 }
@@ -98,15 +152,16 @@ public class Boss3_Idle : State {
 public class Boss3_Snowball : State {
 
     Boss3Pot boss3Pot = null;
-
+    float nextSpawn;
 
     public override void Init(GameObject owner) {
         base.Init(owner);
-        boss3Pot = owner.GetComponent<Boss3Pot>();
+        boss3Pot = owner.GetComponent<Boss3Pot>();       
     }
 
     public override void Enter() {
        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+        nextSpawn = 0.0f;
     }
 
     public override void Exit() {
@@ -114,9 +169,10 @@ public class Boss3_Snowball : State {
     }
 
     public override string Update() {
-        //if (!boss3Pot.arenaCollider.enabled) {
-        //    return "Boss3_Snowball";
-        //}
+        if(Time.time > nextSpawn) {
+            nextSpawn = Time.time + boss3Pot.SnowballSpawnTime;
+            boss3Pot.SpawnSnowball();
+        }
         return null;
     }
 }
@@ -124,7 +180,7 @@ public class Boss3_Snowball : State {
 public class Boss3_Vulnerable : State {
 
     Boss3Pot boss3Pot = null;
-    float healthThreshold; // 
+    float healthThreshold; 
     float nextThreshold;
 
     public override void Init(GameObject owner) {
@@ -178,32 +234,32 @@ public class Boss3_Vulnerable : State {
 // We should have 
 
 
+
+
 ///////////////////////////////////////////////////////////////////////////////
-// TargetProjectileReceiver
-// Has a collider, if Target Projectile enters collider, send the Target Projectile back...
-
-// Snowball
-// TargetSpeed = 0
-
-// In Sword.cs
-// OnTriggerEnter()
-// TargetProjectile targetPro = GetComponent<TargetProjectile>();
-// var dir = ...
-// targetPro.Hit(this.gameObject, dir);
-
-// OnHit for TargetProjectile...
-
-
 // Things to Do
-// Target projectile is Good
-// Boss3_Idle is Good
 // Boss3_Vulnerable needs animation (Maybe add an in between state for jumping down?)
 // Bos3_Snowball needs animation and logic
-// Add ThrowSnowball() to Boss3 
+
 // Add Colliders with TargetBlock Tag
 // Add Vulnerable Animation and Particle
-// Set Snowball TargetSpeed = 0
-// Add Code to Melee weapons for hitting Target Projectile
-// Add Snowball.OnHit += DamagePlayer (+ knockback)
 // TEST
+
+
+
+// Snowball needs to move around the ground (default)
+// Snowball needs to hit Player (player)
+// Snowball needs to hit TargetReceiver
+// Snowball shoulnd not hit Snowball
+// Arrow can hit Snowball 
+// Arrow can hit Enemy (Enemy)
+// Arrow can not hit TargetReceiver
+// Arrow is PlayerProjectile
+// Arrow becomes Default
+// Snowball is (?)
+// TargetReciever is (?)
+
+// Snowball Speed is weird...
+// Kind of hard to hit with Hammer and Spear...
+// Add Wind?
 

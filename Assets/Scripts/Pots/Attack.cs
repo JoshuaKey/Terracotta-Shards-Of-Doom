@@ -17,7 +17,14 @@ public class Attack : MonoBehaviour
         {
             hasHitPlayer = true;
             Player.Instance.health.TakeDamage(damageType, damage);
-            Player.Instance.Knockback(transform.forward * knockback);
+
+            //Player.Instance.Knockback(transform.forward * knockback);
+
+            // I changed the Knocbakc Direction... Fight me
+            Vector3 dir = Player.Instance.transform.position - this.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            Player.Instance.Knockback(dir * knockback);
         }
     }
 }
