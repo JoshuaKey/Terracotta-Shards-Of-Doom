@@ -9,9 +9,7 @@ public class PortalText : MonoBehaviour
 	[SerializeField] Player player = null;
 	[SerializeField] Canvas canvas = null;
 	[SerializeField] string text = "";
-	Vector3 textTransform;
 
-	float damageLife = 0;
 	// Use this for initialization
 	void Start()
 	{
