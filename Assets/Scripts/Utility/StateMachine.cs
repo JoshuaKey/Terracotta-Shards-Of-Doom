@@ -228,7 +228,8 @@ public abstract class TimedState : State
 
     public override void Enter()
     {
-        seconds = 0;
+        //seconds = 0;
+        timer = 0;
     }
 
     public override string Update()
