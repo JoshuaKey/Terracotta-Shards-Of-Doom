@@ -8,6 +8,11 @@ public class ShopPanel : MonoBehaviour
     public bool isMainPanel;
     public string weaponName;
 
+    #pragma warning disable 0649
+    [SerializeField] GameObject weaponModel;
+    [SerializeField] Animator lockModel;
+    #pragma warning restore 0649
+
     [HideInInspector] public RectTransform rectTransform;
 
     HubShop hubShop;
@@ -53,6 +58,20 @@ public class ShopPanel : MonoBehaviour
 
     public void BlackOut(bool isBlackedOut)
     {
-        rawImage.color = isBlackedOut ? Color.black : Color.white;
+        MeshRenderer mesh = weaponModel.GetComponentInChildren<MeshRenderer>();
+        if (mesh != null)
+        {
+            mesh.material.color = isBlackedOut ? Color.black : Color.white;
+        }
+        else
+        {
+            SkinnedMeshRenderer skinnedMesh = weaponModel.GetComponentInChildren<SkinnedMeshRenderer>();
+            if(skinnedMesh != null)
+            {
+                skinnedMesh.material.color = isBlackedOut ? Color.black : Color.white;
+            }
+        }
+        if (!isBlackedOut) lockModel.SetTrigger("Unlock");
+        //rawImage.color = isBlackedOut ? Color.black : Color.white;
     }
 }

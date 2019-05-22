@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1070653790103214995}
   - component: {fileID: 3576482301504511413}
   - component: {fileID: 7565068706352736989}
-  m_Layer: 13
+  m_Layer: 17
   m_Name: Spear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,6 +67,7 @@ MonoBehaviour:
   AttackSpeed: 2
   Damage: 4
   Knockback: 2
+  KnockbackDuration: 1
   RigidbodyKnockback: 5
   MinDamage: 0.25
   MinCharge: 0.25
@@ -78,6 +79,7 @@ MonoBehaviour:
   AnimationRecoilTime: 0.15
   spearChargePos: {fileID: 2987737130536630612}
   spearModel: {fileID: 7679099409555948687}
+  MinKnockback: 0
 --- !u!1 &3340625331592070380
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +89,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2987737130536630612}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: ChargeSpearPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +138,7 @@ PrefabInstance:
     - target: {fileID: 3432089465086885157, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465086714117, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
@@ -196,7 +198,7 @@ PrefabInstance:
     - target: {fileID: 3432089465086885159, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 3432089465089139687, guid: 71ac7aa2a8363b24c856858a3bf6efce,
         type: 3}

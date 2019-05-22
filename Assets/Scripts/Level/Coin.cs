@@ -94,6 +94,7 @@ public class Coin : PoolObject {
         if(Value != 0) {
             print("Coin Collected: " + Value);
             Game.Instance.playerStats.Coins += Value;
+            //Player.Instance.Coins += Value;
             Value = 0;
         }
     }
