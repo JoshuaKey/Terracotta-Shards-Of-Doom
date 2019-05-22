@@ -432,55 +432,17 @@ public class Boss3_Vulnerable : State {
     }
 }
 
-// Idle Phase
-// Waits and does nothing (animates?)
-// Switch to Snowball phase when trigger is hit
-
-// Vulnerable Phase
-// Teeters around on ground
-// Bird / star particle effect
-// Waits until health threshold
-// Goes to Snowball phase when below threshold
-
-// Spawn Snowball Phase
-// Invulnerable
-// Spawns Snowballs at player
-// When Snowball hits block, block breaks, boss falls to ground, enter Vulnerable Phase
-
-// Snowball
-// Spawns in front of the blocks
-// When it is ready, the boss calculates the direction from snowball to player and FIRES
-// Snowball moves forward while gaining speed (?) from angle and terrain. (small bumps?)
-// If the snowball hits the player, it deals damage, knockback (?), and dissipates
-// If the player hits the snowball with a melee weapon, it moves towards the boss / block
-// When the snowball hits the boss / block, the next block is destroyed and the Boss becomes vulnerable
-// We should have 
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Things to Do
-// Make it kind of "attack" when it throws a snowball?
-// Add Vulnerable Animation - Confused Particle and Teeter
+// Teeter Animation
+// Cofused Particle
+// Add Wind
+// Destory Effect
+// Fix player getting hit, but not destroying Snowball...
+
 // Fix Snowball speed and Size - I want it to grow, but also be threatening. Should scale with "phase"
 // Make the ground look "right" - normal Map?
 // Fix Block Textures... - Use Ice block textures on 3-1 and 3-2?
-// Add Wind
 // Hit Effect?
-// Destor Effect
-
 // TEST
-
-// Snowball needs to move around the ground (default)
-// Snowball needs to hit Player (player)
-// Snowball needs to hit TargetReceiver
-// Snowball shoulnd not hit Snowball
-// Arrow can hit Snowball 
-// Arrow can hit Enemy (Enemy)
-// Arrow can not hit TargetReceiver
-// Arrow is PlayerProjectile
-// Arrow becomes Default
-// Snowball is (?)
-// TargetReciever is (?)
 
