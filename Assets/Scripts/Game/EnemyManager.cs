@@ -57,9 +57,14 @@ public class EnemyManager : MonoBehaviour {
             // If already collected, modify material
             if (Game.Instance.playerStats.Levels[levelName].CollectedPots[name]) {
                 enemies[i].SetMaterial(HasCollectedMaterial);
-                //enemies[i].renderer.material = HasCollectedMaterial;
-                //enemies[i].brokenPot.SetMaterial(HasCollectedMaterial);
             }
+            //if (!LevelManager.Instance.Levels[levelName].CollectedPots.ContainsKey(name)) {
+            //    LevelManager.Instance.Levels[levelName].CollectedPots[name] = false;
+            //}
+            //// If already collected, modify material
+            //if (LevelManager.Instance.Levels[levelName].CollectedPots[name]) {
+            //    enemies[i].SetMaterial(HasCollectedMaterial);
+            //}
         }
     }
 

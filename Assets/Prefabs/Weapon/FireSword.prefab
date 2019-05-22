@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!65 &1836799594045107385
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4647681636755220644}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.0846169, y: 3.8092768, z: 0.36796996}
-  m_Center: {x: -0.012413501, y: 1.5405434, z: -0.004262}
 --- !u!1 &3420378731492004649
 GameObject:
   m_ObjectHideFlags: 0
@@ -25,7 +12,7 @@ GameObject:
   - component: {fileID: 3420378731492004652}
   - component: {fileID: 3420378731492004650}
   - component: {fileID: 8934923743370659578}
-  m_Layer: 13
+  m_Layer: 17
   m_Name: FireSword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,6 +68,7 @@ MonoBehaviour:
   AttackSpeed: 0.5
   Damage: 2
   Knockback: 3
+  KnockbackDuration: 1
   RigidbodyKnockback: 5
   StartPos: {x: 0.5, y: -0.5, z: 0.777}
   EndPos: {x: -0.27, y: -0.7, z: 1.13}
@@ -107,6 +95,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &1836799594045107385
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4647681636755220644}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0846169, y: 3.8092768, z: 0.36796996}
+  m_Center: {x: -0.012413501, y: 1.5405434, z: -0.004262}
 --- !u!1 &5194602203956730050
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +117,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6204656056542947634}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: TorchParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +150,7 @@ GameObject:
   - component: {fileID: 1959361005698826033}
   - component: {fileID: 8148645032226301736}
   - component: {fileID: 4266213726205917509}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: FireSparkyBoi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4851,7 +4852,7 @@ PrefabInstance:
     - target: {fileID: 8211546560054715266, guid: 295b7ed3e0d8f2840bab5e910dfda936,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 8211546560054689698, guid: 295b7ed3e0d8f2840bab5e910dfda936,
         type: 3}
@@ -4911,7 +4912,7 @@ PrefabInstance:
     - target: {fileID: 8211546560054715264, guid: 295b7ed3e0d8f2840bab5e910dfda936,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295b7ed3e0d8f2840bab5e910dfda936, type: 3}

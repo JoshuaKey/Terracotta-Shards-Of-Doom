@@ -12,26 +12,11 @@ public class StringBoolDictionary : SerializableDictionaryBase<string, bool> { }
 public class StringLevelDictionary : SerializableDictionaryBase<string, LevelData> { }
 
 [Serializable]
-public class LevelData {
-    public int TotalPots;
-    public StringBoolDictionary CollectedPots = new StringBoolDictionary();
-    public StringBoolDictionary SpecialPots = new StringBoolDictionary();
-    public bool IsCompleted;
-}
-
-[Serializable]
 public class PlayerStats {
     public int Coins = 0;
     public StringBoolDictionary Weapons = new StringBoolDictionary();
     public StringLevelDictionary Levels = new StringLevelDictionary();
 
-    //[NonSerialized] private static PlayerStats instance;
-    //public static PlayerStats Instance {
-    //    get {
-    //        if (instance == null) { instance = new PlayerStats(); }
-    //        return instance;
-    //    }
-    //}
     [NonSerialized] public Action OnSave;
     [NonSerialized] public Action<PlayerStats> OnLoad;
     [NonSerialized] public Action OnReset;
@@ -88,6 +73,26 @@ public class PlayerStats {
 
         OnSave?.Invoke();
     }
+
+    /*
+     * 
+    public static void Save(string file) {
+
+        PlayerStats stats = new PlayerStats(); 
+
+        stats.Coins = Player.instance.Coins;
+        stats.Weapons = Player.instance.CollectedWeapons;
+        stats.Levels = new stringLevelDictionary();
+
+        string data = JsonUtility.ToJson(stats, true);
+
+        File.WriteAllText(file, data);
+
+        OnSave?.Invoke();
+    }
+     */
+
+
     /// <summary>
     /// Loads new Player Stats from the specific file. 
     /// 
@@ -111,10 +116,22 @@ public class PlayerStats {
             OnLoad?.Invoke(data);
         }
     }
+    //public static void Load(string file) {
+    //    Debug.Log("Loading Player Stats to " + file);
+
+    //    if (File.Exists(file)) {
+    //        string json = File.ReadAllText(file);
+
+    //        PlayerStats data = JsonUtility.FromJson<PlayerStats>(json);
+
+    //        OnLoad?.Invoke(data);
+    //    }
+    //}
+
     /// <summary>
     /// Updates the Player Stats with default values. 
     /// 
-    /// Invokes OnUpdate and OnReset Event.
+    /// Invokes OnReset Event.
     /// </summary>
     public void Reset() {
         Debug.Log("Reseting PlayerStats");

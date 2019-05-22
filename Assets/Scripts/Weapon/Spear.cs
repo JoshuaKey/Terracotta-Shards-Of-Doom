@@ -113,6 +113,15 @@ public class Spear : Weapon {
 
 
     protected void OnTriggerEnter(Collider other) {
+        TargetProjectile targetProj = other.GetComponentInChildren<TargetProjectile>();
+        if (targetProj != null) {
+            Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            targetProj.Hit(this.gameObject, dir * currentKnockback);
+            return;
+        }
+
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
