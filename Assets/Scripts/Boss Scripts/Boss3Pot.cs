@@ -113,7 +113,7 @@ public class Boss3Pot : Pot {
         print("Received " + snowballObj.name);
 
         stateMachine.ChangeState("Boss3_Stop");
-        //
+        StopAllCoroutines();
 
         for (int i = 0; i < snowballs.Count;) {
             TargetProjectile snowball = snowballs[i];
@@ -368,14 +368,15 @@ public class Boss3_Vulnerable : State {
 
 ///////////////////////////////////////////////////////////////////////////////
 // Things to Do
-// Boss3_Vulnerable needs animation (Maybe add an in between state for jumping down?)
-// Bos3_Snowball needs animation and logic
+// Idle Animation (?)
+// Make it kind of "attack" when it throws a snowball?
+// Add Vulnerable Animation - Confused Particle and Teeter
+// Fix Snowball speed and Size - I want it to grow, but also be threatening. Should scale with "phase"
+// Add a bigger "ridge" to the side of the moutain
+// Make the ground look "right" - normal Map?
+// Fix Block Textures... - Use Ice block textures on 3-1 and 3-2?
 
-// Add Colliders with TargetBlock Tag
-// Add Vulnerable Animation and Particle
 // TEST
-
-
 
 // Snowball needs to move around the ground (default)
 // Snowball needs to hit Player (player)
