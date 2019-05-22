@@ -32,6 +32,7 @@ public class Sword : Weapon {
 
         this.name = "Sword";
         Player.Instance.health.OnDeath += OnDeath;
+        animator.keepAnimatorControllerStateOnDisable = false;
     }
 
     private void OnDeath() {
@@ -43,6 +44,7 @@ public class Sword : Weapon {
     private void OnEnable() {
         this.transform.localPosition = StartPos;
         this.transform.localRotation = Quaternion.Euler(StartRot);
+        //animator.keepAnimatorControllerStateOnDisable = false;
     }
     private void OnDisable() {
         StopAllCoroutines();
@@ -50,7 +52,8 @@ public class Sword : Weapon {
             collider.enabled = false;
         }
         if (animator != null) {
-            animator.Play("Sword_Still");
+            //animator.Play("Sword_Still");
+            
         }
     }
 
@@ -110,6 +113,16 @@ public class Sword : Weapon {
     }
 
     protected void OnTriggerEnter(Collider other) {
+        TargetProjectile targetProj = other.GetComponentInChildren<TargetProjectile>();
+        if (targetProj != null) {
+            Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            targetProj.Hit(this.gameObject, dir * Knockback);
+            return;
+        }
+
+
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if(enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }

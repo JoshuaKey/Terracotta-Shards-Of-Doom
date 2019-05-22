@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 951680341231762625}
   - component: {fileID: 951680341231762631}
   - component: {fileID: 6466489162386729239}
-  m_Layer: 13
+  m_Layer: 17
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,6 +67,7 @@ MonoBehaviour:
   AttackSpeed: 0.5
   Damage: 3
   Knockback: 3
+  KnockbackDuration: 1
   RigidbodyKnockback: 5
   StartPos: {x: 0.5, y: -0.5, z: 0.777}
   EndPos: {x: -0.27, y: -0.7, z: 1.13}
@@ -104,8 +105,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.0846169, y: 3.8092768, z: 0.36796996}
-  m_Center: {x: -0.012413501, y: 1.5405434, z: -0.004262}
+  m_Size: {x: 1.0846169, y: 5.3419223, z: 0.36796996}
+  m_Center: {x: -0.012413511, y: 2.3068657, z: -0.004262005}
 --- !u!1001 &1425402115197789385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -121,7 +122,7 @@ PrefabInstance:
     - target: {fileID: 8211546560054715266, guid: 295b7ed3e0d8f2840bab5e910dfda936,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 8211546560054689698, guid: 295b7ed3e0d8f2840bab5e910dfda936,
         type: 3}
@@ -181,7 +182,7 @@ PrefabInstance:
     - target: {fileID: 8211546560054715264, guid: 295b7ed3e0d8f2840bab5e910dfda936,
         type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 295b7ed3e0d8f2840bab5e910dfda936, type: 3}

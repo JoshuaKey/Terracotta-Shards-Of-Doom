@@ -23,11 +23,11 @@ public class Spear : Weapon {
 
     private List<GameObject> enemiesHit = new List<GameObject>();
 
-	[SerializeField] Transform spearChargePos;
+	[SerializeField] Transform spearChargePos = null;
 	private float charge;
 	private float currentDamage;
-	[SerializeField] GameObject spearModel;
-	[SerializeField] float MinKnockback;
+	[SerializeField] GameObject spearModel = null;
+	[SerializeField] float MinKnockback = 0.0f;
 	private float currentKnockback;
 
     protected void Start() {
@@ -113,6 +113,15 @@ public class Spear : Weapon {
 
 
     protected void OnTriggerEnter(Collider other) {
+        TargetProjectile targetProj = other.GetComponentInChildren<TargetProjectile>();
+        if (targetProj != null) {
+            Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            targetProj.Hit(this.gameObject, dir * currentKnockback);
+            return;
+        }
+
         if (!enemiesHit.Contains(other.gameObject)) {
             Enemy enemy = other.GetComponentInChildren<Enemy>();
             if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }

@@ -58,7 +58,7 @@ public class BarrierPot : ChargerPot
         //owningBoss.
     }
 
-    void Start()
+    new void Start()
     {
 
     }

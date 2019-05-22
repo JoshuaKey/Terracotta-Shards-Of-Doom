@@ -59,6 +59,10 @@ public class Player : MonoBehaviour {
     public BrokenPot PlayerBrokenPotPrefab;
     public BrokenPot brokenPot;
 
+    [Header("Player Stats")]
+    //public int Coins = 0;
+    //public StringBoolDictionary CollectedWeapons = new StringBoolDictionary();
+
     public static Player Instance;
 
     [HideInInspector]
@@ -178,6 +182,9 @@ public class Player : MonoBehaviour {
         if (Application.isEditor) {
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
+            }
+            if (Input.GetKeyDown(KeyCode.H)) {
+                this.health.Heal(3.0f);
             }
             if (Input.GetKeyDown(KeyCode.Equals)) {
                 LevelManager.Instance.LoadScene("Combat Scene");
@@ -461,10 +468,6 @@ public class Player : MonoBehaviour {
         collider.enabled = true;
         Time.timeScale = 1.0f;
 
-        // Reset Player Stats
-        CheckPointSystem.Instance.LoadStartPoint();
-        health.Reset();
-
         // Reattach Camera
         this.camera.transform.parent = this.transform;
         camera.transform.localPosition = cameraPosition;
@@ -475,10 +478,12 @@ public class Player : MonoBehaviour {
         newWeapon.transform.SetParent(camera.transform, false);
 
         // Reset Broken Pot
-        brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform);
+        brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform);       
+
+        // Respawn...
+        LevelManager.Instance.RestartLevel();
 
         // UI
-        PauseMenu.Instance.DeactivatePauseMenu();
         DeathScreen.Instance.DisableDeathScreen();
         PlayerHud.Instance.EnablePlayerHud();
         PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
@@ -552,7 +557,7 @@ public class Player : MonoBehaviour {
             this.camera.transform.LookAt(this.transform);
 
             if (InputManager.GetButtonDown("UI_Submit")) {
-                LevelManager.Instance.RestartLevel();
+                Respawn();
             }
 
             yield return null;
@@ -564,7 +569,7 @@ public class Player : MonoBehaviour {
         // Check for restart
         while (true) {
             if (InputManager.GetButtonDown("UI_Submit")) {
-                LevelManager.Instance.RestartLevel();
+                Respawn();
             }
 
             yield return null;

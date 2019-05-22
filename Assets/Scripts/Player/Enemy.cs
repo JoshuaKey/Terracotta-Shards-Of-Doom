@@ -63,13 +63,12 @@ public class Enemy : MonoBehaviour {
 
     public void Knockback(Vector3 force, float duration) {
         if (CanBeKnockedBack) {
-            print("Knockback");
             StartCoroutine(KnockbackRoutine(force, duration));
         }
     }
 
     public void Explode(Vector3 force, Vector3 pos) {
-        if (brokenPot.gameObject.activeInHierarchy) {
+        if (brokenPot != null && brokenPot.gameObject.activeInHierarchy) {
             brokenPot.Explode(force, pos);
         }
     }
@@ -83,22 +82,15 @@ public class Enemy : MonoBehaviour {
         AudioManager.Instance.PlaySoundAtLocation(sounds[Random.Range(0, sounds.Length)], ESoundChannel.SFX, transform.position);
 
         this.gameObject.SetActive(false);
-        brokenPot.gameObject.SetActive(true);
-        brokenPot.transform.parent = null;
+        if(brokenPot != null) {
+            brokenPot.gameObject.SetActive(true);
+            brokenPot.transform.parent = null;
+        }
+
 
         health.OnDeath -= this.Die;
 
         Destroy(this.gameObject);
-
-        //int amo = Random.Range(CoinDropRange.x, CoinDropRange.y);
-        //for (int i = 0; i < amo; i++) {
-        //    Coin coin = UseBigCoins ? CoinPool.Instance.CreateBigCoin() : CoinPool.Instance.Create();
-        //    Vector3 pos = this.transform.position + Random.insideUnitSphere * Random.value * 2.0f;
-        //    pos += Vector3.up;
-        //    coin.SetPosition(pos);
-        //    coin.Value = BaseValue * LevelManager.Instance.GetWorld();
-        //}
-        //Debug.Break();
     }
 
     public void SetMaterial(Material m) {

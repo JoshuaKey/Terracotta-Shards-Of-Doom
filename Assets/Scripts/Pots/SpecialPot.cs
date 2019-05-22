@@ -31,8 +31,22 @@ public class SpecialPot : MonoBehaviour {
         // If already collected, modify material
         if (Game.Instance.playerStats.Levels[levelName].SpecialPots[name]) {
             renderer.material = HasCollectedMaterial;
-            enemy.brokenPot.SetMaterial(HasCollectedMaterial);
+            if(enemy.brokenPot != null) {
+                enemy.brokenPot.SetMaterial(HasCollectedMaterial);
+            }
         }
+
+        //// Initialize value if it doesn't exist...
+        //if (!LevelManager.Instance.Levels[levelName].SpecialPots.ContainsKey(name)) {
+        //    LevelManager.Instance.Levels[levelName].SpecialPots[name] = false;
+        //}
+        //// If already collected, modify material
+        //if (LevelManager.Instance.Levels[levelName].SpecialPots[name]) {
+        //    renderer.material = HasCollectedMaterial;
+        //    if(enemy.brokenPot != null) {
+        //        enemy.brokenPot.SetMaterial(HasCollectedMaterial);
+        //    }
+        //}
 
         this.enemy.health.OnDeath += OnDeath;
     }
@@ -40,6 +54,7 @@ public class SpecialPot : MonoBehaviour {
     private void OnDeath() {
         string levelName = LevelManager.Instance.GetLevelName();
         Game.Instance.playerStats.Levels[levelName].SpecialPots[name] = true;
+        //LevelManager.Instance.Levels[levelName].SpecialPots[name] = true;
     }
 
     private void Spawn() {
