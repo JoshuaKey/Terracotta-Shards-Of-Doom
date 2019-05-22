@@ -1,13 +1,14 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Boss4Pot : Pot
 {
-    public GameObject EnemyGameobject = null;
+    public GameObject MeshAndCollider = null;
     public BoxCollider MovementBoundaries = null;
     public Transform Spawnpoint = null;
+    public GameObject ProjectilePool = null;
+    public BoxCollider ProjectileTargetArea = null;
     [Range(1, 20)]
     public byte MaxSpawnedPots = 1;
     [HideInInspector]
@@ -84,26 +85,18 @@ class Boss4_Shooting : State
         }
         enemy.health.OnDeath += PotDied;
 
-        NavMeshAgent navAgent = null;
         Pot pot = enemy.GetComponent<Pot>();
         if (pot != null)
         {
-            
+
             pot.enabled = false;
-            if (navAgent != null)
+            if (pot.agent != null)
             {
-                navAgent.enabled = false;
+
+                pot.agent.enabled = false;
             }
         }
 
-        Player player = Player.Instance;
-        Vector3 playerHorizontalVelocity = new Vector3(player.velocity.x, 0.0f, player.velocity.z);
-        Vector3 playerPosition = player.transform.position + playerHorizontalVelocity * 1.2f;
-
-        NavMeshHit hit;
-        NavMesh.SamplePosition(playerPosition, out hit, 4.0f, NavMesh.AllAreas);
-        Vector3 targetPosition = hit.position;
-        
         Vector2 randomDirection = Random.insideUnitCircle;
         Vector3 direction = new Vector3(randomDirection.x, 0.0f, randomDirection.y);
         Vector3 spawnpointPosition = boss.transform.position + (direction * 2.0f);
@@ -125,10 +118,18 @@ class Boss4_Shooting : State
         }
         enemy.transform.parent = null;
 
+        Player player = Player.Instance;
+        Vector3 playerHorizontalVelocity = new Vector3(player.velocity.x, 0.0f, player.velocity.z);
+        Vector3 playerPosition = player.transform.position + playerHorizontalVelocity;
+
+        NavMeshHit hit;
+        NavMesh.SamplePosition(playerPosition, out hit, 4.0f, NavMesh.AllAreas);
+        Vector3 targetPosition = hit.position;
+
 
         do
         {
-            enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 10.0f);
+            enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 12.0f);
             yield return null;
             if (enemy == null)
             {
@@ -137,14 +138,14 @@ class Boss4_Shooting : State
             }
         } while ((enemy.transform.position - targetPosition).magnitude > .1f);
 
-        if (navAgent != null)
-        {
-            navAgent.enabled = true;
-        }
 
         if (pot != null)
         {
             pot.enabled = true;
+            if (pot.agent != null)
+            {
+                pot.agent.enabled = true;
+            }
         }
 
         shooting = false;
@@ -177,7 +178,7 @@ class Boss4_Shooting : State
             float zOffset = 0.0f;
 
             Vector3 offsets = new Vector3(xOffset, yOffset, zOffset);
-            boss.EnemyGameobject.transform.position = boss.gameObject.transform.position + offsets;
+            boss.MeshAndCollider.transform.position = boss.gameObject.transform.position + offsets;
             yield return null;
         }
     }
@@ -193,6 +194,51 @@ class Boss4_Shooting : State
         return new Vector3(Random.Range(bounds.min.x, bounds.max.x),
             Random.Range(bounds.min.y, bounds.max.y),
             Random.Range(bounds.min.z, bounds.max.z));
+    }
+}
+
+class Boss4_Meteor : State
+{
+    Boss4Pot boss = null;
+    GameObject[] projectiles = null;
+
+    bool firing = false;
+
+    public override void Init(GameObject owner)
+    {
+        boss = owner.GetComponent<Boss4Pot>();
+        projectiles = new GameObject[boss.transform.childCount];
+        for(int i = 0; i < projectiles.Length; i++)
+        {
+            projectiles[i] = boss.transform.GetChild(i).gameObject;
+        }
+        base.Init(owner);
+    }
+
+    public override void Enter()
+    {
+        firing = false;
+    }
+
+    public override void Exit()
+    {
+        firing = false;
+    }
+
+    public override string Update()
+    {
+        if(!firing)
+        {
+            boss.StartCoroutine(Firing());
+        }
+        return null;
+    }
+
+    IEnumerator Firing()
+    {
+        firing = true;
+        yield return null;
+        firing = false;
     }
 }
 #endregion
