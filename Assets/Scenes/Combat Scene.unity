@@ -8773,8 +8773,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8320168974033532814, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
+--- !u!1 &1825109239 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1948159762795503107, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1825109238}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1825109240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825109239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 363e4a273da46ab45ab66ddde90b6edc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waddleAmplitude: 12.5
+  hopHeight: 0.5
+  stunned: 0
+  agent: {fileID: 0}
+  animator: {fileID: 0}
+  potRenderers: []
 --- !u!1 &1836904709
 GameObject:
   m_ObjectHideFlags: 0
