@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SnowballForce : MonoBehaviour {
+public class Snowball : MonoBehaviour {
 
     public float Acceleration = 100;
     public float SpeedScaleRatio = .2f;
     public new Rigidbody rigidbody;
     public TargetProjectile projectile;
-
 
     private Vector3 direction;
 
@@ -43,7 +42,7 @@ public class SnowballForce : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        SnowballForce snowball = other.GetComponentInChildren<SnowballForce>();
+        Snowball snowball = other.GetComponentInChildren<Snowball>();
         if(snowball != null) {
             Destroy(this.gameObject);
         }

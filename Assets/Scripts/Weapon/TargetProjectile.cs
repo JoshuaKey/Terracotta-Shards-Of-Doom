@@ -84,7 +84,7 @@ public class TargetProjectile : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if(other.gameObject == target) {
+        if(GameObject.ReferenceEquals(other.gameObject, target)) {
             OnHit?.Invoke(this, other.gameObject);
         } else if (other.CompareTag("TargetBlock")) {
             OnMiss?.Invoke(this);

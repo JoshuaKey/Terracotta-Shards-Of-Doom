@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 293955248556346803}
   - component: {fileID: 2064300061100547341}
   - component: {fileID: 5598008939090804456}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -983,7 +983,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6558766329519525388}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Slam Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1015,7 +1015,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5411997626015218432}
   - component: {fileID: 2378426997148036704}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: RockHammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1056,6 +1056,7 @@ MonoBehaviour:
   AttackSpeed: 0
   Damage: 0
   Knockback: 0
+  KnockbackDuration: 1
   RigidbodyKnockback: 0
   SlamCenter: {fileID: 0}
   SlamRadius: 0
@@ -1078,6 +1079,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cannon-Particle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487939630833679565, guid: 8ae91b53abcc66043b76ab7dc50eac6c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 4487939630833679566, guid: 8ae91b53abcc66043b76ab7dc50eac6c,
         type: 3}
@@ -1152,6 +1158,10 @@ PrefabInstance:
     - target: {fileID: 1337108901918474, guid: da41fd2967a439d409358c2214a5409e, type: 3}
       propertyPath: m_Name
       value: Rock_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1337108901918474, guid: da41fd2967a439d409358c2214a5409e, type: 3}
+      propertyPath: m_Layer
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 4137486168269956, guid: da41fd2967a439d409358c2214a5409e, type: 3}
       propertyPath: m_LocalPosition.x

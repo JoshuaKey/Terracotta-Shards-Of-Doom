@@ -41,6 +41,7 @@ public class LevelManager : MonoBehaviour {
         Player.Instance.gameObject.SetActive(false);
         CheckPointSystem.Instance.LoadStartPoint();
         Player.Instance.health.Reset();
+        PlayerHud.Instance.DisableBossHealthBar();
         Player.Instance.gameObject.SetActive(true);
 
         AudioManager.Instance.PlaySceneMusic(scene.name);

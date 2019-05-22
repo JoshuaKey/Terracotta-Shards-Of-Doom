@@ -486,7 +486,7 @@ public class Player : MonoBehaviour {
         // UI
         DeathScreen.Instance.DisableDeathScreen();
         PlayerHud.Instance.EnablePlayerHud();
-        PlayerHud.Instance.SetPlayerHealthBar(1.0f);
+        PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
     }
     public void Die() {
         StartCoroutine(CameraDeathAnimation());      
