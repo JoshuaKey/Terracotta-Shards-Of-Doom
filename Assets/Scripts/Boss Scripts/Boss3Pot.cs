@@ -8,16 +8,25 @@ public class Boss3Pot : Pot {
     [Header("Snowball")]
     public TargetProjectile SnowballPrefab;
     public Transform SpawnPosition;
+    public BoxCollider SpawnArea;
     public TargetReceiver Reciever;
 
     [Header("Snowball Values")]
     public float SnowballSpawnTime = 5.0f;
+    public float SnowballThrowTime = 1.0f;
     public float SnowballImpulse = 10.0f;
     private List<TargetProjectile> snowballs = new List<TargetProjectile>();
 
     [Header("Blocks")]
+    public float BlockHeight = 5.0f;
+    public float BlockMoveTime = 2.0f;
+    public float BlockMoveDistance = 10.0f;
     public List<GameObject> Blocks;
     public List<Transform> BlockPositions;
+
+    [Header("Vulnerable")]
+    public float FallTime = .5f;
+    public Transform VulnerablePosition;
 
     [Header("Components")]
     public Enemy enemy;
@@ -34,6 +43,7 @@ public class Boss3Pot : Pot {
         stateMachine = new StateMachine();
         stateMachine.Init(gameObject,
             new Boss3_Idle(),
+            new Boss3_Stop(),
             new Boss3_Vulnerable(),
             new Boss3_Snowball());
 
@@ -62,34 +72,140 @@ public class Boss3Pot : Pot {
         PlayerHud.Instance.DisableBossHealthBar();
     }
 
-    public void RemoveBlock() {
-        Blocks.RemoveAt(0);
-        for(int i = 0; i < Blocks.Count; i++) {
-            Blocks[i].transform.position = BlockPositions[i].position;
-        }
-    }
-
     public void SpawnSnowball() {
         TargetProjectile snowball = Instantiate(SnowballPrefab, SpawnPosition.position, SpawnPosition.rotation);
+
+        snowball.OnHit += HitSnowball;
+        snowball.OnMiss += MissSnowball;
+        snowballs.Add(snowball);
+
+        Vector3 dest = Vector3.zero;
+        dest.x = SpawnArea.bounds.center.x + SpawnArea.bounds.extents.x * Random.Range(-1, 1);
+        dest.y = SpawnArea.bounds.center.y + SpawnArea.bounds.extents.y * Random.Range(-1, 1);
+        dest.z = SpawnArea.bounds.center.z + SpawnArea.bounds.extents.z * Random.Range(-1, 1);
+
+        Vector3 peak = Utility.CreatePeak(SpawnPosition.position, dest, 15);
+
+        StartCoroutine(ThrowSnowball(snowball, dest, peak));
+    }
+
+    private IEnumerator ThrowSnowball(TargetProjectile snowball, Vector3 dest, Vector3 peak) {
+        Vector3 startPos = snowball.transform.position;
+        float startTime = Time.time;
+        while (Time.time < startTime + SnowballThrowTime) {
+            float t = (Time.time - startTime) / SnowballThrowTime;
+
+            Vector3 pos = Utility.BezierCurve(startPos, peak, dest, t);
+
+            snowball.transform.position = pos;
+
+            yield return null;
+        }
+        snowball.transform.position = dest;
+
         Vector3 dir = Player.Instance.transform.position - snowball.transform.position;
         dir.y = 0.0f;
         dir = dir.normalized;
         snowball.Fire(this.gameObject, Player.Instance.gameObject, dir);
-        snowball.OnHit += HitSnowball;
-        snowball.OnMiss += MissSnowball;
-        snowballs.Add(snowball);
-        // Add coroutine
     }
 
     private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
         print("Received " + snowballObj.name);
 
-        stateMachine.ChangeState("Boss3_Vulnerable");
+        stateMachine.ChangeState("Boss3_Stop");
+        //
 
         for (int i = 0; i < snowballs.Count;) {
             TargetProjectile snowball = snowballs[i];
             DestroySnowball(snowball);
-        }      
+        }
+
+        StartCoroutine(FallDown());
+    }
+
+    private IEnumerator FallDown() {
+        // Variables
+        Vector3[] startPos = new Vector3[Blocks.Count];
+        Vector3[] endPos = new Vector3[Blocks.Count];
+
+        Transform block = Blocks[0].transform;
+        startPos[0] = block.position;
+        endPos[0] = block.position + block.right * BlockMoveDistance;
+        print("Start " + startPos[0]);
+        print("End " + endPos[0]);
+
+        for (int i = 1; i < Blocks.Count; i++) {
+            startPos[i] = Blocks[i].transform.position;
+            endPos[i] = BlockPositions[i - 1].position;
+            print("Start " + startPos[i]);
+            print("End " + endPos[i]);
+        }
+
+        Vector3 potStartPos = this.transform.position;
+        Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
+
+        // Move Pots and Block to new Destination
+        float startTime = Time.time;
+        while (Time.time < startTime + BlockMoveTime) {
+            float t = (Time.time - startTime) / BlockMoveTime;
+
+            for (int i = 0; i < Blocks.Count; i++) {
+                Vector3 pos = Vector3.Lerp(startPos[i], endPos[i], t);
+                Blocks[i].transform.position = pos;
+            }
+
+            Vector3 potPos = Vector3.Lerp(potStartPos, potEndPos, t);
+
+            this.transform.position = potPos;
+
+            yield return null;
+        }
+
+        for (int i = 1; i < Blocks.Count; i++) {
+            Blocks[i].transform.position = endPos[i];
+        }
+        this.transform.position = potEndPos;
+        Blocks.RemoveAt(0);
+
+        // Pot Stun Movement
+        potStartPos = this.transform.position;
+        potEndPos = VulnerablePosition.position;
+        Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 2);
+
+        startTime = Time.time;
+        while (Time.time < startTime + FallTime) {
+            float t = (Time.time - startTime) / FallTime;
+
+            Vector3 potPos = Interpolation.BezierCurve(potStartPos, potEndPos, potPeakPos, t);
+
+            this.transform.position = potPos;
+
+            yield return null;
+        }
+
+        this.transform.position = potEndPos;
+
+        stateMachine.ChangeState("Boss3_Vulnerable");
+    }
+
+    public IEnumerator Jump() {
+        Vector3 potStartPos = this.transform.position;
+        Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
+        Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 2);
+
+        float startTime = Time.time;
+        while (Time.time < startTime + FallTime) {
+            float t = (Time.time - startTime) / FallTime;
+
+            Vector3 potPos = Interpolation.BezierCurve(potStartPos, potEndPos, potPeakPos, t);
+
+            this.transform.position = potPos;
+
+            yield return null;
+        }
+
+        this.transform.position = potEndPos;
+        stateMachine.ChangeState("Boss3_Snowball");
     }
 
     private void HitSnowball(TargetProjectile snowball, GameObject hitObj) {
@@ -149,6 +265,19 @@ public class Boss3_Idle : State {
     }
 }
 
+public class Boss3_Stop : State {
+
+    public override void Init(GameObject owner) {
+        base.Init(owner);
+    }
+
+    public override void Enter() { }
+
+    public override void Exit() {}
+
+    public override string Update() { return null; }
+}
+
 public class Boss3_Snowball : State {
 
     Boss3Pot boss3Pot = null;
@@ -196,11 +325,12 @@ public class Boss3_Vulnerable : State {
 
     public override void Exit() {
         nextThreshold = boss3Pot.enemy.health.MaxHealth - healthThreshold;
+        boss3Pot.StartCoroutine(boss3Pot.Jump());
     }
 
     public override string Update() {
         if (boss3Pot.enemy.health.CurrentHealth <= nextThreshold) {
-            return "Boss3_Snowball";
+            return "Boss3_Stop";
         }
 
         // Visual Logic...

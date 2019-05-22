@@ -26,9 +26,9 @@ public class TargetProjectile : MonoBehaviour {
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
         if (attack == null) { attack = GetComponentInChildren<Attack>(true); }
 
-        //collider.enabled = false;
-        //rigidbody.isKinematic = true;
-        //attack.isAttacking = false;
+        collider.enabled = false;
+        rigidbody.isKinematic = true;
+        attack.isAttacking = false;
     }
 
     // Update is called once per frame
@@ -51,6 +51,12 @@ public class TargetProjectile : MonoBehaviour {
         sender = _sender;
         target = _target;
         hasFired = true;
+
+        if(sender == Player.Instance.gameObject) {
+            this.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
+        } else {
+            this.gameObject.layer = LayerMask.NameToLayer("EnemyProjectile");
+        }
 
         collider.enabled = true;
         rigidbody.isKinematic = false;
