@@ -8,6 +8,7 @@ public class StateMachine
     Dictionary<string, State> states;
     Stack<State> curState;
     GameObject owner;
+    NavMeshAgent agent;
     MonoBehaviour ownerScript;
 
     //////////////////////
@@ -22,6 +23,7 @@ public class StateMachine
     public void Init(GameObject owner, params State[] initStates)
     {
         this.owner = owner;
+        agent = owner.GetComponent<NavMeshAgent>();
         ownerScript = owner.GetComponent<MonoBehaviour>();
         states = new Dictionary<string, State>();
         curState = new Stack<State>();
@@ -38,6 +40,11 @@ public class StateMachine
         {
             throw new System.NullReferenceException
                 ("The curState in StateMachine is empty. Did you forget to add States?");
+        }
+
+        if(!agent.isActiveAndEnabled)
+        {
+            return;
         }
 
         if (DEBUGGING) Debug.Log($"Updated State {curState.Peek()}");

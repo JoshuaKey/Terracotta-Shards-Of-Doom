@@ -5,7 +5,10 @@ using UnityEngine.AI;
 
 public class Cutscene : MonoBehaviour
 {
+    #pragma warning disable 0649
+    [SerializeField] float showFor = 1.5f;
     [SerializeField] Camera camera;
+    #pragma warning disable 0649
 
     private Camera mainCamera;
 
@@ -38,7 +41,7 @@ public class Cutscene : MonoBehaviour
             agent.enabled = false;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(showFor);
 
         mainCamera.gameObject.SetActive(true);
         camera.gameObject.SetActive(false);
