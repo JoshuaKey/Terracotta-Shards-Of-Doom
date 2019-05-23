@@ -11,7 +11,7 @@ public class WeaponPickup : MonoBehaviour {
 
     public Interactable interactable;
     public GameObject WeaponDisplay;
-    public Weapon WeaponPrefab;
+    public string WeaponName;
 
     private Vector3 origin;
 
@@ -20,7 +20,7 @@ public class WeaponPickup : MonoBehaviour {
         if (interactable == null) { interactable = GetComponentInChildren<Interactable>(true); }
         interactable.OnInteract += this.Pickup;
 
-        string name = WeaponPrefab.name;
+        string name = WeaponName;
         // Initialize
         if (!Game.Instance.playerStats.Weapons.ContainsKey(name)) {
             Game.Instance.playerStats.Weapons[name] = false;
@@ -29,11 +29,6 @@ public class WeaponPickup : MonoBehaviour {
         if (Game.Instance.playerStats.Weapons[name]) {
             Destroy(this.gameObject);
         }
-
-        WeaponPrefab = GameObject.Instantiate(WeaponPrefab);
-        WeaponPrefab.transform.SetParent(this.transform, false);
-        WeaponPrefab.gameObject.SetActive(false);
-        WeaponPrefab.name = name;
 
         origin = this.transform.position;
     }
@@ -48,7 +43,8 @@ public class WeaponPickup : MonoBehaviour {
 
     public void Pickup() {
         Player player = Player.Instance;
-        player.AddWeapon(WeaponPrefab);
+        Weapon weapon = WeaponManager.Instance.GetWeapon(WeaponName);
+        player.AddWeapon(weapon);
 
         interactable.OnInteract -= this.Pickup;
         interactable.CanInteract = false;

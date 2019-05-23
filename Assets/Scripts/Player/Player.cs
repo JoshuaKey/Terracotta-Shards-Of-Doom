@@ -70,6 +70,7 @@ public class Player : MonoBehaviour {
     [HideInInspector]
     public Vector3 rotation = Vector3.zero;
     [HideInInspector]
+    public List<Weapon> oldWeapons = new List<Weapon>();
     public List<Weapon> weapons = new List<Weapon>();
     [HideInInspector]
     public int layerMask;
@@ -211,6 +212,37 @@ public class Player : MonoBehaviour {
             }
             if (Input.GetKeyDown(KeyCode.B)) {
                 Weapon w = WeaponManager.Instance.GetWeapon("Magic");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            // Advanced
+            if (Input.GetKeyDown(KeyCode.N)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("FireSword");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.M)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("IceBow");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Comma)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("RockHammer");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Period)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("LightningSpear");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Slash)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("RocketLauncher");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Quote)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("MagicMagic");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
@@ -595,18 +627,32 @@ public class Player : MonoBehaviour {
 
         return weaponWheelRotation;
     }
-    public void AddWeapon(Weapon newWeapon, Weapon oldWeapon = null) {
+    public void AddWeapon(Weapon newWeapon) {
         Game.Instance.playerStats.Weapons[newWeapon.name] = true;
 
-        if(oldWeapon == null) {
-            weapons.Add(newWeapon);
-        } else {
-            int index = weapons.FindIndex(x => x.name == oldWeapon.name);
+        if(newWeapon is AdvancedWeapon) {
+            AdvancedWeapon w = (AdvancedWeapon)newWeapon;
+            int index = weapons.FindIndex(x => x.name == w.OldWeaponName);
+
+            Weapon oldWeapon = weapons[index];
+            oldWeapons.Add(oldWeapon);
+            oldWeapon.gameObject.SetActive(false);
+            oldWeapon.transform.SetParent(WeaponParent.transform, false);
+
             weapons[index] = newWeapon;
+
+            oldWeapon.gameObject.SetActive(false);
+        } else {
+            weapons.Add(newWeapon);
         }  
 
         newWeapon.gameObject.SetActive(false);
         newWeapon.transform.SetParent(WeaponParent.transform, false);
+
+        // This works if we are adding MagicMagic, but holding Magic, MagicMagic will be enabled
+        Weapon currWeapon = GetCurrentWeapon();
+        currWeapon.gameObject.SetActive(true);
+        currWeapon.transform.SetParent(camera.transform, false);
 
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
         int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;

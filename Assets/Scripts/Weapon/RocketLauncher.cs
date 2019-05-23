@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrossBow : Weapon {
-
+public class RocketLauncher : AdvancedWeapon {
     [Header("Distance")]
     public float MinDistance = 5f;
     public float MaxDistance = 100f;
@@ -11,25 +10,28 @@ public class CrossBow : Weapon {
     public LayerMask AimLayer;
 
     [Header("Visuals")]
-    public Arrow ArrowPrefab;
-    public Transform ArrowPos;
-    public Transform ChargedArrowPos;
-    public ArrowPool arrowPool;
+    public Rocket RocketPrefab;
+    public Transform RocketPos;
+    public Transform ChargedRocketPos;
+    //public ArrowPool arrowPool;
 
     [Header("Animation")]
-    public GameObject drawString;
-    private Vector3 drawStringDefaultPos;
+    //public GameObject drawString;
+    //private Vector3 drawStringDefaultPos;
 
-    private Arrow currArrow = null;
+    private Rocket currRocket = null;
     private bool hasReloaded = false;
 
-    void Start() {
+    private void Awake() {
         CanCharge = false;
         Type = DamageType.BASIC;
+        OldWeaponName = "CrossBow";
 
-        this.name = "CrossBow";
+        this.name = "RocketLauncher";
+    }
 
-        drawStringDefaultPos = drawString.transform.localPosition;
+    void Start() {
+        //drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -52,25 +54,25 @@ public class CrossBow : Weapon {
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
 
-        AnimateDrawString();
+        //AnimateDrawString();
 
-        // Debug
-        Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
-        Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
-        Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
+        //// Debug
+        //Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
+        //Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
+        //Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
     }
 
     private void OnEnable() {
         if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
         }
-        if (!currArrow) {
-            currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);     
+        if (!currRocket) {
+            currRocket = GameObject.Instantiate(RocketPrefab, this.transform);
         }
         if (!hasReloaded) {
             StartCoroutine(Reload());
         } else {
-            currArrow.transform.position = ChargedArrowPos.position;
+            currRocket.transform.position = ChargedRocketPos.position;
         }
     }
     private void OnDisable() {
@@ -80,17 +82,13 @@ public class CrossBow : Weapon {
         StopAllCoroutines();
     }
 
-    public void AnimateDrawString()
-    {
-        if(currArrow == null)
-        {
-            drawString.transform.localPosition = drawStringDefaultPos;
-        }
-        else
-        {
-            drawString.transform.position = currArrow.transform.position - transform.forward * 0.225f;
-        }
-    }
+    //public void AnimateDrawString() {
+    //    if (currRocket == null) {
+    //        drawString.transform.localPosition = drawStringDefaultPos;
+    //    } else {
+    //        drawString.transform.position = currRocket.transform.position - transform.forward * 0.225f;
+    //    }
+    //}
 
     public override void Attack() {
         if (!CanAttack() && !hasReloaded) { return; }
@@ -101,15 +99,15 @@ public class CrossBow : Weapon {
     }
 
     private void Shoot() {
-        currArrow.Impulse = Impulse;
-        currArrow.LifeTime = 20f;
-        currArrow.Damage = this.Damage;
-        currArrow.Type = this.Type;
-        currArrow.Knockback = this.Knockback;
-        currArrow.RigidbodyKnockback = this.RigidbodyKnockback;
-        currArrow.Fire();
+        currRocket.Impulse = Impulse;
+        currRocket.LifeTime = 20f;
+        currRocket.Damage = this.Damage;
+        currRocket.Type = this.Type;
+        currRocket.Knockback = this.Knockback;
+        currRocket.RigidbodyKnockback = this.RigidbodyKnockback;
+        currRocket.Fire();
 
-        currArrow = null;
+        currRocket = null;
     }
 
     public override bool CanAttack() {
@@ -122,22 +120,23 @@ public class CrossBow : Weapon {
 
     private IEnumerator Reload() {
         hasReloaded = false;
-        if (!currArrow) {
-            currArrow = GameObject.Instantiate(ArrowPrefab, this.transform);
-            currArrow.transform.position = ArrowPos.position;
+        if (!currRocket) {
+            currRocket = GameObject.Instantiate(RocketPrefab, this.transform);
+            currRocket.transform.position = RocketPos.position;
         }
 
         float startTime = Time.time;
-        while(Time.time < startTime + AttackSpeed) {
+        while (Time.time < startTime + AttackSpeed) {
             float t = (Time.time - startTime) / AttackSpeed;
 
-            Vector3 arrowPos = Interpolation.BezierCurve(ArrowPos.position, ChargedArrowPos.position, t);
-            currArrow.transform.position = arrowPos;
+            Vector3 arrowPos = Interpolation.BezierCurve(RocketPos.position, ChargedRocketPos.position, t);
+            currRocket.transform.position = arrowPos;
 
             yield return null;
         }
 
-        currArrow.transform.position = ChargedArrowPos.position;
+        currRocket.transform.position = ChargedRocketPos.position;
         hasReloaded = true;
+        AudioManager.Instance.PlaySound("lever", ESoundChannel.SFX);
     }
 }

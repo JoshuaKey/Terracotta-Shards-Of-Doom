@@ -15,8 +15,8 @@ public class WeaponManager : MonoBehaviour {
     //public IceBow IceBowPrefab;
     //public EarthHammer EarthHammerPrefab;
     //public LightningSpear LightningSpearPrefab;
-    //public RocketLauncher RocketLauncherPrefab;
-    //public MagicMagic MagicMagicPrefab;
+    public RocketLauncher RocketLauncherPrefab;
+    public MagicMagic MagicMagicPrefab;
 
     public static WeaponManager Instance;
 
@@ -64,8 +64,11 @@ public class WeaponManager : MonoBehaviour {
                 break;
             case "MagicMissile":
             case "RocketLauncher":
+                w = GameObject.Instantiate(RocketLauncherPrefab);
                 break;
-            case "MagicMagic":                
+            case "MagicMagic":
+                w = GameObject.Instantiate(MagicMagicPrefab);
+                w.name = "MagicMagic";
                 break;
         }
         return w;
