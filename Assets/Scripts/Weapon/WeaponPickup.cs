@@ -35,7 +35,7 @@ public class WeaponPickup : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        WeaponDisplay.transform.Rotate(Axis, RotateSpeed * Time.deltaTime);
+        WeaponDisplay.transform.Rotate(Axis * RotateSpeed * Time.deltaTime, Space.World);
 
         Vector3 up = Vector3.up *  Mathf.Sin(Time.time * Speed) * Magnitude;
         WeaponDisplay.transform.position = origin + up;

@@ -18,6 +18,8 @@ public class VolcanoPot : Pot {
         stateMachine.Init(gameObject,
             new Volcano_Idle(),
             new Volcano_Shoot(AttackSpeed));
+
+        this.health.Resistance = DamageType.FIRE;
     }
 
     public override void Animate() { Waddle(); }

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Arrow : PoolObject {
-
+public class FlameProjectile : PoolObject {
     [Header("Life")]
     public float Impulse = 10;
     public float LifeTime = 20f;
+    public float Gravity;
 
     [Header("Damage")]
     public float Damage = 0f;
@@ -31,17 +31,13 @@ public class Arrow : PoolObject {
         rigidbody.isKinematic = true;
         layerMask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+
+        Type = DamageType.FIRE;
     }
 
     private void FixedUpdate() {
-        if (!rigidbody.isKinematic && collider.isTrigger) {
-            Vector3 start = this.transform.position;
-            Vector3 end = start + rigidbody.velocity * Time.fixedDeltaTime;
-            RaycastHit hit;
-            if (Physics.Linecast(start, end, out hit, layerMask)) {
-                this.transform.position = hit.point;
-                OnTriggerEnter(hit.collider);
-            }
+        if (!rigidbody.isKinematic) {
+            rigidbody.AddForce(Vector3.up * Gravity, ForceMode.Acceleration);
         }
     }
 
@@ -92,14 +88,6 @@ public class Arrow : PoolObject {
             }
         }
 
-        rigidbody.velocity = Vector3.zero;
-        collider.isTrigger = false;
-
-        int layer = LayerMask.NameToLayer("Default");
-        this.gameObject.layer = layer;
-        for (int i = 0; i < this.transform.childCount; i++) {
-            Transform t = this.transform.GetChild(i);
-            t.gameObject.layer = layer;
-        }
+        Destroy(this.gameObject);
     }
 }

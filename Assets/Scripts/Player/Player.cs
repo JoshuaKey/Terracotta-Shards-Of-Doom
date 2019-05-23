@@ -206,7 +206,7 @@ public class Player : MonoBehaviour {
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.V)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("CrossBow");
+                Weapon w = WeaponManager.Instance.GetWeapon("Crossbow");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
@@ -217,32 +217,32 @@ public class Player : MonoBehaviour {
             }
             // Advanced
             if (Input.GetKeyDown(KeyCode.N)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("FireSword");
+                Weapon w = WeaponManager.Instance.GetWeapon("Fire Sword");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.M)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("IceBow");
+                Weapon w = WeaponManager.Instance.GetWeapon("Ice Bow");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.Comma)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("RockHammer");
+                Weapon w = WeaponManager.Instance.GetWeapon("Rock Hammer");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.Period)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("LightningSpear");
+                Weapon w = WeaponManager.Instance.GetWeapon("Lightning Spear");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.Slash)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("RocketLauncher");
+                Weapon w = WeaponManager.Instance.GetWeapon("Magic Missile");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.Quote)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("MagicMagic");
+                Weapon w = WeaponManager.Instance.GetWeapon("Magic Magic");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }

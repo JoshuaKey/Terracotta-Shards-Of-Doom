@@ -23,12 +23,14 @@ public class CrossBow : Weapon {
     private Arrow currArrow = null;
     private bool hasReloaded = false;
 
-    void Start() {
+    private void Awake() {
         CanCharge = false;
         Type = DamageType.BASIC;
 
-        this.name = "CrossBow";
+        this.name = "Crossbow";
+    }
 
+    void Start() {
         drawStringDefaultPos = drawString.transform.localPosition;
     }
 

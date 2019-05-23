@@ -72,6 +72,7 @@ public class Rocket : PoolObject {
     }
 
     private void Explosion() {
+        ExplosionEffect.transform.parent = null;
         ExplosionEffect.Play();
         AudioManager.Instance.PlaySoundAtLocation("cannon", ESoundChannel.SFX, this.transform.position);
 
@@ -111,8 +112,6 @@ public class Rocket : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
-        print(other.name);
-
         Explosion();
 
         collider.enabled = false;

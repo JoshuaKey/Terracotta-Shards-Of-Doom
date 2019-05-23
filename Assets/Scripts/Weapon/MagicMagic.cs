@@ -23,10 +23,10 @@ public class MagicMagic : AdvancedWeapon {
 
     private void Awake() {
         CanCharge = true;
-        Type = DamageType.BASIC;
+        Type = DamageType.TRUE;
         OldWeaponName = "Magic";
 
-        this.name = "MagicMagic";
+        this.name = "Magic Magic";
     }
 
     void Start() {
