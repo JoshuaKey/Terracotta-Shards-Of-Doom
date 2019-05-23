@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6393845936637987141}
   - component: {fileID: 2474825680929411705}
-  - component: {fileID: 2474825680929411704}
   - component: {fileID: 5045955143083391514}
   - component: {fileID: 9101992118818999903}
+  - component: {fileID: 8525165535897424770}
   m_Layer: 13
   m_Name: IceArrow
   m_TagString: Untagged
@@ -51,26 +51,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2474825680929411704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6393845936638285157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19b4a7e0cbec0dc4497779b1683f1a12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Impulse: 10
-  LifeTime: 20
-  Damage: 0
-  Type: 0
-  Knockback: 0
-  RigidbodyKnockback: 0
-  rigidbody: {fileID: 2474825680929411705}
-  collider: {fileID: 2223513033030550203}
 --- !u!198 &5045955143083391514
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4737,6 +4717,28 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &8525165535897424770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6393845936638285157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d649f937524d6c8448d9069b58dbf57f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Impulse: 10
+  LifeTime: 20
+  SlowSpeed: 0.333
+  SlowTime: 1
+  Damage: 0
+  Type: 0
+  Knockback: 0
+  RigidbodyKnockback: 0
+  rigidbody: {fileID: 2474825680929411705}
+  collider: {fileID: 2223513033030550203}
 --- !u!65 &2223513033030550203
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4827,6 +4829,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2620628892891366953, guid: 9eb075a6110eff74f916803931eae9fd,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ab7dcaac40b17ab41a0c39412fbb2fa7, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9eb075a6110eff74f916803931eae9fd, type: 3}
 --- !u!4 &8563874173010811640 stripped

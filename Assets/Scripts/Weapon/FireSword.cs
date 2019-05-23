@@ -57,7 +57,7 @@ public class FireSword : AdvancedWeapon {
         this.transform.localRotation = Quaternion.Euler(StartRot);
 
         if(currFlame == null) {
-            currFlame = Instantiate(FlameProjectilePrefab, this.transform);          
+            currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);          
         }
         Type |= DamageType.FIRE;
 
@@ -123,7 +123,7 @@ public class FireSword : AdvancedWeapon {
     private IEnumerator Reload() {
         yield return new WaitForSeconds(ProjectileReloadTime);
 
-        currFlame = Instantiate(FlameProjectilePrefab, this.transform);
+        currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);
         Type |= DamageType.FIRE;
     }
 

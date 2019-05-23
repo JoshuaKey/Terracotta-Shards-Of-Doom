@@ -97,10 +97,12 @@ public class EnemyManager : MonoBehaviour {
         OnEnemyDeath?.Invoke();
 
         int index = enemies.FindIndex(x => x.health.IsDead());
-        Enemy enemyKilled = enemies[index];
-        string levelName = LevelManager.Instance.GetLevelName();
-        Game.Instance.playerStats.Levels[levelName].CollectedPots[enemyKilled.name] = true;
-        enemies.RemoveAt(index);
+        if (index != -1) {
+            Enemy enemyKilled = enemies[index];
+            string levelName = LevelManager.Instance.GetLevelName();
+            Game.Instance.playerStats.Levels[levelName].CollectedPots[enemyKilled.name] = true;
+            enemies.RemoveAt(index);
+        }
     }
 
     public Enemy GetClosestEnemy(Vector3 pos) {

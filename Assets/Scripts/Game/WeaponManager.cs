@@ -13,9 +13,9 @@ public class WeaponManager : MonoBehaviour {
 
     [Header("Advanced Weapons")]
     public FireSword FireSwordPrefab;
-    //public IceBow IceBowPrefab;
+    public IceBow IceBowPrefab;
     public RockHammer RockHammerPrefab;
-    //public LightningSpear LightningSpearPrefab;
+    public LightningSpear LightningSpearPrefab;
     public RocketLauncher RocketLauncherPrefab;
     public MagicMagic MagicMagicPrefab;
 
@@ -57,11 +57,13 @@ public class WeaponManager : MonoBehaviour {
                 w = GameObject.Instantiate(FireSwordPrefab);
                 break;
             case "Ice Bow":
+                w = GameObject.Instantiate(IceBowPrefab);
                 break;
             case "Rock Hammer":
                 w = GameObject.Instantiate(RockHammerPrefab);
                 break;
             case "Lightning Spear":
+                w = GameObject.Instantiate(LightningSpearPrefab);
                 break;
             case "Magic Missile":
                 w = GameObject.Instantiate(RocketLauncherPrefab);
