@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 
 public class Boss4Pot : Pot
 {
+    [Header("Boss Stuff")]
     public GameObject MeshAndCollider = null;
     public BoxCollider MovementBoundaries = null;
     public Transform Spawnpoint = null;
     public GameObject ProjectilePool = null;
     public BoxCollider ProjectileTargetArea = null;
+    public BoxCollider ProjectileSpawnArea = null;
+
     [Range(1, 20)]
     public byte MaxSpawnedPots = 1;
     [HideInInspector]
@@ -26,7 +30,7 @@ public class Boss4Pot : Pot
     {
         this.stateMachine = new StateMachine();
         stateMachine.Init(this.gameObject,
-            new Boss4_Shooting());
+            new Boss_MeteorShower());
     }
 
     void Update()
@@ -154,14 +158,14 @@ class Boss4_Shooting : State
     IEnumerator Float()
     {
         float distance = 0.0f;
-        Vector3 targetPosition = RandomPointInBounds(boss.MovementBoundaries.bounds);
+        Vector3 targetPosition = Utility.RandomPointInBounds(boss.MovementBoundaries.bounds);
         float angle = 0.0f;
         while (true)
         {
             distance = (boss.transform.position - targetPosition).magnitude;
             if (distance <= .1f)
             {
-                targetPosition = RandomPointInBounds(boss.MovementBoundaries.bounds);
+                targetPosition = Utility.RandomPointInBounds(boss.MovementBoundaries.bounds);
             }
             //TODO: Change to target radius around player
             boss.transform.position = Vector3.MoveTowards(boss.transform.position, targetPosition, Time.deltaTime * boss.BossSpeed);
@@ -188,29 +192,22 @@ class Boss4_Shooting : State
         boss.NumberOfSpawnedPots--;
         killedPots++;
     }
-
-    public Vector3 RandomPointInBounds(Bounds bounds)
-    {
-        return new Vector3(Random.Range(bounds.min.x, bounds.max.x),
-            Random.Range(bounds.min.y, bounds.max.y),
-            Random.Range(bounds.min.z, bounds.max.z));
-    }
 }
 
-class Boss4_Meteor : State
+class Boss_MeteorShower : State
 {
     Boss4Pot boss = null;
-    GameObject[] projectiles = null;
+    Meteor[] projectiles = null;
 
     bool firing = false;
 
     public override void Init(GameObject owner)
     {
         boss = owner.GetComponent<Boss4Pot>();
-        projectiles = new GameObject[boss.transform.childCount];
+        projectiles = new Meteor[boss.transform.childCount];
         for(int i = 0; i < projectiles.Length; i++)
         {
-            projectiles[i] = boss.transform.GetChild(i).gameObject;
+            projectiles[i] = boss.transform.GetChild(i).GetComponent<Meteor>();
         }
         base.Init(owner);
     }
@@ -237,7 +234,27 @@ class Boss4_Meteor : State
     IEnumerator Firing()
     {
         firing = true;
-        yield return null;
+        Bounds spawnArea = boss.ProjectileSpawnArea.bounds;
+        Vector3 playerPosition = Player.Instance.transform.position;
+        projectiles[0].TargetPosition = playerPosition;
+        projectiles[0].transform.position = new Vector3(playerPosition.x, Random.Range(spawnArea.min.y, spawnArea.max.y), playerPosition.z);
+
+        //Vector3 spawnPosition = 
+        bool tooClose = false;
+        for (int i = 1; i < projectiles.Length; i++)
+        {
+            do
+            {
+                for(int j = i - 1; (j > -1) && !tooClose; j--)
+                {
+                    
+                }
+            } while (tooClose);
+        }
+        while(projectiles.Any(m => !m.Landed))
+        { 
+            yield return null;
+        }
         firing = false;
     }
 }

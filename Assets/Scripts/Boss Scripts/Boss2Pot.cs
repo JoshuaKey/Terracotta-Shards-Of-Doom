@@ -394,7 +394,7 @@ public class Boss2Pot_Running : State
         Vector3 targetPosition;
         do
         {
-            targetPosition = RandomPointInBounds(bounds);
+            targetPosition = Utility.RandomPointInBounds(bounds);
         } while (!(Vector3.Angle(previousDirection, targetPosition.normalized) > 30.0f) && targetPosition.magnitude < 3.0f);
 
         previousDirection = targetPosition.normalized;
@@ -407,13 +407,5 @@ public class Boss2Pot_Running : State
         moving = false;
     }
 
-    Vector3 RandomPointInBounds(Bounds bounds)
-    {
-        Vector3 result = new Vector3(
-            Random.Range(bounds.min.x, bounds.max.x),
-            Random.Range(bounds.min.y, bounds.max.y),
-            Random.Range(bounds.min.z, bounds.max.z));
-        return result;
-    }
 }
 #endregion
