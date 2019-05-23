@@ -115,11 +115,7 @@ MonoBehaviour:
   RigidbodyKnockback: 5
   OldWeaponName: 
   StartPos: {x: 0.5, y: -0.25, z: 0.777}
-  EndPos: {x: -0.2, y: -0.55, z: 0.777}
-  AnimationSwingTime: 0.2
   StartRot: {x: 0, y: 45, z: -10}
-  EndRot: {x: 10, y: 45, z: 120}
-  AnimationRecoilTime: 0.3
   MinDistance: 5
   MaxDistance: 100
   AimLayer:
@@ -128,8 +124,9 @@ MonoBehaviour:
   FlameProjectilePrefab: {fileID: 4036800737318003480, guid: d698d9607083b884abfc775f16f52231,
     type: 3}
   ProjectilePosition: {fileID: 555040272857356504}
-  ProjectileImpulse: 10
+  ProjectileImpulse: 20
   ProjectileDamage: 1
+  ProjectileReloadTime: 1
 --- !u!95 &2898525420599679631
 Animator:
   serializedVersion: 3

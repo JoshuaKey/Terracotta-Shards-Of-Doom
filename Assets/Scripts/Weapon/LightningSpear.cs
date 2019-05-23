@@ -93,7 +93,7 @@ public class LightningSpear : AdvancedWeapon {
     private void ShootLightning(Enemy enemy, Collider c) {
         if (currLightning != null) {
             currLightning.LifeTime = 20f;
-            currLightning.Damage = currentDamage == 1 ? Damage / 2 : MinDamage;
+            currLightning.Damage = currentDamage == Damage ? Damage / 2 : MinDamage;
             currLightning.ExplosionKnockback = RigidbodyKnockback;
             currLightning.Fire(enemy, c);
             currLightning = null;
