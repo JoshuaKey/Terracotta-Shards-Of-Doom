@@ -55,7 +55,7 @@ public class Boss3Pot : Pot {
 
     void Update() {
         stateMachine.Update();
-        print(stateMachine.GetCurrState().ToString());
+        //print(stateMachine.GetCurrState().ToString());
     }
 
     public void PlayClang(float damage) {
@@ -187,7 +187,7 @@ public class Boss3Pot : Pot {
     }
 
     private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
-        print("Received " + snowballObj.name);
+        //print("Received " + snowballObj.name);
 
         stateMachine.ChangeState("Boss3_Stop");
         //StopAllCoroutines();
@@ -217,7 +217,7 @@ public class Boss3Pot : Pot {
 
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
-        print(potEndPos);
+        //print(potEndPos);
 
         // Move Pots and Block to new Destination
         float startTime = Time.time;
@@ -267,7 +267,7 @@ public class Boss3Pot : Pot {
     public IEnumerator Jump() {
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count].position + Vector3.up * -BlockHeight / 2.0f;
-        print(potEndPos);
+        //print(potEndPos);
         Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 4);
 
         float startTime = Time.time;
@@ -286,7 +286,7 @@ public class Boss3Pot : Pot {
     }
 
     private void HitSnowball(TargetProjectile projectile, GameObject hitObj) {
-        print("Hit");
+        //print("Hit");
 
         Snowball snowball = projectile.GetComponent<Snowball>();
 
@@ -295,7 +295,7 @@ public class Boss3Pot : Pot {
     }
 
     private void MissSnowball(TargetProjectile projectile) {
-        print("Missed");
+        //print("Missed");
 
         Snowball snowball = projectile.GetComponent<Snowball>();
 
