@@ -27,6 +27,7 @@ public class Boss3Pot : Pot {
     [Header("Vulnerable")]
     public float FallTime = .5f;
     public Transform VulnerablePosition;
+    public ParticleSystem VulnerableParticle;
 
     [Header("Components")]
     public Enemy enemy;
@@ -262,9 +263,13 @@ public class Boss3Pot : Pot {
         this.transform.position = potEndPos;
 
         stateMachine.ChangeState("Boss3_Vulnerable");
+        VulnerableParticle.Play();
     }
 
     public IEnumerator Jump() {
+        VulnerableParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count].position + Vector3.up * -BlockHeight / 2.0f;
         //print(potEndPos);
