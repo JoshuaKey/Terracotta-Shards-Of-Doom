@@ -28,28 +28,38 @@ public class Meteor : MonoBehaviour
 
     private bool falling = false;
 
+    private void Start()
+    {
+        target.transform.parent = null;
+    }
+
     public void StartFall()
     {
-        if(!falling)
+        if (!falling)
         {
+            gameObject.SetActive(true);
             StartCoroutine(Fall());
         }
     }
 
+    //Used to prevent clipping with the mesh below it
+    readonly Vector3 TargetOffset = new Vector3(0.0f, .2f, 0.0f);
     IEnumerator Fall()
     {
         falling = true;
-        target.SetActive(true);
-        target.transform.position = targetPosition;
+        target.gameObject.SetActive(true);
+
+        target.transform.position = targetPosition + TargetOffset;
 
         while ((transform.position - targetPosition).magnitude > .1f)
         {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 5.0f);
             yield return null;
         }
 
         falling = false;
-        target.SetActive(false);
         landed = true;
+        gameObject.SetActive(false);
+        target.gameObject.SetActive(false);
     }
 }

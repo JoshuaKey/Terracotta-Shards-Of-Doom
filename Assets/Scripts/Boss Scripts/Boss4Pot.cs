@@ -204,10 +204,10 @@ class Boss_MeteorShower : State
     public override void Init(GameObject owner)
     {
         boss = owner.GetComponent<Boss4Pot>();
-        projectiles = new Meteor[boss.transform.childCount];
-        for(int i = 0; i < projectiles.Length; i++)
+        projectiles = new Meteor[boss.ProjectilePool.transform.childCount];
+        for (int i = 0; i < projectiles.Length; i++)
         {
-            projectiles[i] = boss.transform.GetChild(i).GetComponent<Meteor>();
+            projectiles[i] = boss.ProjectilePool.transform.GetChild(i).GetComponent<Meteor>();
         }
         base.Init(owner);
     }
@@ -224,7 +224,7 @@ class Boss_MeteorShower : State
 
     public override string Update()
     {
-        if(!firing)
+        if (!firing)
         {
             boss.StartCoroutine(Firing());
         }
@@ -236,23 +236,41 @@ class Boss_MeteorShower : State
         firing = true;
         Bounds spawnArea = boss.ProjectileSpawnArea.bounds;
         Vector3 playerPosition = Player.Instance.transform.position;
-        projectiles[0].TargetPosition = playerPosition;
-        projectiles[0].transform.position = new Vector3(playerPosition.x, Random.Range(spawnArea.min.y, spawnArea.max.y), playerPosition.z);
+        RaycastHit hit;
+        Vector3 spawnPosition = new Vector3(playerPosition.x, Random.Range(spawnArea.min.y, spawnArea.max.y), playerPosition.z);
 
-        //Vector3 spawnPosition = 
+        //The first projectile is set to the players position, so they are forced to move
+        projectiles[0].transform.position = spawnPosition;
+        Physics.Raycast(spawnPosition, Vector3.down, out hit, float.MaxValue, LayerMask.GetMask("Default"));
+        projectiles[0].TargetPosition = hit.point;
+        projectiles[0].StartFall();
+
         bool tooClose = false;
         for (int i = 1; i < projectiles.Length; i++)
         {
+            //Loop while we find a position for each meteor to hit that is not too close to each other
             do
             {
-                for(int j = i - 1; (j > -1) && !tooClose; j--)
+                spawnPosition = Utility.RandomPointInBounds(spawnArea);
+                Physics.Raycast(spawnPosition, Vector3.down, out hit, float.MaxValue, LayerMask.GetMask("Default"));
+
+                tooClose = false;
+                //Iterate through each projectile to see if it's to close to the others set before it
+                for (int j = i - 1; (j > -1) && !tooClose; j--)
                 {
-                    
+                    tooClose = ((hit.point - projectiles[j].TargetPosition).magnitude < 4.0f);
                 }
+
             } while (tooClose);
+
+            projectiles[i].TargetPosition = hit.point;
+            projectiles[i].transform.position = spawnPosition;
+            projectiles[i].StartFall();
         }
-        while(projectiles.Any(m => !m.Landed))
-        { 
+
+        //Wait for each projectile to land before we exit the coroutine and start again
+        while (projectiles.Any(m => !m.Landed))
+        {
             yield return null;
         }
         firing = false;
