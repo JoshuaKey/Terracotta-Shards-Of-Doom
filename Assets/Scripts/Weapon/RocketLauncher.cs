@@ -25,7 +25,7 @@ public class RocketLauncher : AdvancedWeapon {
     private void Awake() {
         CanCharge = false;
         Type = DamageType.EXPLOSIVE;
-        OldWeaponName = "CrossBow";
+        OldWeaponName = "Crossbow";
 
         this.name = "Magic Missile";
     }

@@ -44,6 +44,7 @@ public class WeaponPickup : MonoBehaviour {
     public void Pickup() {
         Player player = Player.Instance;
         Weapon weapon = WeaponManager.Instance.GetWeapon(WeaponName);
+        print(weapon);
         player.AddWeapon(weapon);
 
         interactable.OnInteract -= this.Pickup;
