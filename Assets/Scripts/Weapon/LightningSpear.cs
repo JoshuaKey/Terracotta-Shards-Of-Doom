@@ -74,7 +74,7 @@ public class LightningSpear : AdvancedWeapon {
         float t = Interpolation.CubicOut(charge);
         Vector3 spearPos = Interpolation.BezierCurve(StartPos, spearChargePos.localPosition, t);
         spearModel.transform.localPosition = spearPos;
-        this.currentDamage = charge == 1 ? Damage : MinDamage;
+        this.currentDamage = Mathf.Lerp(MinDamage, Damage, charge);//charge == 1 ? Damage : MinDamage; 
         this.currentKnockback = charge == 1 ? Knockback : MinKnockback;
     }
 
@@ -93,7 +93,7 @@ public class LightningSpear : AdvancedWeapon {
     private void ShootLightning(Enemy enemy, Collider c) {
         if (currLightning != null) {
             currLightning.LifeTime = 20f;
-            currLightning.Damage = currentDamage == Damage ? Damage / 2 : MinDamage;
+            currLightning.Damage = 1;
             currLightning.ExplosionKnockback = RigidbodyKnockback;
             currLightning.Fire(enemy, c);
             currLightning = null;

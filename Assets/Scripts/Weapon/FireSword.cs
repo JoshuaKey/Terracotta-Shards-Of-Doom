@@ -29,7 +29,7 @@ public class FireSword : AdvancedWeapon {
 
     private void Awake() {
         CanCharge = false;
-        Type = DamageType.BASIC;// Changes based off Projectile
+        Type = DamageType.BASIC | DamageType.FIRE;// Changes based off Projectile
         OldWeaponName = "Sword";
 
         this.name = "Fire Sword";
@@ -59,7 +59,6 @@ public class FireSword : AdvancedWeapon {
         if(currFlame == null) {
             currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);          
         }
-        Type |= DamageType.FIRE;
 
         if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
@@ -109,7 +108,6 @@ public class FireSword : AdvancedWeapon {
             currFlame.RigidbodyKnockback = this.RigidbodyKnockback;
             currFlame.Fire();
             currFlame = null;
-            Type = ~DamageType.FIRE & Type;
 
             StartCoroutine(Reload());
         }
@@ -124,7 +122,6 @@ public class FireSword : AdvancedWeapon {
         yield return new WaitForSeconds(ProjectileReloadTime);
 
         currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);
-        Type |= DamageType.FIRE;
     }
 
     protected void OnTriggerEnter(Collider other) {

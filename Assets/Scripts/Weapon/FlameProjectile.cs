@@ -27,8 +27,8 @@ public class FlameProjectile : PoolObject {
 
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
 
-        collider.enabled = false;
-        rigidbody.isKinematic = true;
+        //collider.enabled = false;
+        //rigidbody.isKinematic = true;
         layerMask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 

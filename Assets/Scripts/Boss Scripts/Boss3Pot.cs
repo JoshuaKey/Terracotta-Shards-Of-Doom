@@ -26,6 +26,7 @@ public class Boss3Pot : Pot {
 
     [Header("Vulnerable")]
     public float FallTime = .5f;
+    public float TeeterSpeed = 30;
     public Transform VulnerablePosition;
     public ParticleSystem VulnerableParticle;
 
@@ -188,8 +189,6 @@ public class Boss3Pot : Pot {
     }
 
     private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
-        //print("Received " + snowballObj.name);
-
         stateMachine.ChangeState("Boss3_Stop");
         //StopAllCoroutines();
 
@@ -218,7 +217,6 @@ public class Boss3Pot : Pot {
 
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
-        //print(potEndPos);
 
         // Move Pots and Block to new Destination
         float startTime = Time.time;
@@ -264,15 +262,14 @@ public class Boss3Pot : Pot {
 
         stateMachine.ChangeState("Boss3_Vulnerable");
         VulnerableParticle.Play();
+        StartCoroutine(Teeter());
     }
 
     public IEnumerator Jump() {
         VulnerableParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
-
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count].position + Vector3.up * -BlockHeight / 2.0f;
-        //print(potEndPos);
         Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 4);
 
         float startTime = Time.time;
@@ -308,12 +305,37 @@ public class Boss3Pot : Pot {
         Destroy(projectile.gameObject);
     }
 
+    private IEnumerator Teeter() {
+        Quaternion baseRot = this.transform.rotation;
+
+        float t = 0.0f;
+        while (true) {
+            t += Time.deltaTime;
+
+            // Make it face forward?
+            Vector3 direction = Quaternion.Euler(0, TeeterSpeed * t, 0) * Vector3.forward;
+            Quaternion newRot = Quaternion.Euler(direction * 30) * baseRot;
+
+            this.transform.rotation = newRot;
+
+            //this.transform.Rotate(Vector3.up * TeeterSpeed * Time.deltaTime, Space.World);
+
+            if (stateMachine.GetCurrState().ToString() == "Boss3_Vulnerable") {
+                yield return null;
+            } else {
+                break;
+            }
+        }
+
+        this.transform.rotation = baseRot;
+    }
+
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             if (arenaCollider.enabled) {
                 arenaCollider.enabled = false;
                 PlayerHud.Instance.EnableBossHealthBar();
-                PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
+                PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
             } 
         }
     }
@@ -430,9 +452,7 @@ public class Boss3_Vulnerable : State {
         if (boss3Pot.enemy.health.CurrentHealth <= nextThreshold) {
             return "Boss3_Stop";
         }
-
-        // Visual Logic...
-
+        
         return null;
     }
 }
@@ -440,14 +460,8 @@ public class Boss3_Vulnerable : State {
 ///////////////////////////////////////////////////////////////////////////////
 // Things to Do
 // Teeter Animation
-// Cofused Particle
 // Add Wind
-// Destory Effect
 // Fix player getting hit, but not destroying Snowball...
 
-// Fix Snowball speed and Size - I want it to grow, but also be threatening. Should scale with "phase"
-// Make the ground look "right" - normal Map?
-// Fix Block Textures... - Use Ice block textures on 3-1 and 3-2?
-// Hit Effect?
-// TEST
+
 
