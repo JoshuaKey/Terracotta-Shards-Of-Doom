@@ -10,6 +10,7 @@ public class LavaShot : PoolObject {
     public new Collider collider;
     public Attack attack;
     public new LineRenderer renderer;
+    public Transform Target;
 
     // Start is called before the first frame update
     protected override void Start() {
@@ -28,7 +29,9 @@ public class LavaShot : PoolObject {
 
     protected override void OnDisable() {
         // Death Particle Effect
-        print("Lava Shot disabling");
+        if(Target != null) {
+            Destroy(Target.gameObject);
+        }  
     }
 
     public void Fire(Vector3 dest, Vector3 peak) {
@@ -39,14 +42,22 @@ public class LavaShot : PoolObject {
         this.transform.parent = null;
         LevelManager.Instance.MoveToScene(this.gameObject);
 
-        renderer.positionCount = 11;
-        Vector3[] positions = new Vector3[renderer.positionCount];
-        for(int i = 0; i < renderer.positionCount; i++) {
-            float t = (float)i / (renderer.positionCount - 1);
-            positions[i] = Interpolation.BezierCurve(this.transform.position, peak, dest, t);
-        }
-        renderer.SetPositions(positions);
-        renderer.enabled = true;
+        Target.gameObject.SetActive(true);
+        Target.parent = null;
+        Vector3 offset = Vector3.zero;// Random.insideUnitCircle * Random.value * Target.localScale.x;
+        offset.z = offset.y;
+        offset.y = 0;
+        offset += Vector3.down * .9f;
+        Target.position = dest + offset;
+
+        //renderer.positionCount = 11;
+        //Vector3[] positions = new Vector3[renderer.positionCount];
+        //for(int i = 0; i < renderer.positionCount; i++) {
+        //    float t = (float)i / (renderer.positionCount - 1);
+        //    positions[i] = Interpolation.BezierCurve(this.transform.position, peak, dest, t);
+        //}
+        //renderer.SetPositions(positions);
+        //renderer.enabled = true;
 
         StartCoroutine(Shoot(this.transform.position, dest, peak));
     }

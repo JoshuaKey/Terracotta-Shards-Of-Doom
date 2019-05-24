@@ -15,19 +15,17 @@ public class Snowball : MonoBehaviour {
     private void Start() {
         projectile.OnFire += Fire;
         direction = this.transform.forward;
-        print("Dir " + direction);
-
     }
 
     private void Fire(TargetProjectile proj) {
-        
         direction = this.transform.forward;
-        print("Dir " + direction);
     }
 
     private void OnDestroy() {
+
         ParticleSystem.MainModule mainMod = ExplosionEffect.main;
-        mainMod.maxParticles = (int)(this.transform.localScale.x * 100);
+        mainMod.maxParticles = (int)(this.transform.localScale.x * 10);
+        //mainMod.startSpeed = this.transform.localScale.x;
 
         ParticleSystem.EmissionModule emissionModule;
         emissionModule = ExplosionEffect.emission;
@@ -37,6 +35,8 @@ public class Snowball : MonoBehaviour {
         burst.count = mainMod.maxParticles;
 
         ExplosionEffect.transform.parent = null;
+        ExplosionEffect.transform.localScale = Vector3.one;
+        ExplosionEffect.gameObject.SetActive(true);
         ExplosionEffect.Play();
     }
 

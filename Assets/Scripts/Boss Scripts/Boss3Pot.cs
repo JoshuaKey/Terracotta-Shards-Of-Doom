@@ -27,6 +27,7 @@ public class Boss3Pot : Pot {
     [Header("Vulnerable")]
     public float FallTime = .5f;
     public Transform VulnerablePosition;
+    public ParticleSystem VulnerableParticle;
 
     [Header("Components")]
     public Enemy enemy;
@@ -55,7 +56,7 @@ public class Boss3Pot : Pot {
 
     void Update() {
         stateMachine.Update();
-        print(stateMachine.GetCurrState().ToString());
+        //print(stateMachine.GetCurrState().ToString());
     }
 
     public void PlayClang(float damage) {
@@ -187,7 +188,7 @@ public class Boss3Pot : Pot {
     }
 
     private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
-        print("Received " + snowballObj.name);
+        //print("Received " + snowballObj.name);
 
         stateMachine.ChangeState("Boss3_Stop");
         //StopAllCoroutines();
@@ -217,7 +218,7 @@ public class Boss3Pot : Pot {
 
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
-        print(potEndPos);
+        //print(potEndPos);
 
         // Move Pots and Block to new Destination
         float startTime = Time.time;
@@ -262,12 +263,16 @@ public class Boss3Pot : Pot {
         this.transform.position = potEndPos;
 
         stateMachine.ChangeState("Boss3_Vulnerable");
+        VulnerableParticle.Play();
     }
 
     public IEnumerator Jump() {
+        VulnerableParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count].position + Vector3.up * -BlockHeight / 2.0f;
-        print(potEndPos);
+        //print(potEndPos);
         Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 4);
 
         float startTime = Time.time;
@@ -286,7 +291,7 @@ public class Boss3Pot : Pot {
     }
 
     private void HitSnowball(TargetProjectile projectile, GameObject hitObj) {
-        print("Hit");
+        //print("Hit");
 
         Snowball snowball = projectile.GetComponent<Snowball>();
 
@@ -295,7 +300,7 @@ public class Boss3Pot : Pot {
     }
 
     private void MissSnowball(TargetProjectile projectile) {
-        print("Missed");
+        //print("Missed");
 
         Snowball snowball = projectile.GetComponent<Snowball>();
 
@@ -324,7 +329,7 @@ public class Boss3_Idle : State {
     }
 
     public override void Enter() {
-        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
     public override void Exit() {
@@ -363,7 +368,7 @@ public class Boss3_Snowball : State {
     }
 
     public override void Enter() {
-       boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+       boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
         nextSpawn = 0.0f;
     }
 
@@ -418,7 +423,7 @@ public class Boss3_Vulnerable : State {
                 break;
         }
 
-        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
     public override string Update() {

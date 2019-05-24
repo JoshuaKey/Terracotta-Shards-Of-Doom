@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5006568206367689400}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8, y: 2, z: -13}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5430589270625897588}
@@ -80,8 +80,7 @@ MonoBehaviour:
   Magnitude: 0.5
   interactable: {fileID: 5006568206367689398}
   WeaponDisplay: {fileID: 5430589270625865812}
-  WeaponPrefab: {fileID: 8370362770596623324, guid: 876946995b9777145a9171a56fed0c69,
-    type: 3}
+  WeaponName: Crossbow
 --- !u!1001 &1293625912626176578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89,6 +88,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5006568206367689396}
     m_Modifications:
+    - target: {fileID: 6534359957123445270, guid: f3b7dfc910a84f04e98a6ad107989d65,
+        type: 3}
+      propertyPath: m_Name
+      value: CrossbowModel
+      objectReference: {fileID: 0}
     - target: {fileID: 6534359957123804726, guid: f3b7dfc910a84f04e98a6ad107989d65,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -143,11 +147,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6534359957123445270, guid: f3b7dfc910a84f04e98a6ad107989d65,
-        type: 3}
-      propertyPath: m_Name
-      value: CrossbowModel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3b7dfc910a84f04e98a6ad107989d65, type: 3}

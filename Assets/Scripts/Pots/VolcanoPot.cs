@@ -18,6 +18,8 @@ public class VolcanoPot : Pot {
         stateMachine.Init(gameObject,
             new Volcano_Idle(),
             new Volcano_Shoot(AttackSpeed));
+
+        this.health.Resistance = DamageType.FIRE;
     }
 
     public override void Animate() { Waddle(); }
@@ -25,10 +27,15 @@ public class VolcanoPot : Pot {
     public void ShootLavaShot() {
         LavaShot lava = Instantiate(LavaShotPrefab, LavaSpawn.position, Quaternion.identity);
 
-        Vector3 dest = Player.Instance.transform.position;
+        AudioManager.Instance.PlaySoundAtLocation("cannon", ESoundChannel.SFX, LavaSpawn.position);
+
+        Vector3 playerOffset = Random.insideUnitCircle * Random.value * 2;
+        playerOffset.z = playerOffset.y;
+        playerOffset.y = 0.0f;
+        Vector3 dest = Player.Instance.transform.position + playerOffset;
         Vector3 peak = Utility.CreatePeak(lava.transform.position, dest, 20);
 
-        lava.Fire(dest, peak); 
+        lava.Fire(dest, peak);
     }
 }
 
