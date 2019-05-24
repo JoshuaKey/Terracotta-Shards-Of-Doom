@@ -375,21 +375,21 @@ public class Player : MonoBehaviour {
         }
     }
     public void UpdateInteractable() {
-        // Check for Compass
-        {
-            if (InputManager.GetButtonDown("Compass")) {
-                compass.Activate();
-            } 
-            else if (compass.gameObject.activeInHierarchy) {
-                Transform target;
-                if (EnemyManager.Instance.MainProgression.IsComplete()) {
-                    target = EnemyManager.Instance.MainProgression.ProgressionObject.transform;
-                } else {
-                    target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
-                }
-                compass.Target = target;
-            }
-        }
+        //// Check for Compass
+        //{
+        //    if (InputManager.GetButtonDown("Compass")) {
+        //        compass.Activate();
+        //    } 
+        //    else if (compass.gameObject.activeInHierarchy) {
+        //        Transform target;
+        //        if (EnemyManager.Instance.MainProgression.IsComplete()) {
+        //            target = EnemyManager.Instance.MainProgression.ProgressionObject.transform;
+        //        } else {
+        //            target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
+        //        }
+        //        compass.Target = target;
+        //    }
+        //}
 
 
         // Check for interactable
