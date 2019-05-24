@@ -79,23 +79,28 @@ public class Coin : PoolObject {
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             print("Coin Collected: " + Value);
-            Game.Instance.playerStats.Coins += Value;
+            //Game.Instance.playerStats.Coins += Value;
+            Player.Instance.Coins += Value;
             Value = 0;
             this.gameObject.SetActive(false);
 
-            PlayerHud.Instance.SetCoinCount(Game.Instance.playerStats.Coins);
+            //PlayerHud.Instance.SetCoinCount(Game.Instance.playerStats.Coins);
+            PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
             PlayerHud.Instance.PlayCoinAnimation();
         }
     }
 
     protected override void OnDisable() {
-        //print("Coin Disabled");
         base.OnDisable();
         if(Value != 0) {
             print("Coin Collected: " + Value);
-            Game.Instance.playerStats.Coins += Value;
-            //Player.Instance.Coins += Value;
+            //Game.Instance.playerStats.Coins += Value;
+            Player.Instance.Coins += Value;
             Value = 0;
+
+            //PlayerHud.Instance.SetCoinCount(Game.Instance.playerStats.Coins);
+            PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
+            PlayerHud.Instance.PlayCoinAnimation();
         }
     }
 }

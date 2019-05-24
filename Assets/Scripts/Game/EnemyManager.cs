@@ -43,7 +43,7 @@ public class EnemyManager : MonoBehaviour {
         }
 
         string levelName = LevelManager.Instance.GetLevelName();
-        Game.Instance.playerStats.Levels[levelName].TotalPots = enemies.Count;
+        LevelManager.Instance.Levels[levelName].TotalPots = enemies.Count;
         for (int i = 0; i < enemies.Count; i++) {
             if (ChildEnemiesToManager) {
                 enemies[i].transform.SetParent(this.transform, true);
@@ -51,20 +51,13 @@ public class EnemyManager : MonoBehaviour {
             enemies[i].health.OnDeath += EnemyDeath;
             string name = enemies[i].name;
             
-            if (!Game.Instance.playerStats.Levels[levelName].CollectedPots.ContainsKey(name)) {
-                Game.Instance.playerStats.Levels[levelName].CollectedPots[name] = false;
+            if (!LevelManager.Instance.Levels[levelName].CollectedPots.ContainsKey(name)) {
+                LevelManager.Instance.Levels[levelName].CollectedPots[name] = false;
             }
             // If already collected, modify material
-            if (Game.Instance.playerStats.Levels[levelName].CollectedPots[name]) {
+            if (LevelManager.Instance.Levels[levelName].CollectedPots[name]) {
                 enemies[i].SetMaterial(HasCollectedMaterial);
             }
-            //if (!LevelManager.Instance.Levels[levelName].CollectedPots.ContainsKey(name)) {
-            //    LevelManager.Instance.Levels[levelName].CollectedPots[name] = false;
-            //}
-            //// If already collected, modify material
-            //if (LevelManager.Instance.Levels[levelName].CollectedPots[name]) {
-            //    enemies[i].SetMaterial(HasCollectedMaterial);
-            //}
         }
     }
 
@@ -100,7 +93,7 @@ public class EnemyManager : MonoBehaviour {
         if (index != -1) {
             Enemy enemyKilled = enemies[index];
             string levelName = LevelManager.Instance.GetLevelName();
-            Game.Instance.playerStats.Levels[levelName].CollectedPots[enemyKilled.name] = true;
+            LevelManager.Instance.Levels[levelName].CollectedPots[enemyKilled.name] = true;
             enemies.RemoveAt(index);
         }
     }

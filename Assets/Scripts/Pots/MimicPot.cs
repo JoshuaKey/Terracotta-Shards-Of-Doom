@@ -19,7 +19,6 @@ public class MimicPot : Pot
             new Mimic_Idle(),
             new Mimic_Charge(),
             new Mimic_Attack(attackDuration));
-        stateMachine.DEBUGGING = true;
     }
 
     public override void Animate()

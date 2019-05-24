@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class WeaponPickup : MonoBehaviour {
 
@@ -20,13 +21,18 @@ public class WeaponPickup : MonoBehaviour {
         if (interactable == null) { interactable = GetComponentInChildren<Interactable>(true); }
         interactable.OnInteract += this.Pickup;
 
-        string name = WeaponName;
-        // Initialize
-        if (!Game.Instance.playerStats.Weapons.ContainsKey(name)) {
-            Game.Instance.playerStats.Weapons[name] = false;
-        }
-        // Destory if already collected
-        if (Game.Instance.playerStats.Weapons[name]) {
+        // Checks if the Player has a weapon that has the same name as this pickup,
+        //  or if they have an Advanced Weapon with the old weapon name as this pickup...
+        bool hasPickedUp = Player.Instance.weapons.Find(x => {
+            if (x is AdvancedWeapon) {
+                AdvancedWeapon w = (AdvancedWeapon)x;
+                return (WeaponName == w.name) || (WeaponName == w.OldWeaponName);
+            } else {
+                return WeaponName == x.name;
+            }
+        }) != null;
+        // If Player has already picked up weapon, delete this
+        if (hasPickedUp) {
             Destroy(this.gameObject);
         }
 
@@ -44,7 +50,6 @@ public class WeaponPickup : MonoBehaviour {
     public void Pickup() {
         Player player = Player.Instance;
         Weapon weapon = WeaponManager.Instance.GetWeapon(WeaponName);
-        print(weapon);
         player.AddWeapon(weapon);
 
         interactable.OnInteract -= this.Pickup;

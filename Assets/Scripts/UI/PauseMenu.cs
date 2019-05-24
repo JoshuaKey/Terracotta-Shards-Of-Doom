@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Luminosity.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -50,6 +51,14 @@ public class PauseMenu : MonoBehaviour
         DeactivatePauseMenu();
     }
 
+    private void Update() 
+    {
+        if (InputManager.GetButtonDown("Pause Menu")) 
+        {
+            PauseMenu.Instance.DeactivatePauseMenu();
+        }
+    }
+
     #region Navigation
     public void ActivatePauseMenu()
     {
@@ -73,11 +82,13 @@ public class PauseMenu : MonoBehaviour
 
         if (Player.Instance != null)
         {
-            playerCanAttack = Player.Instance.CanAttack;
-            Player.Instance.CanAttack = false;
+            //playerCanAttack = Player.Instance.CanAttack;
+            //Player.Instance.CanAttack = false;
 
-            playerCanSwapWeapon = Player.Instance.CanSwapWeapon;
-            Player.Instance.CanSwapWeapon = false;
+            //playerCanSwapWeapon = Player.Instance.CanSwapWeapon;
+            //Player.Instance.CanSwapWeapon = false;
+
+            Player.Instance.enabled = false;
         }
         playerHud.SetActive(false);
 
@@ -95,9 +106,10 @@ public class PauseMenu : MonoBehaviour
 
         if (Player.Instance != null)
         {
-            Player.Instance.CanAttack = playerCanAttack;
+            //Player.Instance.CanAttack = playerCanAttack;
 
-            Player.Instance.CanSwapWeapon = playerCanSwapWeapon;
+            //Player.Instance.CanSwapWeapon = playerCanSwapWeapon;
+            Player.Instance.enabled = true;
         }
 
         playerHud.SetActive(true);

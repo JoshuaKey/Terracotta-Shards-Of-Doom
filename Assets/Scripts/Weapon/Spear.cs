@@ -60,8 +60,8 @@ public class Spear : Weapon {
 		float t = Interpolation.CubicOut(charge);
 		Vector3 spearPos = Interpolation.BezierCurve(StartPos, spearChargePos.localPosition, t);
 		spearModel.transform.localPosition = spearPos;
-		this.currentDamage = charge == 1 ? Damage : MinDamage;
-		this.currentKnockback = charge == 1 ? Knockback : MinKnockback;
+        this.currentDamage = Mathf.Lerp(MinDamage, Damage, charge);//charge == 1 ? Damage : MinDamage; 
+        this.currentKnockback = charge == 1 ? Knockback : MinKnockback;
 	}
 
 	public override void Attack() {

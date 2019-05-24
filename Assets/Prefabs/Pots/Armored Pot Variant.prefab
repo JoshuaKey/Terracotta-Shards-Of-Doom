@@ -41,7 +41,7 @@ MonoBehaviour:
   animator: {fileID: 0}
   potRenderers:
   - {fileID: 988088890819305929}
-  aggroRadius: 5
+  aggroRadius: 20
   attackRadius: 2.5
   attackDuration: 0.25
   enemy: {fileID: 0}
@@ -227,6 +227,11 @@ PrefabInstance:
       propertyPath: MaxHealth
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 126
+      objectReference: {fileID: 0}
     - target: {fileID: 1948159762795659811, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -297,20 +302,15 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2,
+    - target: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
-      propertyPath: m_Constraints
-      value: 126
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1948159762795503105, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
       propertyPath: m_Name
       value: Model
-      objectReference: {fileID: 0}
-    - target: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
