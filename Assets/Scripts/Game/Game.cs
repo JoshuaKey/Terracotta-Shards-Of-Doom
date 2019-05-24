@@ -24,6 +24,14 @@ public class Game : MonoBehaviour {
         //DialogueSystem.Instance.QueueDialogue(new string["WhY dO I eXisT?", "WhYyyYyY!?"], true);
 
         Settings.OnLoad += OnSettingsLoad;
+
+        StartCoroutine(SaveOnStart());
+    }
+
+    private IEnumerator SaveOnStart() {
+        yield return new WaitForSeconds(.5f);
+        Game.Instance.SavePlayerStats();
+        Game.Instance.SaveSettings();
     }
 
     private void OnSettingsLoad(Settings settings) {

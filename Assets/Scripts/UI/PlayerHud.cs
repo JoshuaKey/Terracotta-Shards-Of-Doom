@@ -215,22 +215,28 @@ public class PlayerHud : MonoBehaviour {
         switch(weaponName)
         {
             case "Sword":
+            case "Fire Sword":
                 retval = SwordIcon;
                 break;
             case "Bow":
+            case "Ice Bow":
                 retval = BowIcon;
                 break;
             case "Hammer":
+            case "Rock Hammer":
                 retval = HammerIcon;
                 break;
             case "Spear":
+            case "Lightning Spear":
                 retval = SpearIcon;
                 break;
             case "Crossbow":
             case "CrossBow":
+            case "Magic Missile":
                 retval = CrossbowIcon;
                 break;
             case "Magic":
+            case "Magic Magic":
                 retval = MagicIcon;
                 break;
             default:
@@ -328,19 +334,29 @@ public class PlayerHud : MonoBehaviour {
     public void EnableBossHealthBar() {
         BossHealthBar.SetActive(true);
     }
-    public void SetBossHealthBar(float percent) {
+    public void SetBossHealthBar(float percent, bool instant = false) {
         EnableBossHealthBar();
+
         if (BossHealthRoutine != null) {
             StopCoroutine(BossHealthRoutine);
         }
-        if (percent > BossHealthForegroundSlider.value) { // Healing
-            BossHealthBackgroundSlider.value = percent;
-            BossHealthRoutine = SliderTransition(BossHealthForegroundSlider, percent);
-        } else { // Taking Damage
-            BossHealthForegroundSlider.value = percent;
-            BossHealthRoutine = SliderTransition(BossHealthBackgroundSlider, percent);
+
+        // Animation
+        if (!instant) {
+            if (percent > BossHealthForegroundSlider.value) { // Healing
+                BossHealthBackgroundSlider.value = percent;
+                BossHealthRoutine = SliderTransition(BossHealthForegroundSlider, percent);
+            } else { // Taking Damage
+                BossHealthForegroundSlider.value = percent;
+                BossHealthRoutine = SliderTransition(BossHealthBackgroundSlider, percent);
+            }
+            StartCoroutine(BossHealthRoutine);
         }
-        StartCoroutine(BossHealthRoutine);
+        // Instant Effect
+        else {
+            BossHealthBackgroundSlider.value = percent;
+            BossHealthForegroundSlider.value = percent;
+        }
     }
     public void DisableBossHealthBar() {
         BossHealthBar.SetActive(false);
