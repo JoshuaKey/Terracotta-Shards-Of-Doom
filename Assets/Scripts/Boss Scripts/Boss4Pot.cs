@@ -10,7 +10,6 @@ public class Boss4Pot : Pot
     public BoxCollider MovementBoundaries = null;
     public Transform Spawnpoint = null;
     public GameObject ProjectilePool = null;
-    public BoxCollider ProjectileTargetArea = null;
     public BoxCollider ProjectileSpawnArea = null;
 
     [Range(1, 20)]
@@ -29,6 +28,7 @@ public class Boss4Pot : Pot
     void Start()
     {
         this.stateMachine = new StateMachine();
+        stateMachine.needAgent = false;
         stateMachine.Init(this.gameObject,
             new Boss_MeteorShower());
     }
@@ -129,7 +129,6 @@ class Boss4_Shooting : State
         NavMeshHit hit;
         NavMesh.SamplePosition(playerPosition, out hit, 4.0f, NavMesh.AllAreas);
         Vector3 targetPosition = hit.position;
-
 
         do
         {
@@ -235,7 +234,7 @@ class Boss_MeteorShower : State
         }
         return null;
     }
-
+    
     IEnumerator Firing()
     {
         firing = true;
@@ -286,13 +285,16 @@ class Boss_MeteorShower : State
     {
         teleporting = true;
         Vector3 teleportLocation = Vector3.zero;
-        foreach(Meteor m in projectiles)
+        bool tooClose = false;
+        do
         {
-            teleportLocation += m.transform.position;
-        }
-        teleportLocation /= projectiles.Length;
-        teleportLocation.y = (boss.MovementBoundaries.bounds.max.y - boss.MovementBoundaries.bounds.min.y) + boss.MovementBoundaries.bounds.min.y;
-
+            teleportLocation = Utility.RandomPointInBounds(boss.MovementBoundaries.bounds);
+            tooClose = false;
+            for(int i = 0; i < projectiles.Length && !tooClose; i++)
+            {
+                tooClose = (projectiles[i].transform.position - teleportLocation).sqrMagnitude < 16.0f;
+            }
+        } while (tooClose);
         Vector3 originalScale = boss.transform.localScale;
         float shrinkTime = 0.0f;
 
