@@ -188,8 +188,6 @@ public class Boss3Pot : Pot {
     }
 
     private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
-        //print("Received " + snowballObj.name);
-
         stateMachine.ChangeState("Boss3_Stop");
         //StopAllCoroutines();
 
@@ -218,7 +216,6 @@ public class Boss3Pot : Pot {
 
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
-        //print(potEndPos);
 
         // Move Pots and Block to new Destination
         float startTime = Time.time;
@@ -264,15 +261,14 @@ public class Boss3Pot : Pot {
 
         stateMachine.ChangeState("Boss3_Vulnerable");
         VulnerableParticle.Play();
+        StartCoroutine(Teeter());
     }
 
     public IEnumerator Jump() {
         VulnerableParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
-
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count].position + Vector3.up * -BlockHeight / 2.0f;
-        //print(potEndPos);
         Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 4);
 
         float startTime = Time.time;
@@ -306,6 +302,14 @@ public class Boss3Pot : Pot {
 
         snowballs.Remove(snowball);
         Destroy(projectile.gameObject);
+    }
+
+    private IEnumerator Teeter() {
+        Vector3 angledUp = Quaternion.Euler(0, 0, 30) * Vector3.up;
+
+        while (true) {
+
+        }
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -430,9 +434,7 @@ public class Boss3_Vulnerable : State {
         if (boss3Pot.enemy.health.CurrentHealth <= nextThreshold) {
             return "Boss3_Stop";
         }
-
-        // Visual Logic...
-
+        
         return null;
     }
 }
@@ -440,14 +442,8 @@ public class Boss3_Vulnerable : State {
 ///////////////////////////////////////////////////////////////////////////////
 // Things to Do
 // Teeter Animation
-// Cofused Particle
 // Add Wind
-// Destory Effect
 // Fix player getting hit, but not destroying Snowball...
 
-// Fix Snowball speed and Size - I want it to grow, but also be threatening. Should scale with "phase"
-// Make the ground look "right" - normal Map?
-// Fix Block Textures... - Use Ice block textures on 3-1 and 3-2?
-// Hit Effect?
-// TEST
+
 
