@@ -129,12 +129,13 @@ public class RocketLauncher : AdvancedWeapon {
         while (Time.time < startTime + AttackSpeed) {
             float t = (Time.time - startTime) / AttackSpeed;
 
-            Vector3 arrowPos = Interpolation.BezierCurve(RocketPos.position, ChargedRocketPos.position, t);
-            currRocket.transform.position = arrowPos;
+            Vector3 rocketPos = Interpolation.BezierCurve(RocketPos.position, ChargedRocketPos.position, t);
+            currRocket.transform.position = rocketPos;
 
             yield return null;
         }
 
+        Debug.Log(ChargedRocketPos);
         currRocket.transform.position = ChargedRocketPos.position;
         hasReloaded = true;
         AudioManager.Instance.PlaySound("lever", ESoundChannel.SFX);
