@@ -28,6 +28,7 @@ public class Meteor : MonoBehaviour
 
     private bool falling = false;
 
+    public AnimationCurve speedCurve;
     private void Start()
     {
         target.transform.parent = null;
