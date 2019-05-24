@@ -7,7 +7,8 @@ public class Lightning : MonoBehaviour {
     [Header("Life")]
     public float LifeTime = 20f;
     public float Range = 2;
-    public float Delay = 2;
+    public float DamageDelay = 2; // Delay in Damage Ticks on 1 enemy
+    public float Delay = .333f;
 
     [Header("Damage")]
     public float Damage = 0f;
@@ -30,14 +31,20 @@ public class Lightning : MonoBehaviour {
 
     public void Fire(Enemy enemy, Collider c) {
         LightningEffect.transform.localScale = new Vector3(5, 5, 2);
-        //LevelManager.Instance.MoveToScene(this.gameObject);
+        this.transform.parent = null;
+        LevelManager.Instance.MoveToScene(this.gameObject);
 
-        DamageEnemy(enemy, c);
+        // I want to damage the current enemy
+        // If it dies, I wait a frame, then jump to the next
+        // If it doesn't I wait 
 
-        if (this.gameObject.activeInHierarchy) {
-            StartCoroutine(Die());
-            StartCoroutine(Seek());
-        }
+        StartCoroutine(Die());
+
+        StartCoroutine(DamageEnemy(enemy, c));
+
+        //if (this.gameObject.activeInHierarchy) {           
+        //    StartCoroutine(Seek());
+        //}
     }
 
     private IEnumerator Die() {
@@ -48,37 +55,31 @@ public class Lightning : MonoBehaviour {
         Destroy(this.gameObject);
     }
     
-    private IEnumerator Seek() {
-        yield return new WaitForSeconds(Delay);
-
-        bool enemyInRange = false;
+    private void Seek() {
+        Enemy enemy = null;
+        Collider collider = null;
 
         Collider[] colliders = Physics.OverlapSphere(this.transform.position, Range, layerMask);
-        print(colliders.Length);
         foreach (Collider c in colliders) {
-            Enemy enemy = c.GetComponentInChildren<Enemy>();
-            if (enemy == null) { enemy = c.GetComponentInParent<Enemy>(); }
-            if (enemy != null && enemy != currEnemy) {
-                DamageEnemy(enemy, c);
-                enemyInRange = true;
-                print(enemy.name);
-                
+            Enemy e = c.GetComponentInChildren<Enemy>();
+            if (e == null) { e = c.GetComponentInParent<Enemy>(); }
+            if (e != null && e != currEnemy) {
+                enemy = e;
+                collider = c;
                 break;
             }
         }
-        print(enemyInRange);
+        print(colliders.Length);
 
 
-        if (!enemyInRange) {
-            print("Destroying Lightning");
-
+        if (enemy == null) {
             Destroy(this.gameObject);
-        } else if(this.gameObject.activeInHierarchy) {
-            StartCoroutine(Seek());
-        }       
+        } else {
+            StartCoroutine(DamageEnemy(enemy, collider));
+        }
     }
 
-    private void DamageEnemy(Enemy enemy, Collider c) {
+    private IEnumerator DamageEnemy(Enemy enemy, Collider c) {
         
         float damage = enemy.health.TakeDamage(this.Type, this.Damage);
         bool isDead = enemy.health.IsDead();
@@ -90,11 +91,19 @@ public class Lightning : MonoBehaviour {
             enemy.Explode(forward * ExplosionKnockback, this.transform.position);
         } 
 
-        this.transform.parent = enemy.transform;
         this.transform.position = c.bounds.center;
         this.transform.rotation = Quaternion.Euler(-90, 0, 0);
 
         currEnemy = enemy;
+
+        if (!isDead) {
+            this.transform.parent = enemy.transform;
+            yield return new WaitForSeconds(DamageDelay);
+        } else {
+            this.transform.parent = null;
+            yield return new WaitForSeconds(Delay);
+        }
+        Seek();
     }
 
 }

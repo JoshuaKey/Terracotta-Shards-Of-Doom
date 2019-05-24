@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8911799330149345501}
   - component: {fileID: 8911799330149345498}
-  m_Layer: 13
+  m_Layer: 12
   m_Name: Lightning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LifeTime: 20
-  Range: 2
-  Delay: 2
+  Range: 4
+  DamageDelay: 2
+  Delay: 0.333
   Damage: 0
   Type: 0
   ExplosionKnockback: 5
@@ -62,7 +63,7 @@ GameObject:
   - component: {fileID: 8911799331020630114}
   - component: {fileID: 8911799331020630112}
   - component: {fileID: 8911799331020630115}
-  m_Layer: 13
+  m_Layer: 12
   m_Name: LightningEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
