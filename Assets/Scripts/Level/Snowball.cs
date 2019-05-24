@@ -8,23 +8,36 @@ public class Snowball : MonoBehaviour {
     public float SpeedScaleRatio = .2f;
     public new Rigidbody rigidbody;
     public TargetProjectile projectile;
+    public ParticleSystem ExplosionEffect;
 
     private Vector3 direction;
 
     private void Start() {
         projectile.OnFire += Fire;
         direction = this.transform.forward;
-        print("Dir " + direction);
     }
 
     private void Fire(TargetProjectile proj) {
-        
         direction = this.transform.forward;
-        print("Dir " + direction);
     }
 
     private void OnDestroy() {
-        // Deparent Particle....
+
+        ParticleSystem.MainModule mainMod = ExplosionEffect.main;
+        mainMod.maxParticles = (int)(this.transform.localScale.x * 10);
+        //mainMod.startSpeed = this.transform.localScale.x;
+
+        ParticleSystem.EmissionModule emissionModule;
+        emissionModule = ExplosionEffect.emission;
+        emissionModule.rateOverTime = 0;
+
+        ParticleSystem.Burst burst = emissionModule.GetBurst(0);
+        burst.count = mainMod.maxParticles;
+
+        ExplosionEffect.transform.parent = null;
+        ExplosionEffect.transform.localScale = Vector3.one;
+        ExplosionEffect.gameObject.SetActive(true);
+        ExplosionEffect.Play();
     }
 
     // Update is called once per frame
@@ -35,7 +48,7 @@ public class Snowball : MonoBehaviour {
             rigidbody.AddForce(force * Time.deltaTime, ForceMode.Force);
 
             float magnitude = Mathf.Max(1.0f, rigidbody.velocity.magnitude * SpeedScaleRatio);
-            float scale = Mathf.Max(this.transform.localScale.x, magnitude);
+            float scale = Mathf.Max(this.transform.localScale.x, magnitude);  
 
             this.transform.localScale = Vector3.one * scale;
         }

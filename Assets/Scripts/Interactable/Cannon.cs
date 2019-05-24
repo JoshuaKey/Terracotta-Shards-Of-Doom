@@ -184,7 +184,7 @@ public class Cannon : MonoBehaviour {
         player.LookTowards(Barrel.transform.forward);
 
         // Immune to all...
-        player.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+        player.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
 
         player.CanWalk = false;
         player.CanMove = false;

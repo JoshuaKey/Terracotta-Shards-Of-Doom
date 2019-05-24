@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class WeaponPickup : MonoBehaviour {
 
@@ -11,7 +12,7 @@ public class WeaponPickup : MonoBehaviour {
 
     public Interactable interactable;
     public GameObject WeaponDisplay;
-    public Weapon WeaponPrefab;
+    public string WeaponName;
 
     private Vector3 origin;
 
@@ -20,27 +21,27 @@ public class WeaponPickup : MonoBehaviour {
         if (interactable == null) { interactable = GetComponentInChildren<Interactable>(true); }
         interactable.OnInteract += this.Pickup;
 
-        string name = WeaponPrefab.name;
-        // Initialize
-        if (!Game.Instance.playerStats.Weapons.ContainsKey(name)) {
-            Game.Instance.playerStats.Weapons[name] = false;
-        }
-        // Destory if already collected
-        if (Game.Instance.playerStats.Weapons[name]) {
+        // Checks if the Player has a weapon that has the same name as this pickup,
+        //  or if they have an Advanced Weapon with the old weapon name as this pickup...
+        bool hasPickedUp = Player.Instance.weapons.Find(x => {
+            if (x is AdvancedWeapon) {
+                AdvancedWeapon w = (AdvancedWeapon)x;
+                return (WeaponName == w.name) || (WeaponName == w.OldWeaponName);
+            } else {
+                return WeaponName == x.name;
+            }
+        }) != null;
+        // If Player has already picked up weapon, delete this
+        if (hasPickedUp) {
             Destroy(this.gameObject);
         }
-
-        WeaponPrefab = GameObject.Instantiate(WeaponPrefab);
-        WeaponPrefab.transform.SetParent(this.transform, false);
-        WeaponPrefab.gameObject.SetActive(false);
-        WeaponPrefab.name = name;
 
         origin = this.transform.position;
     }
 
     // Update is called once per frame
     void Update() {
-        WeaponDisplay.transform.Rotate(Axis, RotateSpeed * Time.deltaTime);
+        WeaponDisplay.transform.Rotate(Axis * RotateSpeed * Time.deltaTime, Space.World);
 
         Vector3 up = Vector3.up *  Mathf.Sin(Time.time * Speed) * Magnitude;
         WeaponDisplay.transform.position = origin + up;
@@ -48,7 +49,8 @@ public class WeaponPickup : MonoBehaviour {
 
     public void Pickup() {
         Player player = Player.Instance;
-        player.AddWeapon(WeaponPrefab);
+        Weapon weapon = WeaponManager.Instance.GetWeapon(WeaponName);
+        player.AddWeapon(weapon);
 
         interactable.OnInteract -= this.Pickup;
         interactable.CanInteract = false;

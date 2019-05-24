@@ -27,6 +27,7 @@ public class Boss3Pot : Pot {
     [Header("Vulnerable")]
     public float FallTime = .5f;
     public Transform VulnerablePosition;
+    public ParticleSystem VulnerableParticle;
 
     [Header("Components")]
     public Enemy enemy;
@@ -55,7 +56,7 @@ public class Boss3Pot : Pot {
 
     void Update() {
         stateMachine.Update();
-        print(stateMachine.GetCurrState().ToString());
+        //print(stateMachine.GetCurrState().ToString());
     }
 
     public void PlayClang(float damage) {
@@ -187,7 +188,7 @@ public class Boss3Pot : Pot {
     }
 
     private void ReceiveSnowball(TargetReceiver receiver, GameObject snowballObj) {
-        print("Received " + snowballObj.name);
+        //print("Received " + snowballObj.name);
 
         stateMachine.ChangeState("Boss3_Stop");
         //StopAllCoroutines();
@@ -217,7 +218,7 @@ public class Boss3Pot : Pot {
 
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count - 1].position + Vector3.up * -BlockHeight / 2.0f;
-        print(potEndPos);
+        //print(potEndPos);
 
         // Move Pots and Block to new Destination
         float startTime = Time.time;
@@ -262,12 +263,16 @@ public class Boss3Pot : Pot {
         this.transform.position = potEndPos;
 
         stateMachine.ChangeState("Boss3_Vulnerable");
+        VulnerableParticle.Play();
     }
 
     public IEnumerator Jump() {
+        VulnerableParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+
         Vector3 potStartPos = this.transform.position;
         Vector3 potEndPos = BlockPositions[Blocks.Count].position + Vector3.up * -BlockHeight / 2.0f;
-        print(potEndPos);
+        //print(potEndPos);
         Vector3 potPeakPos = Utility.CreatePeak(potStartPos, potEndPos, Blocks.Count * 3 + 4);
 
         float startTime = Time.time;
@@ -286,7 +291,7 @@ public class Boss3Pot : Pot {
     }
 
     private void HitSnowball(TargetProjectile projectile, GameObject hitObj) {
-        print("Hit");
+        //print("Hit");
 
         Snowball snowball = projectile.GetComponent<Snowball>();
 
@@ -295,7 +300,7 @@ public class Boss3Pot : Pot {
     }
 
     private void MissSnowball(TargetProjectile projectile) {
-        print("Missed");
+        //print("Missed");
 
         Snowball snowball = projectile.GetComponent<Snowball>();
 
@@ -324,7 +329,7 @@ public class Boss3_Idle : State {
     }
 
     public override void Enter() {
-        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
     public override void Exit() {
@@ -363,7 +368,7 @@ public class Boss3_Snowball : State {
     }
 
     public override void Enter() {
-       boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+       boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
         nextSpawn = 0.0f;
     }
 
@@ -418,7 +423,7 @@ public class Boss3_Vulnerable : State {
                 break;
         }
 
-        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.TRUE;
+        boss3Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
     public override string Update() {
@@ -432,55 +437,17 @@ public class Boss3_Vulnerable : State {
     }
 }
 
-// Idle Phase
-// Waits and does nothing (animates?)
-// Switch to Snowball phase when trigger is hit
-
-// Vulnerable Phase
-// Teeters around on ground
-// Bird / star particle effect
-// Waits until health threshold
-// Goes to Snowball phase when below threshold
-
-// Spawn Snowball Phase
-// Invulnerable
-// Spawns Snowballs at player
-// When Snowball hits block, block breaks, boss falls to ground, enter Vulnerable Phase
-
-// Snowball
-// Spawns in front of the blocks
-// When it is ready, the boss calculates the direction from snowball to player and FIRES
-// Snowball moves forward while gaining speed (?) from angle and terrain. (small bumps?)
-// If the snowball hits the player, it deals damage, knockback (?), and dissipates
-// If the player hits the snowball with a melee weapon, it moves towards the boss / block
-// When the snowball hits the boss / block, the next block is destroyed and the Boss becomes vulnerable
-// We should have 
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // Things to Do
-// Make it kind of "attack" when it throws a snowball?
-// Add Vulnerable Animation - Confused Particle and Teeter
+// Teeter Animation
+// Cofused Particle
+// Add Wind
+// Destory Effect
+// Fix player getting hit, but not destroying Snowball...
+
 // Fix Snowball speed and Size - I want it to grow, but also be threatening. Should scale with "phase"
 // Make the ground look "right" - normal Map?
 // Fix Block Textures... - Use Ice block textures on 3-1 and 3-2?
-// Add Wind
 // Hit Effect?
-// Destor Effect
-
 // TEST
-
-// Snowball needs to move around the ground (default)
-// Snowball needs to hit Player (player)
-// Snowball needs to hit TargetReceiver
-// Snowball shoulnd not hit Snowball
-// Arrow can hit Snowball 
-// Arrow can hit Enemy (Enemy)
-// Arrow can not hit TargetReceiver
-// Arrow is PlayerProjectile
-// Arrow becomes Default
-// Snowball is (?)
-// TargetReciever is (?)
 
