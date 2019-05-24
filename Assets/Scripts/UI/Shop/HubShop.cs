@@ -12,7 +12,7 @@ public class HubShop : MonoBehaviour
     [Header("Shop Panels")]
     [SerializeField] InformationPanel informationPanel;
     public ShopPanel mainPanel;
-    [SerializeField] ShopPanel[] panels;
+    [SerializeField] ShopPanel[] shopPanels;
     #pragma warning restore 0649
 
     [HideInInspector] public bool isMovingPanels;
@@ -103,19 +103,19 @@ public class HubShop : MonoBehaviour
             if(curHorizontal > 0)
             //Go Back
             {
-                for (int i = 0; i < panels.Length; i++)
+                for (int i = 0; i < shopPanels.Length; i++)
                 {
-                    ShopPanel nextPanel = panels[(i + 1) % panels.Length];
-                    nextPanel.StartMovingTo(panels[i].rectTransform.localPosition, panels[i].rectTransform.localScale, panels[i].isMainPanel);
+                    ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
+                    nextPanel.StartMovingTo(shopPanels[i].rectTransform.localPosition, shopPanels[i].rectTransform.localScale, shopPanels[i].isMainPanel);
                 }
             }
             else
             //Go Forward
             {
-                for (int i = 0; i < panels.Length; i++)
+                for (int i = 0; i < shopPanels.Length; i++)
                 {
-                    ShopPanel nextPanel = panels[(i + 1) % panels.Length];
-                    panels[i].StartMovingTo(nextPanel.rectTransform.localPosition, nextPanel.rectTransform.localScale, nextPanel.isMainPanel);
+                    ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
+                    shopPanels[i].StartMovingTo(nextPanel.rectTransform.localPosition, nextPanel.rectTransform.localScale, nextPanel.isMainPanel);
                 }
             }
         }
@@ -125,14 +125,24 @@ public class HubShop : MonoBehaviour
     #region Button Calls
     public bool ChargePlayer(int amount)
     {
-        Debug.Log($"Charged the Player {amount}.");
-        return true;
+        if(amount <= Player.Instance.Coins)
+        {
+            Debug.Log($"Charged the Player {amount}.");
+            Player.Instance.Coins -= amount;
+            return true;
+        }
+        else
+        {
+            Debug.Log($"Player didn't have enough coins to pay {amount}");
+            return false;
+        }
     }
 
-    public void Upgrade(string weaponName)
+    public void Upgrade(string weaponName, string upgradeName)
     {
         Debug.Log($"Upgraded {weaponName}.");
         GetWeaponInfo(weaponName).isUpgraded = true;
+        Player.Instance.AddWeapon(WeaponManager.Instance.GetWeapon(upgradeName));
     }
 
     public void ActivateHubShop()
@@ -142,6 +152,15 @@ public class HubShop : MonoBehaviour
         Player.Instance.enabled = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        foreach (ShopPanel shopPanel in shopPanels)
+        {
+            if (Player.Instance.weapons.Find(w => w.name == shopPanel.weaponName))
+            {
+                GetWeaponInfo(shopPanel.weaponName).isUnlocked = true;
+                if (shopPanel == mainPanel) shopPanel.BlackOut(false);
+            }
+        }
 
         gameObject.SetActive(true);
     }
@@ -180,6 +199,7 @@ public class HubShop : MonoBehaviour
         {
             GetWeaponInfo(mainPanel.weaponName).isUnlocked = true;
         }
+        Debug.Log($"isMovingPanels: {isMovingPanels}");
     }
     #endregion
 }
@@ -192,12 +212,12 @@ public class WeaponInformation
     public bool isUnlocked;
     public bool isUpgraded;
 
-    public WeaponInformation(string name, string description)
+    public WeaponInformation(string name, string description, bool isUnlocked = false)
     {
         this.name = name;
         this.description = description;
 
-        isUnlocked = false;
+        this.isUnlocked = isUnlocked;
         isUpgraded = false;
     }
 }

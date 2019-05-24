@@ -74,50 +74,50 @@ public class InformationPanel : MonoBehaviour
 
     public void SwordButtonClick()
     {
-        if(hubShop.ChargePlayer(1))
+        if(hubShop.ChargePlayer(2000))
         {
-            hubShop.Upgrade("Sword");
+            hubShop.Upgrade("Sword", "Fire Sword");
         }
     }
 
     public void BowButtonClick()
     {
 
-        if (hubShop.ChargePlayer(2))
+        if (hubShop.ChargePlayer(4000))
         {
-            hubShop.Upgrade("Bow");
+            hubShop.Upgrade("Bow", "Ice Bow");
         }
     }
 
     public void HammerButtonClick()
     {
-        if(hubShop.ChargePlayer(3))
+        if(hubShop.ChargePlayer(6000))
         {
-            hubShop.Upgrade("Hammer");
+            hubShop.Upgrade("Hammer", "Rock Hammer");
         }
     }
 
     public void SpearButtonClick()
     {
-        if(hubShop.ChargePlayer(4))
+        if(hubShop.ChargePlayer(8000))
         {
-            hubShop.Upgrade("Spear");
+            hubShop.Upgrade("Spear", "Lightning Spear");
         }
     }
 
     public void CrossbowButtonClick()
     {
-        if(hubShop.ChargePlayer(5))
+        if(hubShop.ChargePlayer(10000))
         {
-            hubShop.Upgrade("Crossbow");
+            hubShop.Upgrade("Crossbow", "Magic Missile");
         }
     }
 
     public void MagicButtonClick()
     {
-        if(hubShop.ChargePlayer(6))
+        if(hubShop.ChargePlayer(12500))
         {
-            hubShop.Upgrade("Magic");
+            hubShop.Upgrade("Magic", "Magic Magic");
         }
     }
 }
