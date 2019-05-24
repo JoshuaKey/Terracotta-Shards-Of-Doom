@@ -163,7 +163,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32567
+    m_Bits: 163639
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -364,7 +364,7 @@ MonoBehaviour:
   camera: {fileID: 4503244970851167805}
   CanAttack: 1
   CanSwapWeapon: 0
-  CurrWeaponIndex: 1
+  CurrWeaponIndex: 0
   WeaponWheeltimeScale: 0.1
   health: {fileID: 4427983775954707073}
   WeaponParent: {fileID: 2654979141965366666}
@@ -383,8 +383,10 @@ MonoBehaviour:
   PlayerBrokenPotPrefab: {fileID: 4904014882870424033, guid: afa5816dde152054f9b8719dd5afad06,
     type: 3}
   brokenPot: {fileID: 7254400269827268962}
+  Coins: 0
   velocity: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
+  oldWeapons: []
   weapons: []
   layerMask: 0
 --- !u!114 &4427983775954707073

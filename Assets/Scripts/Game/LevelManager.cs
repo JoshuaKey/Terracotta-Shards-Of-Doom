@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
+public class LevelData {
+    public int TotalPots;
+    public StringBoolDictionary CollectedPots = new StringBoolDictionary();
+    public StringBoolDictionary SpecialPots = new StringBoolDictionary();
+    public bool IsCompleted;
+}
+
 public class LevelManager : MonoBehaviour {
 
     public string PersistentSceneName = "Persistent";
     public string StartingSceneName = "Hub";
+
+    public StringLevelDictionary Levels = new StringLevelDictionary();
 
     public static LevelManager Instance;
 
@@ -14,6 +24,8 @@ public class LevelManager : MonoBehaviour {
     void Awake() {
         if(Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
+
+        Levels[GetLevelName()] = new LevelData();
     }
 
     private void Start() {
@@ -22,7 +34,7 @@ public class LevelManager : MonoBehaviour {
             LoadScene(StartingSceneName);
         }
 
-        Game.Instance.playerStats.OnLoad += OnStatsLoad;
+        PlayerStats.OnLoad += OnStatsLoad;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -31,22 +43,23 @@ public class LevelManager : MonoBehaviour {
         Player.Instance.gameObject.SetActive(false);
         CheckPointSystem.Instance.LoadStartPoint();
         Player.Instance.health.Reset();
+        PlayerHud.Instance.DisableBossHealthBar();
         Player.Instance.gameObject.SetActive(true);
 
         AudioManager.Instance.PlaySceneMusic(scene.name);
 
-        if (!Game.Instance.playerStats.Levels.ContainsKey(scene.name)) {
-            Game.Instance.playerStats.Levels[scene.name] = new LevelData();
+        if (!Levels.ContainsKey(scene.name)) {
+            Levels[scene.name] = new LevelData();
         }
+
+        Game.Instance.SavePlayerStats();
     }
 
     private void OnStatsLoad(PlayerStats stats) {
-        LevelData level = null;
-        if (!stats.Levels.TryGetValue("Tutorial", out level)){
-            LoadScene("Tutorial");
-        } else {
-            LoadScene("Hub");
-        }
+        this.Levels = stats.Levels;
+
+        string currLevel = stats.CurrentLevel;
+        LoadScene(currLevel);
     }
 
     public void MoveToScene(GameObject obj) {

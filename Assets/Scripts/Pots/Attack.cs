@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,13 +12,22 @@ public class Attack : MonoBehaviour
     [HideInInspector] public bool isAttacking = false;
     [HideInInspector] public bool hasHitPlayer = false;
 
+    public Action OnAttack;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Game.Instance.PlayerTag) && isAttacking && !hasHitPlayer)
         {
             hasHitPlayer = true;
             Player.Instance.health.TakeDamage(damageType, damage);
-            Player.Instance.Knockback(transform.forward * knockback);
+
+            //Player.Instance.Knockback(transform.forward * knockback);
+
+            // I changed the Knocbakc Direction... Fight me
+            Vector3 dir = Player.Instance.transform.position - this.transform.position;
+            dir.y = 0.0f;
+            dir = dir.normalized;
+            Player.Instance.Knockback(dir * knockback);
         }
     }
 }

@@ -73,6 +73,12 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    public void Slow(float speedMultiplier, float duration) {
+        if (CanBeKnockedBack) {
+            StartCoroutine(SlowRoutine(speedMultiplier, duration));
+        }
+    }
+
     private void Die() {
         string[] sounds = {
             "ceramic_shatter1",
@@ -128,6 +134,18 @@ public class Enemy : MonoBehaviour {
         }
         if (pot != null) {
             pot.stunned = false;
+        }
+    }
+
+    protected IEnumerator SlowRoutine(float speedMultiplier, float duration) {
+        if (agent != null) {
+            agent.speed *= speedMultiplier;
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        if (agent != null) {
+            agent.speed *= 1 / speedMultiplier;
         }
     }
 }

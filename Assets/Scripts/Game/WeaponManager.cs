@@ -11,12 +11,13 @@ public class WeaponManager : MonoBehaviour {
     public CrossBow CrossBowPrefab;
     public Magic MagicPrefab;
 
-    //public FireSword FireSwordPrefab;
-    //public IceBow IceBowPrefab;
-    //public EarthHammer EarthHammerPrefab;
-    //public LightningSpear LightningSpearPrefab;
-    //public RocketLauncher RocketLauncherPrefab;
-    //public MagicMagic MagicMagicPrefab;
+    [Header("Advanced Weapons")]
+    public FireSword FireSwordPrefab;
+    public IceBow IceBowPrefab;
+    public RockHammer RockHammerPrefab;
+    public LightningSpear LightningSpearPrefab;
+    public RocketLauncher RocketLauncherPrefab;
+    public MagicMagic MagicMagicPrefab;
 
     public static WeaponManager Instance;
 
@@ -45,27 +46,30 @@ public class WeaponManager : MonoBehaviour {
                 w.name = "Spear";
                 break;
             case "Crossbow":
-            case "CrossBow":
                 w = GameObject.Instantiate(CrossBowPrefab);
-                w.name = "CrossBow";
+                w.name = "Crossbow";
                 break;
             case "Magic":
                 w = GameObject.Instantiate(MagicPrefab);
                 w.name = "Magic";
                 break;
-            case "FireSword":
+            case "Fire Sword":
+                w = GameObject.Instantiate(FireSwordPrefab);
                 break;
-            case "IceBow":
+            case "Ice Bow":
+                w = GameObject.Instantiate(IceBowPrefab);
                 break;
-            case "EarthHammer":
-            case "RockHammer":
+            case "Rock Hammer":
+                w = GameObject.Instantiate(RockHammerPrefab);
                 break;
-            case "LightningSpear":
+            case "Lightning Spear":
+                w = GameObject.Instantiate(LightningSpearPrefab);
                 break;
-            case "MagicMissile":
-            case "RocketLauncher":
+            case "Magic Missile":
+                w = GameObject.Instantiate(RocketLauncherPrefab);
                 break;
-            case "MagicMagic":                
+            case "Magic Magic":
+                w = GameObject.Instantiate(MagicMagicPrefab);
                 break;
         }
         return w;

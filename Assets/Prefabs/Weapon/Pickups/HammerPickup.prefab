@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2660086853975331084}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.3923411, y: 1.1999999, z: -4.209998}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1734609142071241776}
@@ -80,8 +80,7 @@ MonoBehaviour:
   Magnitude: 0.5
   interactable: {fileID: 2660086853975331074}
   WeaponDisplay: {fileID: 1734609142071078928}
-  WeaponPrefab: {fileID: 5093554559765653830, guid: daee01d86bf2ecf4199591e4b623924a,
-    type: 3}
+  WeaponName: Hammer
 --- !u!1001 &7648738078967270757
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89,6 +88,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2660086853975331072}
     m_Modifications:
+    - target: {fileID: 8230142574998044021, guid: f4ebdada122d5a6419c5d433bdc27546,
+        type: 3}
+      propertyPath: m_Name
+      value: HammerModel
+      objectReference: {fileID: 0}
     - target: {fileID: 8230142574998069589, guid: f4ebdada122d5a6419c5d433bdc27546,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -143,11 +147,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8230142574998044021, guid: f4ebdada122d5a6419c5d433bdc27546,
-        type: 3}
-      propertyPath: m_Name
-      value: HammerModel
       objectReference: {fileID: 0}
     - target: {fileID: 8230142574999970743, guid: f4ebdada122d5a6419c5d433bdc27546,
         type: 3}

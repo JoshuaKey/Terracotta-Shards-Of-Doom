@@ -12,7 +12,7 @@ public class Teleporter : MonoBehaviour {
         if(previousScene != null && previousScene != "") {
             string levelName = LevelManager.Instance.GetLevelName();
             LevelData level;
-            if (!Game.Instance.playerStats.Levels.TryGetValue(previousScene, out level) || !level.IsCompleted) {
+            if (!LevelManager.Instance.Levels.TryGetValue(previousScene, out level) || !level.IsCompleted) {
                 print("Teleporter " + this.name + " Shutting off. Level " + previousScene + " is not completed");
                 this.gameObject.SetActive(false);
             }
@@ -23,7 +23,7 @@ public class Teleporter : MonoBehaviour {
         if (other.CompareTag(Game.Instance.PlayerTag)) {
             if (HasPlayerCompletedLevel) {
                 string levelName = LevelManager.Instance.GetLevelName();
-                Game.Instance.playerStats.Levels[levelName].IsCompleted = true;
+                LevelManager.Instance.Levels[levelName].IsCompleted = true;
             }
 
             LevelManager.Instance.LoadScene(sceneName);

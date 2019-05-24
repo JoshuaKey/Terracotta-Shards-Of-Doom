@@ -310,7 +310,9 @@ public class SoundClip
     {
         if (audioSource == null || !audioSource.gameObject.activeSelf)
         {
-            throw new WarningException("An AudioSource was destroyed or deactivated before it was done playing.");
+            //throw new WarningException("An AudioSource was destroyed or deactivated before it was done playing.");
+            Debug.LogWarning("An AudioSource was destroyed or deactivated before it was done playing.");
+            return;
         }
         audioSource.gameObject.SetActive(false);
         audioSource.transform.parent = AudioManager.Instance.transform;
