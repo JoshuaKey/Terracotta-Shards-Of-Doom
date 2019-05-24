@@ -69,7 +69,6 @@ public class Lightning : MonoBehaviour {
                 break;
             }
         }
-        print(colliders.Length);
 
 
         if (enemy == null) {
