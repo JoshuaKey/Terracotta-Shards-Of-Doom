@@ -33,6 +33,7 @@ public class PlayerStats {
     /// </summary>
     /// <param name="file"></param>
     public static void Save(string file) {
+        Debug.Log("Saving Player Stats to " + file);
 
         PlayerStats stats = new PlayerStats();
     

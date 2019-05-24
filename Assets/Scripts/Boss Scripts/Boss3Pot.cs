@@ -26,6 +26,7 @@ public class Boss3Pot : Pot {
 
     [Header("Vulnerable")]
     public float FallTime = .5f;
+    public float TeeterSpeed = 30;
     public Transform VulnerablePosition;
     public ParticleSystem VulnerableParticle;
 
@@ -305,11 +306,28 @@ public class Boss3Pot : Pot {
     }
 
     private IEnumerator Teeter() {
-        Vector3 angledUp = Quaternion.Euler(0, 0, 30) * Vector3.up;
+        Quaternion baseRot = this.transform.rotation;
 
+        float t = 0.0f;
         while (true) {
+            t += Time.deltaTime;
 
+            // Make it face forward?
+            Vector3 direction = Quaternion.Euler(0, TeeterSpeed * t, 0) * Vector3.forward;
+            Quaternion newRot = Quaternion.Euler(direction * 30) * baseRot;
+
+            this.transform.rotation = newRot;
+
+            //this.transform.Rotate(Vector3.up * TeeterSpeed * Time.deltaTime, Space.World);
+
+            if (stateMachine.GetCurrState().ToString() == "Boss3_Vulnerable") {
+                yield return null;
+            } else {
+                break;
+            }
         }
+
+        this.transform.rotation = baseRot;
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -317,7 +335,7 @@ public class Boss3Pot : Pot {
             if (arenaCollider.enabled) {
                 arenaCollider.enabled = false;
                 PlayerHud.Instance.EnableBossHealthBar();
-                PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
+                PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
             } 
         }
     }

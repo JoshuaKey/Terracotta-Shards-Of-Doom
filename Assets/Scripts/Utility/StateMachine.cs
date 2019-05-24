@@ -169,10 +169,6 @@ public class StateMachine
     {
         return curState.Peek();
     }
-    public string GetCurrentState()
-    {
-        return curState.ToString();
-    }
 }
 
 public abstract class State

@@ -46,7 +46,7 @@ public class Settings {
         settings.InputConfigurationFile = InputController.Instance.InputConfigurationFile;
         settings.IsLeftHanded = InputController.Instance.IsLeftHanded;
         AudioManager.Instance.audioMixer.GetFloat("MasterVolume", out settings.MasterVolume);
-        AudioManager.Instance.audioMixer.GetFloat("SoundVolume", out settings.SoundVolume);
+        AudioManager.Instance.audioMixer.GetFloat("SFXVolume", out settings.SoundVolume);
         AudioManager.Instance.audioMixer.GetFloat("MusicVolume", out settings.MusicVolume);//
         settings.FOV = Player.Instance.camera.fieldOfView;
         settings.VerticalSensitivity = Player.Instance.VerticalRotationSensitivity;
