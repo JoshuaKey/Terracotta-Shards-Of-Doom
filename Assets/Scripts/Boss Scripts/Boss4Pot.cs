@@ -200,6 +200,7 @@ class Boss_MeteorShower : State
     Meteor[] projectiles = null;
 
     bool firing = false;
+    bool teleporting = false;
 
     public override void Init(GameObject owner)
     {
@@ -215,11 +216,15 @@ class Boss_MeteorShower : State
     public override void Enter()
     {
         firing = false;
+        teleporting = false;
+
     }
 
     public override void Exit()
     {
         firing = false;
+        teleporting = false;
+
     }
 
     public override string Update()
@@ -234,6 +239,7 @@ class Boss_MeteorShower : State
     IEnumerator Firing()
     {
         firing = true;
+
         Bounds spawnArea = boss.ProjectileSpawnArea.bounds;
         Vector3 playerPosition = Player.Instance.transform.position;
         RaycastHit hit;
@@ -267,6 +273,7 @@ class Boss_MeteorShower : State
             projectiles[i].transform.position = spawnPosition;
             projectiles[i].StartFall();
         }
+        boss.StartCoroutine(Teleport());
 
         //Wait for each projectile to land before we exit the coroutine and start again
         while (projectiles.Any(m => !m.Landed))
@@ -274,6 +281,42 @@ class Boss_MeteorShower : State
             yield return null;
         }
         firing = false;
+    }
+    IEnumerator Teleport()
+    {
+        teleporting = true;
+        Vector3 teleportLocation = Vector3.zero;
+        foreach(Meteor m in projectiles)
+        {
+            teleportLocation += m.transform.position;
+        }
+        teleportLocation /= projectiles.Length;
+        teleportLocation.y = (boss.MovementBoundaries.bounds.max.y - boss.MovementBoundaries.bounds.min.y) + boss.MovementBoundaries.bounds.min.y;
+
+        Vector3 originalScale = boss.transform.localScale;
+        float shrinkTime = 0.0f;
+
+        while (boss.transform.localScale.sqrMagnitude != 0)
+        {
+            shrinkTime += Time.deltaTime;
+            shrinkTime = Mathf.Clamp(shrinkTime, 0.0f, 1.0f);
+            boss.transform.localScale = originalScale - (originalScale * (shrinkTime / 1.0f));
+            yield return null;
+        }
+        boss.transform.position = teleportLocation;
+
+        boss.transform.localScale = Vector3.zero;
+        float growthTime = 0.0f;
+
+        while (boss.transform.localScale.sqrMagnitude < originalScale.sqrMagnitude)
+        {
+            growthTime += Time.deltaTime;
+            growthTime = Mathf.Clamp(growthTime, 0.0f, 1.0f);
+            boss.transform.localScale = originalScale * (growthTime / 1.0f);
+            yield return null;
+        }
+
+        teleporting = false;
     }
 }
 #endregion

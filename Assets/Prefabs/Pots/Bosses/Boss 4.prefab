@@ -4524,7 +4524,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4748975890210701494}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: 3.07}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_Children:
   - {fileID: 559594851200322073}
@@ -4551,9 +4551,12 @@ MonoBehaviour:
   agent: {fileID: 0}
   animator: {fileID: 0}
   potRenderers: []
-  EnemyGameobject: {fileID: 0}
+  MeshAndCollider: {fileID: 0}
   MovementBoundaries: {fileID: 0}
   Spawnpoint: {fileID: 559594851200322073}
+  ProjectilePool: {fileID: 0}
+  ProjectileTargetArea: {fileID: 0}
+  ProjectileSpawnArea: {fileID: 0}
   MaxSpawnedPots: 1
   NumberOfSpawnedPots: 0
   BossSpeed: 1
@@ -6660,7 +6663,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6177735251382029834}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6375018228257730676}
@@ -6737,10 +6740,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.7
-  m_Height: 1.9
+  m_Radius: 0.6
+  m_Height: 1.75
   m_Direction: 1
-  m_Center: {x: 0, y: 0.95, z: 0}
+  m_Center: {x: 0, y: 0.85, z: 0}
 --- !u!114 &2642583361294907281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8653,7 +8656,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7141102948194714533}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 24522616467238278}
