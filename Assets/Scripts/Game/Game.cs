@@ -8,11 +8,6 @@ public class Game : MonoBehaviour {
     public string PlayerTag = "Player";
     public string PlayerStatsFile = "save.json"; // ?
     public string SettingsFile = "settings.json"; // ?
-    public bool LoadPlayerStatsOnStart = false;
-    public bool LoadSettingsOnStart = false;
-
-    [Space]
-    public PlayerStats playerStats = new PlayerStats();
 
     public static Game Instance;
     
@@ -23,18 +18,6 @@ public class Game : MonoBehaviour {
     }
 
     private void Start() {
-        if (LoadPlayerStatsOnStart) {
-            LoadPlayerStats();
-        }
-        if (LoadSettingsOnStart) {
-            LoadSettings();
-        }
-
-        string levelName = LevelManager.Instance.GetLevelName();
-        if (!playerStats.Levels.ContainsKey(levelName)) {
-            playerStats.Levels[levelName] = new LevelData();
-        }
-
         //DialogueSystem.Instance.SetCharacterImage(image...);
         //DialogueSystem.Instance.SetCharacterName("nAVi thE pOt!");
         //DialogueSystem.Instance.QueueDialogue("WhY dO I eXisT?", true);
@@ -50,11 +33,11 @@ public class Game : MonoBehaviour {
 
     [ContextMenu("Save Player Stats")]
     public void SavePlayerStats() {
-        playerStats.Save(Application.dataPath + "/" + PlayerStatsFile);
+        PlayerStats.Save(Application.dataPath + "/" + PlayerStatsFile);
     }
     [ContextMenu("Load Player Stats")]
     public void LoadPlayerStats() {
-        playerStats.Load(Application.dataPath + "/" + PlayerStatsFile);
+        PlayerStats.Load(Application.dataPath + "/" + PlayerStatsFile);
     }
     [ContextMenu("Save Settings")]
     public void SaveSettings() {

@@ -60,8 +60,7 @@ public class Player : MonoBehaviour {
     public BrokenPot brokenPot;
 
     [Header("Player Stats")]
-    //public int Coins = 0;
-    //public StringBoolDictionary CollectedWeapons = new StringBoolDictionary();
+    public int Coins = 0;
 
     public static Player Instance;
 
@@ -100,28 +99,11 @@ public class Player : MonoBehaviour {
         if (brokenPot == null) { brokenPot = GetComponentInChildren<BrokenPot>(true); }
         if (brokenPot == null) { brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform); }
 
-        weapons.AddRange(GetComponentsInChildren<Weapon>(true));
-        foreach (Weapon w in weapons) {
-            Game.Instance.playerStats.Weapons[w.name] = true;
-            w.gameObject.SetActive(false);
-        }
-        CurrWeaponIndex = Mathf.Min(weapons.Count - 1, CurrWeaponIndex);
-
-        Weapon newWeapon = GetCurrentWeapon();
-        newWeapon.gameObject.SetActive(true);
-        newWeapon.transform.SetParent(camera.transform, false);
-
-        string[] weaponNames = weapons.Select(x => x.name).ToArray();
-        PlayerHud.Instance.SetWeaponWheel(weaponNames);
-        PlayerHud.Instance.DisableWeaponWheel();
-        if (weapons.Count > 1) {
-            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
-            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
-            CanSwapWeapon = true;
-        } else {
-            PlayerHud.Instance.DisableWeaponToggle();
-            CanSwapWeapon = false;
+        //Weapons
+        Weapon[] weaponArray = GetComponentsInChildren<Weapon>(true);
+        CurrWeaponIndex = Mathf.Min(weaponArray.Length - 1, CurrWeaponIndex);
+        foreach (Weapon w in weaponArray) {
+            AddWeapon(w);
         }
 
         // Physics
@@ -147,10 +129,9 @@ public class Player : MonoBehaviour {
         this.health.OnDeath += this.Die;
 
         Settings.OnLoad += OnSettingsLoad;
-        Game.Instance.playerStats.OnLoad += OnStatsLoad;
+        PlayerStats.OnLoad += OnStatsLoad;
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
-
     }
 
     void Update() {
@@ -167,11 +148,11 @@ public class Player : MonoBehaviour {
         }
         if (InputManager.GetButtonDown("Pause Menu"))
         {
-            if (Time.timeScale == 0)
-            {
-                PauseMenu.Instance.DeactivatePauseMenu();
-            }
-            else
+            //if (Time.timeScale == 0)
+            //{
+            //    PauseMenu.Instance.DeactivatePauseMenu();
+            //}
+            //else
             {
                 PauseMenu.Instance.ActivatePauseMenu();
             }
@@ -205,12 +186,43 @@ public class Player : MonoBehaviour {
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.V)) {
-                Weapon w = WeaponManager.Instance.GetWeapon("CrossBow");
+                Weapon w = WeaponManager.Instance.GetWeapon("Crossbow");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
             if (Input.GetKeyDown(KeyCode.B)) {
                 Weapon w = WeaponManager.Instance.GetWeapon("Magic");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            // Advanced
+            if (Input.GetKeyDown(KeyCode.N)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("Fire Sword");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.M)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("Ice Bow");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Comma)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("Rock Hammer");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Period)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("Lightning Spear");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Slash)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("Magic Missile");
+                w.transform.SetParent(WeaponParent.transform, false);
+                AddWeapon(w);
+            }
+            if (Input.GetKeyDown(KeyCode.Quote)) {
+                Weapon w = WeaponManager.Instance.GetWeapon("Magic Magic");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
             }
@@ -363,21 +375,21 @@ public class Player : MonoBehaviour {
         }
     }
     public void UpdateInteractable() {
-        // Check for Compass
-        {
-            if (InputManager.GetButtonDown("Compass")) {
-                compass.Activate();
-            } 
-            else if (compass.gameObject.activeInHierarchy) {
-                Transform target;
-                if (EnemyManager.Instance.MainProgression.IsComplete()) {
-                    target = EnemyManager.Instance.MainProgression.ProgressionObject.transform;
-                } else {
-                    target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
-                }
-                compass.Target = target;
-            }
-        }
+        //// Check for Compass
+        //{
+        //    if (InputManager.GetButtonDown("Compass")) {
+        //        compass.Activate();
+        //    } 
+        //    else if (compass.gameObject.activeInHierarchy) {
+        //        Transform target;
+        //        if (EnemyManager.Instance.MainProgression.IsComplete()) {
+        //            target = EnemyManager.Instance.MainProgression.ProgressionObject.transform;
+        //        } else {
+        //            target = EnemyManager.Instance.GetClosestEnemy(this.transform.position).transform;
+        //        }
+        //        compass.Target = target;
+        //    }
+        //}
 
 
         // Check for interactable
@@ -478,15 +490,15 @@ public class Player : MonoBehaviour {
         newWeapon.transform.SetParent(camera.transform, false);
 
         // Reset Broken Pot
-        brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform);       
-
-        // Respawn...
-        LevelManager.Instance.RestartLevel();
+        brokenPot = GameObject.Instantiate(PlayerBrokenPotPrefab, this.transform);         
 
         // UI
         DeathScreen.Instance.DisableDeathScreen();
         PlayerHud.Instance.EnablePlayerHud();
         PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
+
+        // Respawn...
+        Game.Instance.LoadPlayerStats();
     }
     public void Die() {
         StartCoroutine(CameraDeathAnimation());      
@@ -595,18 +607,28 @@ public class Player : MonoBehaviour {
 
         return weaponWheelRotation;
     }
-    public void AddWeapon(Weapon newWeapon, Weapon oldWeapon = null) {
-        Game.Instance.playerStats.Weapons[newWeapon.name] = true;
+    public void AddWeapon(Weapon newWeapon) {
+        if(newWeapon is AdvancedWeapon) {
+            AdvancedWeapon w = (AdvancedWeapon)newWeapon;
+            int index = weapons.FindIndex(x => x.name == w.OldWeaponName);
 
-        if(oldWeapon == null) {
-            weapons.Add(newWeapon);
-        } else {
-            int index = weapons.FindIndex(x => x.name == oldWeapon.name);
+            Weapon oldWeapon = weapons[index];
+            Destroy(oldWeapon.gameObject);
+
             weapons[index] = newWeapon;
+
+            oldWeapon.gameObject.SetActive(false);
+        } else {
+            weapons.Add(newWeapon);
         }  
 
         newWeapon.gameObject.SetActive(false);
         newWeapon.transform.SetParent(WeaponParent.transform, false);
+
+        // This works if we are adding MagicMagic, but holding Magic, MagicMagic will be enabled
+        Weapon currWeapon = GetCurrentWeapon();
+        currWeapon.gameObject.SetActive(true);
+        currWeapon.transform.SetParent(camera.transform, false);
 
         string[] weaponNames = weapons.Select(x => x.name).ToArray();
         int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
@@ -664,34 +686,16 @@ public class Player : MonoBehaviour {
         Player.Instance.HorizontalRotationSensitivity = settings.HorizontalSensitivity;
     }
     private void OnStatsLoad(PlayerStats stats) {
+        this.Coins = stats.Coins;
+        PlayerHud.Instance.SetCoinCount(this.Coins);
+
         foreach (Weapon w in weapons) { Destroy(w.gameObject); }
         weapons.Clear();
         CurrWeaponIndex = 0;
 
-        foreach(KeyValuePair<string, bool> pair in stats.Weapons) {
-            if (pair.Value) {
-                Weapon w = WeaponManager.Instance.GetWeapon(pair.Key);
-                w.transform.SetParent(WeaponParent.transform, false);
-                weapons.Add(w);
-                w.gameObject.SetActive(false);
-            }
-        }
-
-        Weapon newWeapon = GetCurrentWeapon();
-        newWeapon.gameObject.SetActive(true);
-        newWeapon.transform.SetParent(camera.transform, false);
-
-        string[] weaponNames = weapons.Select(x => x.name).ToArray();
-        PlayerHud.Instance.SetWeaponWheel(weaponNames);
-        PlayerHud.Instance.DisableWeaponWheel();
-        if (weapons.Count > 1) {
-            int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
-            int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
-            PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
-            CanSwapWeapon = true;
-        } else {
-            PlayerHud.Instance.DisableWeaponToggle();
-            CanSwapWeapon = false;
+        foreach(string weaponName in stats.Weapons) {
+            Weapon w = WeaponManager.Instance.GetWeapon(weaponName);
+            AddWeapon(w);
         }
     }
 

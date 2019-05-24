@@ -8,6 +8,7 @@ public enum DamageType {
     FIRE = (1 << 1),
     ICE = (1 << 2),
     LIGHTNING = (1 << 3),
-    EXPLOSIVE = (1 << 4),
-    TRUE = (1 << 5),
+    EARTH = (1 << 4),
+    EXPLOSIVE = (1 << 5),
+    TRUE = (1 << 6),
 }
