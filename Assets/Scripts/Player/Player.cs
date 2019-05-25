@@ -60,7 +60,18 @@ public class Player : MonoBehaviour {
     public BrokenPot brokenPot;
 
     [Header("Player Stats")]
-    public int Coins = 0;
+    private int coins;
+    public int Coins
+    {
+        get
+        {
+            return coins;
+        }
+            set
+        {
+            coins = Mathf.Min(value, 420420);
+        }
+    }
 
     public static Player Instance;
 
@@ -225,6 +236,19 @@ public class Player : MonoBehaviour {
                 Weapon w = WeaponManager.Instance.GetWeapon("Magic Magic");
                 w.transform.SetParent(WeaponParent.transform, false);
                 AddWeapon(w);
+            }
+            // Money
+            if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                Coins += 2000;
+                Debug.Log("Motherlode");
+                PlayerHud playerHud = FindObjectOfType<PlayerHud>();
+                if (playerHud != null)
+                {
+                    playerHud.SetCoinCount(Coins);
+                    playerHud.PlayCoinAnimation();
+                }
+
             }
         }
 

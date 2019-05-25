@@ -53,7 +53,8 @@ public class Boss2Pot : Pot
         enemy.health.OnDamage += ChangeHealthUI;
         enemy.health.OnDamage += PlayClang;
         enemy.health.OnDeath += OnDeath;
-        ChangeHealthUI(0);
+        
+        PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
     }
 
     void Update()
