@@ -34,7 +34,6 @@ public class PauseMenu : MonoBehaviour
 
     // player bools
     private bool playerCanAttack = true;
-    private bool playerCanSwapWeapon = false;
 
     // volumes
     [HideInInspector] public float masterVolume = 0f;
@@ -137,6 +136,7 @@ public class PauseMenu : MonoBehaviour
                 break;
             case "progress":
                 progress.SetActive(true);
+                progress.GetComponent<ProgressMenu>().UpdatePercents();
                 break;
             case "options":
                 options.SetActive(true);
