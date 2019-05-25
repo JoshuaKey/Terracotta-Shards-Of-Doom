@@ -118,7 +118,7 @@ public class Spear : Weapon {
             Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
             dir.y = 0.0f;
             dir = dir.normalized;
-            targetProj.Hit(this.gameObject, dir * currentKnockback);
+            targetProj.Hit(Player.Instance.gameObject, dir * Knockback);
             return;
         }
 

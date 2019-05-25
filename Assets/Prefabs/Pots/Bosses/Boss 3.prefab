@@ -159,10 +159,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.7
-  m_Height: 1.9
+  m_Radius: 1.2
+  m_Height: 4
   m_Direction: 1
-  m_Center: {x: 0, y: 0.95, z: 0}
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!114 &2370493736476239329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1063,11 +1063,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
         type: 3}
-      propertyPath: EmissionModule.rateOverTime.scalar
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
@@ -1078,37 +1073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
         type: 3}
-      propertyPath: ShapeModule.arc.value
-      value: 360
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: ShapeModule.randomPositionAmount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: VelocityModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: VelocityModule.orbitalX.scalar
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: VelocityModule.orbitalZ.scalar
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: VelocityModule.orbitalY.scalar
+      propertyPath: ShapeModule.radiusThickness
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
@@ -1118,22 +1083,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
         type: 3}
-      propertyPath: ShapeModule.m_Rotation.y
+      propertyPath: ShapeModule.randomPositionAmount
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
         type: 3}
-      propertyPath: ShapeModule.m_Rotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
-        type: 3}
-      propertyPath: VelocityModule.inWorldSpace
+      propertyPath: ShapeModule.radius.value
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
         type: 3}
-      propertyPath: ShapeModule.radiusThickness
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: VelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: VelocityModule.orbitalY.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: VelocityModule.orbitalZ.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758287273842986470, guid: 6c341bb53ae378741b18227bb14761ae,
+        type: 3}
+      propertyPath: VelocityModule.inWorldSpace
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

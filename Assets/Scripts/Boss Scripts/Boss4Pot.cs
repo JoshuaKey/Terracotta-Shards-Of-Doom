@@ -2,15 +2,33 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using System.Collections.Generic;
 
 public class Boss4Pot : Pot
 {
+    [Header("Values")]
+    public Enemy enemy;
+
     [Header("Boss Stuff")]
     public GameObject MeshAndCollider = null;
     public BoxCollider MovementBoundaries = null;
     public Transform Spawnpoint = null;
     public GameObject ProjectilePool = null;
     public BoxCollider ProjectileSpawnArea = null;
+
+    [Header("Phase 2")]
+    public TargetProjectile TrackingMeteorPrefab;
+    public Transform ProjectileSpawnpoint = null;
+    public TargetReceiver Reciever;
+    public List<GameObject> Shields;
+    public GameObject Aura;
+    public float ProjectileImpulse = 10.0f;
+    public TargetProjectile currProjectile;
+    public float SpawnDelay = 1.0f;
+
+    [Header("Phase")]
+    public int Phase1Pots = 50;
+    public int ReceiveCount = 0;
 
     [Range(1, 20)]
     public byte MaxSpawnedPots = 1;
@@ -30,13 +48,108 @@ public class Boss4Pot : Pot
         this.stateMachine = new StateMachine();
         stateMachine.needAgent = false;
         stateMachine.Init(this.gameObject,
+            new Boss4_Shooting(),
+            new Boss4_Target(),
             new Boss_MeteorShower());
+
+        enemy.health.OnDamage += ChangeHealthUI;
+        enemy.health.OnDamage += PlayClang;
+        enemy.health.OnDeath += OnDeath;
+        Reciever.OnReceive += ReceiveTarget;
+        PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
     }
 
     void Update()
     {
         stateMachine.Update();
     }
+
+    public void PlayClang(float damage) {
+        if (!health.IsDead()) {
+            AudioManager.Instance.PlaySoundWithParent("clang", ESoundChannel.SFX, gameObject);
+        }
+    }
+
+    private void ChangeHealthUI(float val) {
+        PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
+    }
+
+    private void OnDeath() {
+        PlayerHud.Instance.DisableBossHealthBar();
+    }
+
+    public void SpawnProjectile() {
+        if(currProjectile != null) {
+            return;
+        }
+        TargetProjectile meteor = Instantiate(TrackingMeteorPrefab, 
+            ProjectileSpawnpoint.position, ProjectileSpawnpoint.rotation, this.transform);
+
+        Vector3 dir = Vector3.up;
+        dir *= ProjectileImpulse;
+
+        meteor.OnHit += HitTarget;
+        meteor.OnMiss += MissTarget;
+        currProjectile = meteor;
+
+        ReceiveCount = 3 - Shields.Count;
+
+        meteor.Fire(this.gameObject, Player.Instance.camera.gameObject, dir);
+    }
+
+    private void ReceiveTarget(TargetReceiver receiver, GameObject meteor) {
+        if (currProjectile == null) { return; }
+        print("Received " + meteor.name);
+
+        if(ReceiveCount == 0) {
+            currProjectile.OnHit -= HitTarget;
+            currProjectile.OnMiss -= MissTarget;
+            currProjectile = null;
+
+            GameObject shield = Shields[0];
+            Shields.RemoveAt(0);
+            Destroy(shield.gameObject);
+            Destroy(meteor.gameObject);
+
+            if (Shields.Count == 0) {
+                Aura.SetActive(false);
+                stateMachine.ChangeState("Boss_MeteorShower");
+            } else {
+                StartCoroutine(SpawnProjectileDelay());
+            }
+        } else {
+            ReceiveCount--;
+
+            Vector3 dir = Vector3.up;
+            dir *= ProjectileImpulse;
+
+            currProjectile.Hit(this.gameObject, dir);
+        }
+    }
+
+    private void HitTarget(TargetProjectile projectile, GameObject hitObj) {
+        if (currProjectile != null) {
+            print("Hit");
+            Destroy(projectile.gameObject);
+            currProjectile = null;
+            StartCoroutine(SpawnProjectileDelay());
+        }
+    }
+
+    private void MissTarget(TargetProjectile projectile) {
+        if (currProjectile != null) {
+            print("Missed");
+            Destroy(projectile.gameObject);
+            currProjectile = null;
+            StartCoroutine(SpawnProjectileDelay());
+        }
+    }
+
+    private IEnumerator SpawnProjectileDelay() {
+        yield return new WaitForSeconds(SpawnDelay);
+        stateMachine.ChangeState("Boss4_Target");
+    }
+
 }
 #region Boss States
 class Boss4_Shooting : State
@@ -48,6 +161,7 @@ class Boss4_Shooting : State
 
     byte killedPots = 0;
     bool shooting = false;
+    float nextSpawnTime = 0;
 
     public override void Init(GameObject owner)
     {
@@ -60,6 +174,8 @@ class Boss4_Shooting : State
     {
         shooting = false;
         floatCoroutine = boss.StartCoroutine(Float());
+
+        boss.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
     public override void Exit()
@@ -70,8 +186,15 @@ class Boss4_Shooting : State
 
     public override string Update()
     {
-        if (!shooting && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
-        {
+        if (killedPots >= boss.Phase1Pots) {
+            return "Boss4_Target";
+        }
+
+        //if (!shooting && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
+        //{
+        //    boss.StartCoroutine(Shooting());
+        //}
+        if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots) {
             boss.StartCoroutine(Shooting());
         }
         return null;
@@ -81,6 +204,7 @@ class Boss4_Shooting : State
     {
         shooting = true;
         boss.NumberOfSpawnedPots++;
+        nextSpawnTime = Time.time + 1.0f;
 
         Enemy enemy = EnemyManager.Instance.SpawnChargerPot();
         if (enemy == null)
@@ -126,13 +250,22 @@ class Boss4_Shooting : State
         Vector3 playerHorizontalVelocity = new Vector3(player.velocity.x, 0.0f, player.velocity.z);
         Vector3 playerPosition = player.transform.position + playerHorizontalVelocity;
 
+        // Hit is false...
         NavMeshHit hit;
-        NavMesh.SamplePosition(playerPosition, out hit, 4.0f, NavMesh.AllAreas);
+        NavMesh.SamplePosition(playerPosition, out hit, 8.0f, NavMesh.AllAreas);
         Vector3 targetPosition = hit.position;
 
         do
         {
-            enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 12.0f);
+            Vector3 pos = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 12.0f);
+            if (float.IsNaN(pos.x)) {
+                Debug.Log("NAN DETECTED!");
+                Debug.Log(enemy.transform.position);
+                Debug.Log(targetPosition);
+                Debug.Log(Time.deltaTime * 12);
+                Debug.Log(hit.hit);
+            }
+            enemy.transform.position = pos;
             yield return null;
             if (enemy == null)
             {
@@ -140,7 +273,6 @@ class Boss4_Shooting : State
                 yield break;
             }
         } while ((enemy.transform.position - targetPosition).magnitude > .1f);
-
 
         if (pot != null)
         {
@@ -193,6 +325,30 @@ class Boss4_Shooting : State
     }
 }
 
+public class Boss4_Target : State {
+
+    Boss4Pot boss4Pot = null;
+
+    public override void Init(GameObject owner) {
+        base.Init(owner);
+        boss4Pot = owner.GetComponent<Boss4Pot>();
+    }
+
+    public override void Enter() {
+        boss4Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
+        boss4Pot.SpawnProjectile();
+    }
+
+    public override void Exit() {
+
+    }
+
+    public override string Update() {
+        
+        return null;
+    }
+}
+
 class Boss_MeteorShower : State
 {
     Boss4Pot boss = null;
@@ -216,7 +372,7 @@ class Boss_MeteorShower : State
     {
         firing = false;
         teleporting = false;
-
+        boss.enemy.health.Resistance = 0;
     }
 
     public override void Exit()
@@ -292,7 +448,8 @@ class Boss_MeteorShower : State
             tooClose = false;
             for(int i = 0; i < projectiles.Length && !tooClose; i++)
             {
-                tooClose = (projectiles[i].transform.position - teleportLocation).sqrMagnitude < 16.0f;
+                //tooClose = (projectiles[i].transform.position - teleportLocation).sqrMagnitude < 16.0f;
+                tooClose = (projectiles[i].transform.position - teleportLocation).sqrMagnitude < 4.0f;
             }
         } while (tooClose);
         Vector3 originalScale = boss.transform.localScale;

@@ -56,7 +56,6 @@ public class Boss3Pot : Pot {
 
     void Update() {
         stateMachine.Update();
-        //print(stateMachine.GetCurrState().ToString());
     }
 
     public void PlayClang(float damage) {
