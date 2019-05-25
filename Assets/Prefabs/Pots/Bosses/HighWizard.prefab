@@ -107,6 +107,50 @@ Transform:
   m_Father: {fileID: 1815045802057186404}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1012668019
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1012668020}
+  - component: {fileID: 1012668021}
+  m_Layer: 12
+  m_Name: Trigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1012668020
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012668019}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -7, z: 0}
+  m_LocalScale: {x: 50, y: 10, z: 50}
+  m_Children: []
+  m_Father: {fileID: 1815045802057186404}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1012668021
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012668019}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1116750524
 GameObject:
   m_ObjectHideFlags: 0
@@ -2930,6 +2974,7 @@ Transform:
   - {fileID: 1116750525}
   - {fileID: 7818453359407690117}
   - {fileID: 6128115095877678809}
+  - {fileID: 1012668020}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2953,7 +2998,8 @@ MonoBehaviour:
   potRenderers:
   - {fileID: 122395213}
   enemy: {fileID: 12292369}
-  MeshAndCollider: {fileID: 0}
+  arenaCollider: {fileID: 1012668021}
+  MeshAndCollider: {fileID: 122395211}
   MovementBoundaries: {fileID: 0}
   Spawnpoint: {fileID: 3399455668654423522}
   ProjectilePool: {fileID: 0}
@@ -2970,7 +3016,7 @@ MonoBehaviour:
   ProjectileImpulse: 1
   currProjectile: {fileID: 0}
   SpawnDelay: 3
-  Phase1Pots: 10
+  Phase1Pots: 3
   ReceiveCount: 0
   MaxSpawnedPots: 20
   NumberOfSpawnedPots: 0
@@ -11486,11 +11532,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2990413132794523028, guid: 660fa2e45f0ef974798787b807505a53,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2990413132794523026, guid: 660fa2e45f0ef974798787b807505a53,
         type: 3}
@@ -30579,15 +30620,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2990413132794523025, guid: 660fa2e45f0ef974798787b807505a53,
         type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2990413132794523025, guid: 660fa2e45f0ef974798787b807505a53,
-        type: 3}
       propertyPath: m_Convex
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2990413132794523025, guid: 660fa2e45f0ef974798787b807505a53, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 660fa2e45f0ef974798787b807505a53, type: 3}
 --- !u!1 &6247694609698458950 stripped
 GameObject:

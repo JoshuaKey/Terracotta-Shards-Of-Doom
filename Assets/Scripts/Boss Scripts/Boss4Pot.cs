@@ -8,6 +8,7 @@ public class Boss4Pot : Pot
 {
     [Header("Values")]
     public Enemy enemy;
+    public Collider arenaCollider;
 
     [Header("Boss Stuff")]
     public GameObject MeshAndCollider = null;
@@ -48,6 +49,7 @@ public class Boss4Pot : Pot
         this.stateMachine = new StateMachine();
         stateMachine.needAgent = false;
         stateMachine.Init(this.gameObject,
+            new Boss4_Idle(),
             new Boss4_Shooting(),
             new Boss4_Target(),
             new Boss_MeteorShower());
@@ -56,7 +58,6 @@ public class Boss4Pot : Pot
         enemy.health.OnDamage += PlayClang;
         enemy.health.OnDeath += OnDeath;
         Reciever.OnReceive += ReceiveTarget;
-        PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
     }
 
     void Update()
@@ -92,6 +93,7 @@ public class Boss4Pot : Pot
         meteor.OnMiss += MissTarget;
         currProjectile = meteor;
 
+        print(Shields.Count);
         ReceiveCount = 3 - Shields.Count;
 
         meteor.Fire(this.gameObject, Player.Instance.camera.gameObject, dir);
@@ -150,8 +152,43 @@ public class Boss4Pot : Pot
         stateMachine.ChangeState("Boss4_Target");
     }
 
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag(Game.Instance.PlayerTag)) {
+            if (arenaCollider.enabled) {
+                arenaCollider.enabled = false;
+                PlayerHud.Instance.EnableBossHealthBar();
+                PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
+            }
+        }
+    }
+
 }
 #region Boss States
+public class Boss4_Idle : State {
+
+    Boss4Pot boss = null;
+
+    public override void Init(GameObject owner) {
+        base.Init(owner);
+        boss = owner.GetComponent<Boss4Pot>();
+    }
+
+    public override void Enter() {
+        boss.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
+    }
+
+    public override void Exit() {
+    }
+
+    public override string Update() {
+        if (!boss.arenaCollider.enabled) {
+            return "Boss4_Shooting";
+        }
+
+        return null;
+    }
+}
+
 class Boss4_Shooting : State
 {
     Boss4Pot boss = null;

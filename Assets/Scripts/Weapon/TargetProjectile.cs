@@ -6,6 +6,7 @@ using UnityEngine;
 public class TargetProjectile : MonoBehaviour {
 
     public float TargetSpeed = 5;
+    public float MaxSpeed = 10;
     public bool InstantFire = false;
 
     [Header("Components")]
@@ -39,7 +40,10 @@ public class TargetProjectile : MonoBehaviour {
         if (!rigidbody.isKinematic && target != null) {
             Vector3 dir = target.transform.position - this.transform.position;
             dir = dir.normalized * TargetSpeed;
-            rigidbody.AddForce(dir, ForceMode.Impulse);
+            rigidbody.AddForce(dir * Time.deltaTime, ForceMode.Acceleration);
+
+            Vector3 vel = Vector3.ClampMagnitude(rigidbody.velocity, MaxSpeed);
+            rigidbody.velocity = vel;
         }
         // Vector3 MoveTowards
         // Vector3 Smooth

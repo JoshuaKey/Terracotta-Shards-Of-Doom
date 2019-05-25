@@ -7,14 +7,22 @@ public class DialogueTrigger : MonoBehaviour
 	[SerializeField] List<string> text = new List<string>();
 	[SerializeField] Sprite characterSpeaking = null;
 	[SerializeField] string characterSpeakingName = "";
+    private bool triggered;
 
 	private void OnTriggerEnter(Collider other)
 	{
+        if (triggered) { return; }
+
+        triggered = true;
 		Player.Instance.enabled = false;
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
-		DialogueSystem.Instance.OnDialogueEnd += ReEnablePlayer;
-		DialogueSystem.Instance.SetCharacterImage(characterSpeaking);
+        this.enabled = false;
+
+        DialogueSystem.Instance.OnDialogueEnd += ReEnablePlayer;
+        if(characterSpeaking != null) {
+            DialogueSystem.Instance.SetCharacterImage(characterSpeaking);
+        }
 		DialogueSystem.Instance.SetCharacterName(characterSpeakingName);
 
 		foreach (string item in text)
@@ -25,7 +33,9 @@ public class DialogueTrigger : MonoBehaviour
 
 	private void ReEnablePlayer()
 	{
-		Player.Instance.enabled = true;
+
+        DialogueSystem.Instance.OnDialogueEnd -= ReEnablePlayer;
+        Player.Instance.enabled = true;
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 		this.enabled = false;
