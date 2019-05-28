@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 5093554559765230951}
   - component: {fileID: 5093554559765622755}
   - component: {fileID: 5093554559765653830}
+  - component: {fileID: 768342376665872139}
   m_Layer: 17
   m_Name: Hammer
   m_TagString: Untagged
@@ -102,13 +103,26 @@ MonoBehaviour:
   SlamCenter: {fileID: 8553095680181140580}
   SlamRadius: 4
   DustEffect: {fileID: 1525193379886649339}
-  StartPos: {x: 0.4, y: -1, z: 0.777}
-  EndPos: {x: 0.4, y: -1, z: 0.777}
-  AnimationSwingTime: 0.25
   PlayerJump: 10
-  StartRot: {x: 0, y: 0, z: 0}
-  EndRot: {x: 120, y: 0, z: 0}
-  AnimationRecoilTime: 1
+--- !u!95 &768342376665872139
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5093554559765653831}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: aecec8528068089469e35439de6dd83a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &3126287714104046388
 PrefabInstance:
   m_ObjectHideFlags: 0
