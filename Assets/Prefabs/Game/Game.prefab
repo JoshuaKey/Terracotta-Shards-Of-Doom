@@ -55,62 +55,6 @@ MonoBehaviour:
   PlayerTag: Player
   PlayerStatsFile: save.json
   SettingsFile: settings.json
-  LoadPlayerStatsOnStart: 0
-  LoadSettingsOnStart: 0
-  playerStats:
-    Coins: 0
-    Weapons:
-      reorderableList:
-        canAdd: 1
-        canRemove: 1
-        draggable: 1
-        expandable: 1
-        multipleSelection: 1
-        isExpanded: 0
-        label:
-          m_Text: Keys
-          m_Image: {fileID: 0}
-          m_Tooltip: 
-        headerHeight: 18
-        footerHeight: 13
-        slideEasing: 0.15
-        verticalSpacing: 2
-        showDefaultBackground: 1
-        elementDisplayType: 0
-        elementNameProperty: 
-        elementNameOverride: 
-        elementIcon: {fileID: 0}
-      reqReferences: {fileID: 0}
-      isExpanded: 0
-      _keyValues: []
-      _keys: []
-      _values: 
-    Levels:
-      reorderableList:
-        canAdd: 1
-        canRemove: 1
-        draggable: 1
-        expandable: 1
-        multipleSelection: 1
-        isExpanded: 0
-        label:
-          m_Text: Keys
-          m_Image: {fileID: 0}
-          m_Tooltip: 
-        headerHeight: 18
-        footerHeight: 13
-        slideEasing: 0.15
-        verticalSpacing: 2
-        showDefaultBackground: 1
-        elementDisplayType: 0
-        elementNameProperty: 
-        elementNameOverride: 
-        elementIcon: {fileID: 0}
-      reqReferences: {fileID: 0}
-      isExpanded: 0
-      _keyValues: []
-      _keys: []
-      _values: []
 --- !u!114 &1906646760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,6 +328,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4427983775954707073, guid: b5464378973d74d45b528e66c197b323,
+        type: 3}
+      propertyPath: MaxHealth
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5464378973d74d45b528e66c197b323, type: 3}
@@ -815,17 +764,17 @@ PrefabInstance:
     - target: {fileID: 8174703002669780136, guid: 18ac0a6f21c1edf419fde8719501b946,
         type: 3}
       propertyPath: m_isInputParsingRequired
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8174703001738157622, guid: 18ac0a6f21c1edf419fde8719501b946,
         type: 3}
       propertyPath: m_textInfo.lineCount
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8174703001738157622, guid: 18ac0a6f21c1edf419fde8719501b946,
         type: 3}
       propertyPath: m_isInputParsingRequired
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8184379501566777817, guid: 18ac0a6f21c1edf419fde8719501b946,
         type: 3}
