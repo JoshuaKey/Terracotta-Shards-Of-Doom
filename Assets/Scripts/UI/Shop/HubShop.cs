@@ -17,7 +17,7 @@ public class HubShop : MonoBehaviour
 
     [HideInInspector] public bool isMovingPanels;
 
-    private GameObject playerHud;
+    //private GameObject playerHud;
 
     #region weapon info
     [HideInInspector] public static WeaponInformation swordInfo 
@@ -55,7 +55,7 @@ public class HubShop : MonoBehaviour
     private void Awake()
     {
         informationPanel.Show(mainPanel.weaponName);
-        if (playerHud == null) playerHud = FindObjectOfType<PlayerHud>().gameObject;
+        //if (playerHud == null) playerHud = FindObjectOfType<PlayerHud>().gameObject;
     }
 
     #region Navigation
@@ -147,7 +147,8 @@ public class HubShop : MonoBehaviour
 
     public void ActivateHubShop()
     {
-        playerHud.SetActive(false);
+        //playerHud.SetActive(false);
+        PlayerHud.Instance.gameObject.SetActive(false);
 
         Player.Instance.enabled = false;
         Cursor.lockState = CursorLockMode.None;
@@ -167,7 +168,8 @@ public class HubShop : MonoBehaviour
 
     public void DeactivateHubShop()
     {
-        playerHud.SetActive(true);
+        //playerHud.SetActive(true);
+        PlayerHud.Instance.gameObject.SetActive(true);
 
         Player.Instance.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;

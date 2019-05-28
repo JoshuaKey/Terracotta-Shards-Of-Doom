@@ -10,6 +10,7 @@ public class StateMachine
     GameObject owner;
     NavMeshAgent agent;
     MonoBehaviour ownerScript;
+    public bool needAgent = true;
 
     //////////////////////
     public bool DEBUGGING = false;
@@ -42,7 +43,7 @@ public class StateMachine
                 ("The curState in StateMachine is empty. Did you forget to add States?");
         }
 
-        if(!agent.isActiveAndEnabled)
+        if(needAgent && !agent.isActiveAndEnabled)
         {
             return;
         }

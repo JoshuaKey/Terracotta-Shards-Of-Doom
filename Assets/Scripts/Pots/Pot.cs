@@ -24,7 +24,7 @@ public class Pot : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        health = GetComponent<Health>();
+        health = GetComponentInChildren<Health>();
         health.OnDamage += PlayTink;
     }
 

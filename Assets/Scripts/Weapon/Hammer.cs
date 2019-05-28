@@ -92,7 +92,7 @@ public class Hammer : Weapon {
                 Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
                 dir.y = 0.0f;
                 dir = dir.normalized;
-                targetProj.Hit(this.gameObject, dir * Knockback);
+                targetProj.Hit(Player.Instance.gameObject, dir * Knockback);
                 continue;
             }
 

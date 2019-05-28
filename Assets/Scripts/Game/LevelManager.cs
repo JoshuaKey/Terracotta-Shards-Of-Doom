@@ -43,7 +43,7 @@ public class LevelManager : MonoBehaviour {
         Player.Instance.gameObject.SetActive(false);
         CheckPointSystem.Instance.LoadStartPoint();
         Player.Instance.health.Reset();
-        PlayerHud.Instance.SetPlayerHealthBar(1.0f);
+        PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
         PlayerHud.Instance.DisableBossHealthBar();
         Player.Instance.gameObject.SetActive(true);
 

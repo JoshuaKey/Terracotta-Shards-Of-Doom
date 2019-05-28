@@ -17,7 +17,7 @@ public class DialogueSystem : MonoBehaviour {
     private bool isFinished = true;
     private bool displaying = false;
     private bool skip = false;
-    private List<string> dialogueQueue = new List<string>();
+    [SerializeField] private List<string> dialogueQueue = new List<string>();
     private int currDialogue = 0;
 
     public delegate void Event();

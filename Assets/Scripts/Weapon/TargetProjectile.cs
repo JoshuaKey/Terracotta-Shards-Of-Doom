@@ -6,6 +6,8 @@ using UnityEngine;
 public class TargetProjectile : MonoBehaviour {
 
     public float TargetSpeed = 5;
+    public float MaxSpeed = 10;
+    public bool InstantFire = false;
 
     [Header("Components")]
     public Attack attack;
@@ -26,9 +28,11 @@ public class TargetProjectile : MonoBehaviour {
         if (rigidbody == null) { rigidbody = GetComponentInChildren<Rigidbody>(true); }
         if (attack == null) { attack = GetComponentInChildren<Attack>(true); }
 
-        collider.enabled = false;
-        rigidbody.isKinematic = true;
-        attack.isAttacking = false;
+        if (!InstantFire) {
+            collider.enabled = false;
+            rigidbody.isKinematic = true;
+            attack.isAttacking = false;
+        }
     }
 
     // Update is called once per frame
@@ -36,8 +40,13 @@ public class TargetProjectile : MonoBehaviour {
         if (!rigidbody.isKinematic && target != null) {
             Vector3 dir = target.transform.position - this.transform.position;
             dir = dir.normalized * TargetSpeed;
-            rigidbody.AddForce(dir, ForceMode.Impulse);
+            rigidbody.AddForce(dir * Time.deltaTime, ForceMode.Acceleration);
+
+            Vector3 vel = Vector3.ClampMagnitude(rigidbody.velocity, MaxSpeed);
+            rigidbody.velocity = vel;
         }
+        // Vector3 MoveTowards
+        // Vector3 Smooth
     }
 
     private void OnDisable() {
@@ -52,11 +61,11 @@ public class TargetProjectile : MonoBehaviour {
         target = _target;
         hasFired = true;
 
-        if(sender == Player.Instance.gameObject) {
-            this.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
-        } else {
-            this.gameObject.layer = LayerMask.NameToLayer("EnemyProjectile");
-        }
+        //if(GameObject.ReferenceEquals(sender, Player.Instance.gameObject)) {
+        //    this.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
+        //} else {
+        //    this.gameObject.layer = LayerMask.NameToLayer("EnemyProjectile");
+        //}
 
         collider.enabled = true;
         rigidbody.isKinematic = false;
@@ -73,8 +82,16 @@ public class TargetProjectile : MonoBehaviour {
     }
 
     public void Hit(GameObject _sender, Vector3 impulse) {
+        if(GameObject.ReferenceEquals(_sender, sender)) { return; }
         target = sender;
         sender = _sender;
+        print("Hit by " + _sender.name);
+
+        //if (GameObject.ReferenceEquals(sender, Player.Instance.gameObject)) {
+        //    this.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
+        //} else {
+        //    this.gameObject.layer = LayerMask.NameToLayer("EnemyProjectile");
+        //}
 
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(impulse, ForceMode.Impulse);
