@@ -40,7 +40,7 @@ public class Boss4Pot : Pot
     public float BossSpeed = 1.0f;
     [Range(40.0f, 360.0f)]
     public float FloatSpeed = 1.0f;
-
+    private bool IsFloating = false;
     [HideInInspector]
     public byte phase = 1;
 
@@ -52,7 +52,7 @@ public class Boss4Pot : Pot
             new Boss4_Idle(),
             new Boss4_Shooting(),
             new Boss4_Target(),
-            new Boss_MeteorShower());
+            new Boss4_MeteorShower());
 
         enemy.health.OnDamage += ChangeHealthUI;
         enemy.health.OnDamage += PlayClang;
@@ -65,25 +65,32 @@ public class Boss4Pot : Pot
         stateMachine.Update();
     }
 
-    public void PlayClang(float damage) {
-        if (!health.IsDead()) {
+    public void PlayClang(float damage)
+    {
+        if (!health.IsDead())
+        {
             AudioManager.Instance.PlaySoundWithParent("clang", ESoundChannel.SFX, gameObject);
         }
     }
 
-    private void ChangeHealthUI(float val) {
+    private void ChangeHealthUI(float val)
+    {
         PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
     }
 
-    private void OnDeath() {
+    private void OnDeath()
+    {
+        StopFloating();
         PlayerHud.Instance.DisableBossHealthBar();
     }
 
-    public void SpawnProjectile() {
-        if(currProjectile != null) {
+    public void SpawnProjectile()
+    {
+        if (currProjectile != null)
+        {
             return;
         }
-        TargetProjectile meteor = Instantiate(TrackingMeteorPrefab, 
+        TargetProjectile meteor = Instantiate(TrackingMeteorPrefab,
             ProjectileSpawnpoint.position, ProjectileSpawnpoint.rotation, this.transform);
 
         Vector3 dir = Vector3.up;
@@ -99,11 +106,13 @@ public class Boss4Pot : Pot
         meteor.Fire(this.gameObject, Player.Instance.camera.gameObject, dir);
     }
 
-    private void ReceiveTarget(TargetReceiver receiver, GameObject meteor) {
+    private void ReceiveTarget(TargetReceiver receiver, GameObject meteor)
+    {
         if (currProjectile == null) { return; }
         print("Received " + meteor.name);
 
-        if(ReceiveCount == 0) {
+        if (ReceiveCount == 0)
+        {
             currProjectile.OnHit -= HitTarget;
             currProjectile.OnMiss -= MissTarget;
             currProjectile = null;
@@ -113,13 +122,18 @@ public class Boss4Pot : Pot
             Destroy(shield.gameObject);
             Destroy(meteor.gameObject);
 
-            if (Shields.Count == 0) {
+            if (Shields.Count == 0)
+            {
                 Aura.SetActive(false);
                 stateMachine.ChangeState("Boss_MeteorShower");
-            } else {
+            }
+            else
+            {
                 StartCoroutine(SpawnProjectileDelay());
             }
-        } else {
+        }
+        else
+        {
             ReceiveCount--;
 
             Vector3 dir = Vector3.up;
@@ -129,8 +143,10 @@ public class Boss4Pot : Pot
         }
     }
 
-    private void HitTarget(TargetProjectile projectile, GameObject hitObj) {
-        if (currProjectile != null) {
+    private void HitTarget(TargetProjectile projectile, GameObject hitObj)
+    {
+        if (currProjectile != null)
+        {
             print("Hit");
             Destroy(projectile.gameObject);
             currProjectile = null;
@@ -138,8 +154,10 @@ public class Boss4Pot : Pot
         }
     }
 
-    private void MissTarget(TargetProjectile projectile) {
-        if (currProjectile != null) {
+    private void MissTarget(TargetProjectile projectile)
+    {
+        if (currProjectile != null)
+        {
             print("Missed");
             Destroy(projectile.gameObject);
             currProjectile = null;
@@ -147,14 +165,18 @@ public class Boss4Pot : Pot
         }
     }
 
-    private IEnumerator SpawnProjectileDelay() {
+    private IEnumerator SpawnProjectileDelay()
+    {
         yield return new WaitForSeconds(SpawnDelay);
         stateMachine.ChangeState("Boss4_Target");
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag(Game.Instance.PlayerTag)) {
-            if (arenaCollider.enabled) {
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(Game.Instance.PlayerTag))
+        {
+            if (arenaCollider.enabled)
+            {
                 arenaCollider.enabled = false;
                 PlayerHud.Instance.EnableBossHealthBar();
                 PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
@@ -162,68 +184,170 @@ public class Boss4Pot : Pot
         }
     }
 
+    float angle = 0.0f;
+    Coroutine floatCoroutine;
+
+    public void StartFloating()
+    {
+        if (!IsFloating)
+        {
+            floatCoroutine = StartCoroutine(Float());
+        }
+    }
+
+    public void StopFloating()
+    {
+        if (floatCoroutine != null)
+        {
+            IsFloating = false;
+            StopCoroutine(floatCoroutine);
+        }
+    }
+    IEnumerator Float()
+    {
+        IsFloating = true;
+        while (true)
+        {
+
+            angle += Time.deltaTime * this.FloatSpeed;
+            if (angle > 360.0f)
+            {
+                angle -= 360.0f;
+            }
+
+            //TODO: add shake to the floating
+            float xOffset = 0.0f;
+            float yOffset = Mathf.Sin(angle * Mathf.Deg2Rad) * .5f;
+            float zOffset = 0.0f;
+
+            Vector3 offsets = new Vector3(xOffset, yOffset, zOffset);
+            MeshAndCollider.transform.position = this.gameObject.transform.position + offsets;
+            yield return null;
+        }
+    }
 }
+
+
 #region Boss States
-public class Boss4_Idle : State {
+public class Boss4_Idle : State
+{
 
     Boss4Pot boss = null;
-
-    public override void Init(GameObject owner) {
+    bool teleporting = false;
+    bool inPosition = false;
+    public override void Init(GameObject owner)
+    {
         base.Init(owner);
         boss = owner.GetComponent<Boss4Pot>();
     }
 
-    public override void Enter() {
+    public override void Enter()
+    {
         boss.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
+        boss.StartFloating();
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
+        boss.StartFloating();
+        inPosition = false;
+        teleporting = false;
     }
 
-    public override string Update() {
-        if (!boss.arenaCollider.enabled) {
-            return "Boss4_Shooting";
+    public override string Update()
+    {
+        if (!boss.arenaCollider.enabled)
+        {
+            if (inPosition)
+            {
+                return "Boss4_Shooting";
+            }
+            if(!teleporting)
+            {
+                boss.StartCoroutine(Teleport());
+            }
         }
 
         return null;
     }
+
+    IEnumerator Teleport()
+    {
+        boss.StopFloating();
+        teleporting = true;
+
+        Vector3 teleportLocation = Vector3.zero;
+        Vector2 randomDirection2D = Random.insideUnitCircle.normalized;
+        randomDirection2D.y = Mathf.Abs(randomDirection2D.y);
+
+        Player player = Player.Instance;
+
+        teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y); ;
+        teleportLocation = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * teleportLocation)) * 4.0f;
+        teleportLocation.y = boss.transform.position.y;
+
+
+        Vector3 originalScale = boss.transform.localScale;
+        float shrinkTime = 0.0f;
+
+        while (boss.transform.localScale.sqrMagnitude != 0)
+        {
+            shrinkTime += Time.deltaTime;
+            shrinkTime = Mathf.Clamp(shrinkTime, 0.0f, 1.0f);
+            boss.transform.localScale = originalScale - (originalScale * (shrinkTime / 1.0f));
+            yield return null;
+        }
+        boss.transform.position = teleportLocation;
+
+        boss.transform.localScale = Vector3.zero;
+        float growthTime = 0.0f;
+
+        while (boss.transform.localScale.sqrMagnitude < originalScale.sqrMagnitude)
+        {
+            growthTime += Time.deltaTime;
+            growthTime = Mathf.Clamp(growthTime, 0.0f, 1.0f);
+            boss.transform.localScale = originalScale * (growthTime / 1.0f);
+            yield return null;
+        }
+        boss.StartFloating();
+        teleporting = false;
+        inPosition = true;
+    }
+
 }
 
 class Boss4_Shooting : State
 {
     Boss4Pot boss = null;
     Player target = null;
-
-    Coroutine floatCoroutine = null;
-
+    Coroutine movingCoroutine;
     byte killedPots = 0;
-    bool shooting = false;
     float nextSpawnTime = 0;
 
     public override void Init(GameObject owner)
     {
         boss = owner.GetComponent<Boss4Pot>();
         target = Player.Instance;
-
         base.Init(owner);
     }
     public override void Enter()
     {
-        shooting = false;
-        floatCoroutine = boss.StartCoroutine(Float());
+        boss.StartFloating();
+        movingCoroutine = boss.StartCoroutine(Moving());
 
         boss.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
     public override void Exit()
     {
-        shooting = false;
-        boss.StopCoroutine(floatCoroutine);
+        boss.StartFloating();
+        boss.StopCoroutine(movingCoroutine);
     }
 
     public override string Update()
     {
-        if (killedPots >= boss.Phase1Pots) {
+        if (killedPots >= boss.Phase1Pots)
+        {
             return "Boss4_Target";
         }
 
@@ -231,7 +355,8 @@ class Boss4_Shooting : State
         //{
         //    boss.StartCoroutine(Shooting());
         //}
-        if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots) {
+        if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
+        {
             boss.StartCoroutine(Shooting());
         }
         return null;
@@ -295,7 +420,8 @@ class Boss4_Shooting : State
         do
         {
             Vector3 pos = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 12.0f);
-            if (float.IsNaN(pos.x)) {
+            if (float.IsNaN(pos.x))
+            {
                 Debug.Log("NAN DETECTED!");
                 Debug.Log(enemy.transform.position);
                 Debug.Log(targetPosition);
@@ -323,34 +449,27 @@ class Boss4_Shooting : State
         shooting = false;
     }
 
-    IEnumerator Float()
+    IEnumerator Moving()
     {
         float distance = 0.0f;
-        Vector3 targetPosition = Utility.RandomPointInBounds(boss.MovementBoundaries.bounds);
-        float angle = 0.0f;
+
+        Vector2 randomDirection2D = Random.insideUnitCircle.normalized;
+        Vector3 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
+        Vector3 targetPosition = randomDirection3D * 4.0f;
+
         while (true)
         {
             distance = (boss.transform.position - targetPosition).magnitude;
             if (distance <= .1f)
             {
-                targetPosition = Utility.RandomPointInBounds(boss.MovementBoundaries.bounds);
-            }
-            //TODO: Change to target radius around player
-            boss.transform.position = Vector3.MoveTowards(boss.transform.position, targetPosition, Time.deltaTime * boss.BossSpeed);
-
-            angle += Time.deltaTime * boss.FloatSpeed;
-            if (angle > 360.0f)
-            {
-                angle -= 360.0f;
+                randomDirection2D = Random.insideUnitCircle.normalized;
+                randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
+                targetPosition = randomDirection3D * 4.0f;
             }
 
-            //TODO: add shake to the floating
-            float xOffset = 0.0f;
-            float yOffset = Mathf.Sin(angle * Mathf.Deg2Rad) * .5f;
-            float zOffset = 0.0f;
 
-            Vector3 offsets = new Vector3(xOffset, yOffset, zOffset);
-            boss.MeshAndCollider.transform.position = boss.gameObject.transform.position + offsets;
+            ////TODO: Change to target radius around player
+            //boss.transform.position = Vector3.MoveTowards(boss.transform.position, targetPosition, Time.deltaTime * boss.BossSpeed);
             yield return null;
         }
     }
@@ -362,31 +481,36 @@ class Boss4_Shooting : State
     }
 }
 
-public class Boss4_Target : State {
+public class Boss4_Target : State
+{
 
     Boss4Pot boss4Pot = null;
 
-    public override void Init(GameObject owner) {
+    public override void Init(GameObject owner)
+    {
         base.Init(owner);
         boss4Pot = owner.GetComponent<Boss4Pot>();
     }
 
-    public override void Enter() {
+    public override void Enter()
+    {
         boss4Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
         boss4Pot.SpawnProjectile();
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
 
     }
 
-    public override string Update() {
-        
+    public override string Update()
+    {
+
         return null;
     }
 }
 
-class Boss_MeteorShower : State
+class Boss4_MeteorShower : State
 {
     Boss4Pot boss = null;
     Meteor[] projectiles = null;
@@ -427,9 +551,10 @@ class Boss_MeteorShower : State
         }
         return null;
     }
-    
+
     IEnumerator Firing()
     {
+
         firing = true;
 
         Bounds spawnArea = boss.ProjectileSpawnArea.bounds;
@@ -476,6 +601,7 @@ class Boss_MeteorShower : State
     }
     IEnumerator Teleport()
     {
+        boss.StopFloating();
         teleporting = true;
         Vector3 teleportLocation = Vector3.zero;
         bool tooClose = false;
@@ -483,7 +609,7 @@ class Boss_MeteorShower : State
         {
             teleportLocation = Utility.RandomPointInBounds(boss.MovementBoundaries.bounds);
             tooClose = false;
-            for(int i = 0; i < projectiles.Length && !tooClose; i++)
+            for (int i = 0; i < projectiles.Length && !tooClose; i++)
             {
                 //tooClose = (projectiles[i].transform.position - teleportLocation).sqrMagnitude < 16.0f;
                 tooClose = (projectiles[i].transform.position - teleportLocation).sqrMagnitude < 4.0f;
@@ -511,7 +637,7 @@ class Boss_MeteorShower : State
             boss.transform.localScale = originalScale * (growthTime / 1.0f);
             yield return null;
         }
-
+        boss.StartFloating();
         teleporting = false;
     }
 }
