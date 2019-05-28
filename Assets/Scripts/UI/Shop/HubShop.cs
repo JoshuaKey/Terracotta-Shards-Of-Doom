@@ -129,6 +129,8 @@ public class HubShop : MonoBehaviour
         {
             Debug.Log($"Charged the Player {amount}.");
             Player.Instance.Coins -= amount;
+            PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
+
             return true;
         }
         else
