@@ -233,12 +233,12 @@ public class Boss1Pot : Pot
         }
     }
 
-    private void OnGUI() {
-        GUI.Label(new Rect(10, 10, 250, 20), "Trans: " + transform.transform.position + " " + this.transform.rotation);
-        GUI.Label(new Rect(10, 30, 250, 20), "State: " + this.stateMachine.GetCurrState().ToString());
-        GUI.Label(new Rect(10, 50, 150, 20), "Nav: " + this.navMeshAgent);
-        GUI.Label(new Rect(10, 70, 150, 20), "Trigger: " + this.playerEnteredArena);
-    }
+    //private void OnGUI() {
+    //    GUI.Label(new Rect(10, 10, 250, 20), "Trans: " + transform.transform.position + " " + this.transform.rotation);
+    //    GUI.Label(new Rect(10, 30, 250, 20), "State: " + this.stateMachine.GetCurrState().ToString());
+    //    GUI.Label(new Rect(10, 50, 150, 20), "Nav: " + this.navMeshAgent);
+    //    GUI.Label(new Rect(10, 70, 150, 20), "Trigger: " + this.playerEnteredArena);
+    //}
 
     #region Boss States
 
