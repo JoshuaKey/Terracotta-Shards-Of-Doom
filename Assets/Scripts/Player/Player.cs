@@ -242,13 +242,8 @@ public class Player : MonoBehaviour {
             {
                 Coins += 2000;
                 Debug.Log("Motherlode");
-                PlayerHud playerHud = FindObjectOfType<PlayerHud>();
-                if (playerHud != null)
-                {
-                    playerHud.SetCoinCount(Coins);
-                    playerHud.PlayCoinAnimation();
-                }
-
+                PlayerHud.Instance.SetCoinCount(Coins);
+                PlayerHud.Instance.PlayCoinAnimation();
             }
         }
 
@@ -688,6 +683,16 @@ public class Player : MonoBehaviour {
         int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
         int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
+    }
+    public void HideWeapon() {
+        Weapon oldWeapon = GetCurrentWeapon();
+        oldWeapon.gameObject.SetActive(false);
+        oldWeapon.transform.SetParent(WeaponParent.transform, false);
+    }
+    public void ShowWeapon() {
+        Weapon newWeapon = GetCurrentWeapon();
+        newWeapon.gameObject.SetActive(true);
+        newWeapon.transform.SetParent(camera.transform, false);
     }
     public Weapon GetCurrentWeapon() {
         return CurrWeaponIndex >= weapons.Count ? null : weapons[CurrWeaponIndex];

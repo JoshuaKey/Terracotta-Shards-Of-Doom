@@ -32,6 +32,8 @@ public class Cannon : MonoBehaviour {
     [Header("Time")]
     public float ChargeTime = 2.5f;
     public float LeapTime = 10.0f;
+    public float BarrelRotateTime = 0.5f;
+    public float BaseRotateTime = 0.5f;
 
     [Header("Object")]
     public GameObject Barrel;
@@ -117,13 +119,13 @@ public class Cannon : MonoBehaviour {
         // Base Rotation
         {
             float startTime = Time.time;
-            float length = 0.5f;
-            while (Time.time < startTime + length) {
-                float t = (Time.time - startTime) / length;
+            while (Time.time < startTime + BaseRotateTime) {
+                float t = (Time.time - startTime) / BaseRotateTime;
 
                 Vector3 baseDir = Vector3.Lerp(oldBaseDir, newBaseDir, t);
 
                 Base.transform.forward = baseDir;
+
                 yield return null;
             }
             Base.transform.forward = newBaseDir;
@@ -137,13 +139,13 @@ public class Cannon : MonoBehaviour {
         // Barrel Rotation
         {
             float startTime = Time.time;
-            float length = 0.5f;
-            while (Time.time < startTime + length) {
-                float t = (Time.time - startTime) / length;
+            while (Time.time < startTime + BarrelRotateTime) {
+                float t = (Time.time - startTime) / BarrelRotateTime;
 
                 Vector3 barrelDir = Vector3.Lerp(oldBarrelDir, newBarrelDir, t);
 
                 Barrel.transform.forward = barrelDir;
+
                 yield return null;
             }
             Barrel.transform.forward = newBarrelDir;
@@ -190,6 +192,7 @@ public class Cannon : MonoBehaviour {
         player.CanMove = false;
         player.CanRotate = false;
         player.CanAttack = false;
+        player.HideWeapon();
 
         while (aligning) {
             yield return null;
@@ -218,6 +221,7 @@ public class Cannon : MonoBehaviour {
         // Launch Animation
         {
             AudioManager.Instance.PlaySoundWithParent("cannon", ESoundChannel.SFX, gameObject);
+            player.ShowWeapon();
 
             Vector3 startPos = BarrelChargePos.position;
             float startTime = Time.time;

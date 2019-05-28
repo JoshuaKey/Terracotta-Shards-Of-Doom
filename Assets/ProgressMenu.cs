@@ -6,6 +6,7 @@ using TMPro;
 
 public class ProgressMenu : MonoBehaviour
 {
+    #pragma warning disable 0649
     [SerializeField] TextMeshProUGUI total;
     [Space]
     [SerializeField] TextMeshProUGUI worldOne;
@@ -27,6 +28,7 @@ public class ProgressMenu : MonoBehaviour
     [SerializeField] TextMeshProUGUI fourDashOne;
     [SerializeField] TextMeshProUGUI fourDashTwo;
     [SerializeField] TextMeshProUGUI fourDashThree;
+    #pragma warning restore 0649
 
     public void UpdatePercents()
     {
