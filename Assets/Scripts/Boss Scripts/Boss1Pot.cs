@@ -470,25 +470,45 @@ public class Boss1Pot : Pot
             //}
             //targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
             //TODO: Look at this to see if it is a useless check or uses the wrong data
+            //NavMeshHit hit;
+            //do {
+            //    if (playerHorizontalVelocity.magnitude <= .2f) {
+            //        Vector2 randomDirection = Random.insideUnitCircle.normalized;
+            //        randomDirection.y = Mathf.Abs(randomDirection.y);
+
+            //        Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y); ;
+            //        aimOffset = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * aimOffset)) * 2.0f;
+            //        aimOffset += aimOffset * Random.Range(0.0f, 2.0f);
+
+            //        targetX = player.transform.position.x + aimOffset.x;
+            //        targetZ = player.transform.position.z + aimOffset.z;
+            //    } else {
+            //        targetX = player.transform.position.x + player.velocity.x;
+            //        targetZ = player.transform.position.z + player.velocity.z;
+            //    }
+            //    targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
+            //} while (!NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas));
+            //targetPosition = hit.position;
+
+            if (playerHorizontalVelocity.magnitude <= .2f) {
+                Vector2 randomDirection = Random.insideUnitCircle.normalized;
+                randomDirection.y = Mathf.Abs(randomDirection.y);
+
+                Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y); ;
+                aimOffset = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * aimOffset)) * 2.0f;
+                aimOffset += aimOffset * Random.Range(0.0f, 2.0f);
+
+                targetX = player.transform.position.x + aimOffset.x;
+                targetZ = player.transform.position.z + aimOffset.z;
+            } else {
+                targetX = player.transform.position.x + player.velocity.x;
+                targetZ = player.transform.position.z + player.velocity.z;
+            }
+            targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
             NavMeshHit hit;
-            do {
-                if (playerHorizontalVelocity.magnitude <= .2f) {
-                    Vector2 randomDirection = Random.insideUnitCircle.normalized;
-                    randomDirection.y = Mathf.Abs(randomDirection.y);
-
-                    Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y); ;
-                    aimOffset = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * aimOffset)) * 2.0f;
-                    aimOffset += aimOffset * Random.Range(0.0f, 2.0f);
-
-                    targetX = player.transform.position.x + aimOffset.x;
-                    targetZ = player.transform.position.z + aimOffset.z;
-                } else {
-                    targetX = player.transform.position.x + player.velocity.x;
-                    targetZ = player.transform.position.z + player.velocity.z;
-                }
-                targetPosition = new Vector3(targetX, player.transform.position.y, targetZ);
-            } while (!NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas));
-            targetPosition = hit.position;
+            if(NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas)) {
+                targetPosition = hit.position;
+            }
 
             // Other Stuff...
             {
@@ -691,15 +711,19 @@ public class Boss1Pot : Pot
             Vector3 playerPosition = Vector3.zero;
             Vector3 targetPosition = Vector3.zero;
 
-            NavMeshHit hit;
-            do {
+            //NavMeshHit hit;
+            //do {
                 //TODO: Remove the y-axis
                 direction = Random.insideUnitCircle.normalized;
                 Vector3 randomDirection = new Vector3(direction.x, 0.0f, direction.y);
                 playerPosition = player.transform.position;
                 targetPosition = new Vector3(playerPosition.x, 0.0f, playerPosition.z) + ((randomDirection * 10.0f) + (randomDirection * Random.Range(0.0f, 5.0f)));
-            } while (!NavMesh.SamplePosition(targetPosition, out hit, 20.0f, NavMesh.AllAreas));
-            targetPosition = hit.position;
+            //} while (!NavMesh.SamplePosition(targetPosition, out hit, 20.0f, NavMesh.AllAreas));
+            //targetPosition = hit.position;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(targetPosition, out hit, 20.0f, NavMesh.AllAreas)) {
+                targetPosition = hit.position;
+            }
 
             float heightMulti = Mathf.Max(100.0f - (startPosition - targetPosition).magnitude, 50);
             Vector3 peak = Utility.CreatePeak(startPosition, targetPosition, heightMulti);
