@@ -171,6 +171,9 @@ public class Player : MonoBehaviour {
 
 
         // Debug...
+        if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            LevelManager.Instance.LoadScene("1-3");
+        }
         if (Application.isEditor) {
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
@@ -242,12 +245,14 @@ public class Player : MonoBehaviour {
             {
                 Coins += 2000;
                 Debug.Log("Motherlode");
-                PlayerHud playerHud = FindObjectOfType<PlayerHud>();
-                if (playerHud != null)
-                {
-                    playerHud.SetCoinCount(Coins);
-                    playerHud.PlayCoinAnimation();
-                }
+                PlayerHud.Instance.SetCoinCount(Coins);
+                PlayerHud.Instance.PlayCoinAnimation();
+                //PlayerHud playerHud = FindObjectOfType<PlayerHud>();
+                //if (playerHud != null)
+                //{
+                //    playerHud.SetCoinCount(Coins);
+                //    playerHud.PlayCoinAnimation();
+                //}
 
             }
         }
