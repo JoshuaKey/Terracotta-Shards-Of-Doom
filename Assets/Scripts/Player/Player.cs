@@ -171,6 +171,11 @@ public class Player : MonoBehaviour {
 
 
         // Debug...
+        if (Input.GetKeyDown(KeyCode.Alpha0)) {
+            string levelName = LevelManager.Instance.GetLevelName();
+            LevelManager.Instance.Levels[levelName].IsCompleted = true;
+            LevelManager.Instance.LoadScene("Hub");
+        }
         if (Application.isEditor) {
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
