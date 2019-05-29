@@ -168,6 +168,9 @@ public class PauseMenu : MonoBehaviour
 
     public void Quit()
     {
+		//Saving the Player's progress before quitting
+		Game.Instance.SavePlayerStats();
+
         Application.Quit();
     }
     #endregion

@@ -16,9 +16,16 @@ public class MainMenu : MonoBehaviour
     [SerializeField] EventSystem eventSystem;
     #pragma warning restore 0649
 
-    private void Awake()
+    private void Start()
     {
+		eventSystem = FindObjectOfType<EventSystem>();
         eventSystem.SetSelectedGameObject(continueButton.gameObject);
+		Player.Instance.enabled = false;
+		Player.Instance.HideWeapon();
+		PlayerHud.Instance.DisablePlayerHud();
+		PauseMenu.Instance.DeactivatePauseMenu();
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
     }
 
     public void OpenMainMenu(string menuName)
@@ -47,10 +54,33 @@ public class MainMenu : MonoBehaviour
     public void NewGame()
     {
         Debug.Log("New Game");
+
+		DisableMainMenu();
     }
 
     public void Continue()
     {
         Debug.Log("Continue");
+
+		DisableMainMenu();
+
+		//Loading the Save file of the player
+		Game.Instance.LoadPlayerStats();
     }
+
+	public void QuitApplication()
+	{
+		//Saving the Player's Progress
+		Game.Instance.SavePlayerStats();
+
+		Application.Quit();
+	}
+
+	private void DisableMainMenu()
+	{
+		//Disabling the Main Menu
+		titleScreen.SetActive(false);
+		menuStart.SetActive(false);
+		saves.SetActive(false);
+	}
 }

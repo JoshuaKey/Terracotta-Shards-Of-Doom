@@ -41,7 +41,10 @@ public class LevelManager : MonoBehaviour {
         print(scene.name + " was Loaded!");
 
         Player.Instance.gameObject.SetActive(false);
-        CheckPointSystem.Instance.LoadStartPoint();
+		if(CheckPointSystem.Instance != null)
+		{
+			CheckPointSystem.Instance.LoadStartPoint();
+		}
         Player.Instance.health.Reset();
         PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
         PlayerHud.Instance.DisableBossHealthBar();
