@@ -32,9 +32,6 @@ public class PauseMenu : MonoBehaviour
 
     public static PauseMenu Instance;
 
-    // player bools
-    private bool playerCanAttack = true;
-
     // volumes
     [HideInInspector] public float masterVolume = 0f;
     [HideInInspector] public float musicVolume = 0f;
