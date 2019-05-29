@@ -52,14 +52,12 @@ public class BrokenPot : MonoBehaviour {
         foreach(Rigidbody rb in pieces) {
             rb.AddExplosionForce(force.magnitude, pos, 10.0f, 1.0f, ForceMode.Impulse);
         }
-        //StartCoroutine(Disappear());
     }
 
     public void Explode(float force, Vector3 pos) {
         foreach (Rigidbody rb in pieces) {
             rb.AddExplosionForce(force, pos, 10.0f, 1.0f, ForceMode.Impulse);
         }
-        //StartCoroutine(Disappear());
     }
 
     public void SetMaterial(Material m) {
