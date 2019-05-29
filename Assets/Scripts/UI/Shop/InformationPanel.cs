@@ -61,14 +61,17 @@ public class InformationPanel : MonoBehaviour
 
     public void PurchaseUpgrade()
     {
-        switch(weaponName.text)
+        if (!HubShop.GetWeaponInfo(weaponName.text).isUpgraded)
         {
-            case "Sword":       SwordButtonClick(); break;
-            case "Bow":         BowButtonClick(); break;
-            case "Hammer":      HammerButtonClick(); break;
-            case "Spear":       SpearButtonClick(); break;
-            case "Crossbow":    CrossbowButtonClick(); break;
-            case "Magic":       MagicButtonClick(); break;
+            switch (weaponName.text)
+            {
+                case "Sword": SwordButtonClick(); break;
+                case "Bow": BowButtonClick(); break;
+                case "Hammer": HammerButtonClick(); break;
+                case "Spear": SpearButtonClick(); break;
+                case "Crossbow": CrossbowButtonClick(); break;
+                case "Magic": MagicButtonClick(); break;
+            }
         }
     }
 

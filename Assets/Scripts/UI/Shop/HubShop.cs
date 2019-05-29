@@ -98,26 +98,36 @@ public class HubShop : MonoBehaviour
 
         if (curHorizontal != 0 && !isMovingPanels)
         {
-            isMovingPanels = true;
-
             if(curHorizontal > 0)
             //Go Back
             {
-                for (int i = 0; i < shopPanels.Length; i++)
-                {
-                    ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
-                    nextPanel.StartMovingTo(shopPanels[i].rectTransform.localPosition, shopPanels[i].rectTransform.localScale, shopPanels[i].isMainPanel);
-                }
+                MovePanelsLeft();
             }
             else
             //Go Forward
             {
-                for (int i = 0; i < shopPanels.Length; i++)
-                {
-                    ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
-                    shopPanels[i].StartMovingTo(nextPanel.rectTransform.localPosition, nextPanel.rectTransform.localScale, nextPanel.isMainPanel);
-                }
+                MovePanesRight();
             }
+        }
+    }
+
+    public void MovePanelsLeft()
+    {
+        isMovingPanels = true;
+        for (int i = 0; i < shopPanels.Length; i++)
+        {
+            ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
+            nextPanel.StartMovingTo(shopPanels[i].rectTransform.localPosition, shopPanels[i].rectTransform.localScale, shopPanels[i].isMainPanel);
+        }
+    }
+
+    public void MovePanesRight()
+    {
+        isMovingPanels = true;
+        for (int i = 0; i < shopPanels.Length; i++)
+        {
+            ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
+            shopPanels[i].StartMovingTo(nextPanel.rectTransform.localPosition, nextPanel.rectTransform.localScale, nextPanel.isMainPanel);
         }
     }
     #endregion
@@ -149,7 +159,6 @@ public class HubShop : MonoBehaviour
 
     public void ActivateHubShop()
     {
-        //playerHud.SetActive(false);
         PlayerHud.Instance.gameObject.SetActive(false);
 
         Player.Instance.enabled = false;
@@ -170,7 +179,6 @@ public class HubShop : MonoBehaviour
 
     public void DeactivateHubShop()
     {
-        //playerHud.SetActive(true);
         PlayerHud.Instance.gameObject.SetActive(true);
 
         Player.Instance.enabled = true;
@@ -203,7 +211,6 @@ public class HubShop : MonoBehaviour
         {
             GetWeaponInfo(mainPanel.weaponName).isUnlocked = true;
         }
-        Debug.Log($"isMovingPanels: {isMovingPanels}");
     }
     #endregion
 }

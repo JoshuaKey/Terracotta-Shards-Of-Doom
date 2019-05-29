@@ -59,4 +59,22 @@ public class ShopPanel : MonoBehaviour
     {
         if (!isBlackedOut && lockModel != null) lockModel.SetTrigger("Unlock");
     }
+
+    public void MakeMainPanel()
+    {
+        Debug.Log($"{weaponName} clicked");
+        StartCoroutine(MoveUntilMainPanel());
+    }
+
+    private IEnumerator MoveUntilMainPanel()
+    {
+        while(!isMainPanel)
+        {
+            if(!hubShop.isMovingPanels)
+            {
+                hubShop.MovePanelsLeft();
+            }
+            yield return null;
+        }
+    }
 }
