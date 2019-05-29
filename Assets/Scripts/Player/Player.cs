@@ -503,6 +503,7 @@ public class Player : MonoBehaviour {
         this.enabled = true;
         collider.enabled = true;
         Time.timeScale = 1.0f;
+        health.Resistance = 0;
 
         // Reattach Camera
         this.camera.transform.parent = this.transform;
@@ -539,6 +540,7 @@ public class Player : MonoBehaviour {
         // Disable Player
         this.enabled = false;
         collider.enabled = false;
+        health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
 
         // Enable Broken Pot
         brokenPot.transform.parent = null;
