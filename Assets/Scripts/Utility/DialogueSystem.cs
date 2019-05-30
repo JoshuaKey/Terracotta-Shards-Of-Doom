@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Luminosity.IO;
 
 public class DialogueSystem : MonoBehaviour {
 
@@ -135,5 +136,13 @@ public class DialogueSystem : MonoBehaviour {
     }
 
     public bool IsFinished() { return isFinished; }
+
+	private void Update()
+	{
+		if (InputManager.anyKeyDown)
+		{
+			ContinueDialogue();
+		}
+	}
 
 }

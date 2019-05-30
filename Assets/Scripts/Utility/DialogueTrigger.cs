@@ -17,7 +17,7 @@ public class DialogueTrigger : MonoBehaviour
             if (triggered) { return; }
 
             triggered = true;
-			if(!Player.Instance.SkipTutorial && this.IsTutorial)
+			if(!this.IsTutorial || (!Player.Instance.SkipTutorial && this.IsTutorial))
 			{
 				Player.Instance.enabled = false;
 				Cursor.lockState = CursorLockMode.None;
