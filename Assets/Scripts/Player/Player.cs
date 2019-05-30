@@ -259,6 +259,13 @@ public class Player : MonoBehaviour {
         }
     }
 
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
+        PlayerStats.OnLoad -= OnStatsLoad;
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
+    }
+
     public void OnDamage(float damage)
     {
         AudioManager.Instance.PlaySoundWithParent("player_hit", ESoundChannel.SFX, gameObject);

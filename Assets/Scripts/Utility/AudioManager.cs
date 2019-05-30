@@ -58,6 +58,10 @@ public class AudioManager : MonoBehaviour
         Settings.OnLoad += OnSettingsLoad;
     }
 
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
+    }
+
     private void OnSettingsLoad(Settings settings) {
         audioMixer.SetFloat("MasterVolume", settings.MasterVolume);
         audioMixer.SetFloat("SoundVolume", settings.SoundVolume);

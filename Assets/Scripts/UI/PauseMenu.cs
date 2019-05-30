@@ -170,6 +170,14 @@ public class PauseMenu : MonoBehaviour
 
         Application.Quit();
     }
+
+    public void QuitToMainMenu() {
+        //Saving the Player's progress before quitting
+        Game.Instance.SavePlayerStats();
+
+        LevelManager.Instance.LoadScene("MainMenu");
+    }
+
     #endregion
 
     #region Video

@@ -34,7 +34,11 @@ public class DialogueTrigger : MonoBehaviour
         }
 	}
 
-	private void ReEnablePlayer()
+    private void OnDestroy() {
+        DialogueSystem.Instance.OnDialogueEnd -= ReEnablePlayer;
+    }
+
+    private void ReEnablePlayer()
 	{
 
         DialogueSystem.Instance.OnDialogueEnd -= ReEnablePlayer;
