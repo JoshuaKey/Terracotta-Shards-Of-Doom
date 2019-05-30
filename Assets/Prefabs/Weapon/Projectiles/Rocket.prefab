@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2173192050988257386}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 1.241, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4730879528101984819}
@@ -72,7 +72,7 @@ MonoBehaviour:
   RigidbodyKnockback: 0
   ExplosionRadius: 4
   rigidbody: {fileID: 7263008160560060278}
-  collider: {fileID: 0}
+  collider: {fileID: 6208809400272057659}
   ExplosionEffect: {fileID: 154125258365790413}
 --- !u!65 &6208809400272057659
 BoxCollider:
@@ -82,7 +82,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4730879528101488147}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.15, y: 0.15, z: 0.19999999}
@@ -99,10 +99,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cannon-Particle
       objectReference: {fileID: 0}
-    - target: {fileID: 4487939630833679567, guid: 8ae91b53abcc66043b76ab7dc50eac6c,
+    - target: {fileID: 4487939630833679565, guid: 8ae91b53abcc66043b76ab7dc50eac6c,
         type: 3}
-      propertyPath: stopAction
-      value: 2
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4487939630833679566, guid: 8ae91b53abcc66043b76ab7dc50eac6c,
         type: 3}
@@ -158,6 +158,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4487939630833679567, guid: 8ae91b53abcc66043b76ab7dc50eac6c,
+        type: 3}
+      propertyPath: stopAction
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ae91b53abcc66043b76ab7dc50eac6c, type: 3}
@@ -184,17 +189,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rocket
       objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.25
+    - target: {fileID: 100002, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.25
+    - target: {fileID: 100000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -239,6 +240,18 @@ PrefabInstance:
     - target: {fileID: 400002, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 0b5414ad18a590b48be1611258c4ace0, type: 3}
       propertyPath: m_Materials.Array.data[0]

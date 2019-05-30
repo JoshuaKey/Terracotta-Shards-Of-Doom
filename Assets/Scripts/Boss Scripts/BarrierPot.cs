@@ -41,6 +41,7 @@ public class BarrierPot : ChargerPot
         stateMachine.Init(this.gameObject,
             new BarrierPot_EnterFormation(),
             new BarrierPot_DoNothing());
+        stateMachine.needAgent = false;
 
         ChargerPotStateMachine = new StateMachine();
         ChargerPotStateMachine.Init(gameObject,
@@ -137,13 +138,18 @@ public class BarrierPot_EnterFormation : State
 
             while ((transform.position - waypointPosition).magnitude > .01f)
             {
+                //transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
+               
+                //transform.position = Vector3.Lerp(transform.position, waypointPosition, Time.deltaTime * 2.0f);
                 transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
+                //Debug.Log(transform.position + " " + waypointPosition);
                 yield return null;
             }
 
             barrierPot.InPosition = true;
             barrierPot.transform.parent = waypoint.transform;
-        }
+            moving = false;
+        } 
     }
 }
 
