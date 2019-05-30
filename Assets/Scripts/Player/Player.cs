@@ -151,8 +151,8 @@ public class Player : MonoBehaviour {
             UpdateMovement();
         }
 
-        wasGrounded = isGrounded;
-        isGrounded = false;
+        //wasGrounded = isGrounded;
+        //isGrounded = false;
 
         UpdateCombat();
         if (CanInteract) {
@@ -258,6 +258,13 @@ public class Player : MonoBehaviour {
         if (CanRotate) {
             UpdateCamera();
         }
+    }
+
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
+        PlayerStats.OnLoad -= OnStatsLoad;
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
     }
 
     public void OnDamage(float damage)
@@ -473,9 +480,11 @@ public class Player : MonoBehaviour {
     }
     public void Jump() {
         // Check for Jump
-        if (wasGrounded) {
+        //if (wasGrounded) {
+        if (isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
+                isGrounded = false;
             } 
         }
         // By Default the Player does a "long jump" by holding the Jump Button

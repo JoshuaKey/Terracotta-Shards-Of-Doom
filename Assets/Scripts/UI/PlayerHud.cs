@@ -87,6 +87,11 @@ public class PlayerHud : MonoBehaviour {
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
     }
 
+    private void OnDestroy() {
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
+    }
+
     public void PlayCoinAnimation()
     {
         uiCoin.SetTrigger("Bounce");

@@ -30,12 +30,20 @@ public class LevelManager : MonoBehaviour {
 
     private void Start() {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (SceneManager.GetActiveScene().name == PersistentSceneName) {
-            LoadScene(StartingSceneName);
-        }
+        //if (SceneManager.GetActiveScene().name == PersistentSceneName) {
+        //    LoadScene(StartingSceneName);
+        //}
 
         PlayerStats.OnLoad += OnStatsLoad;
+
+        //AudioManager.Instance.PlaySceneMusic(GetLevelName());
     }
+
+    private void OnDestroy() {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        PlayerStats.OnLoad -= OnStatsLoad;
+    }
+
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         print(scene.name + " was Loaded!");
