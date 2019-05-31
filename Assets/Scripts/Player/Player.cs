@@ -178,6 +178,12 @@ public class Player : MonoBehaviour {
             LevelManager.Instance.LoadScene("Hub");
         }
         if (Application.isEditor) {
+            if (Input.GetKeyDown(KeyCode.Tilde)) {
+               RockHammer ham = (RockHammer) this.weapons.Find((x) => x.name == "Rock Hammer");
+                if(ham != null) {
+                    ham.PlayerJump = 15;
+                }
+            }
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
             }

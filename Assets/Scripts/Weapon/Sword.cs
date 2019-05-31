@@ -113,6 +113,8 @@ public class Sword : Weapon {
     }
 
     protected void OnTriggerEnter(Collider other) {
+        print(other.name);
+
         TargetProjectile targetProj = other.GetComponentInChildren<TargetProjectile>();
         if (targetProj != null) {
             Vector3 dir = targetProj.transform.position - Player.Instance.transform.position;
