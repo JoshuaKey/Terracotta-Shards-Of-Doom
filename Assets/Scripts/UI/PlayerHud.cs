@@ -79,6 +79,8 @@ public class PlayerHud : MonoBehaviour {
 
     [Header("Other")]
     public EventSystem eventSystem;
+    public GameObject PortalText;
+    [SerializeField] float AmountOfTime = 10.0f;
 
     public static PlayerHud Instance;
 
@@ -402,4 +404,19 @@ public class PlayerHud : MonoBehaviour {
             yield return null;  
         }
     }
+
+    public void TurnOnPortalText()
+    {
+        PortalText.SetActive(true);
+        //run corutine?
+        StartCoroutine(TurnOffPortalText());
+    }
+
+    public IEnumerator TurnOffPortalText()
+    {
+        yield return new WaitForSeconds(4.0f);
+        PortalText.SetActive(false);
+        yield return null;
+    }
+
 }
