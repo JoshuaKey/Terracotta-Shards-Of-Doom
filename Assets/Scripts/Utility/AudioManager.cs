@@ -81,7 +81,7 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySound(string soundName, ESoundChannel soundChannel, bool loop = false, UnityAction onFinish = null)
     {
-        if (!sounds.ContainsKey(soundName)) throw new System.Exception($"AudioManager does not have a sound named {soundName}.");
+        if (!sounds.ContainsKey(soundName)) throw new KeyNotFoundException($"AudioManager does not have a sound named {soundName}.");
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
@@ -109,7 +109,7 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySoundAtLocation(string soundName, ESoundChannel soundChannel, Vector3 location, bool loop = false, UnityAction onFinish = null)
     {
-        if (!sounds.ContainsKey(soundName)) throw new System.Exception($"AudioManager does not have a sound named {soundName}.");
+        if (!sounds.ContainsKey(soundName)) throw new KeyNotFoundException($"AudioManager does not have a sound named {soundName}.");
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName} at location {location}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
@@ -138,7 +138,7 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySoundWithParent(string soundName, ESoundChannel soundChannel, GameObject parent, bool loop = false, UnityAction onFinish = null)
     {
-        if (!sounds.ContainsKey(soundName)) throw new System.Exception($"AudioManager does not have a sound named {soundName}.");
+        if (!sounds.ContainsKey(soundName)) throw new KeyNotFoundException($"AudioManager does not have a sound named {soundName}.");
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName} attached to GameObject {parent}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
@@ -167,20 +167,55 @@ public class AudioManager : MonoBehaviour
         string musicName = string.Empty;
         switch (sceneName)
         {
+            case "1-1":
+            case "1-2":
+                musicName = "You";
+                break;
+            case "1-3":
+                musicName = "To-Battle";
+                break;
             case "2-1":
             case "2-2":
-                musicName = "612328_Unfortunate-Situation";
+                musicName = "Finding-The-Secret-Ruins";
                 break;
             case "2-3":
-                musicName = "572651_-The-Sword-is-Mightier-";
+                musicName = "Ouroboros";
+                break;
+            case "3-1":
+            case "3-2":
+                musicName = "Illusion-Of-Free-Will";
+                break;
+            case "3-3":
+                musicName = "Hopeless";
+                break;
+            case "4-1":
+            case "4-2":
+                musicName = "Forward-March";
+                break;
+            case "4-3":
+                musicName = "the-great-feat";
                 break;
             default:
-                musicName = "612328_Unfortunate-Situation";
+                musicName = "Wickwood";
                 break;
         }
 
-        if (curMusic != null) { curMusic.DeactivateAudioSource(); }
-        curMusic = PlaySound(musicName, ESoundChannel.MUSIC, true);
+
+        if (curMusic != null)
+        {
+            if (curMusic.name == musicName) return curMusic;
+
+            curMusic.DeactivateAudioSource();
+        }
+
+        try
+        {
+            curMusic = PlaySound(musicName, ESoundChannel.MUSIC, true);
+        }
+        catch (KeyNotFoundException e)
+        {
+            throw new KeyNotFoundException($"AudioManager does not have a sound named {musicName}.");
+        }
 
         return curMusic;
     }
