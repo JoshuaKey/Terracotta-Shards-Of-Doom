@@ -24,6 +24,7 @@ public class Teleporter : MonoBehaviour {
             if (HasPlayerCompletedLevel) {
                 string levelName = LevelManager.Instance.GetLevelName();
                 LevelManager.Instance.Levels[levelName].IsCompleted = true;
+				Game.Instance.SavePlayerStats();
             }
 
             LevelManager.Instance.LoadScene(sceneName);

@@ -172,6 +172,7 @@ public class PauseMenu : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+		Game.Instance.SavePlayerStats();
         LevelManager.Instance.LoadScene(sceneName);
     }
 
