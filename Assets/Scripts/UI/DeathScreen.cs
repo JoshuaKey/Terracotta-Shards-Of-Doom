@@ -28,6 +28,11 @@ public class DeathScreen : MonoBehaviour {
         DisableDeathScreen();
     }
 
+    private void OnDestroy() {
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
+    }
+
     private void OnPlayerControlChanged(PlayerID id) { UpdateInputIcons(); }
     private void OnControlSchemeChanged() { UpdateInputIcons(); }
     public void UpdateInputIcons() {

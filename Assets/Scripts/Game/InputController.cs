@@ -126,6 +126,10 @@ public class InputController : MonoBehaviour {
         Settings.OnLoad += OnSettingsLoad;
     }
 
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
+    }
+
     private void OnSettingsLoad(Settings settings) {
         IsLeftHanded = settings.IsLeftHanded;
         if(InputConfigurationFile != settings.InputConfigurationFile) {
