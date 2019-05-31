@@ -8,6 +8,7 @@ using UnityEngine.Audio;
 
 public enum ESoundChannel
 {
+    MASTER,
     MUSIC,
     SFX,
 }
@@ -73,6 +74,7 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySound(string soundName, ESoundChannel soundChannel, bool loop = false, UnityAction onFinish = null)
     {
+        if (!sounds.ContainsKey(soundName)) throw new System.Exception($"AudioManager does not have a sound named {soundName}.");
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
@@ -100,6 +102,7 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySoundAtLocation(string soundName, ESoundChannel soundChannel, Vector3 location, bool loop = false, UnityAction onFinish = null)
     {
+        if (!sounds.ContainsKey(soundName)) throw new System.Exception($"AudioManager does not have a sound named {soundName}.");
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName} at location {location}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
@@ -128,6 +131,7 @@ public class AudioManager : MonoBehaviour
     /// <returns> The played SoundClip </returns>
     public SoundClip PlaySoundWithParent(string soundName, ESoundChannel soundChannel, GameObject parent, bool loop = false, UnityAction onFinish = null)
     {
+        if (!sounds.ContainsKey(soundName)) throw new System.Exception($"AudioManager does not have a sound named {soundName}.");
         if (DEBUGGING) Debug.Log($"Playing Sound {soundName} attached to GameObject {parent}");
 
         SoundClip soundClip = new SoundClip(sounds[soundName]);
@@ -297,6 +301,9 @@ public class SoundClip
                 break;
             case ESoundChannel.SFX:
                 audioSource.outputAudioMixerGroup = AudioManager.Instance.audioMixer.FindMatchingGroups("SFX")[0];
+                break;
+            case ESoundChannel.MASTER:
+                audioSource.outputAudioMixerGroup = AudioManager.Instance.audioMixer.FindMatchingGroups("Master")[0];
                 break;
         }
 
