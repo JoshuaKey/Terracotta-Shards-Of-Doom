@@ -69,6 +69,7 @@ public class TargetProjectile : MonoBehaviour {
 
         collider.enabled = true;
         rigidbody.isKinematic = false;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         attack.isAttacking = true;
 
         rigidbody.velocity = Vector3.zero;

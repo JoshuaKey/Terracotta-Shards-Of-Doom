@@ -33,6 +33,7 @@ public class Rocket : PoolObject {
 
         collider.enabled = false;
         rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.None;
         layerMask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
@@ -54,6 +55,7 @@ public class Rocket : PoolObject {
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         rigidbody.AddForce(this.transform.forward * Impulse, ForceMode.Impulse);
 

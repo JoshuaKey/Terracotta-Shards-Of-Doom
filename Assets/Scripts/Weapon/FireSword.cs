@@ -26,6 +26,7 @@ public class FireSword : AdvancedWeapon {
 
     private List<GameObject> enemiesHit = new List<GameObject>();
     private FlameProjectile currFlame = null;
+    private float nextProjTime = 0.0f;
 
     private void Awake() {
         CanCharge = false;
@@ -56,9 +57,9 @@ public class FireSword : AdvancedWeapon {
         this.transform.localPosition = StartPos;
         this.transform.localRotation = Quaternion.Euler(StartRot);
 
-        if(currFlame == null) {
-            currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);          
-        }
+        //if(currFlame == null) {
+        //    currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);          
+        //}
 
         if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
@@ -86,7 +87,9 @@ public class FireSword : AdvancedWeapon {
         collider.enabled = true;
         AudioManager.Instance.PlaySoundWithParent("swoosh", ESoundChannel.SFX, gameObject);
 
-        if (currFlame != null) {
+        if (Time.time >= nextProjTime) {
+            FlameProjectile currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);
+
             Player player = Player.Instance;
             Camera camera = player.camera;
             Vector3 forward = camera.transform.forward;
@@ -107,9 +110,9 @@ public class FireSword : AdvancedWeapon {
             currFlame.Knockback = this.Knockback;
             currFlame.RigidbodyKnockback = this.RigidbodyKnockback;
             currFlame.Fire();
-            currFlame = null;
 
-            StartCoroutine(Reload());
+            //StartCoroutine(Reload());
+            nextProjTime = Time.time + ProjectileReloadTime;
         }
     }
 
@@ -118,11 +121,11 @@ public class FireSword : AdvancedWeapon {
         enemiesHit.Clear();
     }
 
-    private IEnumerator Reload() {
-        yield return new WaitForSeconds(ProjectileReloadTime);
+    //private IEnumerator Reload() {
+    //    yield return new WaitForSeconds(ProjectileReloadTime);
 
-        currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);
-    }
+    //    currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);
+    //}
 
     protected void OnTriggerEnter(Collider other) {
         TargetProjectile targetProj = other.GetComponentInChildren<TargetProjectile>();

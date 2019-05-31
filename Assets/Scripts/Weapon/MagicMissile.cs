@@ -42,7 +42,8 @@ public class MagicMissile : PoolObject {
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
-        
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+
         rigidbody.AddForce(Impulse, ForceMode.Impulse);
         if(Impulse == Vector3.zero) {
             rigidbody.useGravity = true;
