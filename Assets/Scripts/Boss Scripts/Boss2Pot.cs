@@ -63,7 +63,6 @@ public class Boss2Pot : Pot
     void Update()
     {
         stateMachine.Update();
-        print(stateMachine.GetCurrState().ToString());
     }
 
     public void ChangeHealthUI(float damage)
@@ -241,36 +240,36 @@ public class Boss2Pot_ChangingRooms : State
         Debug.Log(target.transform.position);
         Debug.Log(target);
         boss.agent.SetDestination(target.transform.position);
-        //while ((boss.agent.destination - owner.transform.position).magnitude > .1f)
-        //{
-        //    if (boss.agent.isPathStale || boss.agent.isStopped || !boss.agent.isOnNavMesh ||
-        //        !boss.agent.isActiveAndEnabled || !boss.agent.hasPath || boss.agent.pathStatus == NavMeshPathStatus.PathComplete) {
-        //        Debug.Log(boss.agent.isPathStale);
-        //        Debug.Log(boss.agent.isStopped);
-        //        Debug.Log(!boss.agent.isOnNavMesh);
-        //        Debug.Log(!boss.agent.isActiveAndEnabled);
-        //        Debug.Log(!boss.agent.hasPath);
-        //        Debug.Log(boss.agent.pathStatus);
-
-        //        Debug.Break();
-        //    }
+        NavMeshPath path = new NavMeshPath();
+        NavMesh.CalculatePath(boss.transform.position, target.transform.position, NavMesh.AllAreas, path);
+        //while (boss.agent.pathPending) {
+        //    Debug.Log("Path Waiting");
         //    yield return null;
         //}
 
-        while (boss.agent.pathPending) {
-            Debug.Log("Path Waiting");
-            yield return null;
+        //if(boss.agent.pathStatus != NavMeshPathStatus.PathComplete) {
+        //    Debug.Log("FAILED TO FIND PATH!!!");
+        //    Debug.Break();
+        //}
+        
+        foreach(Vector3 v in path.corners)
+        {
+            while((boss.transform.position - v).magnitude > .1f)
+            {
+                boss.transform.position = Vector3.MoveTowards(boss.transform.position, v, Time.deltaTime * 2);
+                Debug.Log("Here");
+                yield return null;
+            }
         }
-
-        if(boss.agent.pathStatus != NavMeshPathStatus.PathComplete) {
-            Debug.Log("FAILED TO FIND PATH!!!");
-            Debug.Break();
-        }
-
-        while(boss.agent.remainingDistance > boss.agent.stoppingDistance) {
-            Debug.Log("Moving");
-            yield return null;
-        }
+        //while(boss.agent.remainingDistance > boss.agent.stoppingDistance)
+        //{
+        //    Debug.Log("fuck you rian: " + boss.agent.hasPath);
+        //    for (int i = 0; i < boss.agent.path.corners.Length-1; i++)
+        //    {
+        //        Debug.DrawLine(boss.agent.path.corners[i], boss.agent.path.corners[i + 1], Color.blue);
+        //    }
+        //    yield return null;
+        //}
 
         target.GetComponent<Waypoint>().Visited = true;
         running = false;
@@ -385,8 +384,6 @@ public class Boss2Pot_Animating : State
                 barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
             } 
         }
-
-        boss.barrierPots.ForEach(x => Debug.Log(x.name));
 
         while (boss.barrierPots.Exists(p => !p.InPosition))
         {
