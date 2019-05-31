@@ -39,6 +39,7 @@ public class BrokenPot : MonoBehaviour {
 
             int index = Random.Range(0, pieces.Count);
             GameObject obj = pieces[index].gameObject;
+			yield return StartCoroutine(ShrinkShards(obj));
             Destroy(obj);
             pieces.RemoveAt(index);
             renderers.RemoveAt(index);
@@ -65,4 +66,17 @@ public class BrokenPot : MonoBehaviour {
             r.material = m;
         }
     }
+
+	private IEnumerator ShrinkShards(GameObject shard)
+	{
+		float currentScale = shard.transform.localScale.x;
+
+		while(currentScale >= 0.1f)
+		{
+			currentScale -= Time.deltaTime;
+			shard.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
+			yield return null;
+		}
+		yield break;
+	}
 }
