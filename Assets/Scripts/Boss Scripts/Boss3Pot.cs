@@ -448,15 +448,17 @@ public class Boss3_Vulnerable : State {
         switch (phase) {
             case 1:
                 boss3Pot.SnowballSpawnTime = 5.0f;
-                boss3Pot.SnowballAcceleration = 500;
+                //boss3Pot.SnowballAcceleration = 500;
+                boss3Pot.SnowballAcceleration = 2000;
                 break;
             case 2:
                 boss3Pot.SnowballSpawnTime = 2.5f;
-                boss3Pot.SnowballAcceleration = 1000;
+                //boss3Pot.SnowballAcceleration = 1000;
+                boss3Pot.SnowballAcceleration = 2000;
                 break;
             case 3:
                 boss3Pot.SnowballSpawnTime = 1.0f;
-                boss3Pot.SnowballAcceleration = 1000;
+                boss3Pot.SnowballAcceleration = 2000;
                 break;
         }
 

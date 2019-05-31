@@ -47,6 +47,7 @@ public class MagicMagic : AdvancedWeapon {
     }
     private void OnDisable() {
         StopAllCoroutines();
+        routine = null;
         charge = 0.0f;
         if (collider != null) {
             collider.enabled = false;

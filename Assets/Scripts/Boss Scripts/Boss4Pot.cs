@@ -93,7 +93,6 @@ public class Boss4Pot : Pot
         meteor.OnMiss += MissTarget;
         currProjectile = meteor;
 
-        print(Shields.Count);
         ReceiveCount = 3 - Shields.Count;
 
         meteor.Fire(this.gameObject, Player.Instance.camera.gameObject, dir);
