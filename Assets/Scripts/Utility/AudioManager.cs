@@ -48,8 +48,11 @@ public class AudioManager : MonoBehaviour
         foreach (AudioClip ac in audioClips)
         {
             if (DEBUGGING) Debug.Log($"New SoundClip {ac.name} added.");
-            sounds.Add(ac.name, new SoundClip(ac.name, ac));
+            if (ac != null) {
+                sounds.Add(ac.name, new SoundClip(ac.name, ac));
+            }
         }
+            
         
         for (int i = 0; i < initialAudioSources; i++)
         {
