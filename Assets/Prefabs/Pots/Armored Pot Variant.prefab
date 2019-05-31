@@ -132,6 +132,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4769241582070362439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4543592221931959911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c384753ac4cbba445b093b75c785d18d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PieceDisappearTime: 10
 --- !u!64 &8097392972648614747
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -162,6 +175,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2848372807179740123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4985836196246202665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c384753ac4cbba445b093b75c785d18d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PieceDisappearTime: 10
 --- !u!64 &6081640440220657471
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -192,6 +218,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &197972612487587771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026928927107715273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c384753ac4cbba445b093b75c785d18d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PieceDisappearTime: 10
 --- !u!64 &5676423189743030000
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -226,11 +265,6 @@ PrefabInstance:
     - target: {fileID: 2110392408, guid: 7af5e528f545bc34d9140e685d17ceb2, type: 3}
       propertyPath: MaxHealth
       value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 126
       objectReference: {fileID: 0}
     - target: {fileID: 1948159762795659811, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
@@ -301,6 +335,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 93125231066362512, guid: 7af5e528f545bc34d9140e685d17ceb2,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 126
       objectReference: {fileID: 0}
     - target: {fileID: 1948159762793234625, guid: 7af5e528f545bc34d9140e685d17ceb2,
         type: 3}
