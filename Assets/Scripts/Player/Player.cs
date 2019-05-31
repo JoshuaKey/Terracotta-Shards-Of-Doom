@@ -178,7 +178,7 @@ public class Player : MonoBehaviour {
             LevelManager.Instance.LoadScene("Hub");
         }
         if (Application.isEditor) {
-            if (Input.GetKeyDown(KeyCode.BackQuote)) {\
+            if (Input.GetKeyDown(KeyCode.BackQuote)) {
                 RockHammer ham = (RockHammer) this.weapons.Find((x) => x.name == "Rock Hammer");
                 if(ham != null) {
                     ham.PlayerJump = 15;
