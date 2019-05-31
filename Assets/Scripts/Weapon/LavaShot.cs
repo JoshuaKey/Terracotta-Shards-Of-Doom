@@ -37,6 +37,7 @@ public class LavaShot : PoolObject {
     public void Fire(Vector3 dest, Vector3 peak) {
         collider.enabled = true;
         rigidbody.isKinematic = false;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         attack.isAttacking = true;
 
         this.transform.parent = null;

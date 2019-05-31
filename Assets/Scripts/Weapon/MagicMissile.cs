@@ -42,7 +42,8 @@ public class MagicMissile : PoolObject {
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
-        
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+
         rigidbody.AddForce(Impulse, ForceMode.Impulse);
         if(Impulse == Vector3.zero) {
             rigidbody.useGravity = true;
@@ -63,6 +64,7 @@ public class MagicMissile : PoolObject {
     }
 
     private void OnTriggerEnter(Collider other) {
+        print(other.name);
         Enemy enemy = other.GetComponentInChildren<Enemy>();
         if (enemy == null) { enemy = other.GetComponentInParent<Enemy>(); }
         if (enemy != null) {
