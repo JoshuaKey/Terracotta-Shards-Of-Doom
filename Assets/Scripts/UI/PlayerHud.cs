@@ -55,6 +55,12 @@ public class PlayerHud : MonoBehaviour {
     public Sprite SpearIcon;
     public Sprite CrossbowIcon;
     public Sprite MagicIcon;
+    public Sprite FireSwordIcon;
+    public Sprite IceBowIcon;
+    public Sprite RockHammerIcon;
+    public Sprite LightningSpearIcon;
+    public Sprite MagicMissileIcon;
+    public Sprite MagicMagicIcon;
 
     [Header("Weapon Wheel")]
     public GameObject WeaponWheel;
@@ -220,29 +226,40 @@ public class PlayerHud : MonoBehaviour {
         switch(weaponName)
         {
             case "Sword":
-            case "Fire Sword":
                 retval = SwordIcon;
                 break;
             case "Bow":
-            case "Ice Bow":
                 retval = BowIcon;
                 break;
             case "Hammer":
-            case "Rock Hammer":
                 retval = HammerIcon;
                 break;
             case "Spear":
-            case "Lightning Spear":
                 retval = SpearIcon;
                 break;
             case "Crossbow":
-            case "CrossBow":
-            case "Magic Missile":
                 retval = CrossbowIcon;
                 break;
             case "Magic":
-            case "Magic Magic":
                 retval = MagicIcon;
+                break;
+            case "Fire Sword":
+                retval = FireSwordIcon;
+                break;
+            case "Ice Bow":
+                retval = IceBowIcon;
+                break;
+            case "Rock Hammer":
+                retval = RockHammerIcon;
+                break;
+            case "Lightning Spear":
+                retval = LightningSpearIcon;
+                break;
+            case "Magic Missile":
+                retval = MagicMissileIcon;
+                break;
+            case "Magic Magic":
+                retval = MagicMagicIcon;
                 break;
             default:
                 retval = SwordIcon;
