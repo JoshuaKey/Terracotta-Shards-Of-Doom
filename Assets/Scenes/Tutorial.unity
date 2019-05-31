@@ -1990,6 +1990,7 @@ MonoBehaviour:
   - Kill enough pots in each level to unlock the next level
   characterSpeaking: {fileID: 21300028, guid: 1422f91ffd3697e4c8735aee459998c3, type: 3}
   characterSpeakingName: Jeffrey the Tutorial Block
+  IsTutorial: 0
 --- !u!4 &160992116
 Transform:
   m_ObjectHideFlags: 0
@@ -6026,19 +6027,25 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 5573050193837767969, guid: 6979a3951b3bf78409753834b80cc430,
+    - target: {fileID: 7686829166914618848, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156954018437379882, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 810194912837584071, guid: 6979a3951b3bf78409753834b80cc430,
+    - target: {fileID: 1156954018437379882, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1906646760, guid: 6979a3951b3bf78409753834b80cc430, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 951963686317927467, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3653481145307985802, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
@@ -6052,8 +6059,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7686829166914618848, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 542036802230860694, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
@@ -30080,6 +30087,7 @@ MonoBehaviour:
   - Left click to Attack
   characterSpeaking: {fileID: 21300028, guid: 1422f91ffd3697e4c8735aee459998c3, type: 3}
   characterSpeakingName: Jeffrey the Tutorial Block
+  IsTutorial: 0
 --- !u!65 &1628743743
 BoxCollider:
   m_ObjectHideFlags: 0

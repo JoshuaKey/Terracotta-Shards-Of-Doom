@@ -43,6 +43,7 @@ public class Player : MonoBehaviour {
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
     public bool CanInteract = true;
+	public bool SkipTutorial = false;
     
     [Header("Compass")]
     public CompassPot compass;
