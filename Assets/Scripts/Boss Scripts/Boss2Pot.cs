@@ -11,6 +11,7 @@ public class Boss2Pot : Pot
     [HideInInspector]
     public Enemy enemy;
     NavMeshAgent navMeshAgent = null;
+    public new Collider collider = null;
 
     [HideInInspector]
     public Waypoint currentWaypoint = null;
@@ -19,8 +20,6 @@ public class Boss2Pot : Pot
 
     [HideInInspector]
     public Waypoint[] barrierWaypoints = null;
-
-    public Arena[] Arenas;
 
     [HideInInspector]
     public List<BarrierPot> barrierPots = null;
@@ -42,6 +41,7 @@ public class Boss2Pot : Pot
     void Start()
     {
         if (enemy == null) { enemy = GetComponentInChildren<Enemy>(true); }
+        if (collider == null) { collider = GetComponentInChildren<Collider>(true); }
         navMeshAgent = GetComponent<NavMeshAgent>();
 
         barrierWaypoints = Barrier.GetComponentsInChildren<Waypoint>();
@@ -63,6 +63,7 @@ public class Boss2Pot : Pot
     void Update()
     {
         stateMachine.Update();
+        health.TakeDamage(DamageType.BASIC, 1.0f);
     }
 
     public void ChangeHealthUI(float damage)
@@ -73,14 +74,15 @@ public class Boss2Pot : Pot
     public void OnDeath()
     {
         StopAllCoroutines();
+        DestroyImmediate(gameObject.GetComponent<Rigidbody>());
         PlayerHud.Instance.DisableBossHealthBar();
-
-        foreach (Wall w in currentWaypoint.arena.walls) {
+    
+        foreach (Wall w in currentWaypoint.arena.walls)
+        {
             w.Open();
         }
         currentWaypoint.arena.gameObject.SetActive(false);
 
-        Debug.Break();
     }
 
 
@@ -113,10 +115,13 @@ public class Boss2Pot : Pot
     {
         if (other.CompareTag(Game.Instance.PlayerTag))
         {
-            if (startTrigger.enabled) {
+            if (startTrigger.enabled)
+            {
                 startTrigger.enabled = false;
                 PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth, true);
-            } else {
+            }
+            else
+            {
                 Player.Instance.health.TakeDamage(DamageType.BASIC, 3);
                 Vector3 dir = Player.Instance.transform.position - this.transform.position;
                 dir.y = 0.0f;
@@ -129,25 +134,31 @@ public class Boss2Pot : Pot
 }
 #region Boss States
 
-public class Boss2Pot_Idle : State {
+public class Boss2Pot_Idle : State
+{
 
     Boss2Pot boss = null;
 
-    public override void Init(GameObject owner) {
+    public override void Init(GameObject owner)
+    {
         base.Init(owner);
         boss = owner.GetComponent<Boss2Pot>();
     }
 
-    public override void Enter() {
+    public override void Enter()
+    {
         boss.enemy.health.Resistance = DamageType.BASIC;
     }
 
-    public override void Exit() {
+    public override void Exit()
+    {
 
     }
 
-    public override string Update() {
-        if (!boss.startTrigger.enabled) {
+    public override string Update()
+    {
+        if (!boss.startTrigger.enabled)
+        {
             return "Boss2Pot_ChangingRooms";
         }
 
@@ -168,8 +179,7 @@ public class Boss2Pot_ChangingRooms : State
     {
         if (waypoints == null)
         {
-            waypoints = new List<Waypoint>(
-                GameObject.FindGameObjectsWithTag("Waypoint").Select(x => x.GetComponent<Waypoint>()));
+            waypoints = new List<Waypoint>(GameObject.FindGameObjectsWithTag("Waypoint").Select(x => x.GetComponent<Waypoint>()));
         }
 
         if (boss == null)
@@ -181,16 +191,10 @@ public class Boss2Pot_ChangingRooms : State
 
     public override void Enter()
     {
-        boss.agent.enabled = true;
+
         if (boss.currentWaypoint != null)
         {
             boss.currentWaypoint.arena.gameObject.SetActive(false);
-            foreach(Wall w in boss.currentWaypoint.arena.walls)
-            {
-                
-                w.Open();
-                //w.gameObject.SetActive(false);
-            }
         }
 
         running = false;
@@ -210,7 +214,6 @@ public class Boss2Pot_ChangingRooms : State
     {
         running = false;
         reachedDestination = false;
-        boss.agent.enabled = false;
 
         boss.enemy.health.Resistance = 0;
     }
@@ -237,39 +240,23 @@ public class Boss2Pot_ChangingRooms : State
     IEnumerator Run()
     {
         running = true;
-        Debug.Log(target.transform.position);
-        Debug.Log(target);
-        boss.agent.SetDestination(target.transform.position);
+
         NavMeshPath path = new NavMeshPath();
         NavMesh.CalculatePath(boss.transform.position, target.transform.position, NavMesh.AllAreas, path);
-        //while (boss.agent.pathPending) {
-        //    Debug.Log("Path Waiting");
-        //    yield return null;
-        //}
-
-        //if(boss.agent.pathStatus != NavMeshPathStatus.PathComplete) {
-        //    Debug.Log("FAILED TO FIND PATH!!!");
-        //    Debug.Break();
-        //}
-        
-        foreach(Vector3 v in path.corners)
-        {
-            while((boss.transform.position - v).magnitude > .1f)
-            {
-                boss.transform.position = Vector3.MoveTowards(boss.transform.position, v, Time.deltaTime * 2);
-                Debug.Log("Here");
-                yield return null;
-            }
-        }
-        //while(boss.agent.remainingDistance > boss.agent.stoppingDistance)
+        //foreach(Vector3 v in path.corners)
         //{
-        //    Debug.Log("fuck you rian: " + boss.agent.hasPath);
-        //    for (int i = 0; i < boss.agent.path.corners.Length-1; i++)
+        //    while((boss.transform.position - v).magnitude >.1f)
         //    {
-        //        Debug.DrawLine(boss.agent.path.corners[i], boss.agent.path.corners[i + 1], Color.blue);
+        //        boss.transform.position = Vector3.MoveTowards(boss.transform.position, v, Time.deltaTime * 7);
+        //        yield return null;
         //    }
-        //    yield return null;
         //}
+        boss.agent.SetDestination(target.transform.position);
+
+        while ((boss.transform.position - boss.agent.destination).magnitude > .1f)
+        {
+            yield return null;
+        }
 
         target.GetComponent<Waypoint>().Visited = true;
         running = false;
@@ -327,10 +314,14 @@ public class Boss2Pot_Animating : State
     public override string Update()
     {
 
-        if (!animating && boss.currentWaypoint.arena.playerEnteredArena) {
+        if (!animating && boss.currentWaypoint.arena.playerEnteredArena)
+        {
             boss.StartCoroutine(AnimatePots());
-        } else if (doneAnimating) {
-            if (healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f) {
+        }
+        else if (doneAnimating)
+        {
+            if (healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
+            {
                 boss.ConvertBarrierPots();
                 return "Boss2Pot_ChangingRooms";
             }
@@ -346,7 +337,7 @@ public class Boss2Pot_Animating : State
         BarrierPot bp = null;
         foreach (Pot p in Pots)
         {
-            if(p == null) { continue; }
+            if (p == null) { continue; }
 
             if (!p.enabled)
             {
@@ -382,7 +373,7 @@ public class Boss2Pot_Animating : State
                 w.Visited = true;
                 barrierPot.Waypoint = w;
                 barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
-            } 
+            }
         }
 
         while (boss.barrierPots.Exists(p => !p.InPosition))
@@ -428,6 +419,7 @@ public class Boss2Pot_Running : State
 {
     Boss2Pot boss = null;
     Health healthComponent = null;
+    Coroutine movingCoroutine = null;
 
     Bounds bounds;
     Vector3 previousDirection;
@@ -449,16 +441,20 @@ public class Boss2Pot_Running : State
 
     public override void Exit()
     {
+        foreach(Wall w in boss.currentWaypoint.arena.walls)
+        {
+            w.transform.position = new Vector3(0.0f, w.openPos.y);
+            w.isOpen = true;
+            w.gameObject.SetActive(false);
+        }
+        boss.currentWaypoint.arena.gameObject.SetActive(false);
         moving = false;
+        boss.StopCoroutine(movingCoroutine);
         boss.Phase++;
     }
 
     public override string Update()
     {
-        if (boss == null) {
-            Debug.Break();
-            return null;
-        }
 
         if (healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
         {
@@ -467,7 +463,7 @@ public class Boss2Pot_Running : State
         }
         else if (!moving)
         {
-            boss.StartCoroutine(Run());
+            movingCoroutine = boss.StartCoroutine(Run());
         }
         boss.Barrier.transform.Rotate(0.0f, 30.0f * Time.deltaTime * boss.Phase, 0.0f);
 
@@ -480,11 +476,6 @@ public class Boss2Pot_Running : State
         Vector3 targetPosition;
         do
         {
-            if (boss == null) {
-                Debug.Break();
-                yield break; 
-            }
-
             targetPosition = Utility.RandomPointInBounds(bounds);
         } while (!(Vector3.Angle(previousDirection, targetPosition.normalized) > 30.0f) && targetPosition.magnitude < 3.0f);
 
@@ -492,11 +483,6 @@ public class Boss2Pot_Running : State
 
         while ((owner.transform.position - targetPosition).magnitude > .25f)
         {
-            if (boss == null) {
-                Debug.Break();
-                yield break;
-            }
-
             owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * boss.speed);
             yield return null;
         }
