@@ -17,6 +17,7 @@ public class Boss4Pot : Pot
     public GameObject ProjectilePool = null;
     public BoxCollider ProjectileSpawnArea = null;
     public GameObject Waypoint = null;
+    public GameObject ShieldObject = null;
 
     [Header("Phase 2")]
     public TargetProjectile TrackingMeteorPrefab;
@@ -55,6 +56,7 @@ public class Boss4Pot : Pot
             new Boss4_Target(),
             new Boss4_MeteorShower());
 
+        StartCoroutine(RotateShields());
         enemy.health.OnDamage += ChangeHealthUI;
         enemy.health.OnDamage += PlayClang;
         enemy.health.OnDeath += OnDeath;
@@ -209,11 +211,8 @@ public class Boss4Pot : Pot
         while (true)
         {
 
-            angle += Time.deltaTime * this.FloatSpeed;
-            if (angle > 360.0f)
-            {
-                angle -= 360.0f;
-            }
+            angle += Time.deltaTime * this.FloatSpeed;           
+            angle %= 360.0f;
 
             //TODO: add shake to the floating
             float xOffset = 0.0f;
@@ -224,6 +223,19 @@ public class Boss4Pot : Pot
             MeshAndCollider.transform.position = this.gameObject.transform.position + offsets;
             yield return null;
         }
+    }
+
+    float rotationAngle = 0.0f;
+    IEnumerator RotateShields()
+    {
+        while (true)
+        {
+            rotationAngle += Time.deltaTime * -30.0f;
+            rotationAngle %= 360.0f;
+            ShieldObject.transform.rotation = Quaternion.Euler(0.0f, rotationAngle, 0.0f);
+            yield return null;
+        }
+
     }
 }
 
@@ -262,7 +274,7 @@ public class Boss4_Idle : State
             {
                 return "Boss4_Shooting";
             }
-            if(!teleporting)
+            if (!teleporting)
             {
                 boss.StartCoroutine(Teleport());
             }
