@@ -33,7 +33,10 @@ public class Teleporter : MonoBehaviour {
         }
     }
 
-    public void StartSound() => soundClip = AudioManager.Instance.PlaySoundWithParent("active_portal", ESoundChannel.SFX, gameObject, true);
+    public void PlaySound() => soundClip = AudioManager.Instance.PlaySoundWithParent("active_portal", ESoundChannel.SFX, gameObject, true);
 
-    private void OnDisable() => soundClip.Stop();
+    private void OnDisable()
+    {
+        if (soundClip != null) soundClip.Stop();
+    }
 }
