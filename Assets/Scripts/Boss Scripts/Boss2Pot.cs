@@ -63,7 +63,6 @@ public class Boss2Pot : Pot
     void Update()
     {
         stateMachine.Update();
-        health.TakeDamage(DamageType.BASIC, 1.0f);
     }
 
     public void ChangeHealthUI(float damage)
@@ -253,7 +252,7 @@ public class Boss2Pot_ChangingRooms : State
         //}
         boss.agent.SetDestination(target.transform.position);
 
-        while ((boss.transform.position - boss.agent.destination).magnitude > .1f)
+        while ((boss.transform.position - boss.agent.destination).magnitude > boss.agent.stoppingDistance)
         {
             yield return null;
         }
@@ -434,6 +433,7 @@ public class Boss2Pot_Running : State
 
     public override void Enter()
     {
+        boss.agent.enabled = false;
         previousDirection = Vector3.zero;
         moving = false;
         bounds = new Bounds(boss.currentWaypoint.transform.position, new Vector3(20.0f, 0.0f, 20.0f));
@@ -441,7 +441,8 @@ public class Boss2Pot_Running : State
 
     public override void Exit()
     {
-        foreach(Wall w in boss.currentWaypoint.arena.walls)
+        boss.agent.enabled = true;
+        foreach (Wall w in boss.currentWaypoint.arena.walls)
         {
             w.transform.position = new Vector3(0.0f, w.openPos.y);
             w.isOpen = true;
@@ -483,6 +484,7 @@ public class Boss2Pot_Running : State
 
         while ((owner.transform.position - targetPosition).magnitude > .25f)
         {
+            Debug.DrawLine(boss.transform.position, targetPosition, Color.red);
             owner.transform.position = Vector3.MoveTowards(owner.transform.position, targetPosition, Time.deltaTime * boss.speed);
             yield return null;
         }
