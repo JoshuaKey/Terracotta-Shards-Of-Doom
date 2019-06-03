@@ -112,19 +112,18 @@ public class Magic : Weapon {
     }
 
     private IEnumerator Fire() {
+        targetList.Sort((x, y) => {
+            float dist1 = (Player.Instance.transform.position - x.transform.position).sqrMagnitude;
+            float dist2 = (Player.Instance.transform.position - y.transform.position).sqrMagnitude;
 
-        //targetList.Sort((x, y) => {
-        //    float dist1 = (Player.Instance.transform.position - x.transform.position).sqrMagnitude;
-        //    float dist2 = (Player.Instance.transform.position - y.transform.position).sqrMagnitude;
-
-        //    if(dist1 > dist2) {
-        //        return 1;
-        //    } else if(dist1 == dist2) {
-        //        return 0;
-        //    } else {
-        //        return -1;
-        //    }
-        //});
+            if (dist1 > dist2) {
+                return 1;
+            } else if (dist1 == dist2) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
 
         for (int i = 0; i < currMissiles.Count; i++) {
             MagicMissile m = currMissiles[i];
