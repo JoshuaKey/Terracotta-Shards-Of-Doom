@@ -9,6 +9,10 @@ public class TargetProjectile : MonoBehaviour {
     public float MaxSpeed = 10;
     public bool InstantFire = false;
 
+    [Header("Targets")]
+    public float PeakHeight = 10;
+    public float SpeedOverTime = .2f;
+
     [Header("Components")]
     public Attack attack;
     public new Rigidbody rigidbody;
@@ -72,9 +76,12 @@ public class TargetProjectile : MonoBehaviour {
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         attack.isAttacking = true;
 
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.AddForce(impulse, ForceMode.Impulse);
+        //rigidbody.velocity = Vector3.zero;
+        //rigidbody.AddForce(impulse, ForceMode.Impulse);
         this.transform.forward = impulse.normalized;
+
+        StopAllCoroutines();
+        StartCoroutine(FireAnimation());
 
         this.transform.parent = null;
         LevelManager.Instance.MoveToScene(this.gameObject);
@@ -94,11 +101,46 @@ public class TargetProjectile : MonoBehaviour {
         //    this.gameObject.layer = LayerMask.NameToLayer("EnemyProjectile");
         //}
 
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.AddForce(impulse, ForceMode.Impulse);
+        //rigidbody.velocity = Vector3.zero;
+        //rigidbody.AddForce(impulse, ForceMode.Impulse);
         this.transform.forward = impulse.normalized;
 
+        StopAllCoroutines();
+        StartCoroutine(FireAnimation());
+
         OnFire?.Invoke(this);
+    }
+
+    private IEnumerator FireAnimation() {
+        if (target == null) {
+            yield break;
+        }
+
+        Vector3 startPos = this.transform.position;
+        Vector3 peak = Utility.CreatePeak(startPos, target.transform.position, PeakHeight);
+
+        float startTime = Time.time;
+
+        float length = (target.transform.position - startPos).magnitude * SpeedOverTime;
+        while (Time.time < startTime + length) {
+            float t = (Time.time - startTime) / length;
+
+            if (target != null) {
+                Vector3 pos = Interpolation.BezierCurve(startPos, peak, target.transform.position, t);
+                this.transform.position = pos;
+            } else {
+                //FallDown();
+                yield break;
+            }
+
+            yield return null;
+        }
+
+        //FallDown();
+
+        if (target != null) {
+            this.transform.position = target.transform.position;
+        }
     }
 
     private void OnTriggerEnter(Collider other) {
