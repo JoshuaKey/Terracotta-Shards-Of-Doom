@@ -100,10 +100,25 @@ public class Boss4Pot : Pot
         dir *= ProjectileImpulse;
 
         meteor.OnHit += HitTarget;
-        meteor.OnMiss += MissTarget;
+        meteor.OnMiss += MissTarget;       
         currProjectile = meteor;
 
         ReceiveCount = 3 - Shields.Count;
+
+        switch (Shields.Count) {
+            case 3:
+                meteor.SpeedOverTime = .2f;
+                break;
+            case 2:
+                meteor.SpeedOverTime = .05f;
+                break;
+            case 1:
+                meteor.SpeedOverTime = .03f;
+                break;
+            default:
+                meteor.SpeedOverTime = .2f;
+                break;
+        }
 
         meteor.Fire(this.gameObject, Player.Instance.camera.gameObject, dir);
     }
@@ -127,7 +142,7 @@ public class Boss4Pot : Pot
             if (Shields.Count == 0)
             {
                 Aura.SetActive(false);
-                stateMachine.ChangeState("Boss_MeteorShower");
+                stateMachine.ChangeState("Boss4_MeteorShower");
             }
             else
             {
@@ -140,6 +155,8 @@ public class Boss4Pot : Pot
 
             Vector3 dir = Vector3.up;
             dir *= ProjectileImpulse;
+
+            //currProjectile.SpeedOverTime -= .01f;
 
             currProjectile.Hit(this.gameObject, dir);
         }
@@ -368,13 +385,16 @@ class Boss4_Shooting : State
     {
         if (killedPots >= boss.Phase1Pots)
         {
-            return "Boss4_Target";
+            if(boss.NumberOfSpawnedPots == 0) {
+                return "Boss4_Target";
+            }
+            
+        }  else {
+            if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots) {
+                boss.StartCoroutine(Shooting());
+            }
         }
 
-        if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
-        {
-            boss.StartCoroutine(Shooting());
-        }
         return null;
     }
 
