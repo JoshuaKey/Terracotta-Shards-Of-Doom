@@ -25,7 +25,6 @@ public class FireSword : AdvancedWeapon {
     protected Animator animator;
 
     private List<GameObject> enemiesHit = new List<GameObject>();
-    private FlameProjectile currFlame = null;
     private float nextProjTime = 0.0f;
 
     private void Awake() {
@@ -56,10 +55,6 @@ public class FireSword : AdvancedWeapon {
     private void OnEnable() {
         this.transform.localPosition = StartPos;
         this.transform.localRotation = Quaternion.Euler(StartRot);
-
-        //if(currFlame == null) {
-        //    currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);          
-        //}
 
         if (Player.Instance && Player.Instance.GetCurrentWeapon() == this) {
             PlayerHud.Instance.EnableCrosshair();
@@ -111,7 +106,6 @@ public class FireSword : AdvancedWeapon {
             currFlame.RigidbodyKnockback = this.RigidbodyKnockback;
             currFlame.Fire();
 
-            //StartCoroutine(Reload());
             nextProjTime = Time.time + ProjectileReloadTime;
         }
     }
@@ -120,12 +114,6 @@ public class FireSword : AdvancedWeapon {
         collider.enabled = false;
         enemiesHit.Clear();
     }
-
-    //private IEnumerator Reload() {
-    //    yield return new WaitForSeconds(ProjectileReloadTime);
-
-    //    currFlame = Instantiate(FlameProjectilePrefab, ProjectilePosition);
-    //}
 
     protected void OnTriggerEnter(Collider other) {
         TargetProjectile targetProj = other.GetComponentInChildren<TargetProjectile>();

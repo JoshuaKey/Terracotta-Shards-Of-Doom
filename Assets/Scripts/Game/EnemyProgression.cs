@@ -36,11 +36,17 @@ public class EnemyProgression : MonoBehaviour {
     }
 
     private void OnEnemyDeath() {
-        currKills++;
-        if (!IsComplete())
-        {
+        if (!IsComplete()) {
+            currKills++;
             Check();
+        } else {
+            currKills++;
         }
+
+        if (UseHud) {
+            PlayerHud.Instance.SetEnemyCount(currKills, KillsNeeded);
+        }
+
         PlayerHud.Instance.PlayPotAnimation();
     }
 
@@ -55,10 +61,6 @@ public class EnemyProgression : MonoBehaviour {
             if (UseHud) {
                 PlayerHud.Instance.TurnOnPortalText();
             }
-        }
-
-        if (UseHud) {
-            PlayerHud.Instance.SetEnemyCount(currKills, KillsNeeded);
         }
     }
 
