@@ -37,7 +37,8 @@ public class Health : MonoBehaviour {
     }
 
     public float TakeDamage(DamageType type, float damage) {
-        if ((Resistance & type) != 0) {
+        DamageType damageTypes = (Resistance ^ type) & type;
+        if (damageTypes != 0) {
             damage = 0;
         }
 
