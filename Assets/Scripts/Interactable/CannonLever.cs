@@ -12,6 +12,7 @@ public class CannonLever : Lever {
     public Transform Peak;
     public float ChargeTime;
     public float LeapTime;
+	public float PlayerRotateSpeed;
 
     // Start is called before the first frame update
     protected override void Start() {
@@ -22,8 +23,8 @@ public class CannonLever : Lever {
 
     public void AlignCannon() {
         AudioManager.Instance.PlaySoundWithParent("lever", ESoundChannel.SFX, gameObject);
+		cannon.PlayerRotateSpeed = PlayerRotateSpeed;
         cannon.Rotate(Target, Peak, ChargeTime, LeapTime);
-        //cannon.FirePlayer();
         interactable.CanInteract = false;
     }
 }

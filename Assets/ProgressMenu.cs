@@ -6,6 +6,7 @@ using TMPro;
 
 public class ProgressMenu : MonoBehaviour
 {
+    #pragma warning disable 0649
     [SerializeField] TextMeshProUGUI total;
     [Space]
     [SerializeField] TextMeshProUGUI worldOne;
@@ -27,6 +28,7 @@ public class ProgressMenu : MonoBehaviour
     [SerializeField] TextMeshProUGUI fourDashOne;
     [SerializeField] TextMeshProUGUI fourDashTwo;
     [SerializeField] TextMeshProUGUI fourDashThree;
+    #pragma warning restore 0649
 
     public void UpdatePercents()
     {
@@ -64,9 +66,9 @@ public class ProgressMenu : MonoBehaviour
         float total = (float)level.CollectedPots.Where(p => p.Value == true).Count() / (float)level.TotalPots * 100f;
 
 
-        if (level.SpecialPots["Bronze Pot"]) total += 3.33f;
-        if (level.SpecialPots["Silver Pot"]) total += 3.33f;
-        if (level.SpecialPots["Golden Pot"]) total += 3.34f;
+        if (level.SpecialPots.ContainsKey("Bronze Pot") && level.SpecialPots["Bronze Pot"]) total += 3.33f;
+        if (level.SpecialPots.ContainsKey("Silver Pot") && level.SpecialPots["Silver Pot"]) total += 3.33f;
+        if (level.SpecialPots.ContainsKey("Golden Pot") && level.SpecialPots["Golden Pot"]) total += 3.34f;
         //Crate should add an additional percent but can't be tracked currently
 
         return total;

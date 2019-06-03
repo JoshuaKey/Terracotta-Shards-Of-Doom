@@ -17,6 +17,11 @@ public class Boss3Pot : Pot {
     public float SnowballAcceleration = 100;
     private List<Snowball> snowballs = new List<Snowball>();
 
+    [Header("WindyZones")]
+    public GameObject WindZoneHard = null;
+    public GameObject WindZoneMed = null;
+    public GameObject WindZoneBleh = null;
+
     [Header("Blocks")]
     public float BlockHeight = 5.0f;
     public float BlockMoveTime = 2.0f;
@@ -201,6 +206,11 @@ public class Boss3Pot : Pot {
     }
 
     private IEnumerator FallDown() {
+        //Turning off the wind zone
+        WindZoneHard.SetActive(false);
+        WindZoneMed.SetActive(false);
+        WindZoneBleh.SetActive(false);
+
         // Variables
         Vector3[] startPos = new Vector3[Blocks.Count];
         Vector3[] endPos = new Vector3[Blocks.Count];
@@ -264,7 +274,13 @@ public class Boss3Pot : Pot {
         StartCoroutine(Teeter());
     }
 
-    public IEnumerator Jump() {
+    public IEnumerator Jump() { //this is getting back onto the blocks
+        //turning on the windy
+        WindZoneHard.SetActive(true);
+        WindZoneMed.SetActive(true);
+        WindZoneBleh.SetActive(true);
+
+
         VulnerableParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         Vector3 potStartPos = this.transform.position;
@@ -432,15 +448,17 @@ public class Boss3_Vulnerable : State {
         switch (phase) {
             case 1:
                 boss3Pot.SnowballSpawnTime = 5.0f;
-                boss3Pot.SnowballAcceleration = 500;
+                //boss3Pot.SnowballAcceleration = 500;
+                boss3Pot.SnowballAcceleration = 2000;
                 break;
             case 2:
                 boss3Pot.SnowballSpawnTime = 2.5f;
-                boss3Pot.SnowballAcceleration = 1000;
+                //boss3Pot.SnowballAcceleration = 1000;
+                boss3Pot.SnowballAcceleration = 2000;
                 break;
             case 3:
                 boss3Pot.SnowballSpawnTime = 1.0f;
-                boss3Pot.SnowballAcceleration = 1000;
+                boss3Pot.SnowballAcceleration = 2000;
                 break;
         }
 

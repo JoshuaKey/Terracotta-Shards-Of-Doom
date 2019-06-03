@@ -29,7 +29,7 @@ public class Cutscene : MonoBehaviour
 
     IEnumerator PlayCutscene()
     {
-        Debug.Log($"Main Camera: {mainCamera}\nCutscene Camera: {camera}");
+        //Debug.Log($"Main Camera: {mainCamera}\nCutscene Camera: {camera}");
 
         mainCamera.gameObject.SetActive(false);
         camera.gameObject.SetActive(true);
@@ -48,7 +48,9 @@ public class Cutscene : MonoBehaviour
 
         foreach(NavMeshAgent agent in navMeshAgents)
         {
-            agent.enabled = true;
+            if(agent != null) {
+                agent.enabled = true;
+            }   
         }
     }
 }

@@ -8,17 +8,9 @@ public class RockHammer : AdvancedWeapon {
     public Transform SlamCenter;
     public float SlamRadius;
     public ParticleSystem DustEffect;
-
-    [Header("Swing Animation")]
-    public Vector3 StartPos = new Vector3(0.4f, -1, 0.77f);
-    public Vector3 EndPos = new Vector3(0.4f, -1, 0.77f);
-    public float AnimationSwingTime;
     public float PlayerJump = 10;
 
-    [Header("Recoil Animation")]
-    public Vector3 StartRot = Vector3.zero;
-    public Vector3 EndRot = new Vector3(120, 0, 0);
-    public float AnimationRecoilTime;
+    private Animator animator;
 
     private void Awake() {
         CanCharge = false;
@@ -26,12 +18,10 @@ public class RockHammer : AdvancedWeapon {
         OldWeaponName = "Hammer";
 
         this.name = "Rock Hammer";
+
+        animator = GetComponent<Animator>();
     }
 
-    private void OnEnable() {
-        this.transform.localPosition = StartPos;
-        this.transform.localRotation = Quaternion.Euler(StartRot);
-    }
     private void OnDisable() {
         StopAllCoroutines();
     }
@@ -40,44 +30,13 @@ public class RockHammer : AdvancedWeapon {
         if (!CanAttack()) { return; }
 
         base.Attack();
-        StartCoroutine(Slam());
-    }
 
-    private IEnumerator Slam() {
-        Player.Instance.CanWalk = false;
-        Quaternion StartRotQuat = Quaternion.Euler(StartRot);
-        Quaternion EndRotQuat = Quaternion.Euler(EndRot);
-
-        // Swing
-        float startTime = Time.time;
-        while (Time.time < startTime + AnimationSwingTime) {
-            float t = (Time.time - startTime) / AnimationSwingTime;
-            t = Interpolation.ExpoIn(t);
-            this.transform.localPosition = Vector3.LerpUnclamped(StartPos, EndPos, t);
-            this.transform.localRotation = Quaternion.SlerpUnclamped(StartRotQuat, EndRotQuat, t);
-            yield return null;
-        }
-        this.transform.localPosition = EndPos;
-        this.transform.localRotation = EndRotQuat;
-
-        SlamAttack();
-        Player.Instance.CanWalk = true;
-
-        // Recoil
-        startTime = Time.time;
-        while (Time.time < startTime + AnimationRecoilTime) {
-            float t = (Time.time - startTime) / AnimationRecoilTime;
-
-            this.transform.localPosition = Vector3.LerpUnclamped(EndPos, StartPos, t);
-            this.transform.localRotation = Quaternion.SlerpUnclamped(EndRotQuat, StartRotQuat, t);
-            yield return null;
-        }
-
-        this.transform.localPosition = StartPos;
-        this.transform.localRotation = StartRotQuat;
+        //Player.Instance.CanWalk = false;
+        animator.SetTrigger("Attack");
     }
 
     private void SlamAttack() {
+        //Player.Instance.CanWalk = true;
         Player.Instance.velocity.y = PlayerJump;
 
         DustEffect.Play();

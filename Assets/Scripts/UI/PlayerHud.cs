@@ -55,6 +55,12 @@ public class PlayerHud : MonoBehaviour {
     public Sprite SpearIcon;
     public Sprite CrossbowIcon;
     public Sprite MagicIcon;
+    public Sprite FireSwordIcon;
+    public Sprite IceBowIcon;
+    public Sprite RockHammerIcon;
+    public Sprite LightningSpearIcon;
+    public Sprite MagicMissileIcon;
+    public Sprite MagicMagicIcon;
 
     [Header("Weapon Wheel")]
     public GameObject WeaponWheel;
@@ -73,6 +79,8 @@ public class PlayerHud : MonoBehaviour {
 
     [Header("Other")]
     public EventSystem eventSystem;
+    public GameObject PortalText;
+    [SerializeField] float AmountOfTime = 10.0f;
 
     public static PlayerHud Instance;
 
@@ -85,6 +93,11 @@ public class PlayerHud : MonoBehaviour {
 
         InputManager.ControlSchemesChanged += OnControlSchemeChanged;
         InputManager.PlayerControlsChanged += OnPlayerControlChanged;
+    }
+
+    private void OnDestroy() {
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
     }
 
     public void PlayCoinAnimation()
@@ -215,29 +228,40 @@ public class PlayerHud : MonoBehaviour {
         switch(weaponName)
         {
             case "Sword":
-            case "Fire Sword":
                 retval = SwordIcon;
                 break;
             case "Bow":
-            case "Ice Bow":
                 retval = BowIcon;
                 break;
             case "Hammer":
-            case "Rock Hammer":
                 retval = HammerIcon;
                 break;
             case "Spear":
-            case "Lightning Spear":
                 retval = SpearIcon;
                 break;
             case "Crossbow":
-            case "CrossBow":
-            case "Magic Missile":
                 retval = CrossbowIcon;
                 break;
             case "Magic":
-            case "Magic Magic":
                 retval = MagicIcon;
+                break;
+            case "Fire Sword":
+                retval = FireSwordIcon;
+                break;
+            case "Ice Bow":
+                retval = IceBowIcon;
+                break;
+            case "Rock Hammer":
+                retval = RockHammerIcon;
+                break;
+            case "Lightning Spear":
+                retval = LightningSpearIcon;
+                break;
+            case "Magic Missile":
+                retval = MagicMissileIcon;
+                break;
+            case "Magic Magic":
+                retval = MagicMagicIcon;
                 break;
             default:
                 retval = SwordIcon;
@@ -380,4 +404,19 @@ public class PlayerHud : MonoBehaviour {
             yield return null;  
         }
     }
+
+    public void TurnOnPortalText()
+    {
+        PortalText.SetActive(true);
+        //run corutine?
+        StartCoroutine(TurnOffPortalText());
+    }
+
+    public IEnumerator TurnOffPortalText()
+    {
+        yield return new WaitForSeconds(4.0f);
+        PortalText.SetActive(false);
+        yield return null;
+    }
+
 }

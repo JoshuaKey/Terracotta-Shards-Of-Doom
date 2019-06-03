@@ -48,6 +48,7 @@ public class Arrow : PoolObject {
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         rigidbody.AddForce(this.transform.forward * Impulse, ForceMode.Impulse);
 

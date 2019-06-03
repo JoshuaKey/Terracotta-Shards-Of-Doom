@@ -25,6 +25,8 @@ public class Coin : PoolObject {
     [SerializeField] private float bobTimer = 0.0f;
     [SerializeField] private float bobDist = 0.0f;
 
+    private static AudioSource coinSound;
+
     protected override void Start() {
         base.Start();
         currPos = this.transform.position;
@@ -81,6 +83,17 @@ public class Coin : PoolObject {
             print("Coin Collected: " + Value);
             //Game.Instance.playerStats.Coins += Value;
             Player.Instance.Coins += Value;
+
+            if (coinSound == null)
+            {
+                coinSound = AudioManager.Instance.PlaySound("coin", ESoundChannel.SFX, false, MakeCoinSoundNull).audioSource;
+            }
+
+            void MakeCoinSoundNull()
+            {
+                coinSound = null;
+            }
+
             Value = 0;
             this.gameObject.SetActive(false);
 

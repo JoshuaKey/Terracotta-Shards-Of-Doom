@@ -17,45 +17,45 @@ public class HubShop : MonoBehaviour
 
     [HideInInspector] public bool isMovingPanels;
 
-    private GameObject playerHud;
+    //private GameObject playerHud;
 
     #region weapon info
     [HideInInspector] public static WeaponInformation swordInfo 
         = new WeaponInformation(
             "Sword", 
-            "The old faithful of many an adventurer. It slices and dices and not much else. But what if it was on fire?");
+            "2,000 Coins\nThe old faithful of many an adventurer. It slices and dices and not much else. But what if it was on fire?", true);
 
     [HideInInspector] public static WeaponInformation bowInfo
         = new WeaponInformation(
             "Bow", 
-            "The problem with ranged weapons is it takes time to load. This upgrade keeps your enemies frosty so you can take your time.");
+            "4,000 Coins\nThe problem with ranged weapons is it takes time to load. This upgrade keeps your enemies frosty so you can take your time.");
 
     [HideInInspector] public static WeaponInformation hammerInfo
         = new WeaponInformation(
             "Hammer",
-            "Keep it simple taken to a stupid degree. Why use a hammer when a rock on a stick deals more damage?");
+            "6,000 Coins\nKeep it simple taken to a stupid degree. Why use a hammer when a rock on a stick deals more damage?");
 
     [HideInInspector] public static WeaponInformation spearInfo
         = new WeaponInformation(
             "Spear",
-            "If only your spear could stab more than one pot. This upgrade is the closest we could get. Any bystanders to your rampage will be in for a nasty shock.");
+            "8,000 Coins\nIf only your spear could stab more than one pot. This upgrade is the closest we could get. Any bystanders to your rampage will be in for a nasty shock.");
 
     [HideInInspector] public static WeaponInformation crossbowInfo
         = new WeaponInformation(
             "Crossbow",
-            "We started from the ground up with this one. We call it a magic missile. Still does the same thing though, just Bigger.");
+            "10,000 Coins\nWe started from the ground up with this one. We call it a magic missile. Still does the same thing though, just Bigger.");
 
     [HideInInspector]
     public static WeaponInformation magicInfo
         = new WeaponInformation(
             "Magic",
-            "Behold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
+            "12,500 Coins\nBehold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
     #endregion
 
     private void Awake()
     {
         informationPanel.Show(mainPanel.weaponName);
-        if (playerHud == null) playerHud = FindObjectOfType<PlayerHud>().gameObject;
+        //if (playerHud == null) playerHud = FindObjectOfType<PlayerHud>().gameObject;
     }
 
     #region Navigation
@@ -98,26 +98,36 @@ public class HubShop : MonoBehaviour
 
         if (curHorizontal != 0 && !isMovingPanels)
         {
-            isMovingPanels = true;
-
             if(curHorizontal > 0)
             //Go Back
             {
-                for (int i = 0; i < shopPanels.Length; i++)
-                {
-                    ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
-                    nextPanel.StartMovingTo(shopPanels[i].rectTransform.localPosition, shopPanels[i].rectTransform.localScale, shopPanels[i].isMainPanel);
-                }
+                MovePanelsLeft();
             }
             else
             //Go Forward
             {
-                for (int i = 0; i < shopPanels.Length; i++)
-                {
-                    ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
-                    shopPanels[i].StartMovingTo(nextPanel.rectTransform.localPosition, nextPanel.rectTransform.localScale, nextPanel.isMainPanel);
-                }
+                MovePanesRight();
             }
+        }
+    }
+
+    public void MovePanelsLeft()
+    {
+        isMovingPanels = true;
+        for (int i = 0; i < shopPanels.Length; i++)
+        {
+            ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
+            nextPanel.StartMovingTo(shopPanels[i].rectTransform.localPosition, shopPanels[i].rectTransform.localScale, shopPanels[i].isMainPanel);
+        }
+    }
+
+    public void MovePanesRight()
+    {
+        isMovingPanels = true;
+        for (int i = 0; i < shopPanels.Length; i++)
+        {
+            ShopPanel nextPanel = shopPanels[(i + 1) % shopPanels.Length];
+            shopPanels[i].StartMovingTo(nextPanel.rectTransform.localPosition, nextPanel.rectTransform.localScale, nextPanel.isMainPanel);
         }
     }
     #endregion
@@ -129,6 +139,8 @@ public class HubShop : MonoBehaviour
         {
             Debug.Log($"Charged the Player {amount}.");
             Player.Instance.Coins -= amount;
+            PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
+
             return true;
         }
         else
@@ -147,7 +159,7 @@ public class HubShop : MonoBehaviour
 
     public void ActivateHubShop()
     {
-        playerHud.SetActive(false);
+        PlayerHud.Instance.gameObject.SetActive(false);
 
         Player.Instance.enabled = false;
         Cursor.lockState = CursorLockMode.None;
@@ -167,7 +179,7 @@ public class HubShop : MonoBehaviour
 
     public void DeactivateHubShop()
     {
-        playerHud.SetActive(true);
+        PlayerHud.Instance.gameObject.SetActive(true);
 
         Player.Instance.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -199,7 +211,6 @@ public class HubShop : MonoBehaviour
         {
             GetWeaponInfo(mainPanel.weaponName).isUnlocked = true;
         }
-        Debug.Log($"isMovingPanels: {isMovingPanels}");
     }
     #endregion
 }

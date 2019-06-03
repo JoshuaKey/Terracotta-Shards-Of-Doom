@@ -43,6 +43,7 @@ public class Player : MonoBehaviour {
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
     public bool CanInteract = true;
+	public bool SkipTutorial = false;
     
     [Header("Compass")]
     public CompassPot compass;
@@ -150,8 +151,8 @@ public class Player : MonoBehaviour {
             UpdateMovement();
         }
 
-        wasGrounded = isGrounded;
-        isGrounded = false;
+        //wasGrounded = isGrounded;
+        //isGrounded = false;
 
         UpdateCombat();
         if (CanInteract) {
@@ -171,7 +172,18 @@ public class Player : MonoBehaviour {
 
 
         // Debug...
+        if (Input.GetKeyDown(KeyCode.Alpha0)) {
+            string levelName = LevelManager.Instance.GetLevelName();
+            LevelManager.Instance.Levels[levelName].IsCompleted = true;
+            LevelManager.Instance.LoadScene("Hub");
+        }
         if (Application.isEditor) {
+            if (Input.GetKeyDown(KeyCode.BackQuote)) {
+                RockHammer ham = (RockHammer) this.weapons.Find((x) => x.name == "Rock Hammer");
+                if(ham != null) {
+                    ham.PlayerJump = 15;
+                }
+            }
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
             }
@@ -242,13 +254,8 @@ public class Player : MonoBehaviour {
             {
                 Coins += 2000;
                 Debug.Log("Motherlode");
-                PlayerHud playerHud = FindObjectOfType<PlayerHud>();
-                if (playerHud != null)
-                {
-                    playerHud.SetCoinCount(Coins);
-                    playerHud.PlayCoinAnimation();
-                }
-
+                PlayerHud.Instance.SetCoinCount(Coins);
+                PlayerHud.Instance.PlayCoinAnimation();
             }
         }
 
@@ -257,6 +264,13 @@ public class Player : MonoBehaviour {
         if (CanRotate) {
             UpdateCamera();
         }
+    }
+
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
+        PlayerStats.OnLoad -= OnStatsLoad;
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
     }
 
     public void OnDamage(float damage)
@@ -472,9 +486,11 @@ public class Player : MonoBehaviour {
     }
     public void Jump() {
         // Check for Jump
-        if (wasGrounded) {
+        //if (wasGrounded) {
+        if (isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
+                isGrounded = false;
             } 
         }
         // By Default the Player does a "long jump" by holding the Jump Button
@@ -503,6 +519,7 @@ public class Player : MonoBehaviour {
         this.enabled = true;
         collider.enabled = true;
         Time.timeScale = 1.0f;
+        health.Resistance = 0;
 
         // Reattach Camera
         this.camera.transform.parent = this.transform;
@@ -539,6 +556,7 @@ public class Player : MonoBehaviour {
         // Disable Player
         this.enabled = false;
         collider.enabled = false;
+        health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
 
         // Enable Broken Pot
         brokenPot.transform.parent = null;
@@ -688,6 +706,16 @@ public class Player : MonoBehaviour {
         int nextIndex = CurrWeaponIndex + 1 >= weapons.Count ? 0 : CurrWeaponIndex + 1;
         int prevIndex = CurrWeaponIndex - 1 < 0 ? weapons.Count - 1 : CurrWeaponIndex - 1;
         PlayerHud.Instance.SetWeaponToggle(weapons[prevIndex].name, newWeapon.name, weapons[nextIndex].name);
+    }
+    public void HideWeapon() {
+        Weapon oldWeapon = GetCurrentWeapon();
+        oldWeapon.gameObject.SetActive(false);
+        oldWeapon.transform.SetParent(WeaponParent.transform, false);
+    }
+    public void ShowWeapon() {
+        Weapon newWeapon = GetCurrentWeapon();
+        newWeapon.gameObject.SetActive(true);
+        newWeapon.transform.SetParent(camera.transform, false);
     }
     public Weapon GetCurrentWeapon() {
         return CurrWeaponIndex >= weapons.Count ? null : weapons[CurrWeaponIndex];

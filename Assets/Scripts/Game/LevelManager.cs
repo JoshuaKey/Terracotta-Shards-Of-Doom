@@ -30,20 +30,31 @@ public class LevelManager : MonoBehaviour {
 
     private void Start() {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (SceneManager.GetActiveScene().name == PersistentSceneName) {
-            LoadScene(StartingSceneName);
-        }
+        //if (SceneManager.GetActiveScene().name == PersistentSceneName) {
+        //    LoadScene(StartingSceneName);
+        //}
 
         PlayerStats.OnLoad += OnStatsLoad;
+
+        //AudioManager.Instance.PlaySceneMusic(GetLevelName());
     }
+
+    private void OnDestroy() {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        PlayerStats.OnLoad -= OnStatsLoad;
+    }
+
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         print(scene.name + " was Loaded!");
 
         Player.Instance.gameObject.SetActive(false);
-        CheckPointSystem.Instance.LoadStartPoint();
+		if(CheckPointSystem.Instance != null)
+		{
+			CheckPointSystem.Instance.LoadStartPoint();
+		}
         Player.Instance.health.Reset();
-        PlayerHud.Instance.SetPlayerHealthBar(1.0f);
+        PlayerHud.Instance.SetPlayerHealthBar(1.0f, true);
         PlayerHud.Instance.DisableBossHealthBar();
         Player.Instance.gameObject.SetActive(true);
 

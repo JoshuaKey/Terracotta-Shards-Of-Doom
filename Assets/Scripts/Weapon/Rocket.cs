@@ -20,7 +20,7 @@ public class Rocket : PoolObject {
     [Header("Components")]
     public new Rigidbody rigidbody;
     public new Collider collider;
-    public ParticleSystem ExplosionEffect;
+    public GameObject ExplosionEffect;
 
     private float startLife;
     private int layerMask;
@@ -33,6 +33,7 @@ public class Rocket : PoolObject {
 
         collider.enabled = false;
         rigidbody.isKinematic = true;
+        rigidbody.interpolation = RigidbodyInterpolation.None;
         layerMask = PhysicsCollisionMatrix.Instance.MaskForLayer(this.gameObject.layer);
         //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
@@ -54,6 +55,7 @@ public class Rocket : PoolObject {
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         rigidbody.AddForce(this.transform.forward * Impulse, ForceMode.Impulse);
 
@@ -72,8 +74,9 @@ public class Rocket : PoolObject {
     }
 
     private void Explosion() {
+        ExplosionEffect.gameObject.SetActive(true);
         ExplosionEffect.transform.parent = null;
-        ExplosionEffect.Play();
+
         AudioManager.Instance.PlaySoundAtLocation("cannon", ESoundChannel.SFX, this.transform.position);
 
         Collider[] colliders = Physics.OverlapSphere(this.transform.position, ExplosionRadius, layerMask);

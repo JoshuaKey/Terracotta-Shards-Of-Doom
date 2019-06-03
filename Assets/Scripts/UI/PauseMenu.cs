@@ -32,9 +32,6 @@ public class PauseMenu : MonoBehaviour
 
     public static PauseMenu Instance;
 
-    // player bools
-    private bool playerCanAttack = true;
-
     // volumes
     [HideInInspector] public float masterVolume = 0f;
     [HideInInspector] public float musicVolume = 0f;
@@ -57,6 +54,18 @@ public class PauseMenu : MonoBehaviour
             PauseMenu.Instance.DeactivatePauseMenu();
         }
     }
+
+    #region Button Noises
+    public void ConfirmNoise()
+    {
+        AudioManager.Instance.PlaySound("ui_confirm", ESoundChannel.MASTER);
+    }
+
+    public void CancelNoise()
+    {
+        AudioManager.Instance.PlaySound("ui_cancel", ESoundChannel.MASTER);
+    }
+    #endregion
 
     #region Navigation
     public void ActivatePauseMenu()
@@ -163,13 +172,25 @@ public class PauseMenu : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+		Game.Instance.SavePlayerStats();
         LevelManager.Instance.LoadScene(sceneName);
     }
 
     public void Quit()
     {
+		//Saving the Player's progress before quitting
+		Game.Instance.SavePlayerStats();
+
         Application.Quit();
     }
+
+    public void QuitToMainMenu() {
+        //Saving the Player's progress before quitting
+        Game.Instance.SavePlayerStats();
+
+        LevelManager.Instance.LoadScene("MainMenu");
+    }
+
     #endregion
 
     #region Video

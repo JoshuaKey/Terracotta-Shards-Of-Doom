@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7483589597314904200}
   - component: {fileID: 6087400979397583440}
   - component: {fileID: 6087400979397583443}
+  - component: {fileID: 5575052638033301497}
   m_Layer: 17
   m_Name: RockHammer
   m_TagString: Untagged
@@ -72,13 +73,26 @@ MonoBehaviour:
   SlamCenter: {fileID: 8630340572406236548}
   SlamRadius: 4
   DustEffect: {fileID: 1133778671294675384}
-  StartPos: {x: 0.4, y: -1, z: 0.77}
-  EndPos: {x: 0.4, y: -1, z: 0.77}
-  AnimationSwingTime: 0.25
   PlayerJump: 10
-  StartRot: {x: 0, y: 0, z: 0}
-  EndRot: {x: 120, y: 0, z: 0}
-  AnimationRecoilTime: 1
+--- !u!95 &5575052638033301497
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6087400979397583442}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: aecec8528068089469e35439de6dd83a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7588448516421482181
 GameObject:
   m_ObjectHideFlags: 0

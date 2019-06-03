@@ -15,10 +15,6 @@ public class RocketLauncher : AdvancedWeapon {
     public Transform ChargedRocketPos;
     //public ArrowPool arrowPool;
 
-    [Header("Animation")]
-    //public GameObject drawString;
-    //private Vector3 drawStringDefaultPos;
-
     private Rocket currRocket = null;
     private bool hasReloaded = false;
 
@@ -28,10 +24,6 @@ public class RocketLauncher : AdvancedWeapon {
         OldWeaponName = "Crossbow";
 
         this.name = "Magic Missile";
-    }
-
-    void Start() {
-        //drawStringDefaultPos = drawString.transform.localPosition;
     }
 
     private void Update() {
@@ -53,13 +45,6 @@ public class RocketLauncher : AdvancedWeapon {
 
         Quaternion newRot = Quaternion.LookRotation((aimPoint - this.transform.position) / dist, Vector3.up);
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, newRot, 0.1f);
-
-        //AnimateDrawString();
-
-        //// Debug
-        //Debug.DrawLine(this.transform.position, aimPoint, Color.blue);
-        //Debug.DrawLine(player.transform.position, aimPoint, Color.blue);
-        //Debug.DrawLine(camera.transform.position, aimPoint, Color.blue);
     }
 
     private void OnEnable() {
@@ -81,14 +66,6 @@ public class RocketLauncher : AdvancedWeapon {
         }
         StopAllCoroutines();
     }
-
-    //public void AnimateDrawString() {
-    //    if (currRocket == null) {
-    //        drawString.transform.localPosition = drawStringDefaultPos;
-    //    } else {
-    //        drawString.transform.position = currRocket.transform.position - transform.forward * 0.225f;
-    //    }
-    //}
 
     public override void Attack() {
         if (!CanAttack() && !hasReloaded) { return; }

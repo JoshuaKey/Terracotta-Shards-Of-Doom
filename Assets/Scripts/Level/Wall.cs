@@ -31,13 +31,15 @@ public class Wall : MonoBehaviour
     {
         if (!isOpen) {
             StartCoroutine(MoveWall(closedPos, openPos));
-        }      
+            isOpen = true;
+        }
     }
 
     public void Close() 
     {
         if (isOpen) {
             StartCoroutine(MoveWall(openPos, closedPos));
+            isOpen = false;
         }      
     }
 
