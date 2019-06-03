@@ -70,6 +70,8 @@ public class LevelManager : MonoBehaviour {
     private void OnStatsLoad(PlayerStats stats) {
         this.Levels = stats.Levels;
 
+        DialogueTrigger.DialoguesHit = stats.Dialogues;
+
         string currLevel = stats.CurrentLevel;
         LoadScene(currLevel);
     }
