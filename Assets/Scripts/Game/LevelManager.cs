@@ -65,6 +65,15 @@ public class LevelManager : MonoBehaviour {
         }
 
         Game.Instance.SavePlayerStats();
+
+
+        //Will shitty code to make the ghost pot dialogue happen
+        if (LevelManager.Instance.Levels[scene.name].IsCompleted)
+        {
+            
+        }
+        
+
     }
 
     private void OnStatsLoad(PlayerStats stats) {
