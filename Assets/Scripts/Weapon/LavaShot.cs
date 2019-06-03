@@ -45,11 +45,8 @@ public class LavaShot : PoolObject {
 
         Target.gameObject.SetActive(true);
         Target.parent = null;
-        Vector3 offset = Vector3.zero;// Random.insideUnitCircle * Random.value * Target.localScale.x;
-        offset.z = offset.y;
-        offset.y = 0;
-        offset += Vector3.down * .9f;
-        Target.position = dest + offset;
+
+        Target.position = dest + Vector3.up * .01f;
 
         //renderer.positionCount = 11;
         //Vector3[] positions = new Vector3[renderer.positionCount];

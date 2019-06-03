@@ -33,8 +33,10 @@ public class VolcanoPot : Pot {
         playerOffset.z = playerOffset.y;
         playerOffset.y = 0.0f;
         Vector3 dest = Player.Instance.transform.position + playerOffset;
+        RaycastHit hit;
+        Physics.Raycast(dest, Vector3.down, out hit, LayerMask.GetMask("Player"));
+        dest = hit.point;
         Vector3 peak = Utility.CreatePeak(lava.transform.position, dest, 20);
-
         lava.Fire(dest, peak);
     }
 }
