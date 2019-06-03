@@ -61,4 +61,11 @@ public class Wall : MonoBehaviour
 
         wall.transform.localPosition = endPos;
     }
+
+    public void Reset()
+    {
+        wall.transform.localPosition = openPos;
+        wallCollider.transform.localPosition = openPos;
+        isOpen = true;
+    }
 }

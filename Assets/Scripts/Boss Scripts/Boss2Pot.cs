@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using Luminosity.IO;
 
 public class Boss2Pot : Pot
 {
@@ -63,6 +64,10 @@ public class Boss2Pot : Pot
     void Update()
     {
         stateMachine.Update();
+        if(InputManager.GetKeyDown(KeyCode.I))
+        {
+            health.TakeDamage(DamageType.TRUE, 1.0f);
+        }
     }
 
     public void ChangeHealthUI(float damage)
@@ -73,7 +78,7 @@ public class Boss2Pot : Pot
     public void OnDeath()
     {
         StopAllCoroutines();
-        DestroyImmediate(gameObject.GetComponent<Rigidbody>());
+        Destroy(gameObject.GetComponent<Rigidbody>());
         PlayerHud.Instance.DisableBossHealthBar();
     
         foreach (Wall w in currentWaypoint.arena.walls)
@@ -242,14 +247,7 @@ public class Boss2Pot_ChangingRooms : State
 
         NavMeshPath path = new NavMeshPath();
         NavMesh.CalculatePath(boss.transform.position, target.transform.position, NavMesh.AllAreas, path);
-        //foreach(Vector3 v in path.corners)
-        //{
-        //    while((boss.transform.position - v).magnitude >.1f)
-        //    {
-        //        boss.transform.position = Vector3.MoveTowards(boss.transform.position, v, Time.deltaTime * 7);
-        //        yield return null;
-        //    }
-        //}
+   
         boss.agent.SetDestination(target.transform.position);
 
         while ((boss.transform.position - boss.agent.destination).magnitude > boss.agent.stoppingDistance)
@@ -319,11 +317,6 @@ public class Boss2Pot_Animating : State
         }
         else if (doneAnimating)
         {
-            if (healthComponent.CurrentHealth - ((6 - boss.Phase) * healthComponent.MaxHealth / 6) <= 0.0f)
-            {
-                boss.ConvertBarrierPots();
-                return "Boss2Pot_ChangingRooms";
-            }
             return "Boss2Pot_Running";
         }
         return null;
@@ -444,9 +437,7 @@ public class Boss2Pot_Running : State
         boss.agent.enabled = true;
         foreach (Wall w in boss.currentWaypoint.arena.walls)
         {
-            w.transform.position = new Vector3(0.0f, w.openPos.y);
-            w.isOpen = true;
-            w.gameObject.SetActive(false);
+            w.Reset();
         }
         boss.currentWaypoint.arena.gameObject.SetActive(false);
         moving = false;
