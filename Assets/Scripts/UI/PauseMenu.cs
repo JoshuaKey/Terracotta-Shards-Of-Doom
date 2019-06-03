@@ -16,6 +16,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject video;
     [SerializeField] new GameObject audio;
     [SerializeField] GameObject controls;
+	[SerializeField] GameObject gameplay;
     [SerializeField] GameObject quit;
     [Space]
     [Header("Audio")]
@@ -29,6 +30,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject playerHud;
     public EventSystem eventSystem;
     #pragma warning restore 0649
+
+	public enum Difficulty
+	{
+		Easy = 15,
+		Medium = 11,
+		Hard = 6,
+		Impossible = 3
+	};
 
     public static PauseMenu Instance;
 
@@ -76,6 +85,7 @@ public class PauseMenu : MonoBehaviour
         video.SetActive(false);
         audio.SetActive(false);
         controls.SetActive(false);
+		gameplay.SetActive(false);
         quit.SetActive(false);
 
         masterSlider.value = (masterVolume / 100) + 0.8f;
@@ -112,6 +122,7 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = false;
         audioMixer.SetFloat("SFXVolume", sfxVolume);
 
+		//print(Player.Instance);
         if (Player.Instance != null)
         {
             //Player.Instance.CanAttack = playerCanAttack;
@@ -136,6 +147,7 @@ public class PauseMenu : MonoBehaviour
         video.SetActive(false);
         audio.SetActive(false);
         controls.SetActive(false);
+		gameplay.SetActive(false);
         quit.SetActive(false);
 
         switch (menuName)
@@ -159,6 +171,9 @@ public class PauseMenu : MonoBehaviour
             case "controls":
                 controls.SetActive(true);
                 break;
+			case "gameplay":
+				gameplay.SetActive(true);
+				break;
             case "quit":
                 quit.SetActive(true);
                 break;
@@ -266,5 +281,38 @@ public class PauseMenu : MonoBehaviour
     {
         sfxVolume = (volume * 100) - 80;
     }
-    #endregion
+	#endregion
+
+	#region Gameplay
+
+	public void ChangeDifficulty(int index)
+	{
+		switch (index)
+		{
+			case 0:
+				Player.Instance.health.MaxHealth = (float)Difficulty.Easy;
+				break;
+			case 1:
+				Player.Instance.health.MaxHealth = (float)Difficulty.Medium;
+				break;
+			case 2:
+				Player.Instance.health.MaxHealth = (float)Difficulty.Hard;
+				break;
+			case 3:
+				Player.Instance.health.MaxHealth = (float)Difficulty.Impossible;
+				break;
+		}
+
+		if(Player.Instance.health.CurrentHealth >= Player.Instance.health.MaxHealth)
+		{
+			Player.Instance.health.Reset();
+		}
+	}
+
+	public void ToggleTutorials(bool value)
+	{
+		Player.Instance.SkipTutorial = !value;
+	}
+
+	#endregion
 }

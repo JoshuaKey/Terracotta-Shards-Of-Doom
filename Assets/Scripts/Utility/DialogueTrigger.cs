@@ -10,14 +10,35 @@ public class DialogueTrigger : MonoBehaviour
 	[SerializeField] bool IsTutorial = false;
     private bool triggered;
 
-	private void OnTriggerEnter(Collider other)
+    public static List<string> DialoguesHit = new List<string>();
+
+    private void Awake() {
+        string list = "";
+        DialoguesHit.ForEach(x => list += x);
+        print(list);
+
+        if (DialoguesHit.Contains(this.name)) {
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
 	{
+        if (triggered) { return; }
+
+        if (DialoguesHit.Contains(this.name)) {
+            Destroy(this.gameObject);
+            return;
+        }
+
         if (other.gameObject.CompareTag("Player"))
         {
-            if (triggered) { return; }
-
             triggered = true;
-			if(!this.IsTutorial || (!Player.Instance.SkipTutorial && this.IsTutorial))
+            if (this.IsTutorial) {
+                DialoguesHit.Add(this.name);
+            }
+
+            if (!this.IsTutorial || (!Player.Instance.SkipTutorial && this.IsTutorial))
 			{
 				Player.Instance.enabled = false;
 				Cursor.lockState = CursorLockMode.None;
