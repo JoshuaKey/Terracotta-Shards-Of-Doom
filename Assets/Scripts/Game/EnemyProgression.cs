@@ -61,6 +61,11 @@ public class EnemyProgression : MonoBehaviour {
             if (UseHud) {
                 PlayerHud.Instance.TurnOnPortalText();
             }
+            Teleporter teleporter = FindObjectOfType<Teleporter>();
+            if(teleporter)
+            {
+                teleporter.PlaySound();
+            }
         }
     }
 
