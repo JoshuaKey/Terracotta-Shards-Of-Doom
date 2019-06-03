@@ -13,7 +13,13 @@ public class MagicMissile : PoolObject {
     [Header("Damage")]
     public float Damage = 0f;
     public DamageType Type;
+
+    [Header("Target")]
     public GameObject Target;
+    public float PeakHeight = 1;
+    public float SpeedOverTime = .2f;
+
+    [Header("Knockback")]
     public float Knockback;
     public float RigidbodyKnockback;
 
@@ -21,6 +27,8 @@ public class MagicMissile : PoolObject {
     protected new Collider collider;
 
     private float startLife;
+
+    private Vector3 startPos;
 
     // Start is called before the first frame update
     protected override void Start() {
@@ -32,28 +40,17 @@ public class MagicMissile : PoolObject {
         rigidbody.isKinematic = true;
     }
 
-    private void FixedUpdate() {
-        if (!rigidbody.isKinematic && Target != null) {
-            Vector3 dir = (Target.transform.position - this.transform.position);
-            dir = dir.normalized * TargetSpeed;
-            rigidbody.AddForce(dir, ForceMode.Impulse);
-        }
-
-        if (Target != null) {
-            Debug.DrawLine(this.transform.position, GetTargetPosition(), Color.blue);
-        }
-    }
-
     public void Fire() {
         collider.enabled = true;
         rigidbody.isKinematic = false;
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-    
+
+        startPos = this.transform.position;
+
         if (Target == null) {
             FallDown();
         } else {
-            rigidbody.AddForce(Impulse, ForceMode.Impulse);
-            //StartCoroutine(FireAnimation());
+            StartCoroutine(FireAnimation());
         }
 
         StartCoroutine(Die());
@@ -62,36 +59,35 @@ public class MagicMissile : PoolObject {
         LevelManager.Instance.MoveToScene(this.gameObject);
     }
 
-    //private IEnumerator FireAnimation() { 
+    private IEnumerator FireAnimation() {
+        if (Target == null) {
+            yield break;
+        }
 
-    //    while (true) {
-    //        //Vector3 targetDir = Target.transform.position - transform.position;
-    //        //float step = TargetSpeed * Time.deltaTime;
-    //        //Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0F);
-    //        //Debug.DrawRay(transform.position, newDir, Color.red);
-    //        //transform.rotation = Quaternion.LookRotation(newDir);
-    //        if (Target == null) {
-    //            yield break;
-    //        }
-            
-    //        Vector3 dir = (Target.transform.position - this.transform.position);
-    //        dir = dir.normalized * TargetSpeed;
-    //        rigidbody.AddForce(dir, ForceMode.Impulse);
+        Vector3 peak = Utility.CreatePeak(startPos, GetTargetPosition(), PeakHeight);
 
-    //        yield return new WaitForSeconds(.02f);
+        float startTime = Time.time;
+        float length = (GetTargetPosition() - startPos).magnitude * SpeedOverTime;
+        while (Time.time < startTime + length) {
+            float t = (Time.time - startTime) / length;
 
-    //        //rigidbody.velocity = Vector3.zero;
+            if (Target != null) {
+                Vector3 pos = Interpolation.BezierCurve(startPos, peak, GetTargetPosition(), t);
+                this.transform.position = pos;
+            } else {
+                FallDown();
+                yield break;
+            }  
 
-    //        //yield return new WaitForSeconds(.33f);
+            yield return null;
+        }
 
-    //        //transform.position = Vector3.MoveTowards(transform.position, Target.transform.position, TargetSpeed * Time.deltaTime);
+        FallDown();
 
-    //        //Vector3 dir = (Target.transform.position - this.transform.position);
-    //        //dir = dir.normalized * TargetSpeed * Time.deltaTime;
-    //        //rigidbody.AddForce(dir, ForceMode.Acceleration);
-    //        //yield return null;
-    //    }
-    //}
+        if (Target != null) {
+            this.transform.position = GetTargetPosition();
+        }
+    }
 
     private IEnumerator Die() {
         startLife = Time.time;
@@ -137,18 +133,8 @@ public class MagicMissile : PoolObject {
         }
     }
 
-    Vector3 BallisticVel() {
-        Vector3 dir = GetTargetPosition() - transform.position; // get target direction
-        float h = dir.y;  // get height difference
-        dir.y = 0;  // retain only the horizontal direction
-        float dist = dir.magnitude;  // get horizontal distance
-        dir.y = dist;  // set elevation to 45 degrees
-        dist += h;  // correct for different heights
-        float vel = Mathf.Sqrt(dist * Physics.gravity.magnitude);
-        return vel * dir.normalized;  // returns Vector3 velocity
-    }
-
     public Vector3 GetTargetPosition() {
-        return Target.transform.position + Vector3.up;
+        //return Target.transform.position + Vector3.up;
+        return Target.transform.position;
     }
 }

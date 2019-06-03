@@ -8,6 +8,8 @@ public class Teleporter : MonoBehaviour {
     public string sceneName;
     public bool HasPlayerCompletedLevel;
 
+    private SoundClip soundClip;
+
     private void Start() {
         if(previousScene != null && previousScene != "") {
             string levelName = LevelManager.Instance.GetLevelName();
@@ -29,5 +31,12 @@ public class Teleporter : MonoBehaviour {
 
             LevelManager.Instance.LoadScene(sceneName);
         }
+    }
+
+    public void PlaySound() => soundClip = AudioManager.Instance.PlaySoundAtLocation("active_portal", ESoundChannel.SFX, transform.position, true);
+
+    private void OnDisable()
+    {
+        if (soundClip != null) soundClip.Stop();
     }
 }
