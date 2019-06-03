@@ -55,6 +55,18 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    #region Button Noises
+    public void ConfirmNoise()
+    {
+        AudioManager.Instance.PlaySound("ui_confirm", ESoundChannel.MASTER);
+    }
+
+    public void CancelNoise()
+    {
+        AudioManager.Instance.PlaySound("ui_cancel", ESoundChannel.MASTER);
+    }
+    #endregion
+
     #region Navigation
     public void ActivatePauseMenu()
     {
@@ -160,6 +172,7 @@ public class PauseMenu : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+		Game.Instance.SavePlayerStats();
         LevelManager.Instance.LoadScene(sceneName);
     }
 
@@ -170,6 +183,14 @@ public class PauseMenu : MonoBehaviour
 
         Application.Quit();
     }
+
+    public void QuitToMainMenu() {
+        //Saving the Player's progress before quitting
+        Game.Instance.SavePlayerStats();
+
+        LevelManager.Instance.LoadScene("MainMenu");
+    }
+
     #endregion
 
     #region Video

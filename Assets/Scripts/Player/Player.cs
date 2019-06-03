@@ -43,6 +43,7 @@ public class Player : MonoBehaviour {
     public float InteractDistance = 2.0f;
     public LayerMask InteractLayer;
     public bool CanInteract = true;
+	public bool SkipTutorial = false;
     
     [Header("Compass")]
     public CompassPot compass;
@@ -150,8 +151,8 @@ public class Player : MonoBehaviour {
             UpdateMovement();
         }
 
-        wasGrounded = isGrounded;
-        isGrounded = false;
+        //wasGrounded = isGrounded;
+        //isGrounded = false;
 
         UpdateCombat();
         if (CanInteract) {
@@ -177,6 +178,12 @@ public class Player : MonoBehaviour {
             LevelManager.Instance.LoadScene("Hub");
         }
         if (Application.isEditor) {
+            if (Input.GetKeyDown(KeyCode.BackQuote)) {
+                RockHammer ham = (RockHammer) this.weapons.Find((x) => x.name == "Rock Hammer");
+                if(ham != null) {
+                    ham.PlayerJump = 15;
+                }
+            }
             if (Input.GetKeyDown(KeyCode.T)) {
                 this.health.TakeDamage(DamageType.TRUE, 0.5f);
             }
@@ -257,6 +264,13 @@ public class Player : MonoBehaviour {
         if (CanRotate) {
             UpdateCamera();
         }
+    }
+
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
+        PlayerStats.OnLoad -= OnStatsLoad;
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
     }
 
     public void OnDamage(float damage)
@@ -472,9 +486,11 @@ public class Player : MonoBehaviour {
     }
     public void Jump() {
         // Check for Jump
-        if (wasGrounded) {
+        //if (wasGrounded) {
+        if (isGrounded) {
             if (InputManager.GetButtonDown("Jump")) {
                 velocity.y = JumpPower;
+                isGrounded = false;
             } 
         }
         // By Default the Player does a "long jump" by holding the Jump Button

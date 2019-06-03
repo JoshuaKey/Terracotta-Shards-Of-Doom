@@ -45,6 +45,12 @@ public class EnemyProgression : MonoBehaviour {
         if(IsComplete()) {
             if (ProgressionObject) {
                 ProgressionObject.SetActive(SetActive);
+                
+                //PortalTurnedOn.SetActive(true);
+                //make this a corutine instead
+            }
+            if (UseHud) {
+                PlayerHud.Instance.TurnOnPortalText();
             }
         }
 

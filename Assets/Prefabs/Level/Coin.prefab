@@ -75,14 +75,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: 0
-  MoveSpeed: 5
-  LerpSpeed: 2
+  LerpSpeed: 2.5
+  SpeedOverLifeMultiple: 2.5
   BobSpeed: 5
   BobDist: 0.5
   RotateSpeed: 45
   rigidbody: {fileID: 7145090135783295177}
   collider: {fileID: 2470778359420359300}
   coinModel: {fileID: 2470778359420749831}
+  currPos: {x: 0, y: 0, z: 0}
+  offset: {x: 0, y: 0, z: 0}
+  bobTimer: 0
+  bobDist: 0
 --- !u!1001 &2470778359420359303
 PrefabInstance:
   m_ObjectHideFlags: 0

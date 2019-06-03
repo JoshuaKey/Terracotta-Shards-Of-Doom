@@ -7,6 +7,7 @@ public class DialogueTrigger : MonoBehaviour
 	[SerializeField] List<string> text = new List<string>();
 	[SerializeField] Sprite characterSpeaking = null;
 	[SerializeField] string characterSpeakingName = "";
+	[SerializeField] bool IsTutorial = false;
     private bool triggered;
 
 	private void OnTriggerEnter(Collider other)
@@ -16,25 +17,32 @@ public class DialogueTrigger : MonoBehaviour
             if (triggered) { return; }
 
             triggered = true;
-		    Player.Instance.enabled = false;
-		    Cursor.lockState = CursorLockMode.None;
-		    Cursor.visible = true;
-            this.enabled = false;
+			if(!this.IsTutorial || (!Player.Instance.SkipTutorial && this.IsTutorial))
+			{
+				Player.Instance.enabled = false;
+				Cursor.lockState = CursorLockMode.None;
+				Cursor.visible = true;
+				this.enabled = false;
 
-            DialogueSystem.Instance.OnDialogueEnd += ReEnablePlayer;
-            if(characterSpeaking != null) {
-                DialogueSystem.Instance.SetCharacterImage(characterSpeaking);
-            }
-		    DialogueSystem.Instance.SetCharacterName(characterSpeakingName);
+				DialogueSystem.Instance.OnDialogueEnd += ReEnablePlayer;
+				if(characterSpeaking != null) {
+				    DialogueSystem.Instance.SetCharacterImage(characterSpeaking);
+				}
+				DialogueSystem.Instance.SetCharacterName(characterSpeakingName);
 
-		    foreach (string item in text)
-		    {
-			    DialogueSystem.Instance.QueueDialogue(item, true);
-		    }
+				foreach (string item in text)
+				{
+				    DialogueSystem.Instance.QueueDialogue(item, true);
+				}
+			}
         }
 	}
 
-	private void ReEnablePlayer()
+    private void OnDestroy() {
+        DialogueSystem.Instance.OnDialogueEnd -= ReEnablePlayer;
+    }
+
+    private void ReEnablePlayer()
 	{
 
         DialogueSystem.Instance.OnDialogueEnd -= ReEnablePlayer;

@@ -8,6 +8,7 @@ public class Game : MonoBehaviour {
     public string PlayerTag = "Player";
     public string PlayerStatsFile = "save.json"; // ?
     public string SettingsFile = "settings.json"; // ?
+    public bool AutoLoad = false;
 
     public static Game Instance;
     
@@ -18,20 +19,32 @@ public class Game : MonoBehaviour {
     }
 
     private void Start() {
-        //DialogueSystem.Instance.SetCharacterImage(image...);
-        //DialogueSystem.Instance.SetCharacterName("nAVi thE pOt!");
-        //DialogueSystem.Instance.QueueDialogue("WhY dO I eXisT?", true);
-        //DialogueSystem.Instance.QueueDialogue(new string["WhY dO I eXisT?", "WhYyyYyY!?"], true);
-
         Settings.OnLoad += OnSettingsLoad;
 
-        StartCoroutine(SaveOnStart());
+        if (AutoLoad) {
+            StartCoroutine(SaveOnStart());
+        }
+    }
+
+    private void OnDestroy() {
+        Settings.OnLoad -= OnSettingsLoad;
     }
 
     private IEnumerator SaveOnStart() {
-        yield return new WaitForSeconds(.5f);
-        Game.Instance.SavePlayerStats();
-        Game.Instance.SaveSettings();
+        yield return null;
+
+        bool load = PlayerPrefs.GetInt("Continue") != 0;
+        print(PlayerPrefs.GetInt("Continue"));
+
+        if (load) {
+            Game.Instance.LoadPlayerStats();
+            Game.Instance.LoadSettings();
+        } else {
+            Game.Instance.SavePlayerStats();
+            Game.Instance.SaveSettings();
+            LevelManager.Instance.LoadScene("Tutorial");
+        }
+
     }
 
     private void OnSettingsLoad(Settings settings) {

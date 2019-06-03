@@ -9,6 +9,7 @@ public class Snowball : MonoBehaviour {
     public new Rigidbody rigidbody;
     public TargetProjectile projectile;
     public ParticleSystem ExplosionEffect;
+    public ParticleSystem HitEffect;
 
     private Vector3 direction;
 
@@ -19,10 +20,10 @@ public class Snowball : MonoBehaviour {
 
     private void Fire(TargetProjectile proj) {
         direction = this.transform.forward;
+        HitEffect.Play();
     }
 
     private void OnDestroy() {
-
         ParticleSystem.MainModule mainMod = ExplosionEffect.main;
         mainMod.maxParticles = (int)(this.transform.localScale.x * 10);
         //mainMod.startSpeed = this.transform.localScale.x;

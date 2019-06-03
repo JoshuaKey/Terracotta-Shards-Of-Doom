@@ -31,12 +31,12 @@ public class RockHammer : AdvancedWeapon {
 
         base.Attack();
 
-        Player.Instance.CanWalk = false;
+        //Player.Instance.CanWalk = false;
         animator.SetTrigger("Attack");
     }
 
     private void SlamAttack() {
-        Player.Instance.CanWalk = true;
+        //Player.Instance.CanWalk = true;
         Player.Instance.velocity.y = PlayerJump;
 
         DustEffect.Play();

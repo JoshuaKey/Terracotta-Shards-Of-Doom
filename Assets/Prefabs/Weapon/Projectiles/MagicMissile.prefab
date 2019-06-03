@@ -62,7 +62,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Impulse: {x: 0, y: 0, z: 0}
-  TargetSpeed: 5
+  TargetSpeed: 10
+  MinSpeed: 5
   LifeTime: 20
   Damage: 0
   Type: 0
@@ -171,6 +172,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 5181797185019846998, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5181797185019846998, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 4778823280264830064, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
         type: 3}
       propertyPath: m_Layer
@@ -181,21 +192,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5181797185019846998, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5181797185019846998, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
     - target: {fileID: 3390047355961885515, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
         type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4778823280264830031, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 59642554d83033f4a9958ae6fc913986, type: 2}
     - target: {fileID: 4778823280264830030, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
@@ -401,11 +407,6 @@ PrefabInstance:
       propertyPath: InitialModule.startLifetime.scalar
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 4778823280264830031, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 59642554d83033f4a9958ae6fc913986, type: 2}
     - target: {fileID: 5627976990255495453, guid: 5ad732fe6f269fe4a9f2e3db4c7ad497,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

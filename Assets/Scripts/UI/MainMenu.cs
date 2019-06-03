@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -18,14 +19,14 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-		eventSystem = FindObjectOfType<EventSystem>();
+		//eventSystem = FindObjectOfType<EventSystem>();
         eventSystem.SetSelectedGameObject(continueButton.gameObject);
-		Player.Instance.enabled = false;
-		Player.Instance.HideWeapon();
-		PlayerHud.Instance.DisablePlayerHud();
-		PauseMenu.Instance.DeactivatePauseMenu();
-		Cursor.lockState = CursorLockMode.None;
-		Cursor.visible = true;
+		//Player.Instance.enabled = false;
+		//Player.Instance.HideWeapon();
+		//PlayerHud.Instance.DisablePlayerHud();
+		//PauseMenu.Instance.DeactivatePauseMenu();
+		//Cursor.lockState = CursorLockMode.None;
+		//Cursor.visible = true;
     }
 
     public void OpenMainMenu(string menuName)
@@ -56,6 +57,11 @@ public class MainMenu : MonoBehaviour
         Debug.Log("New Game");
 
 		DisableMainMenu();
+
+        PlayerPrefs.SetInt("Continue", 0);
+        PlayerPrefs.Save();
+
+        SceneManager.LoadScene("Persistent", LoadSceneMode.Single);
     }
 
     public void Continue()
@@ -64,14 +70,19 @@ public class MainMenu : MonoBehaviour
 
 		DisableMainMenu();
 
-		//Loading the Save file of the player
-		Game.Instance.LoadPlayerStats();
+        PlayerPrefs.SetInt("Continue", 1);
+        PlayerPrefs.Save();
+
+        SceneManager.LoadScene("Persistent", LoadSceneMode.Single);
+
+        //Loading the Save file of the player
+        //Game.Instance.LoadPlayerStats();
     }
 
 	public void QuitApplication()
 	{
 		//Saving the Player's Progress
-		Game.Instance.SavePlayerStats();
+		//Game.Instance.SavePlayerStats();
 
 		Application.Quit();
 	}
