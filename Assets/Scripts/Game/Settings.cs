@@ -11,6 +11,9 @@ public class Settings {
     public string InputConfigurationFile = "input.xml";
     public bool IsLeftHanded = false;
 
+    public int DifficultyLevel;
+    public bool SkipTutorial;
+
     public float MasterVolume = 1.0f;
     public float SoundVolume = 1.0f;
     public float MusicVolume = 1.0f;
@@ -45,6 +48,8 @@ public class Settings {
 
         settings.InputConfigurationFile = InputController.Instance.InputConfigurationFile;
         settings.IsLeftHanded = InputController.Instance.IsLeftHanded;
+        settings.DifficultyLevel = PauseMenu.Instance.GetDifficulty();
+        settings.SkipTutorial = PauseMenu.Instance.GetSkipTutorial();
         AudioManager.Instance.audioMixer.GetFloat("MasterVolume", out settings.MasterVolume);
         AudioManager.Instance.audioMixer.GetFloat("SFXVolume", out settings.SoundVolume);
         AudioManager.Instance.audioMixer.GetFloat("MusicVolume", out settings.MusicVolume);//

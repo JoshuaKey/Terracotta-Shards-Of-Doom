@@ -19,6 +19,7 @@ public class Snowball : MonoBehaviour {
     }
 
     private void Fire(TargetProjectile proj) {
+
         direction = this.transform.forward;
         HitEffect.Play();
     }
@@ -43,6 +44,7 @@ public class Snowball : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
+        print(projectile.HasFired());
         if (projectile.HasFired()) {
             Vector3 force = direction * Acceleration;
 

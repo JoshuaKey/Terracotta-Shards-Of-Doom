@@ -68,20 +68,24 @@ public class Boss2Pot : Pot
 
     public void ChangeHealthUI(float damage)
     {
+        print("Taking Damage...");
+        //StopAllCoroutines();
+
         PlayerHud.Instance.SetBossHealthBar(enemy.health.CurrentHealth / enemy.health.MaxHealth);
     }
 
     public void OnDeath()
     {
+        print("DIEING!!!");
         StopAllCoroutines();
+        //DestroyImmediate(this);
+
         PlayerHud.Instance.DisableBossHealthBar();
 
         foreach (Wall w in currentWaypoint.arena.walls) {
             w.Open();
         }
         currentWaypoint.arena.gameObject.SetActive(false);
-
-        Debug.Break();
     }
 
 
@@ -182,6 +186,9 @@ public class Boss2Pot_ChangingRooms : State
 
     public override void Enter()
     {
+        if (boss == null) { Debug.Log("Boss is NuLL InSiDE CHANGE ROOMS"); return; }
+
+
         boss.agent.enabled = true;
         if (boss.currentWaypoint != null)
         {
@@ -238,8 +245,8 @@ public class Boss2Pot_ChangingRooms : State
     IEnumerator Run()
     {
         running = true;
-        Debug.Log(target.transform.position);
-        Debug.Log(target);
+        //Debug.Log(target.transform.position);
+        //Debug.Log(target);
         boss.agent.SetDestination(target.transform.position);
         //while ((boss.agent.destination - owner.transform.position).magnitude > .1f)
         //{
@@ -323,6 +330,7 @@ public class Boss2Pot_Animating : State
         doneAnimating = false;
 
         boss.enemy.health.Resistance = 0;
+        boss.StopAllCoroutines();
     }
 
     public override string Update()
@@ -377,13 +385,14 @@ public class Boss2Pot_Animating : State
 
         foreach (BarrierPot barrierPot in boss.barrierPots)
         {
-            Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
-            if (w != null)
-            {
-                w.Visited = true;
-                barrierPot.Waypoint = w;
-                barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
-            } 
+            if(barrierPot != null && barrierPot.isActiveAndEnabled) {
+                Waypoint w = FindBestEmptyBarrierWaypoint(barrierPot.transform.position);
+                if (w != null) {
+                    w.Visited = true;
+                    barrierPot.Waypoint = w;
+                    barrierPot.GetStateMachine().ChangeState("BarrierPot_EnterFormation");
+                }
+            }
         }
 
         boss.barrierPots.ForEach(x => Debug.Log(x.name));
@@ -453,7 +462,12 @@ public class Boss2Pot_Running : State
     public override void Exit()
     {
         moving = false;
-        boss.Phase++;
+        if(boss != null) {
+            boss.Phase++;
+            boss.StopAllCoroutines();
+        } else {
+            Debug.Log("Boss IS NULL ON EXIT...");
+        }
     }
 
     public override string Update()
