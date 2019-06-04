@@ -126,9 +126,104 @@ public class InputController : MonoBehaviour {
         Settings.OnLoad += OnSettingsLoad;
     }
 
+    //private void Update() {
+    //    if (Input.GetKeyDown(KeyCode.RightShift)) {
+    //        ChangeButton("Jump");
+    //    }
+    //}
+
     private void OnDestroy() {
         Settings.OnLoad -= OnSettingsLoad;
     }
+
+    //[ContextMenu("Try Scan")]
+    //public void Scan() {
+    //    ScanSettings settings = new ScanSettings {
+    //        ScanFlags = ScanFlags.Key,
+    //        // If the player presses this key the scan will be canceled.
+    //        CancelScanKey = KeyCode.Escape,
+    //        // If the player doesn't press any key within the specified number
+    //        // of seconds the scan will be canceled.
+    //        Timeout = 10
+    //    };
+
+    //    InputManager.StartInputScan(settings, result =>
+    //    {
+    //        // The handle should return "true" if the key is accepted or "false" if the key is rejected.
+    //        // If the key is rejected the scan will continue until a key is accepted or until the timeout expires.
+    //        print("Received Input " + result.Key);
+    //        InputAction inputAction = InputManager.PlayerOneControlScheme.GetAction("Jump");
+    //        if (result.Key != KeyCode.None) {
+    //            inputAction.Bindings[0].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        }
+    //        return result.Key == KeyCode.None;
+    //    });
+
+
+    //    //""
+    //    //ScanSettings settings = new ScanSettings();
+    //    //settings.ScanFlags = ScanFlags.
+    //    //InputManager.StartInputScan(settings, ScanKey);
+    //    //InputManager.StopInputScan();
+    //}
+    //private bool CheckScan(ScanResult result) {
+    //    print("Received Input " + result.Key);
+    //    InputAction inputAction = InputManager.PlayerOneControlScheme.GetAction();
+    //    if (result.Key != KeyCode.None) {
+    //        inputAction.Bindings[0].Positive = result.Key;
+    //        InputManager.StopInputScan();
+    //    }
+    //    return result.Key == KeyCode.None;
+    //}
+    //public void ChangeAxis(string action, int binding) {
+
+    //}
+
+    //public void ChangeButton(string action, int binding = 0) {
+    //    // Scan Settings
+    //    string currScheme = InputManager.PlayerOneControlScheme.Name;
+    //    ScanSettings settings = new ScanSettings();
+        
+    //    if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
+    //        settings.ScanFlags = ScanFlags.Key;
+    //    } else if (currScheme == ControllerSchemeName) {
+    //        settings.ScanFlags = ScanFlags.JoystickButton | ScanFlags.JoystickAxis;
+    //    }
+    //    settings.CancelScanKey = KeyCode.None;
+    //    settings.Timeout = 30;
+
+    //    // Start Scan
+    //    InputManager.StartInputScan(settings, result => {
+    //        print("Received Input " + result.Key);
+
+    //        InputAction inputAction = InputManager.PlayerOneControlScheme.GetAction(action);
+
+    //        if(result.ScanFlags == ScanFlags.JoystickAxis) {
+    //            inputAction.Bindings[binding].Type = InputType.AnalogButton;
+    //            inputAction.Bindings[binding].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        } else if (result.ScanFlags == ScanFlags.JoystickButton) {
+    //            inputAction.Bindings[binding].Type = InputType.Button;
+    //            inputAction.Bindings[binding].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        } else if (result.ScanFlags == ScanFlags.Key) {
+    //            inputAction.Bindings[binding].Type = InputType.Button;
+    //            inputAction.Bindings[binding].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        } else {
+    //            print("Invalid Scan Flags");
+    //        }
+
+    //        if (result.Key != KeyCode.None) {
+    //            inputAction.Bindings[0].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        }
+    //        return result.Key == KeyCode.None;
+    //    });
+
+    //    // 
+    //}
 
     private void OnSettingsLoad(Settings settings) {
         IsLeftHanded = settings.IsLeftHanded;
