@@ -212,6 +212,8 @@ public class PauseMenu : MonoBehaviour
         Game.Instance.SavePlayerStats();
 
         LevelManager.Instance.LoadScene("MainMenu");
+
+        Destroy(Game.Instance.gameObject);
     }
 
     #endregion

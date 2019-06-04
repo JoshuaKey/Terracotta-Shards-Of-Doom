@@ -19,6 +19,8 @@ public class Snowball : MonoBehaviour {
     }
 
     private void Fire(TargetProjectile proj) {
+        proj.StopAllCoroutines(); // Dont question it...
+
         direction = this.transform.forward;
         HitEffect.Play();
     }
