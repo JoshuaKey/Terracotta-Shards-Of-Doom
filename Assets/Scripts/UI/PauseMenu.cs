@@ -1,6 +1,7 @@
 ﻿using Luminosity.IO;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -24,10 +25,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] Slider masterSlider;
     [SerializeField] Slider musicSlider;
     [SerializeField] Slider sfxSlider;
+    [Header("Gameplay")]
+    [SerializeField] TMP_Dropdown difficultyDropdown;
+    [SerializeField] Toggle tutorialToggle;
     [Space]
     [Header("Other")]
     [SerializeField] Button continueButton;
     [SerializeField] GameObject playerHud;
+    [SerializeField] int currDifficulty = 0;
     public EventSystem eventSystem;
     #pragma warning restore 0649
 
@@ -54,6 +59,8 @@ public class PauseMenu : MonoBehaviour
         if (eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
 
         DeactivatePauseMenu();
+
+        Settings.OnLoad += OnSettingsLoad;
     }
 
     private void Update() 
@@ -62,6 +69,14 @@ public class PauseMenu : MonoBehaviour
         {
             PauseMenu.Instance.DeactivatePauseMenu();
         }
+    }
+
+    public void OnSettingsLoad(Settings settings) {
+        ChangeDifficulty(settings.DifficultyLevel);
+        Player.Instance.SkipTutorial = settings.SkipTutorial;
+
+        difficultyDropdown.value = settings.DifficultyLevel;
+        tutorialToggle.isOn = !settings.SkipTutorial;
     }
 
     #region Button Noises
@@ -195,6 +210,7 @@ public class PauseMenu : MonoBehaviour
     {
 		//Saving the Player's progress before quitting
 		Game.Instance.SavePlayerStats();
+        Game.Instance.SaveSettings();
 
         Application.Quit();
     }
@@ -202,8 +218,11 @@ public class PauseMenu : MonoBehaviour
     public void QuitToMainMenu() {
         //Saving the Player's progress before quitting
         Game.Instance.SavePlayerStats();
+        Game.Instance.SaveSettings();
 
         LevelManager.Instance.LoadScene("MainMenu");
+
+        Destroy(Game.Instance.gameObject);
     }
 
     #endregion
@@ -287,19 +306,20 @@ public class PauseMenu : MonoBehaviour
 
 	public void ChangeDifficulty(int index)
 	{
+        currDifficulty = index;
 		switch (index)
 		{
 			case 0:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Easy;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Easy;
 				break;
 			case 1:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Medium;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Medium;
 				break;
 			case 2:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Hard;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Hard;
 				break;
 			case 3:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Impossible;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Impossible;
 				break;
 		}
 
@@ -309,10 +329,18 @@ public class PauseMenu : MonoBehaviour
 		}
 	}
 
+    public int GetDifficulty() {
+        return currDifficulty;
+    }
+
 	public void ToggleTutorials(bool value)
 	{
 		Player.Instance.SkipTutorial = !value;
 	}
 
-	#endregion
+    public bool GetSkipTutorial() {
+        return Player.Instance.SkipTutorial;
+    }
+
+    #endregion
 }
