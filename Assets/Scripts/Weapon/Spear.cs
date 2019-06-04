@@ -68,7 +68,7 @@ public class Spear : Weapon {
         if (!CanAttack() || charge == 0) {
 			return;
 		}
-		Debug.Log("OH GOD WHY AM I JABBING WITH THIS SPEAR");
+		//Debug.Log("OH GOD WHY AM I JABBING WITH THIS SPEAR");
 
 		//base.Attack();
 		StartCoroutine(Stab());
@@ -77,7 +77,7 @@ public class Spear : Weapon {
 	}
 
     private IEnumerator Stab() {
-		Debug.Log("BIG STAB");
+		//Debug.Log("BIG STAB");
         collider.enabled = true;
         Quaternion StartRotQuat = Quaternion.Euler(StartRot);
         Quaternion EndRotQuat = Quaternion.Euler(EndRot);

@@ -13,10 +13,6 @@ public class DialogueTrigger : MonoBehaviour
     public static List<string> DialoguesHit = new List<string>();
 
     private void Awake() {
-        string list = "";
-        DialoguesHit.ForEach(x => list += x);
-        print(list);
-
         if (DialoguesHit.Contains(this.name)) {
             Destroy(this.gameObject);
         }
