@@ -96,6 +96,14 @@ public class Enemy : MonoBehaviour {
 
         health.OnDeath -= this.Die;
 
+        //Destroy(this.gameObject); // This Breaks Boss 2
+        //DestroyImmediate(this.gameObject); // Lol this breaks everything...
+        //StartCoroutine(DeathDelay()); // Cant start coroutine when gameobject is disabled
+        // Uhh, lets just try disabling?
+    }
+
+    private IEnumerator DeathDelay() {
+        yield return null;
         Destroy(this.gameObject);
     }
 
@@ -107,7 +115,7 @@ public class Enemy : MonoBehaviour {
     protected IEnumerator KnockbackRoutine(Vector3 force, float duration)
     {
         float angularSpeed = 0;
-        if (agent != null)
+        if (agent != null && agent.isOnNavMesh)
         {
             agent.SetDestination(transform.position + force);
             agent.speed *= 2;
