@@ -496,14 +496,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8129604941349753163}
-  - component: {fileID: 7679112920006566392}
+  - component: {fileID: 1841607048817273822}
   - component: {fileID: 8129604941350144948}
   - component: {fileID: 8129604941350047080}
   - component: {fileID: 8129604941350144950}
   - component: {fileID: 7771920364346972976}
   - component: {fileID: 8129604941350047082}
   m_Layer: 0
-  m_Name: Boss2
+  m_Name: Boss 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -526,7 +526,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &7679112920006566392
+--- !u!54 &1841607048817273822
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -594,6 +594,7 @@ MonoBehaviour:
   pot: {fileID: 0}
   brokenPot: {fileID: 0}
   agent: {fileID: 0}
+  renderer: {fileID: 0}
   CanBeKnockedBack: 1
   animator: {fileID: 0}
 --- !u!114 &7771920364346972976
@@ -628,8 +629,10 @@ MonoBehaviour:
   stunned: 0
   agent: {fileID: 0}
   animator: {fileID: 0}
+  potRenderers: []
   knockback: 50
   enemy: {fileID: 0}
+  collider: {fileID: 0}
   currentWaypoint: {fileID: 0}
   Barrier: {fileID: 750066309860978030}
   barrierWaypoints: []
@@ -638,6 +641,7 @@ MonoBehaviour:
   speed: 10
   ParticlePrefab: {fileID: 7376678798009732772, guid: a37ac23b236d8b54596ac908c7f9273a,
     type: 3}
+  startTrigger: {fileID: 0}
 --- !u!1001 &8129604942551708818
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public class PlayerStats {
     public int Coins = 0;
     public string CurrentLevel;
     public List<string> Weapons = new List<string>();
+    public List<string> Dialogues = new List<string>();
     public StringLevelDictionary Levels = new StringLevelDictionary();
 
     [NonSerialized] public static Action OnSave;
@@ -49,6 +50,8 @@ public class PlayerStats {
         });
 
         stats.Levels = LevelManager.Instance.Levels;
+
+        stats.Dialogues = DialogueTrigger.DialoguesHit;
 
         string data = JsonUtility.ToJson(stats, true);
 
