@@ -17,6 +17,9 @@ public class ShopPanel : MonoBehaviour
     HubShop hubShop;
     RawImage rawImage;
 
+    private Vector3? desiredPos = null;
+    private Vector3? desiredScale = null;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -33,7 +36,11 @@ public class ShopPanel : MonoBehaviour
 
     IEnumerator MoveTo(Vector3 pos, Vector3 scale, float duration, bool isMainPanel)
     {
+        desiredPos = pos;
+        desiredScale = scale;
+
         float startTime = Time.time;
+        this.isMainPanel = isMainPanel;
 
         while (Time.time < startTime + duration)
         {
@@ -44,7 +51,6 @@ public class ShopPanel : MonoBehaviour
 
         rectTransform.localPosition = pos;
         rectTransform.localScale = scale;
-        this.isMainPanel = isMainPanel;
 
         if (isMainPanel)
         {
@@ -76,5 +82,12 @@ public class ShopPanel : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    private void OnDisable()
+    {
+        if(desiredPos != null) rectTransform.localPosition = (Vector3)desiredPos;
+        if(desiredPos != null) rectTransform.localScale = (Vector3)desiredScale;
+        hubShop.isMovingPanels = false;
     }
 }

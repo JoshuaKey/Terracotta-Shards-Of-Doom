@@ -106,7 +106,7 @@ public class HubShop : MonoBehaviour
             else
             //Go Forward
             {
-                MovePanesRight();
+                MovePanelsRight();
             }
         }
     }
@@ -121,7 +121,7 @@ public class HubShop : MonoBehaviour
         }
     }
 
-    public void MovePanesRight()
+    public void MovePanelsRight()
     {
         isMovingPanels = true;
         for (int i = 0; i < shopPanels.Length; i++)
