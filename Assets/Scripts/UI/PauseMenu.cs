@@ -1,6 +1,7 @@
 ﻿using Luminosity.IO;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -24,6 +25,9 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] Slider masterSlider;
     [SerializeField] Slider musicSlider;
     [SerializeField] Slider sfxSlider;
+    [Header("Gameplay")]
+    [SerializeField] TMP_Dropdown difficultyDropdown;
+    [SerializeField] Toggle tutorialToggle;
     [Space]
     [Header("Other")]
     [SerializeField] Button continueButton;
@@ -70,6 +74,9 @@ public class PauseMenu : MonoBehaviour
     public void OnSettingsLoad(Settings settings) {
         ChangeDifficulty(settings.DifficultyLevel);
         Player.Instance.SkipTutorial = settings.SkipTutorial;
+
+        difficultyDropdown.value = settings.DifficultyLevel;
+        tutorialToggle.isOn = !settings.SkipTutorial;
     }
 
     #region Button Noises
@@ -203,6 +210,7 @@ public class PauseMenu : MonoBehaviour
     {
 		//Saving the Player's progress before quitting
 		Game.Instance.SavePlayerStats();
+        Game.Instance.SaveSettings();
 
         Application.Quit();
     }
@@ -210,6 +218,7 @@ public class PauseMenu : MonoBehaviour
     public void QuitToMainMenu() {
         //Saving the Player's progress before quitting
         Game.Instance.SavePlayerStats();
+        Game.Instance.SaveSettings();
 
         LevelManager.Instance.LoadScene("MainMenu");
 
