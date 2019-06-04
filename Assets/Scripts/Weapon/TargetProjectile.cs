@@ -62,8 +62,14 @@ public class TargetProjectile : MonoBehaviour {
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         attack.isAttacking = true;
 
+        this.transform.forward = impulse.normalized;
+
         StopAllCoroutines();
-        StartCoroutine(FireAnimation());
+        if(SpeedOverTime > 0) {
+            StartCoroutine(FireAnimation());
+        } else {
+            rigidbody.AddForce(impulse, ForceMode.Impulse);
+        }   
 
         this.transform.parent = null;
         LevelManager.Instance.MoveToScene(this.gameObject);
@@ -77,6 +83,8 @@ public class TargetProjectile : MonoBehaviour {
         sender = _sender;
         print("Hit by " + _sender.name);
 
+        this.transform.forward = impulse.normalized;
+
         //if (GameObject.ReferenceEquals(sender, Player.Instance.gameObject)) {
         //    this.gameObject.layer = LayerMask.NameToLayer("PlayerProjectile");
         //} else {
@@ -84,7 +92,12 @@ public class TargetProjectile : MonoBehaviour {
         //}
 
         StopAllCoroutines();
-        StartCoroutine(FireAnimation());
+        if (SpeedOverTime > 0) {
+            StartCoroutine(FireAnimation());
+        } else {
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.AddForce(impulse, ForceMode.Impulse);
+        }
 
         OnFire?.Invoke(this);
     }

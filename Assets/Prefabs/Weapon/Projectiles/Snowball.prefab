@@ -171,9 +171,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e46df57372e699e4ba91609566f18366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetSpeed: 0
-  MaxSpeed: 10
   InstantFire: 0
+  PeakHeight: 0
+  SpeedOverTime: -1
   attack: {fileID: 3805702625668596226}
   rigidbody: {fileID: 3805702625668596227}
   collider: {fileID: 3805702625668596225}
@@ -329,6 +329,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3345498209491799734, guid: 61901cbd859c4c043a55bc7512d85cef,
+        type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345498209491799734, guid: 61901cbd859c4c043a55bc7512d85cef,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3345498209491799734, guid: 61901cbd859c4c043a55bc7512d85cef,
+        type: 3}
+      propertyPath: stopAction
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1717037870008567955, guid: 61901cbd859c4c043a55bc7512d85cef,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -382,21 +397,6 @@ PrefabInstance:
     - target: {fileID: 1717037870008567955, guid: 61901cbd859c4c043a55bc7512d85cef,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3345498209491799734, guid: 61901cbd859c4c043a55bc7512d85cef,
-        type: 3}
-      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3345498209491799734, guid: 61901cbd859c4c043a55bc7512d85cef,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3345498209491799734, guid: 61901cbd859c4c043a55bc7512d85cef,
-        type: 3}
-      propertyPath: stopAction
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
