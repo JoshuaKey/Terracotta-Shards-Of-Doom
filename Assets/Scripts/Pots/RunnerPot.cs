@@ -53,7 +53,7 @@ public class Runner_Idle : State
         Vector3 towardPlayer = Player.Instance.transform.position - owner.transform.position;
 
         RaycastHit hit;
-        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, runnerPot.cowardRadius, ~LayerMask.GetMask("Enemy"))
+        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, runnerPot.cowardRadius, ~LayerMask.GetMask("Enemy", "Trigger"))
             && hit.collider.tag == "Player")
             || isDamaged)
         {
