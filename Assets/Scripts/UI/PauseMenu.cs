@@ -28,6 +28,7 @@ public class PauseMenu : MonoBehaviour
     [Header("Other")]
     [SerializeField] Button continueButton;
     [SerializeField] GameObject playerHud;
+    [SerializeField] int currDifficulty = 0;
     public EventSystem eventSystem;
     #pragma warning restore 0649
 
@@ -54,6 +55,8 @@ public class PauseMenu : MonoBehaviour
         if (eventSystem == null) { eventSystem = FindObjectOfType<EventSystem>(); }
 
         DeactivatePauseMenu();
+
+        Settings.OnLoad += OnSettingsLoad;
     }
 
     private void Update() 
@@ -62,6 +65,11 @@ public class PauseMenu : MonoBehaviour
         {
             PauseMenu.Instance.DeactivatePauseMenu();
         }
+    }
+
+    public void OnSettingsLoad(Settings settings) {
+        ChangeDifficulty(settings.DifficultyLevel);
+        Player.Instance.SkipTutorial = settings.SkipTutorial;
     }
 
     #region Button Noises
@@ -287,19 +295,20 @@ public class PauseMenu : MonoBehaviour
 
 	public void ChangeDifficulty(int index)
 	{
+        currDifficulty = index;
 		switch (index)
 		{
 			case 0:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Easy;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Easy;
 				break;
 			case 1:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Medium;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Medium;
 				break;
 			case 2:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Hard;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Hard;
 				break;
 			case 3:
-				Player.Instance.health.MaxHealth = (float)Difficulty.Impossible;
+                Player.Instance.health.MaxHealth = (float)Difficulty.Impossible;
 				break;
 		}
 
@@ -309,10 +318,18 @@ public class PauseMenu : MonoBehaviour
 		}
 	}
 
+    public int GetDifficulty() {
+        return currDifficulty;
+    }
+
 	public void ToggleTutorials(bool value)
 	{
 		Player.Instance.SkipTutorial = !value;
 	}
 
-	#endregion
+    public bool GetSkipTutorial() {
+        return Player.Instance.SkipTutorial;
+    }
+
+    #endregion
 }
