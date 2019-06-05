@@ -44,7 +44,7 @@ public class Snowball : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
-        print(projectile.HasFired());
+        //print(projectile.HasFired());
         if (projectile.HasFired()) {
             Vector3 force = direction * Acceleration;
 
