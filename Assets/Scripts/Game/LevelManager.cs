@@ -74,8 +74,6 @@ public class LevelManager : MonoBehaviour {
         {
             GhostDialogue.SetActive(true);
         }
-        //this is the dialogue that needs to be in that box
-        //Hey, do you that. Those pots are ghosts, you must've already smashed those pots.
 
     }
 
