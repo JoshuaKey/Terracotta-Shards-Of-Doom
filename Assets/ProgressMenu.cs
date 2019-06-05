@@ -112,6 +112,7 @@ public class ProgressMenu : MonoBehaviour
         if (level.SpecialPots.ContainsKey("Bronze Pot") && level.SpecialPots["Bronze Pot"]) total += 3.33f;
         if (level.SpecialPots.ContainsKey("Silver Pot") && level.SpecialPots["Silver Pot"]) total += 3.33f;
         if (level.SpecialPots.ContainsKey("Golden Pot") && level.SpecialPots["Golden Pot"]) total += 3.34f;
+        if (level.SpecialPots.ContainsKey("Crate") && level.SpecialPots["Crate"]) total += 10f;
         //Crate should add an additional percent but can't be tracked currently
 
         return total;
