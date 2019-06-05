@@ -86,7 +86,7 @@ public class Coin : PoolObject {
 
             if (coinSound == null)
             {
-                coinSound = AudioManager.Instance.PlaySound("coin", ESoundChannel.SFX, false, MakeCoinSoundNull).audioSource;
+                //coinSound = AudioManager.Instance.PlaySound("coin", ESoundChannel.SFX, false, MakeCoinSoundNull).audioSource;
             }
 
             void MakeCoinSoundNull()

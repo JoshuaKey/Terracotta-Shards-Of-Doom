@@ -170,7 +170,7 @@ public class Boss3Pot : Pot {
         endRot = baseRot;
 
         startTime = Time.time;
-        length = SnowballThrowTime * .5f; // 45%
+        length = SnowballThrowTime * .45f; // 45%
         while (Time.time < startTime + length) {
             if (snowball == null) { // We are Falling...
                 this.transform.rotation = baseRot;
@@ -210,6 +210,8 @@ public class Boss3Pot : Pot {
         WindZoneHard.SetActive(false);
         WindZoneMed.SetActive(false);
         WindZoneBleh.SetActive(false);
+
+        this.transform.rotation = Quaternion.Euler(0, -90, 0);
 
         // Variables
         Vector3[] startPos = new Vector3[Blocks.Count];

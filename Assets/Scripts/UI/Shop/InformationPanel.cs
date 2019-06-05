@@ -121,7 +121,7 @@ public class InformationPanel : MonoBehaviour
 
     public void CrossbowButtonClick()
     {
-        if(hubShop.ChargePlayer(10000))
+        if(hubShop.ChargePlayer(12500))
         {
             hubShop.Upgrade("Crossbow", "Magic Missile");
         }
@@ -129,7 +129,7 @@ public class InformationPanel : MonoBehaviour
 
     public void MagicButtonClick()
     {
-        if(hubShop.ChargePlayer(12500))
+        if(hubShop.ChargePlayer(10000))
         {
             hubShop.Upgrade("Magic", "Magic Magic");
         }

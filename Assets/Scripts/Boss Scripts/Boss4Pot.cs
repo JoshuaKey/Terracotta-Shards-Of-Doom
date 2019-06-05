@@ -500,7 +500,7 @@ class Boss4_Shooting : State
 
         while (true)
         {
-            if (boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
+            if (boss.NumberOfSpawnedPots < boss.MaxSpawnedPots && killedPots < boss.Phase1Pots)
             {
                 playerPosition = Player.Instance.transform.position;
                 playerPositionHorizontal = new Vector3(playerPosition.x, 0.0f, playerPosition.z);

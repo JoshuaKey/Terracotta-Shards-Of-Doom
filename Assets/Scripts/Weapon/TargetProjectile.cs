@@ -81,7 +81,7 @@ public class TargetProjectile : MonoBehaviour {
         if(GameObject.ReferenceEquals(_sender, sender)) { return; }
         target = sender;
         sender = _sender;
-        print("Hit by " + _sender.name);
+        //print("Hit by " + _sender.name);
 
         this.transform.forward = impulse.normalized;
 
