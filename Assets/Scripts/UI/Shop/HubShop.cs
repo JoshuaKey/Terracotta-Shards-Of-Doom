@@ -46,13 +46,13 @@ public class HubShop : MonoBehaviour
     [HideInInspector] public static WeaponInformation crossbowInfo
         = new WeaponInformation(
             "Crossbow",
-            "10,000 Coins\nWe started from the ground up with this one. We call it a magic missile. Still does the same thing though, just Bigger.");
+            "12,500 Coins\nWe started from the ground up with this one. We call it a magic missile. Still does the same thing though, just Bigger.");
 
     [HideInInspector]
     public static WeaponInformation magicInfo
         = new WeaponInformation(
             "Magic",
-            "12,500 Coins\nBehold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
+            "10,000 Coins\nBehold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
     #endregion
 
     private void Awake()
