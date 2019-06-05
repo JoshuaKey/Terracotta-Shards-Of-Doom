@@ -317,8 +317,6 @@ public class Boss4_Idle : State
         Player player = Player.Instance;
 
         teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y) * 15.0f;
-        //teleportLocation = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * teleportLocation));
-        //teleportLocation += new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
         teleportLocation.y = boss.transform.position.y;
 
 
@@ -410,7 +408,7 @@ class Boss4_Shooting : State
     IEnumerator Shooting()
     {
         boss.NumberOfSpawnedPots++;
-        nextSpawnTime = Time.time + 1.5f;
+        nextSpawnTime = Time.time + 2f;
 
         Enemy enemy = EnemyManager.Instance.SpawnChargerPot();
         if (enemy == null)
@@ -462,21 +460,14 @@ class Boss4_Shooting : State
         NavMeshHit hit;
         NavMesh.SamplePosition(playerPosition, out hit, 8.0f, NavMesh.AllAreas);
 
-        if (NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas)) {
+        if (NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas))
+        {
             targetPosition = hit.position;
         }
 
         do
         {
             Vector3 pos = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 12.0f);
-            if (float.IsNaN(pos.x))
-            {
-                Debug.Log("NAN DETECTED!");
-                Debug.Log(enemy.transform.position);
-                Debug.Log(targetPosition);
-                Debug.Log(Time.deltaTime * 12);
-                Debug.Log(hit.hit);
-            }
             enemy.transform.position = pos;
             yield return null;
             if (enemy == null)
@@ -502,50 +493,77 @@ class Boss4_Shooting : State
         Vector2 randomDirection2D = Vector2.zero;
         Vector3 randomDirection3D = Vector3.zero;
         Vector3 playerPosition = Vector3.zero;
+        Vector3 playerPositionHorizontal = Vector3.zero;
+        Vector3 lookDirection = Vector3.zero;
+        Quaternion lookRotation = Quaternion.identity;
         NavMeshHit hit;
-        int numberToSpawn = 0;
+
         while (true)
         {
-            numberToSpawn = 2;
-
-            playerPosition = Player.Instance.transform.position;
-            while (numberToSpawn != 0)
+            if (boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
             {
+                playerPosition = Player.Instance.transform.position;
+                playerPositionHorizontal = new Vector3(playerPosition.x, 0.0f, playerPosition.z);
+
                 enemy = EnemyManager.Instance.SpawnArmorPot();
                 enemy.GetComponent<Pot>().enabled = false;
                 do
                 {
                     randomDirection2D = Random.insideUnitCircle;
                     randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
-                    targetPosition =  playerPosition + randomDirection3D * 7;
-                }while (!NavMesh.SamplePosition(targetPosition, out hit, 10.0f, NavMesh.AllAreas));
+                    targetPosition = playerPosition + randomDirection3D * 7;
+                } while (!NavMesh.SamplePosition(targetPosition, out hit, 10.0f, NavMesh.AllAreas));
                 targetPosition = hit.position;
-                enemy.transform.position = targetPosition;
-                enemy.transform.rotation = Quaternion.LookRotation(new Vector3(playerPosition.x, 0.0f, playerPosition.z).normalized, Vector3.up);
+                enemy.transform.position = hit.position;
+
+                lookRotation = Quaternion.LookRotation((playerPositionHorizontal - targetPosition).normalized, Vector3.up);
+                enemy.transform.rotation = lookRotation;
 
                 boss.StartCoroutine(ShrinkAndGrow(enemy.gameObject));
-                numberToSpawn--;
+
+                enemy = EnemyManager.Instance.SpawnArmorPot();
+                do
+                {
+                    randomDirection3D = Quaternion.Euler(0.0f, 120.0f + Random.Range(0.0f, 30.0f), 0.0f) * randomDirection3D;
+                    targetPosition = playerPosition + randomDirection3D * 7;
+                } while (!NavMesh.SamplePosition(targetPosition, out hit, 10.0f, NavMesh.AllAreas));
+
+                targetPosition = hit.position;
+                enemy.transform.position = targetPosition;
+
+                lookRotation = Quaternion.LookRotation((playerPositionHorizontal - targetPosition).normalized, Vector3.up);
+                enemy.transform.rotation = lookRotation;
+
+                boss.StartCoroutine(ShrinkAndGrow(enemy.gameObject));
+
+                boss.NumberOfSpawnedPots += 2;
+                yield return new WaitForSeconds(15.0f);
             }
-            yield return new WaitForSeconds(3.0f);
+            else
+            {
+                yield return null;
+            }
         }
     }
 
     IEnumerator ShrinkAndGrow(GameObject obj)
     {
+        Pot pot = obj.GetComponent<Pot>();
+        pot.enabled = false;
         Vector3 originalScale = obj.transform.localScale;
 
         obj.transform.localScale = Vector3.zero;
 
         float growthTime = 0.0f;
 
-        while (boss.transform.localScale.sqrMagnitude < originalScale.sqrMagnitude)
+        while (obj.transform.localScale.sqrMagnitude < originalScale.sqrMagnitude)
         {
             growthTime += Time.deltaTime;
             growthTime = Mathf.Clamp(growthTime, 0.0f, 1.0f);
             obj.transform.localScale = originalScale * (growthTime / 1.0f);
             yield return null;
         }
-        obj.GetComponent<Pot>().enabled = true;
+        pot.enabled = true;
 
     }
 
@@ -594,7 +612,7 @@ class Boss4_Shooting : State
             directionToPlayer = (playerPositionHorizontal - boss.transform.position);
             distanceFromPlayer = directionToPlayer.magnitude;
 
-            if (distanceFromPlayer > 10.0f)
+            if (distanceFromPlayer > 15.5f)
             {
                 boss.transform.position += (directionToPlayer.normalized * (distanceFromPlayer - 10));
             }
