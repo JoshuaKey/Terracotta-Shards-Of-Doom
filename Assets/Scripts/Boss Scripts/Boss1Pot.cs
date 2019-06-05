@@ -491,7 +491,7 @@ public class Boss1Pot : Pot
             //targetPosition = hit.position;
 
             if (playerHorizontalVelocity.magnitude <= .2f) {
-                Vector2 randomDirection = Random.insideUnitCircle.normalized;
+                Vector2 randomDirection = Random.insideUnitCircle;
                 randomDirection.y = Mathf.Abs(randomDirection.y);
 
                 Vector3 aimOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y); ;
@@ -714,7 +714,7 @@ public class Boss1Pot : Pot
             //NavMeshHit hit;
             //do {
                 //TODO: Remove the y-axis
-                direction = Random.insideUnitCircle.normalized;
+                direction = Random.insideUnitCircle;
                 Vector3 randomDirection = new Vector3(direction.x, 0.0f, direction.y);
                 playerPosition = player.transform.position;
                 targetPosition = new Vector3(playerPosition.x, 0.0f, playerPosition.z) + ((randomDirection * 10.0f) + (randomDirection * Random.Range(0.0f, 5.0f)));

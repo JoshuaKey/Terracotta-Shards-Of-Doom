@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
-	[SerializeField] List<string> text = new List<string>();
+	[SerializeField] List<TextObject> text = new List<TextObject>();
 	[SerializeField] Sprite characterSpeaking = null;
 	[SerializeField] string characterSpeakingName = "";
 	[SerializeField] bool IsTutorial = false;
@@ -47,9 +47,10 @@ public class DialogueTrigger : MonoBehaviour
 				}
 				DialogueSystem.Instance.SetCharacterName(characterSpeakingName);
 
-				foreach (string item in text)
+				foreach (TextObject item in text)
 				{
-				    DialogueSystem.Instance.QueueDialogue(item, true);
+					item.Reformat();
+				    DialogueSystem.Instance.QueueDialogue(item.Text, true);
 				}
 			}
         }
