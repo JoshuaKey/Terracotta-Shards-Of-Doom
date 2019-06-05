@@ -154,7 +154,7 @@ public class PauseMenu : MonoBehaviour
         }
         playerHud.SetActive(false);
 
-        eventSystem.SetSelectedGameObject(continueButton.gameObject);
+        //eventSystem.SetSelectedGameObject(continueButton.gameObject);
 
         gameObject.SetActive(true);
     }
@@ -233,6 +233,8 @@ public class PauseMenu : MonoBehaviour
     {
 		Game.Instance.SavePlayerStats();
         LevelManager.Instance.LoadScene(sceneName);
+
+        PauseMenu.Instance.DeactivatePauseMenu();
     }
 
     public void Quit()
