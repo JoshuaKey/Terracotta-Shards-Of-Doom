@@ -19,6 +19,8 @@ public class LevelManager : MonoBehaviour {
     public StringLevelDictionary Levels = new StringLevelDictionary();
 
     public static LevelManager Instance;
+    [SerializeField]
+    public GameObject GhostDialogue = null;
 
     // Start is called before the first frame update
     void Awake() {
@@ -70,9 +72,10 @@ public class LevelManager : MonoBehaviour {
         //Will shitty code to make the ghost pot dialogue happen
         if (LevelManager.Instance.Levels[scene.name].IsCompleted)
         {
-            
+            GhostDialogue.SetActive(true);
         }
-        
+        //this is the dialogue that needs to be in that box
+        //Hey, do you that. Those pots are ghosts, you must've already smashed those pots.
 
     }
 

@@ -86,8 +86,6 @@ public class Boss2Pot : Pot
             w.Open();
         }
         currentWaypoint.arena.gameObject.SetActive(false);
-
-        Debug.Break();
     }
 
 

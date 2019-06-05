@@ -456,10 +456,15 @@ class Boss4_Shooting : State
         Vector3 playerHorizontalVelocity = new Vector3(player.velocity.x, 0.0f, player.velocity.z);
         Vector3 playerPosition = player.transform.position + playerHorizontalVelocity;
 
+        Vector3 targetPosition = playerPosition;
+
         // Hit is false...
         NavMeshHit hit;
         NavMesh.SamplePosition(playerPosition, out hit, 8.0f, NavMesh.AllAreas);
-        Vector3 targetPosition = hit.position;
+
+        if (NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas)) {
+            targetPosition = hit.position;
+        }
 
         do
         {

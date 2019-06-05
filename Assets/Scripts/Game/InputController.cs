@@ -180,12 +180,32 @@ public class InputController : MonoBehaviour {
         return GetInputIcon(code);
     }
 
+    public string GetActionText(string action) {
+        ControlScheme scheme = InputManager.PlayerOneControlScheme;
+        InputAction inputAction = scheme.GetAction(action);
+        InputBinding actionBinding = inputAction.GetBinding(0);
+        KeyCode code = actionBinding.Positive;
+
+        return GetInputText(code);
+    }
+
     public Sprite GetInputIcon(KeyCode k) {
         string currScheme = InputManager.PlayerOneControlScheme.Name;
         if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
             return GetKeyboardIcon(k);
         } else if (currScheme == ControllerSchemeName) {
             return GetXboxIcon(k);
+        }
+
+        throw new KeyNotFoundException("Invalid Key. Check the current Control Scheme and Key Input.");
+    }
+
+    public string GetInputText(KeyCode k) {
+        string currScheme = InputManager.PlayerOneControlScheme.Name;
+        if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
+            return GetKeyboardText(k);
+        } else if (currScheme == ControllerSchemeName) {
+            return GetXboxText(k);
         }
 
         throw new KeyNotFoundException("Invalid Key. Check the current Control Scheme and Key Input.");
@@ -338,6 +358,10 @@ public class InputController : MonoBehaviour {
         return null;
     }
 
+    public string GetKeyboardText(KeyCode k) {
+        return k == KeyCode.None ? "" : k.ToString();
+    }
+
     public Sprite GetXboxIcon(KeyCode k) {
         switch (k) {
             case KeyCode.Joystick1Button0:
@@ -360,5 +384,29 @@ public class InputController : MonoBehaviour {
 
         print("Unknown Keycode: " + k);
         return null;
+    }
+
+    public string GetXboxText(KeyCode k) {
+        switch (k) {
+            case KeyCode.Joystick1Button0:
+                return "A";
+            case KeyCode.Joystick1Button1:
+                return "B";
+            case KeyCode.Joystick1Button2:
+                return "X";
+            case KeyCode.Joystick1Button3:
+                return "Y";
+            case KeyCode.Joystick1Button4:
+                return "LB";
+            case KeyCode.Joystick1Button5:
+                return "RB";
+            case KeyCode.Joystick1Button6:
+                return "Select";
+            case KeyCode.Joystick1Button7:
+                return "Start";
+        }
+
+        print("Unknown Keycode: " + k);
+        return "";
     }
 }

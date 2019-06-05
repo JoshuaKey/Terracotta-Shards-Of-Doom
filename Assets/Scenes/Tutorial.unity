@@ -1987,10 +1987,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text:
-  - Kill enough pots in each level to unlock the next level
+  - Text: Kill enough pots in each level to unlock the next level
+    buttons: []
   characterSpeaking: {fileID: 21300028, guid: 1422f91ffd3697e4c8735aee459998c3, type: 3}
   characterSpeakingName: Jeffrey the Tutorial Block
-  IsTutorial: 0
+  IsTutorial: 1
 --- !u!4 &160992116
 Transform:
   m_ObjectHideFlags: 0
@@ -6182,6 +6183,31 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5573050194458533023, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5573050194458533023, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5573050194458533023, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 59.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5573050193793830401, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5573050193793830401, guid: 6979a3951b3bf78409753834b80cc430,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3653481145307985802, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
       propertyPath: m_IsActive
@@ -6220,31 +6246,6 @@ PrefabInstance:
     - target: {fileID: 1851727486738644410, guid: 6979a3951b3bf78409753834b80cc430,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5573050194458533023, guid: 6979a3951b3bf78409753834b80cc430,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5573050194458533023, guid: 6979a3951b3bf78409753834b80cc430,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5573050194458533023, guid: 6979a3951b3bf78409753834b80cc430,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 59.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5573050193793830401, guid: 6979a3951b3bf78409753834b80cc430,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5573050193793830401, guid: 6979a3951b3bf78409753834b80cc430,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5702651963575558807, guid: 6979a3951b3bf78409753834b80cc430,
@@ -30083,11 +30084,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text:
-  - Use WASD to move
-  - Left click to Attack
+  - Text: Use WASD to move
+    buttons: []
+  - Text: '{0} to Attack'
+    buttons:
+    - Attack
   characterSpeaking: {fileID: 21300028, guid: 1422f91ffd3697e4c8735aee459998c3, type: 3}
   characterSpeakingName: Jeffrey the Tutorial Block
-  IsTutorial: 0
+  IsTutorial: 1
 --- !u!65 &1628743743
 BoxCollider:
   m_ObjectHideFlags: 0

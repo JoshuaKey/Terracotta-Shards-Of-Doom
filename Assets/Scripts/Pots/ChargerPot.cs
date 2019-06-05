@@ -67,7 +67,7 @@ public class Charger_Idle : State
         Vector3 towardPlayer = Player.Instance.transform.position - owner.transform.position;
 
         RaycastHit hit;
-        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, chargerPot.aggroRadius, ~LayerMask.GetMask("Enemy"))
+        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, chargerPot.aggroRadius, ~LayerMask.GetMask("Enemy", "Trigger"))
             && hit.collider.tag == "Player")
             || isDamaged)
         {

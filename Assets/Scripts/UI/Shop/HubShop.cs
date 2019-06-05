@@ -78,6 +78,7 @@ public class HubShop : MonoBehaviour
 
     private void ShowInformation()
     {
+        Debug.Log(mainPanel.weaponName);
         if (!informationPanel.gameObject.activeSelf)
         {
             informationPanel.Show(mainPanel.weaponName);
@@ -106,7 +107,7 @@ public class HubShop : MonoBehaviour
             else
             //Go Forward
             {
-                MovePanesRight();
+                MovePanelsRight();
             }
         }
     }
@@ -121,7 +122,7 @@ public class HubShop : MonoBehaviour
         }
     }
 
-    public void MovePanesRight()
+    public void MovePanelsRight()
     {
         isMovingPanels = true;
         for (int i = 0; i < shopPanels.Length; i++)
