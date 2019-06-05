@@ -78,6 +78,7 @@ public class HubShop : MonoBehaviour
 
     private void ShowInformation()
     {
+        Debug.Log(mainPanel.weaponName);
         if (!informationPanel.gameObject.activeSelf)
         {
             informationPanel.Show(mainPanel.weaponName);

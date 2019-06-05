@@ -40,13 +40,13 @@ public class ShopPanel : MonoBehaviour
         desiredScale = scale;
 
         float startTime = Time.time;
-        this.isMainPanel = isMainPanel;
 
         while (Time.time < startTime + duration)
         {
             rectTransform.localPosition = Vector3.Lerp(rectTransform.localPosition, pos, (Time.time - startTime));
             rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, scale, (Time.time - startTime));
             yield return null;
+            this.isMainPanel = isMainPanel;
         }
 
         rectTransform.localPosition = pos;
