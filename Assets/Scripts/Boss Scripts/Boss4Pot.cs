@@ -265,6 +265,7 @@ public class Boss4_Idle : State
     Boss4Pot boss = null;
     bool teleporting = false;
     bool inPosition = false;
+
     public override void Init(GameObject owner)
     {
         base.Init(owner);
@@ -315,7 +316,7 @@ public class Boss4_Idle : State
 
         Player player = Player.Instance;
 
-        teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y) * 10.0f;
+        teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y) * 15.0f;
         //teleportLocation = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * teleportLocation));
         //teleportLocation += new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
         teleportLocation.y = boss.transform.position.y;
@@ -327,8 +328,8 @@ public class Boss4_Idle : State
         while (boss.transform.localScale.sqrMagnitude != 0)
         {
             shrinkTime += Time.deltaTime;
-            shrinkTime = Mathf.Clamp(shrinkTime, 0.0f, 3.0f);
-            boss.transform.localScale = originalScale - (originalScale * (shrinkTime / 3.0f));
+            shrinkTime = Mathf.Clamp(shrinkTime, 0.0f, 1.0f);
+            boss.transform.localScale = originalScale - (originalScale * (shrinkTime / 1.0f));
             yield return null;
         }
 
@@ -343,8 +344,8 @@ public class Boss4_Idle : State
         while (boss.transform.localScale.sqrMagnitude < originalScale.sqrMagnitude)
         {
             growthTime += Time.deltaTime;
-            growthTime = Mathf.Clamp(growthTime, 0.0f, 3.0f);
-            boss.transform.localScale = originalScale * (growthTime / 3.0f);
+            growthTime = Mathf.Clamp(growthTime, 0.0f, 1.0f);
+            boss.transform.localScale = originalScale * (growthTime / 1.0f);
             boss.Waypoint.transform.position = new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
             boss.transform.position = target.position;
             Debug.DrawLine(player.transform.position, target.position, Color.cyan);
@@ -370,6 +371,7 @@ class Boss4_Shooting : State
         boss = owner.GetComponent<Boss4Pot>();
         base.Init(owner);
     }
+
     public override void Enter()
     {
         boss.StartFloating();
@@ -393,7 +395,6 @@ class Boss4_Shooting : State
             {
                 return "Boss4_Target";
             }
-
         }
         else
         {
@@ -564,7 +565,7 @@ class Boss4_Shooting : State
 
         Vector2 randomDirection2D = Random.insideUnitCircle;
         Vector3 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
-        Vector3 targetPosition = randomDirection3D * 10.0f;//Random.Range(10.0f, 12.0f);
+        Vector3 targetPosition = randomDirection3D * 15.0f;//Random.Range(10.0f, 12.0f);
         targetPosition.y = yPosition;
 
         target.localPosition = targetPosition;
@@ -581,7 +582,7 @@ class Boss4_Shooting : State
             {
                 randomDirection2D = Random.insideUnitCircle;
                 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
-                targetPosition = randomDirection3D * 10.0f;//Random.Range(10.0f, 12.0f);
+                targetPosition = randomDirection3D * 15.0f;//Random.Range(10.0f, 12.0f);
                 targetPosition.y = yPosition;
                 target.localPosition = targetPosition;
             }
