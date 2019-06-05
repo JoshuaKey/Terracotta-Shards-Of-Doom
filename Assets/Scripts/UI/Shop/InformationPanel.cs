@@ -42,6 +42,15 @@ public class InformationPanel : MonoBehaviour
 
         if (HubShop.GetWeaponInfo(weaponName).isUnlocked)
         {
+            if(HubShop.GetWeaponInfo(weaponName).isUpgraded)
+            {
+                button.interactable = false;
+            }
+            else
+            {
+                button.interactable = true;
+            }
+
             this.weaponName.SetText(weaponName);
 
             weaponDescription.SetText(HubShop.GetWeaponInfo(weaponName).description);
@@ -51,6 +60,8 @@ public class InformationPanel : MonoBehaviour
             this.weaponName.SetText("Locked");
 
             weaponDescription.SetText("That silhouette looks cool. Too bad you haven't unlocked that weapon yet. Go and find it then come back.");
+
+            button.interactable = false;
         }
     }
 
