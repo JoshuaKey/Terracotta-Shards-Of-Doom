@@ -316,8 +316,8 @@ public class Boss4_Idle : State
         Player player = Player.Instance;
 
         teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y) * 10.0f;
-        teleportLocation = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * teleportLocation));
-        teleportLocation += new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
+        //teleportLocation = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * teleportLocation));
+        //teleportLocation += new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
         teleportLocation.y = boss.transform.position.y;
 
 
@@ -329,7 +329,6 @@ public class Boss4_Idle : State
             shrinkTime += Time.deltaTime;
             shrinkTime = Mathf.Clamp(shrinkTime, 0.0f, 3.0f);
             boss.transform.localScale = originalScale - (originalScale * (shrinkTime / 3.0f));
-            Debug.DrawLine(player.transform.position, teleportLocation, Color.cyan);
             yield return null;
         }
 
@@ -348,7 +347,7 @@ public class Boss4_Idle : State
             boss.transform.localScale = originalScale * (growthTime / 3.0f);
             boss.Waypoint.transform.position = new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
             boss.transform.position = target.position;
-            Debug.DrawLine(target.position, player.transform.position, Color.cyan);
+            Debug.DrawLine(player.transform.position, target.position, Color.cyan);
             yield return null;
         }
         boss.StartFloating();
