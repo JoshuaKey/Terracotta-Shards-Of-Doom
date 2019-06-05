@@ -7,12 +7,29 @@ public class ShopKeeper : MonoBehaviour
     [SerializeField] HubShop hubShopMenu;
 
     private Interactable interactable;
+    private Animator animator;
 
     private void Start()
     {
         interactable = GetComponent<Interactable>();
         interactable.Subscribe(OpenShop);
+
+        animator = GetComponentInChildren<Animator>();
+
+        hubShopMenu.onSuccessfulSale += PlaySuccessAnimation;
+        hubShopMenu.onFailedSale += PlayFailureAnimation;
+
         hubShopMenu.gameObject.SetActive(false);
+    }
+
+    public void PlaySuccessAnimation()
+    {
+        animator.SetTrigger("Success");
+    }
+
+    public void PlayFailureAnimation()
+    {
+        animator.SetTrigger("Failure");
     }
 
     private void Update()
