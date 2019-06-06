@@ -13,7 +13,7 @@ public class SpecialPot : MonoBehaviour {
     public new MeshRenderer renderer;
 
     void Start() {
-        if(enemy == null) { enemy = GetComponentInChildren<Enemy>(); }
+        if (enemy == null) { enemy = GetComponentInChildren<Enemy>(); }
 
         string levelName = LevelManager.Instance.GetLevelName();
 
@@ -30,11 +30,19 @@ public class SpecialPot : MonoBehaviour {
             }
         }
 
-        // Check if previous pot is Valid and we have not collected previous pot
-        if (PreviousPot != null && !LevelManager.Instance.Levels[levelName].SpecialPots[PreviousPot.name]) {
-            this.gameObject.SetActive(false);
+        if (PreviousPot != null) {
+            if (!LevelManager.Instance.Levels[levelName].SpecialPots.ContainsKey(PreviousPot.name)) {
+                LevelManager.Instance.Levels[levelName].SpecialPots[PreviousPot.name] = false;
+            }
+            // Check if previous pot is Valid and we have not collected previous pot
+            if (!LevelManager.Instance.Levels[levelName].SpecialPots[PreviousPot.name]) {
 
-            PreviousPot.enemy.health.OnDeath += Spawn;
+                this.gameObject.SetActive(false);
+
+                PreviousPot.enemy.health.OnDeath += Spawn;
+            } else {
+                this.gameObject.SetActive(true);
+            }
         } else {
             this.gameObject.SetActive(true);
         }
