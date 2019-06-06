@@ -92,6 +92,7 @@ public class InformationPanel : MonoBehaviour
     {
         if(hubShop.ChargePlayer(2000))
         {
+            button.interactable = false;
             hubShop.Upgrade("Sword", "Fire Sword");
         }
     }
@@ -101,6 +102,7 @@ public class InformationPanel : MonoBehaviour
 
         if (hubShop.ChargePlayer(4000))
         {
+            button.interactable = false;
             hubShop.Upgrade("Bow", "Ice Bow");
         }
     }
@@ -109,6 +111,7 @@ public class InformationPanel : MonoBehaviour
     {
         if(hubShop.ChargePlayer(6000))
         {
+            button.interactable = false;
             hubShop.Upgrade("Hammer", "Rock Hammer");
         }
     }
@@ -117,6 +120,7 @@ public class InformationPanel : MonoBehaviour
     {
         if(hubShop.ChargePlayer(8000))
         {
+            button.interactable = false;
             hubShop.Upgrade("Spear", "Lightning Spear");
         }
     }
@@ -125,6 +129,7 @@ public class InformationPanel : MonoBehaviour
     {
         if(hubShop.ChargePlayer(12500))
         {
+            button.interactable = false;
             hubShop.Upgrade("Crossbow", "Magic Missile");
         }
     }
@@ -133,6 +138,7 @@ public class InformationPanel : MonoBehaviour
     {
         if(hubShop.ChargePlayer(10000))
         {
+            button.interactable = false;
             hubShop.Upgrade("Magic", "Magic Magic");
         }
     }

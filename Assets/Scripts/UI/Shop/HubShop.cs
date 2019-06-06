@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class HubShop : MonoBehaviour
@@ -14,6 +15,8 @@ public class HubShop : MonoBehaviour
     [SerializeField] InformationPanel informationPanel;
     public ShopPanel mainPanel;
     [SerializeField] ShopPanel[] shopPanels;
+    //[SerializeField] EventSystem eventSystem;
+    [SerializeField] Button exitBtn;
     #pragma warning restore 0649
 
     [HideInInspector] public bool isMovingPanels;
@@ -93,20 +96,23 @@ public class HubShop : MonoBehaviour
     }
 
     private void CheckWeaponScroll()
-    {      
-        float curHorizontal = InputManager.GetAxisRaw("Horizontal Movement");
-
-        if (curHorizontal != 0 && !isMovingPanels)
-        {
-            if(curHorizontal > 0)
-            //Go Back
-            {
-                MovePanelsLeft();
-            }
-            else
-            //Go Forward
-            {
-                MovePanelsRight();
+    {
+        if (!isMovingPanels) {
+            // Controller Input
+            if (InputManager.PlayerOneControlScheme.Name == InputController.Instance.ControllerSchemeName) {
+                if (InputManager.GetButtonDown("Prev Weapon")) {
+                    MovePanelsRight();
+                } else if ( InputManager.GetButtonDown("Next Weapon")) {
+                    MovePanelsLeft();
+                }
+            } 
+            // Mouse and Keyboard
+            else {
+                if (InputManager.GetButtonDown("UI_Left") || InputManager.GetButtonDown("Prev Weapon")) {
+                    MovePanelsRight();
+                } else if (InputManager.GetButtonDown("UI_Right") || InputManager.GetButtonDown("Next Weapon")) {
+                    MovePanelsLeft();
+                }
             }
         }
     }
@@ -142,6 +148,8 @@ public class HubShop : MonoBehaviour
             PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
 
             onSuccessfulSale();
+
+            PlayerHud.Instance.eventSystem.SetSelectedGameObject(exitBtn.gameObject);
 
             return true;
         }
