@@ -253,7 +253,6 @@ public class Boss4Pot : Pot
             ShieldObject.transform.rotation = Quaternion.Euler(0.0f, rotationAngle, 0.0f);
             yield return null;
         }
-
     }
 }
 
