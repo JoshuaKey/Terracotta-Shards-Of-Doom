@@ -41,6 +41,7 @@ public class Mimic_Idle : State
     MimicPot mimicPot;
     Player player;
     Health hp;
+    bool isDamaged;
 
     public override void Init(GameObject owner)
     {
@@ -53,10 +54,13 @@ public class Mimic_Idle : State
 
     public override void Enter()
     {
+        isDamaged = false;
+        hp.OnDamage += OnDamage;
     }
 
     public override void Exit()
     {
+        hp.OnDamage -= OnDamage;
     }
 
     public override string Update()
@@ -68,23 +72,39 @@ public class Mimic_Idle : State
         //Debug.Log(owner.GetComponent<MimicPot>());
         //Debug.Log(player);
 
-
-        //This will check if it can wake up or not
-        if (Vector3.Distance(owner.transform.position, player.transform.position) <mimicPot.aggroRadius)
+        Vector3 towardPlayer = Player.Instance.transform.position - owner.transform.position;
+        //this now checks if the pot can wake up or not
+        RaycastHit hit;
+        if ((Physics.Raycast(owner.transform.position, towardPlayer, out hit, mimicPot.aggroRadius, ~LayerMask.GetMask("Enemy", "Trigger"))
+            && hit.collider.tag == "Player")
+            || isDamaged)
         {
             return "Mimic_Charge";
         }
+
+        //This will check if it can wake up or not
+        //if (Vector3.Distance(owner.transform.position, player.transform.position) <mimicPot.aggroRadius)
+        //{
+        //    return "Mimic_Charge";
+        //}
+
+        //this is code isnt needed anymore
 
         //This will check if the player is in the chase radius and has hit the pot 
         //(so if they attack it from range it will charge them)
-        if (Vector3.Distance(owner.transform.position, player.transform.position) < mimicPot.chaseRadius
-            //this is awful and i hate it
-            && hp.CurrentHealth != hp.MaxHealth)
-        {
-            return "Mimic_Charge";
-        }
+        //if (Vector3.Distance(owner.transform.position, player.transform.position) < mimicPot.chaseRadius
+        //    //this is awful and i hate it
+        //    && hp.CurrentHealth != hp.MaxHealth)
+        //{
+        //    return "Mimic_Charge";
+        //}
 
         return null;
+    }
+
+    public void OnDamage(float damage)
+    {
+        isDamaged = true;
     }
 }
 
