@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -20,13 +21,19 @@ public class MainMenu : MonoBehaviour
     private void Start()
     {
 		//eventSystem = FindObjectOfType<EventSystem>();
-        eventSystem.SetSelectedGameObject(continueButton.gameObject);
+        //eventSystem.SetSelectedGameObject(continueButton.gameObject);
 		//Player.Instance.enabled = false;
 		//Player.Instance.HideWeapon();
 		//PlayerHud.Instance.DisablePlayerHud();
 		//PauseMenu.Instance.DeactivatePauseMenu();
 		//Cursor.lockState = CursorLockMode.None;
 		//Cursor.visible = true;
+    }
+
+    private void Update() {
+        print("Selected " + eventSystem.currentSelectedGameObject);
+        print("Focus " + eventSystem.isFocused);
+        print("Selecting " + eventSystem.alreadySelecting);
     }
 
     public void OpenMainMenu(string menuName)
@@ -42,6 +49,7 @@ public class MainMenu : MonoBehaviour
                 break;
             case "menuStart":
                 menuStart.SetActive(true);
+                continueButton.interactable = File.Exists(Application.dataPath + "/save.json");
                 break;
             case "credits":
                 credits.SetActive(true);

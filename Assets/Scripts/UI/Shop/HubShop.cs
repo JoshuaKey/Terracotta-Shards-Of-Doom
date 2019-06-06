@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class HubShop : MonoBehaviour
@@ -14,6 +15,8 @@ public class HubShop : MonoBehaviour
     [SerializeField] InformationPanel informationPanel;
     public ShopPanel mainPanel;
     [SerializeField] ShopPanel[] shopPanels;
+    //[SerializeField] EventSystem eventSystem;
+    [SerializeField] Button exitBtn;
     #pragma warning restore 0649
 
     [HideInInspector] public bool isMovingPanels;
@@ -23,14 +26,14 @@ public class HubShop : MonoBehaviour
     //private GameObject playerHud;
 
     #region weapon info
-    [HideInInspector] public static WeaponInformation swordInfo 
+    [HideInInspector] public static WeaponInformation swordInfo
         = new WeaponInformation(
-            "Sword", 
+            "Sword",
             "2,000 Coins\nThe old faithful of many an adventurer. It slices and dices and not much else. But what if it was on fire?", true);
 
     [HideInInspector] public static WeaponInformation bowInfo
         = new WeaponInformation(
-            "Bow", 
+            "Bow",
             "4,000 Coins\nThe problem with ranged weapons is it takes time to load. This upgrade keeps your enemies frosty so you can take your time.");
 
     [HideInInspector] public static WeaponInformation hammerInfo
@@ -93,20 +96,23 @@ public class HubShop : MonoBehaviour
     }
 
     private void CheckWeaponScroll()
-    {      
-        float curHorizontal = InputManager.GetAxisRaw("Horizontal Movement");
-
-        if (curHorizontal != 0 && !isMovingPanels)
-        {
-            if(curHorizontal > 0)
-            //Go Back
-            {
-                MovePanelsLeft();
+    {
+        if (!isMovingPanels) {
+            // Controller Input
+            if (InputManager.PlayerOneControlScheme.Name == InputController.Instance.ControllerSchemeName) {
+                if (InputManager.GetButtonDown("Prev Weapon")) {
+                    MovePanelsRight();
+                } else if ( InputManager.GetButtonDown("Next Weapon")) {
+                    MovePanelsLeft();
+                }
             }
-            else
-            //Go Forward
-            {
-                MovePanelsRight();
+            // Mouse and Keyboard
+            else {
+                if (InputManager.GetButtonDown("UI_Left") || InputManager.GetButtonDown("Prev Weapon")) {
+                    MovePanelsRight();
+                } else if (InputManager.GetButtonDown("UI_Right") || InputManager.GetButtonDown("Next Weapon")) {
+                    MovePanelsLeft();
+                }
             }
         }
     }
@@ -142,6 +148,8 @@ public class HubShop : MonoBehaviour
             PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
 
             onSuccessfulSale();
+
+            PlayerHud.Instance.eventSystem.SetSelectedGameObject(exitBtn.gameObject);
 
             return true;
         }

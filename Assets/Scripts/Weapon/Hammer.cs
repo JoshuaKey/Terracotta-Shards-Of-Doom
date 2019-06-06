@@ -29,7 +29,7 @@ public class Hammer : Weapon {
 
         base.Attack();
 
-        Player.Instance.CanWalk = false;
+        //Player.Instance.CanWalk = false;
         animator.SetTrigger("Attack");
     }
 
