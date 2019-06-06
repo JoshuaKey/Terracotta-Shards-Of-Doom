@@ -14,6 +14,7 @@ public class InformationPanel : MonoBehaviour
     #pragma warning restore 0649
 
     HubShop hubShop;
+    string curWeaponName;
 
     //string[] descriptions =
     //{
@@ -38,6 +39,7 @@ public class InformationPanel : MonoBehaviour
 
     public void Show(string weaponName)
     {
+        curWeaponName = weaponName;
         gameObject.SetActive(true);
 
         if (HubShop.GetWeaponInfo(weaponName).isUnlocked)
@@ -72,9 +74,9 @@ public class InformationPanel : MonoBehaviour
 
     public void PurchaseUpgrade()
     {
-        if (!HubShop.GetWeaponInfo(weaponName.text).isUpgraded)
+        if (!HubShop.GetWeaponInfo(curWeaponName).isUpgraded)
         {
-            switch (weaponName.text)
+            switch (curWeaponName)
             {
                 case "Sword": SwordButtonClick(); break;
                 case "Bow": BowButtonClick(); break;

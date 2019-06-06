@@ -207,7 +207,7 @@ public class HubShop : MonoBehaviour
             case "Magic":       return magicInfo;
         }
 
-        throw new System.ArgumentException($"No weapon with name {weaponName} exists");
+        throw new ArgumentException($"No weapon with name {weaponName} exists");
     }
 
     public void DebugStuff()
