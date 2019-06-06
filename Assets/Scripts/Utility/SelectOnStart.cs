@@ -9,7 +9,7 @@ public class SelectOnStart : MonoBehaviour {
     public Selectable selectable;
 
     private void Awake() {
-        
+
     }
 
     //private void Update() {

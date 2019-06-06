@@ -26,14 +26,14 @@ public class HubShop : MonoBehaviour
     //private GameObject playerHud;
 
     #region weapon info
-    [HideInInspector] public static WeaponInformation swordInfo 
+    [HideInInspector] public static WeaponInformation swordInfo
         = new WeaponInformation(
-            "Sword", 
+            "Sword",
             "2,000 Coins\nThe old faithful of many an adventurer. It slices and dices and not much else. But what if it was on fire?", true);
 
     [HideInInspector] public static WeaponInformation bowInfo
         = new WeaponInformation(
-            "Bow", 
+            "Bow",
             "4,000 Coins\nThe problem with ranged weapons is it takes time to load. This upgrade keeps your enemies frosty so you can take your time.");
 
     [HideInInspector] public static WeaponInformation hammerInfo
@@ -105,7 +105,7 @@ public class HubShop : MonoBehaviour
                 } else if ( InputManager.GetButtonDown("Next Weapon")) {
                     MovePanelsLeft();
                 }
-            } 
+            }
             // Mouse and Keyboard
             else {
                 if (InputManager.GetButtonDown("UI_Left") || InputManager.GetButtonDown("Prev Weapon")) {
