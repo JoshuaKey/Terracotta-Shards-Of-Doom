@@ -19,12 +19,21 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject controls;
 	[SerializeField] GameObject gameplay;
     [SerializeField] GameObject quit;
+    [Header("Controls")]
+    [SerializeField] Image NextWeaponImage;
+    [SerializeField] Image PrevWeaponImage;
+    [SerializeField] Image WeaponWheelImage;
+    [SerializeField] Image AttackImage;
+    [SerializeField] Image InteractImage;
+    [SerializeField] Image MenuImage;
+    [SerializeField] Image JumpImage;
     [Space]
     [Header("Audio")]
     [SerializeField] AudioMixer audioMixer;
     [SerializeField] Slider masterSlider;
     [SerializeField] Slider musicSlider;
     [SerializeField] Slider sfxSlider;
+    [Space]
     [Header("Gameplay")]
     [SerializeField] TMP_Dropdown difficultyDropdown;
     [SerializeField] Toggle tutorialToggle;
@@ -61,6 +70,8 @@ public class PauseMenu : MonoBehaviour
         DeactivatePauseMenu();
 
         Settings.OnLoad += OnSettingsLoad;
+        InputManager.ControlSchemesChanged += OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged += OnPlayerControlChanged;
     }
 
     private void Update() 
@@ -71,12 +82,30 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    private void OnDestroy() {
+        InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
+        InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
+    }
+
     public void OnSettingsLoad(Settings settings) {
         ChangeDifficulty(settings.DifficultyLevel);
         Player.Instance.SkipTutorial = settings.SkipTutorial;
 
         difficultyDropdown.value = settings.DifficultyLevel;
         tutorialToggle.isOn = !settings.SkipTutorial;
+    }
+
+    private void OnPlayerControlChanged(PlayerID id) { UpdateInputIcons(); }
+    private void OnControlSchemeChanged() { UpdateInputIcons(); }
+    public void UpdateInputIcons() {
+        //print("Changing Input");
+        NextWeaponImage.sprite = InputController.Instance.GetActionIcon("Next Weapon");
+        PrevWeaponImage.sprite = InputController.Instance.GetActionIcon("Prev Weapon");
+        WeaponWheelImage.sprite = InputController.Instance.GetActionIcon("Weapon Wheel");
+        InteractImage.sprite = InputController.Instance.GetActionIcon("Interact");
+        AttackImage.sprite = InputController.Instance.GetActionIcon("Attack");
+        MenuImage.sprite = InputController.Instance.GetActionIcon("Pause Menu");
+        JumpImage.sprite = InputController.Instance.GetActionIcon("Jump");
     }
 
     #region Button Noises
@@ -125,7 +154,7 @@ public class PauseMenu : MonoBehaviour
         }
         playerHud.SetActive(false);
 
-        eventSystem.SetSelectedGameObject(continueButton.gameObject);
+        //eventSystem.SetSelectedGameObject(continueButton.gameObject);
 
         gameObject.SetActive(true);
     }
@@ -204,6 +233,8 @@ public class PauseMenu : MonoBehaviour
     {
 		Game.Instance.SavePlayerStats();
         LevelManager.Instance.LoadScene(sceneName);
+
+        PauseMenu.Instance.DeactivatePauseMenu();
     }
 
     public void Quit()
@@ -327,7 +358,9 @@ public class PauseMenu : MonoBehaviour
 		{
 			Player.Instance.health.Reset();
 		}
-	}
+        float value = Player.Instance.health.CurrentHealth / Player.Instance.health.MaxHealth;
+        PlayerHud.Instance.SetPlayerHealthBar(value, true);
+    }
 
     public int GetDifficulty() {
         return currDifficulty;
@@ -337,6 +370,10 @@ public class PauseMenu : MonoBehaviour
 	{
 		Player.Instance.SkipTutorial = !value;
 	}
+
+    public void ToggleLeftHanded(bool value) {
+        InputController.Instance.IsLeftHanded = value;
+    }
 
     public bool GetSkipTutorial() {
         return Player.Instance.SkipTutorial;

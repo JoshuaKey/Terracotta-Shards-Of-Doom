@@ -212,6 +212,7 @@ public class Boss2Pot_ChangingRooms : State
         boss.currentWaypoint = possibleWaypoints[randomIndex];
 
         boss.enemy.health.Resistance = DamageType.BASIC;
+        boss.StopAllCoroutines();
     }
 
     public override void Exit()
@@ -321,6 +322,7 @@ public class Boss2Pot_Animating : State
         }
 
         boss.enemy.health.Resistance = DamageType.BASIC;
+       
     }
 
     public override void Exit()
@@ -457,6 +459,7 @@ public class Boss2Pot_Running : State
         previousDirection = Vector3.zero;
         moving = false;
         bounds = new Bounds(boss.currentWaypoint.transform.position, new Vector3(20.0f, 0.0f, 20.0f));
+        boss.StopAllCoroutines();
     }
 
     public override void Exit()

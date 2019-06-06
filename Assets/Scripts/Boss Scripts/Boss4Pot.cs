@@ -100,12 +100,13 @@ public class Boss4Pot : Pot
         dir *= ProjectileImpulse;
 
         meteor.OnHit += HitTarget;
-        meteor.OnMiss += MissTarget;       
+        meteor.OnMiss += MissTarget;
         currProjectile = meteor;
 
         ReceiveCount = 3 - Shields.Count;
 
-        switch (Shields.Count) {
+        switch (Shields.Count)
+        {
             case 3:
                 meteor.SpeedOverTime = .2f;
                 break;
@@ -228,7 +229,7 @@ public class Boss4Pot : Pot
         while (true)
         {
 
-            angle += Time.deltaTime * this.FloatSpeed;           
+            angle += Time.deltaTime * this.FloatSpeed;
             angle %= 360.0f;
 
             //TODO: add shake to the floating
@@ -252,7 +253,6 @@ public class Boss4Pot : Pot
             ShieldObject.transform.rotation = Quaternion.Euler(0.0f, rotationAngle, 0.0f);
             yield return null;
         }
-
     }
 }
 
@@ -264,6 +264,7 @@ public class Boss4_Idle : State
     Boss4Pot boss = null;
     bool teleporting = false;
     bool inPosition = false;
+
     public override void Init(GameObject owner)
     {
         base.Init(owner);
@@ -308,14 +309,13 @@ public class Boss4_Idle : State
         Transform target = boss.Waypoint.transform.GetChild(0);
 
         Vector3 teleportLocation = Vector3.zero;
-        Vector2 randomDirection2D = Random.insideUnitCircle.normalized;
+        Vector2 randomDirection2D = Random.insideUnitCircle;
+
         randomDirection2D.y = Mathf.Abs(randomDirection2D.y);
 
         Player player = Player.Instance;
 
-        teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
-        teleportLocation = ((Quaternion.Euler(player.rotation.x, 0.0f, player.rotation.z) * teleportLocation)) * 10.0f;//Random.Range(7.0f, 10.0f);
-        teleportLocation += new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
+        teleportLocation = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y) * 15.0f;
         teleportLocation.y = boss.transform.position.y;
 
 
@@ -345,7 +345,7 @@ public class Boss4_Idle : State
             boss.transform.localScale = originalScale * (growthTime / 1.0f);
             boss.Waypoint.transform.position = new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
             boss.transform.position = target.position;
-
+            Debug.DrawLine(player.transform.position, target.position, Color.cyan);
             yield return null;
         }
         boss.StartFloating();
@@ -359,6 +359,7 @@ class Boss4_Shooting : State
 {
     Boss4Pot boss = null;
     Coroutine movingCoroutine;
+    Coroutine spawningCoroutine;
     byte killedPots = 0;
     float nextSpawnTime = 0;
 
@@ -367,11 +368,12 @@ class Boss4_Shooting : State
         boss = owner.GetComponent<Boss4Pot>();
         base.Init(owner);
     }
+
     public override void Enter()
     {
         boss.StartFloating();
         movingCoroutine = boss.StartCoroutine(Moving());
-
+        spawningCoroutine = boss.StartCoroutine(Spawning());
         boss.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
     }
 
@@ -379,18 +381,22 @@ class Boss4_Shooting : State
     {
         boss.StartFloating();
         boss.StopCoroutine(movingCoroutine);
+        boss.StopCoroutine(spawningCoroutine);
     }
 
     public override string Update()
     {
         if (killedPots >= boss.Phase1Pots)
         {
-            if(boss.NumberOfSpawnedPots == 0) {
+            if (boss.NumberOfSpawnedPots == 0)
+            {
                 return "Boss4_Target";
             }
-            
-        }  else {
-            if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots) {
+        }
+        else
+        {
+            if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
+            {
                 boss.StartCoroutine(Shooting());
             }
         }
@@ -401,7 +407,7 @@ class Boss4_Shooting : State
     IEnumerator Shooting()
     {
         boss.NumberOfSpawnedPots++;
-        nextSpawnTime = Time.time + 1.5f;
+        nextSpawnTime = Time.time + 2f;
 
         Enemy enemy = EnemyManager.Instance.SpawnChargerPot();
         if (enemy == null)
@@ -453,21 +459,14 @@ class Boss4_Shooting : State
         NavMeshHit hit;
         NavMesh.SamplePosition(playerPosition, out hit, 8.0f, NavMesh.AllAreas);
 
-        if (NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas)) {
+        if (NavMesh.SamplePosition(targetPosition, out hit, 25.0f, NavMesh.AllAreas))
+        {
             targetPosition = hit.position;
         }
 
         do
         {
             Vector3 pos = Vector3.MoveTowards(enemy.transform.position, targetPosition, Time.deltaTime * 12.0f);
-            if (float.IsNaN(pos.x))
-            {
-                Debug.Log("NAN DETECTED!");
-                Debug.Log(enemy.transform.position);
-                Debug.Log(targetPosition);
-                Debug.Log(Time.deltaTime * 12);
-                Debug.Log(hit.hit);
-            }
             enemy.transform.position = pos;
             yield return null;
             if (enemy == null)
@@ -486,6 +485,87 @@ class Boss4_Shooting : State
         }
     }
 
+    IEnumerator Spawning()
+    {
+        Enemy enemy = null;
+        Vector3 targetPosition = Vector3.zero;
+        Vector2 randomDirection2D = Vector2.zero;
+        Vector3 randomDirection3D = Vector3.zero;
+        Vector3 playerPosition = Vector3.zero;
+        Vector3 playerPositionHorizontal = Vector3.zero;
+        Vector3 lookDirection = Vector3.zero;
+        Quaternion lookRotation = Quaternion.identity;
+        NavMeshHit hit;
+
+        while (true)
+        {
+            if (boss.NumberOfSpawnedPots < boss.MaxSpawnedPots && killedPots < boss.Phase1Pots)
+            {
+                playerPosition = Player.Instance.transform.position;
+                playerPositionHorizontal = new Vector3(playerPosition.x, 0.0f, playerPosition.z);
+
+                enemy = EnemyManager.Instance.SpawnArmorPot();
+                enemy.GetComponent<Pot>().enabled = false;
+                do
+                {
+                    randomDirection2D = Random.insideUnitCircle;
+                    randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
+                    targetPosition = playerPosition + randomDirection3D * 7;
+                } while (!NavMesh.SamplePosition(targetPosition, out hit, 10.0f, NavMesh.AllAreas));
+                targetPosition = hit.position;
+                enemy.transform.position = hit.position;
+
+                lookRotation = Quaternion.LookRotation((playerPositionHorizontal - targetPosition).normalized, Vector3.up);
+                enemy.transform.rotation = lookRotation;
+
+                boss.StartCoroutine(ShrinkAndGrow(enemy.gameObject));
+
+                enemy = EnemyManager.Instance.SpawnArmorPot();
+                do
+                {
+                    randomDirection3D = Quaternion.Euler(0.0f, 120.0f + Random.Range(0.0f, 30.0f), 0.0f) * randomDirection3D;
+                    targetPosition = playerPosition + randomDirection3D * 7;
+                } while (!NavMesh.SamplePosition(targetPosition, out hit, 10.0f, NavMesh.AllAreas));
+
+                targetPosition = hit.position;
+                enemy.transform.position = targetPosition;
+
+                lookRotation = Quaternion.LookRotation((playerPositionHorizontal - targetPosition).normalized, Vector3.up);
+                enemy.transform.rotation = lookRotation;
+
+                boss.StartCoroutine(ShrinkAndGrow(enemy.gameObject));
+
+                boss.NumberOfSpawnedPots += 2;
+                yield return new WaitForSeconds(15.0f);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+    }
+
+    IEnumerator ShrinkAndGrow(GameObject obj)
+    {
+        Pot pot = obj.GetComponent<Pot>();
+        pot.enabled = false;
+        Vector3 originalScale = obj.transform.localScale;
+
+        obj.transform.localScale = Vector3.zero;
+
+        float growthTime = 0.0f;
+
+        while (obj.transform.localScale.sqrMagnitude < originalScale.sqrMagnitude)
+        {
+            growthTime += Time.deltaTime;
+            growthTime = Mathf.Clamp(growthTime, 0.0f, 1.0f);
+            obj.transform.localScale = originalScale * (growthTime / 1.0f);
+            yield return null;
+        }
+        pot.enabled = true;
+
+    }
+
     IEnumerator Moving()
     {
         float distance = 0.0f;
@@ -500,9 +580,9 @@ class Boss4_Shooting : State
         Vector3 playerPositionHorizontal = Vector3.zero;
         Vector3 directionToPlayer = Vector3.zero;
 
-        Vector2 randomDirection2D = Random.insideUnitCircle.normalized;
+        Vector2 randomDirection2D = Random.insideUnitCircle;
         Vector3 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
-        Vector3 targetPosition = randomDirection3D * 10.0f;//Random.Range(10.0f, 12.0f);
+        Vector3 targetPosition = randomDirection3D * 15.0f;//Random.Range(10.0f, 12.0f);
         targetPosition.y = yPosition;
 
         target.localPosition = targetPosition;
@@ -517,9 +597,9 @@ class Boss4_Shooting : State
 
             if (distance <= .1f)
             {
-                randomDirection2D = Random.insideUnitCircle.normalized;
+                randomDirection2D = Random.insideUnitCircle;
                 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
-                targetPosition = randomDirection3D * 10.0f;//Random.Range(10.0f, 12.0f);
+                targetPosition = randomDirection3D * 15.0f;//Random.Range(10.0f, 12.0f);
                 targetPosition.y = yPosition;
                 target.localPosition = targetPosition;
             }
@@ -531,7 +611,7 @@ class Boss4_Shooting : State
             directionToPlayer = (playerPositionHorizontal - boss.transform.position);
             distanceFromPlayer = directionToPlayer.magnitude;
 
-            if (distanceFromPlayer > 10.0f)
+            if (distanceFromPlayer > 15.5f)
             {
                 boss.transform.position += (directionToPlayer.normalized * (distanceFromPlayer - 10));
             }

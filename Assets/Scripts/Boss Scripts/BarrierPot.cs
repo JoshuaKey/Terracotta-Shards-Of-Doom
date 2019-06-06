@@ -141,7 +141,7 @@ public class BarrierPot_EnterFormation : State
                 //transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
                
                 //transform.position = Vector3.Lerp(transform.position, waypointPosition, Time.deltaTime * 2.0f);
-                transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 2.0f);
+                transform.position = Vector3.MoveTowards(transform.position, waypointPosition, Time.deltaTime * 7.0f);
                 //Debug.Log(transform.position + " " + waypointPosition);
                 yield return null;
             }

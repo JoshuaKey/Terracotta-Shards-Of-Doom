@@ -100,6 +100,11 @@ public class PlayerHud : MonoBehaviour {
         InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
     }
 
+    private void OnDisable()
+    {
+        PortalText.SetActive(false);
+    }
+
     public void PlayCoinAnimation()
     {
         uiCoin.SetTrigger("Bounce");

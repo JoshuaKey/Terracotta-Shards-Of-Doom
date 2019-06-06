@@ -13,7 +13,16 @@ public class InputController : MonoBehaviour {
 
     [Header("Settings")]
     public string InputConfigurationFile = "input.xml";
-    public bool IsLeftHanded = false;
+    public bool isLeftHanded = false;
+    public bool IsLeftHanded {
+        get {
+            return isLeftHanded;
+        }
+        set {
+            isLeftHanded = value;
+            CheckInput();
+        }
+    }
 
 #region Input Icons
     [Header("Keyboard Icons")]
@@ -64,6 +73,7 @@ public class InputController : MonoBehaviour {
     [Space]
     public Sprite Keyboard_Control_Sprite;
     public Sprite Keyboard_Alt_Sprite;
+    public Sprite Keyboard_Space_Sprite;
     public Sprite Keyboard_Left_Sprite;
     public Sprite Keyboard_Right_Sprite;
     public Sprite Keyboard_Up_Sprite;
@@ -91,6 +101,10 @@ public class InputController : MonoBehaviour {
     public Sprite Keyboard_End_Sprite;
     public Sprite Keyboard_Insert_Sprite;
     public Sprite Keyboard_Delete_Sprite;
+    [Space]
+    public Sprite Keyboard_Mouse0_Sprite;
+    public Sprite Keyboard_Mouse1_Sprite;
+    public Sprite Keyboard_Mouse2_Sprite;
     [Space]
     [Header("Xbox Icons")]
     public Sprite Xbox_A_Sprite;
@@ -126,9 +140,104 @@ public class InputController : MonoBehaviour {
         Settings.OnLoad += OnSettingsLoad;
     }
 
+    //private void Update() {
+    //    if (Input.GetKeyDown(KeyCode.RightShift)) {
+    //        ChangeButton("Jump");
+    //    }
+    //}
+
     private void OnDestroy() {
         Settings.OnLoad -= OnSettingsLoad;
     }
+
+    //[ContextMenu("Try Scan")]
+    //public void Scan() {
+    //    ScanSettings settings = new ScanSettings {
+    //        ScanFlags = ScanFlags.Key,
+    //        // If the player presses this key the scan will be canceled.
+    //        CancelScanKey = KeyCode.Escape,
+    //        // If the player doesn't press any key within the specified number
+    //        // of seconds the scan will be canceled.
+    //        Timeout = 10
+    //    };
+
+    //    InputManager.StartInputScan(settings, result =>
+    //    {
+    //        // The handle should return "true" if the key is accepted or "false" if the key is rejected.
+    //        // If the key is rejected the scan will continue until a key is accepted or until the timeout expires.
+    //        print("Received Input " + result.Key);
+    //        InputAction inputAction = InputManager.PlayerOneControlScheme.GetAction("Jump");
+    //        if (result.Key != KeyCode.None) {
+    //            inputAction.Bindings[0].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        }
+    //        return result.Key == KeyCode.None;
+    //    });
+
+
+    //    //""
+    //    //ScanSettings settings = new ScanSettings();
+    //    //settings.ScanFlags = ScanFlags.
+    //    //InputManager.StartInputScan(settings, ScanKey);
+    //    //InputManager.StopInputScan();
+    //}
+    //private bool CheckScan(ScanResult result) {
+    //    print("Received Input " + result.Key);
+    //    InputAction inputAction = InputManager.PlayerOneControlScheme.GetAction();
+    //    if (result.Key != KeyCode.None) {
+    //        inputAction.Bindings[0].Positive = result.Key;
+    //        InputManager.StopInputScan();
+    //    }
+    //    return result.Key == KeyCode.None;
+    //}
+    //public void ChangeAxis(string action, int binding) {
+
+    //}
+
+    //public void ChangeButton(string action, int binding = 0) {
+    //    // Scan Settings
+    //    string currScheme = InputManager.PlayerOneControlScheme.Name;
+    //    ScanSettings settings = new ScanSettings();
+        
+    //    if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
+    //        settings.ScanFlags = ScanFlags.Key;
+    //    } else if (currScheme == ControllerSchemeName) {
+    //        settings.ScanFlags = ScanFlags.JoystickButton | ScanFlags.JoystickAxis;
+    //    }
+    //    settings.CancelScanKey = KeyCode.None;
+    //    settings.Timeout = 30;
+
+    //    // Start Scan
+    //    InputManager.StartInputScan(settings, result => {
+    //        print("Received Input " + result.Key);
+
+    //        InputAction inputAction = InputManager.PlayerOneControlScheme.GetAction(action);
+
+    //        if(result.ScanFlags == ScanFlags.JoystickAxis) {
+    //            inputAction.Bindings[binding].Type = InputType.AnalogButton;
+    //            inputAction.Bindings[binding].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        } else if (result.ScanFlags == ScanFlags.JoystickButton) {
+    //            inputAction.Bindings[binding].Type = InputType.Button;
+    //            inputAction.Bindings[binding].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        } else if (result.ScanFlags == ScanFlags.Key) {
+    //            inputAction.Bindings[binding].Type = InputType.Button;
+    //            inputAction.Bindings[binding].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        } else {
+    //            print("Invalid Scan Flags");
+    //        }
+
+    //        if (result.Key != KeyCode.None) {
+    //            inputAction.Bindings[0].Positive = result.Key;
+    //            InputManager.StopInputScan();
+    //        }
+    //        return result.Key == KeyCode.None;
+    //    });
+
+    //    // 
+    //}
 
     private void OnSettingsLoad(Settings settings) {
         IsLeftHanded = settings.IsLeftHanded;
@@ -146,7 +255,7 @@ public class InputController : MonoBehaviour {
     }
 
     private IEnumerator CheckControllerStatus() {
-        WaitForSeconds wait = new WaitForSeconds(2.0f);
+        WaitForSecondsRealtime wait = new WaitForSecondsRealtime(2.0f);
 
         while (true) {
             CheckInput();
@@ -156,11 +265,12 @@ public class InputController : MonoBehaviour {
     }
 
     public void CheckInput() {
-        string newScheme = "";
-        if (Input.GetJoystickNames().Length > 0 && Input.GetJoystickNames()[0] != "") {
-            newScheme = ControllerSchemeName;
-        } else {
-            newScheme = IsLeftHanded ? LeftHandedSchemeName : MouseAndKeyboardSchemeName;
+        string newScheme = newScheme = IsLeftHanded ? LeftHandedSchemeName : MouseAndKeyboardSchemeName;
+        for (int i = 0; i < Input.GetJoystickNames().Length; i++) {
+            if(Input.GetJoystickNames()[i] != "") {
+                newScheme = ControllerSchemeName;
+                break;
+            }
         }
 
         string currScheme = InputManager.PlayerOneControlScheme.Name;
@@ -176,8 +286,10 @@ public class InputController : MonoBehaviour {
         InputAction inputAction = scheme.GetAction(action);
         InputBinding actionBinding = inputAction.GetBinding(0);
         KeyCode code = actionBinding.Positive;
+        int axis = actionBinding.Axis;
+        bool pos = actionBinding.Invert;
 
-        return GetInputIcon(code);
+        return GetInputIcon(code) ?? GetInputAxisIcon(axis, pos);
     }
 
     public string GetActionText(string action) {
@@ -198,6 +310,17 @@ public class InputController : MonoBehaviour {
         }
 
         throw new KeyNotFoundException("Invalid Key. Check the current Control Scheme and Key Input.");
+    }
+
+    public Sprite GetInputAxisIcon(int axis, bool pos) {
+        string currScheme = InputManager.PlayerOneControlScheme.Name;
+        if (currScheme == MouseAndKeyboardSchemeName || currScheme == LeftHandedSchemeName) {
+            return null;
+        } else if (currScheme == ControllerSchemeName) {
+            return GetXboxAxisIcon(axis, pos);
+        }
+
+        throw new KeyNotFoundException("Invalid Scheme. Check the current Control Scheme and Key Input.");
     }
 
     public string GetInputText(KeyCode k) {
@@ -353,13 +476,32 @@ public class InputController : MonoBehaviour {
                 return Keyboard_Delete_Sprite;
             case KeyCode.Escape:
                 return Keyboard_Escape_Sprite;
+            case KeyCode.Space:
+                return Keyboard_Space_Sprite;
+            case KeyCode.Mouse0:
+                return Keyboard_Mouse0_Sprite;
+            case KeyCode.Mouse1:
+                return Keyboard_Mouse1_Sprite;
+            case KeyCode.Mouse2:
+                return Keyboard_Mouse2_Sprite;
         }
         print("Unknown Keycode: " + k);
         return null;
     }
 
     public string GetKeyboardText(KeyCode k) {
-        return k == KeyCode.None ? "" : k.ToString();
+        switch (k) {
+            case KeyCode.Mouse0:
+                return "Left Mouse";
+            case KeyCode.Mouse1:
+                return "Right Mouse";
+            case KeyCode.Mouse2:
+                return "Middle Mouse";
+            case KeyCode.None:
+                return "";
+            default:
+                return k.ToString();
+        }
     }
 
     public Sprite GetXboxIcon(KeyCode k) {
@@ -383,6 +525,25 @@ public class InputController : MonoBehaviour {
         }
 
         print("Unknown Keycode: " + k);
+        return null;
+    }
+
+    public Sprite GetXboxAxisIcon(int axis, bool inverted = false) {
+        switch (axis) {
+            case 1:
+            case 2:
+                return Xbox_LeftStick_Sprite;
+            case 3:
+                if (inverted) {
+                    return Xbox_LT_Sprite;
+                } else {
+                    return Xbox_RT_Sprite;
+                }
+            case 4:
+            case 5:
+                return Xbox_RightStick_Sprite;
+        }
+        print("Unknown Axis: " + axis);
         return null;
     }
 

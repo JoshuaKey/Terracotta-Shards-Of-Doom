@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     [Header("Menus")]
     [SerializeField] GameObject titleScreen;
     [SerializeField] GameObject menuStart;
-    [SerializeField] GameObject saves;
+    [SerializeField] GameObject credits;
     [Header("Other")]
     [SerializeField] Button continueButton;
     [SerializeField] EventSystem eventSystem;
@@ -33,7 +33,7 @@ public class MainMenu : MonoBehaviour
     {
         titleScreen.SetActive(false);
         menuStart.SetActive(false);
-        saves.SetActive(false);
+        credits.SetActive(false);
 
         switch(menuName)
         {
@@ -43,12 +43,11 @@ public class MainMenu : MonoBehaviour
             case "menuStart":
                 menuStart.SetActive(true);
                 break;
-            case "saves":
-                saves.SetActive(true);
+            case "credits":
+                credits.SetActive(true);
                 break;
             default:
                 throw new System.Exception("Blame Zac. Or maybe someone else");
-                break;
         }
     }
 
@@ -92,6 +91,6 @@ public class MainMenu : MonoBehaviour
 		//Disabling the Main Menu
 		titleScreen.SetActive(false);
 		menuStart.SetActive(false);
-		saves.SetActive(false);
+		credits.SetActive(false);
 	}
 }

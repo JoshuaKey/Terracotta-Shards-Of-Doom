@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class HubShop : MonoBehaviour
@@ -16,6 +17,8 @@ public class HubShop : MonoBehaviour
     #pragma warning restore 0649
 
     [HideInInspector] public bool isMovingPanels;
+    [HideInInspector] public UnityAction onSuccessfulSale;
+    [HideInInspector] public UnityAction onFailedSale;
 
     //private GameObject playerHud;
 
@@ -38,18 +41,18 @@ public class HubShop : MonoBehaviour
     [HideInInspector] public static WeaponInformation spearInfo
         = new WeaponInformation(
             "Spear",
-            "8,000 Coins\nIf only your spear could stab more than one pot. This upgrade is the closest we could get. Any bystanders to your rampage will be in for a nasty shock.");
+            "8,000 Coins\nWish you could stab more than one pot? This upgrade is the closest we could get. Any bystander pots will be in for a nasty shock.");
 
     [HideInInspector] public static WeaponInformation crossbowInfo
         = new WeaponInformation(
             "Crossbow",
-            "10,000 Coins\nWe started from the ground up with this one. We call it a magic missile. Still does the same thing though, just Bigger.");
+            "12,500 Coins\nWe started from the ground up with this one. We call it a magic missile. Still does the same thing though, just Bigger.");
 
     [HideInInspector]
     public static WeaponInformation magicInfo
         = new WeaponInformation(
             "Magic",
-            "12,500 Coins\nBehold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
+            "10,000 Coins\nBehold. Magic Magic. It's like Magic but more magical. Also more damage and just all around better.");
     #endregion
 
     private void Awake()
@@ -78,11 +81,7 @@ public class HubShop : MonoBehaviour
 
     private void ShowInformation()
     {
-        Debug.Log(mainPanel.weaponName);
-        if (!informationPanel.gameObject.activeSelf)
-        {
-            informationPanel.Show(mainPanel.weaponName);
-        }
+        informationPanel.Show(mainPanel.weaponName);
     }
 
     private void HideInformation()
@@ -142,11 +141,16 @@ public class HubShop : MonoBehaviour
             Player.Instance.Coins -= amount;
             PlayerHud.Instance.SetCoinCount(Player.Instance.Coins);
 
+            onSuccessfulSale();
+
             return true;
         }
         else
         {
             Debug.Log($"Player didn't have enough coins to pay {amount}");
+
+            onFailedSale();
+
             return false;
         }
     }
@@ -203,7 +207,7 @@ public class HubShop : MonoBehaviour
             case "Magic":       return magicInfo;
         }
 
-        throw new System.ArgumentException($"No weapon with name {weaponName} exists");
+        throw new ArgumentException($"No weapon with name {weaponName} exists");
     }
 
     public void DebugStuff()

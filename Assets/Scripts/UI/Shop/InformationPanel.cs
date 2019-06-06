@@ -14,6 +14,7 @@ public class InformationPanel : MonoBehaviour
     #pragma warning restore 0649
 
     HubShop hubShop;
+    string curWeaponName;
 
     //string[] descriptions =
     //{
@@ -38,10 +39,20 @@ public class InformationPanel : MonoBehaviour
 
     public void Show(string weaponName)
     {
+        curWeaponName = weaponName;
         gameObject.SetActive(true);
 
         if (HubShop.GetWeaponInfo(weaponName).isUnlocked)
         {
+            if(HubShop.GetWeaponInfo(weaponName).isUpgraded)
+            {
+                button.interactable = false;
+            }
+            else
+            {
+                button.interactable = true;
+            }
+
             this.weaponName.SetText(weaponName);
 
             weaponDescription.SetText(HubShop.GetWeaponInfo(weaponName).description);
@@ -51,6 +62,8 @@ public class InformationPanel : MonoBehaviour
             this.weaponName.SetText("Locked");
 
             weaponDescription.SetText("That silhouette looks cool. Too bad you haven't unlocked that weapon yet. Go and find it then come back.");
+
+            button.interactable = false;
         }
     }
 
@@ -61,9 +74,9 @@ public class InformationPanel : MonoBehaviour
 
     public void PurchaseUpgrade()
     {
-        if (!HubShop.GetWeaponInfo(weaponName.text).isUpgraded)
+        if (!HubShop.GetWeaponInfo(curWeaponName).isUpgraded)
         {
-            switch (weaponName.text)
+            switch (curWeaponName)
             {
                 case "Sword": SwordButtonClick(); break;
                 case "Bow": BowButtonClick(); break;
@@ -110,7 +123,7 @@ public class InformationPanel : MonoBehaviour
 
     public void CrossbowButtonClick()
     {
-        if(hubShop.ChargePlayer(10000))
+        if(hubShop.ChargePlayer(12500))
         {
             hubShop.Upgrade("Crossbow", "Magic Missile");
         }
@@ -118,7 +131,7 @@ public class InformationPanel : MonoBehaviour
 
     public void MagicButtonClick()
     {
-        if(hubShop.ChargePlayer(12500))
+        if(hubShop.ChargePlayer(10000))
         {
             hubShop.Upgrade("Magic", "Magic Magic");
         }

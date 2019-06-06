@@ -11,6 +11,8 @@ public class TextScroll : MonoBehaviour
     private void Start()
     {
         rect = GetComponent<RectTransform>();
+
+        Debug.Log(Time.timeScale);
     }
 
     private void Update()

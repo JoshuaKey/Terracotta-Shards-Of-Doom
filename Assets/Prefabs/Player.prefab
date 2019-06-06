@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 1509210581006184048}
   - component: {fileID: 8492044979055221813}
   - component: {fileID: 6448598055109449320}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GhostDialogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -529,8 +529,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text:
-  - Hey, do you that. Those pots are ghosts, you must've already smashed those pots.
-  - 
+  - Text: Hey, do you see that. Those pots are ghosts, you must've already smashed
+      those pots.
+    buttons: []
+  - Text: I that there are 3 super rare pots hidden here. The next one will appear
+      after you have smashed one, so be on the lookout for special pots.
+    buttons: []
   characterSpeaking: {fileID: 21300028, guid: 1422f91ffd3697e4c8735aee459998c3, type: 3}
   characterSpeakingName: Jeffery the Tutorial Block
   IsTutorial: 1
