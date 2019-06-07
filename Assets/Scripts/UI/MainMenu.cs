@@ -30,12 +30,6 @@ public class MainMenu : MonoBehaviour
 		//Cursor.visible = true;
     }
 
-    private void Update() {
-        print("Selected " + eventSystem.currentSelectedGameObject);
-        print("Focus " + eventSystem.isFocused);
-        print("Selecting " + eventSystem.alreadySelecting);
-    }
-
     public void OpenMainMenu(string menuName)
     {
         titleScreen.SetActive(false);
