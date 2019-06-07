@@ -725,7 +725,7 @@ public class Player : MonoBehaviour {
     private void OnControlSchemeChanged() { CheckInputScheme(); }
     public void CheckInputScheme() {
         if(InputManager.PlayerOneControlScheme.Name == InputController.Instance.ControllerSchemeName) {
-            XRotationSpeed = 150f;
+            XRotationSpeed = 100f;
             YRotationSpeed = 100f;
         } else {
             XRotationSpeed = 60f;

@@ -53,6 +53,7 @@ public class Boss4Pot : Pot
         stateMachine.Init(this.gameObject,
             new Boss4_Idle(),
             new Boss4_Shooting(),
+            new Boss4_TargetMove(),
             new Boss4_Target(),
             new Boss4_MeteorShower());
 
@@ -188,6 +189,7 @@ public class Boss4Pot : Pot
     private IEnumerator SpawnProjectileDelay()
     {
         yield return new WaitForSeconds(SpawnDelay);
+
         stateMachine.ChangeState("Boss4_Target");
     }
 
@@ -379,7 +381,7 @@ class Boss4_Shooting : State
 
     public override void Exit()
     {
-        boss.StartFloating();
+        boss.StopFloating();
         boss.StopCoroutine(movingCoroutine);
         boss.StopCoroutine(spawningCoroutine);
     }
@@ -390,12 +392,12 @@ class Boss4_Shooting : State
         {
             if (boss.NumberOfSpawnedPots == 0)
             {
-                return "Boss4_Target";
+                return "Boss4_TargetMove";
             }
         }
         else
         {
-            if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots)
+            if (Time.time >= nextSpawnTime && boss.NumberOfSpawnedPots < boss.MaxSpawnedPots && killedPots < boss.Phase1Pots)
             {
                 boss.StartCoroutine(Shooting());
             }
@@ -406,7 +408,6 @@ class Boss4_Shooting : State
 
     IEnumerator Shooting()
     {
-        boss.NumberOfSpawnedPots++;
         nextSpawnTime = Time.time + 2f;
 
         Enemy enemy = EnemyManager.Instance.SpawnChargerPot();
@@ -414,6 +415,7 @@ class Boss4_Shooting : State
         {
             yield break;
         }
+        boss.NumberOfSpawnedPots++;
         enemy.health.OnDeath += PotDied;
 
         Pot pot = enemy.GetComponent<Pot>();
@@ -499,13 +501,15 @@ class Boss4_Shooting : State
 
         while (true)
         {
-            if (boss.NumberOfSpawnedPots < boss.MaxSpawnedPots && killedPots < boss.Phase1Pots)
+            if (boss.NumberOfSpawnedPots < boss.MaxSpawnedPots && killedPots <= boss.Phase1Pots)
             {
                 playerPosition = Player.Instance.transform.position;
                 playerPositionHorizontal = new Vector3(playerPosition.x, 0.0f, playerPosition.z);
 
                 enemy = EnemyManager.Instance.SpawnArmorPot();
                 enemy.GetComponent<Pot>().enabled = false;
+                boss.NumberOfSpawnedPots++;
+                enemy.health.OnDeath += PotDied;
                 do
                 {
                     randomDirection2D = Random.insideUnitCircle;
@@ -521,8 +525,9 @@ class Boss4_Shooting : State
                 boss.StartCoroutine(ShrinkAndGrow(enemy.gameObject));
 
                 enemy = EnemyManager.Instance.SpawnArmorPot();
-                do
-                {
+                boss.NumberOfSpawnedPots++;
+                enemy.health.OnDeath += PotDied;
+                do {
                     randomDirection3D = Quaternion.Euler(0.0f, 120.0f + Random.Range(0.0f, 30.0f), 0.0f) * randomDirection3D;
                     targetPosition = playerPosition + randomDirection3D * 7;
                 } while (!NavMesh.SamplePosition(targetPosition, out hit, 10.0f, NavMesh.AllAreas));
@@ -535,7 +540,7 @@ class Boss4_Shooting : State
 
                 boss.StartCoroutine(ShrinkAndGrow(enemy.gameObject));
 
-                boss.NumberOfSpawnedPots += 2;
+                //boss.NumberOfSpawnedPots += 2;
                 yield return new WaitForSeconds(15.0f);
             }
             else
@@ -582,6 +587,12 @@ class Boss4_Shooting : State
 
         Vector2 randomDirection2D = Random.insideUnitCircle;
         Vector3 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
+
+        // Player should always see the boss...
+        //Vector3 randomDirection3D = player.camera.transform.forward;
+        //randomDirection3D.y = 0.0f;
+        //randomDirection3D = randomDirection3D.normalized;
+
         Vector3 targetPosition = randomDirection3D * 15.0f;//Random.Range(10.0f, 12.0f);
         targetPosition.y = yPosition;
 
@@ -599,6 +610,11 @@ class Boss4_Shooting : State
             {
                 randomDirection2D = Random.insideUnitCircle;
                 randomDirection3D = new Vector3(randomDirection2D.x, 0.0f, randomDirection2D.y);
+
+                //randomDirection3D = player.camera.transform.forward;
+                //randomDirection3D.y = 0.0f;
+                //randomDirection3D = randomDirection3D.normalized;
+
                 targetPosition = randomDirection3D * 15.0f;//Random.Range(10.0f, 12.0f);
                 targetPosition.y = yPosition;
                 target.localPosition = targetPosition;
@@ -631,6 +647,53 @@ class Boss4_Shooting : State
     }
 }
 
+public class Boss4_TargetMove : State {
+
+    Boss4Pot boss4Pot = null;
+    bool moving = false;
+
+    public override void Init(GameObject owner) {
+        base.Init(owner);
+        boss4Pot = owner.GetComponent<Boss4Pot>();
+    }
+
+    public override void Enter() {
+        boss4Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
+        boss4Pot.StartFloating();
+
+        boss4Pot.StartCoroutine(Move());
+    }
+
+    public override void Exit() {
+        boss4Pot.StopFloating();
+    }
+
+    public override string Update() {
+        if (!moving) {
+           return "Boss4_Target"; 
+        }
+        return null;
+    }
+
+    private IEnumerator Move() {
+        moving = true;
+        var MovementBoundaries = boss4Pot.MovementBoundaries;
+
+        Vector2 dir = Random.insideUnitCircle;
+        Vector3 targetPos = MovementBoundaries.transform.position + MovementBoundaries.center + (MovementBoundaries.size.x * new Vector3(dir.x, 0.0f, dir.y));
+
+        do {
+            Vector3 pos = Vector3.MoveTowards(boss4Pot.transform.position, targetPos, Time.deltaTime * 3.0f);
+            boss4Pot.transform.position = pos;
+            yield return null;
+        } while ((boss4Pot.transform.position - targetPos).sqrMagnitude > .1f);
+
+        yield return new WaitForSeconds(2.0f);
+
+        moving = false;
+    }
+}
+
 public class Boss4_Target : State
 {
 
@@ -646,11 +709,12 @@ public class Boss4_Target : State
     {
         boss4Pot.enemy.health.Resistance = DamageType.BASIC | DamageType.EXPLOSIVE | DamageType.FIRE | DamageType.ICE | DamageType.LIGHTNING | DamageType.EARTH | DamageType.TRUE;
         boss4Pot.SpawnProjectile();
+        boss4Pot.StartFloating();
     }
 
     public override void Exit()
     {
-
+        boss4Pot.StopFloating();
     }
 
     public override string Update()

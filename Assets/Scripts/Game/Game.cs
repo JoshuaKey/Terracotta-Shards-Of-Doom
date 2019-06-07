@@ -28,7 +28,9 @@ public class Game : MonoBehaviour {
 
     private void OnDestroy() {
         Settings.OnLoad -= OnSettingsLoad;
-        DialogueTrigger.DialoguesHit.Clear();
+        if(Game.Instance == this) {
+            DialogueTrigger.DialoguesHit.Clear();
+        }
     }
 
     private IEnumerator SaveOnStart() {
