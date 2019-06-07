@@ -31,7 +31,7 @@ public class TextScroll : MonoBehaviour
 
         rect.position = newPos;
 
-        if(rect.position.y >= endPos)
+        if(rect.localPosition.y >= endPos)
         {
             onEnd.Invoke();
         }
