@@ -19,7 +19,8 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject controls;
 	[SerializeField] GameObject gameplay;
     [SerializeField] GameObject quit;
-    [Header("Controls")]
+    [SerializeField] GameObject help;
+    [Header("Help")]
     [SerializeField] Image NextWeaponImage;
     [SerializeField] Image PrevWeaponImage;
     [SerializeField] Image WeaponWheelImage;
@@ -27,6 +28,11 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] Image InteractImage;
     [SerializeField] Image MenuImage;
     [SerializeField] Image JumpImage;
+    [Space]
+    [Header("Controls")]
+    [SerializeField] Slider xSensitivitySlider;
+    [SerializeField] Slider ySensitivitySlider;
+    [SerializeField] Toggle leftHandedToggle;
     [Space]
     [Header("Audio")]
     [SerializeField] AudioMixer audioMixer;
@@ -85,14 +91,17 @@ public class PauseMenu : MonoBehaviour
     private void OnDestroy() {
         InputManager.ControlSchemesChanged -= OnControlSchemeChanged;
         InputManager.PlayerControlsChanged -= OnPlayerControlChanged;
+        Settings.OnLoad -= OnSettingsLoad;
     }
 
     public void OnSettingsLoad(Settings settings) {
         ChangeDifficulty(settings.DifficultyLevel);
-        Player.Instance.SkipTutorial = settings.SkipTutorial;
-
+        
         difficultyDropdown.value = settings.DifficultyLevel;
         tutorialToggle.isOn = !settings.SkipTutorial;
+        leftHandedToggle.isOn = settings.IsLeftHanded;
+        xSensitivitySlider.value = settings.HorizontalSensitivity;
+        ySensitivitySlider.value = settings.VerticalSensitivity;
     }
 
     private void OnPlayerControlChanged(PlayerID id) { UpdateInputIcons(); }
@@ -131,6 +140,7 @@ public class PauseMenu : MonoBehaviour
         controls.SetActive(false);
 		gameplay.SetActive(false);
         quit.SetActive(false);
+        help.SetActive(false);
 
         masterSlider.value = (masterVolume / 100) + 0.8f;
         musicSlider.value = (musicVolume / 100) + 0.8f;
@@ -193,6 +203,7 @@ public class PauseMenu : MonoBehaviour
         controls.SetActive(false);
 		gameplay.SetActive(false);
         quit.SetActive(false);
+        help.SetActive(false);
 
         switch (menuName)
         {
@@ -220,6 +231,9 @@ public class PauseMenu : MonoBehaviour
 				break;
             case "quit":
                 quit.SetActive(true);
+                break;
+            case "help":
+                help.SetActive(true);
                 break;
         }
     }
@@ -370,14 +384,24 @@ public class PauseMenu : MonoBehaviour
 	{
 		Player.Instance.SkipTutorial = !value;
 	}
+    public bool GetSkipTutorial() {
+        return Player.Instance.SkipTutorial;
+    }
+    #endregion
 
+    #region Controls
     public void ToggleLeftHanded(bool value) {
         InputController.Instance.IsLeftHanded = value;
     }
 
-    public bool GetSkipTutorial() {
-        return Player.Instance.SkipTutorial;
+    public void ChangeHorizontalSensitivity(float sensitivity) {
+        Player.Instance.HorizontalRotationSensitivity = sensitivity;
     }
+
+    public void ChangeVerticalSensitivity(float sensitivity) {
+        Player.Instance.VerticalRotationSensitivity = sensitivity;
+    }
+
 
     #endregion
 }

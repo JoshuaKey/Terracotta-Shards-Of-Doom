@@ -734,6 +734,8 @@ public class Player : MonoBehaviour {
     }
     private void OnSettingsLoad(Settings settings) {
         Player.Instance.camera.fieldOfView = settings.FOV;
+        Player.Instance.SkipTutorial = settings.SkipTutorial;
+
         Player.Instance.VerticalRotationSensitivity = settings.VerticalSensitivity;
         Player.Instance.HorizontalRotationSensitivity = settings.HorizontalSensitivity;
     }
