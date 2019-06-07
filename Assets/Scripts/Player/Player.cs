@@ -172,12 +172,12 @@ public class Player : MonoBehaviour {
 
 
         // Debug...
-        if (Input.GetKeyDown(KeyCode.Alpha0)) {
-            string levelName = LevelManager.Instance.GetLevelName();
-            LevelManager.Instance.Levels[levelName].IsCompleted = true;
-            LevelManager.Instance.LoadScene("Hub");
-        }
         if (Application.isEditor) {
+            if (Input.GetKeyDown(KeyCode.Alpha0)) {
+                string levelName = LevelManager.Instance.GetLevelName();
+                LevelManager.Instance.Levels[levelName].IsCompleted = true;
+                LevelManager.Instance.LoadScene("Hub");
+            }
             if (Input.GetKeyDown(KeyCode.BackQuote)) {
                 RockHammer ham = (RockHammer) this.weapons.Find((x) => x.name == "Rock Hammer");
                 if(ham != null) {
