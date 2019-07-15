@@ -92,6 +92,7 @@ public class AudioManager : MonoBehaviour
 
         AudioSource audioSource = soundClip.AttachToAudioSource(NextAudiosource());
         audioSource.spatialBlend = 0;
+        audioSource.transform.parent = this.transform;
         soundClip.audioSource.Play();
 
         if (!loop) { StartCoroutine(ExecuteAfterSeconds(soundClip.onFinish, soundClip.Length)); }
@@ -121,6 +122,7 @@ public class AudioManager : MonoBehaviour
         AudioSource audioSource = soundClip.AttachToAudioSource(NextAudiosource());
         audioSource.spatialBlend = spatialBlend;
         audioSource.transform.position = location;
+        audioSource.transform.parent = this.transform;
         soundClip.audioSource.Play();
 
         if (!loop) { StartCoroutine(ExecuteAfterSeconds(soundClip.onFinish, soundClip.Length)); }

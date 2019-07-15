@@ -91,12 +91,17 @@ MonoBehaviour:
   EnemyLayer:
     serializedVersion: 2
     m_Bits: 1024
+  PlayerRotateSpeed: 30
   ChargeTime: 3
   LeapTime: 5
+  BarrelRotateTime: 0.5
+  BaseRotateTime: 1
   Barrel: {fileID: 382649963996406519}
   Base: {fileID: 382649963465167489}
   LandingEffect: {fileID: 713251839137747373}
   renderer: {fileID: 0}
+  DestoryObjectOnImpact: 0
+  DestroyableObject: {fileID: 0}
 --- !u!114 &382649962293657195
 MonoBehaviour:
   m_ObjectHideFlags: 0

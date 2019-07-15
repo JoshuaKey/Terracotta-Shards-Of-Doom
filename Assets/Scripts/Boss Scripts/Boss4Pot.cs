@@ -109,7 +109,7 @@ public class Boss4Pot : Pot
         switch (Shields.Count)
         {
             case 3:
-                meteor.SpeedOverTime = .2f;
+                meteor.SpeedOverTime = .1f;
                 break;
             case 2:
                 meteor.SpeedOverTime = .05f;
@@ -683,7 +683,7 @@ public class Boss4_TargetMove : State {
         Vector3 targetPos = MovementBoundaries.transform.position + MovementBoundaries.center + (MovementBoundaries.size.x * new Vector3(dir.x, 0.0f, dir.y));
 
         do {
-            Vector3 pos = Vector3.MoveTowards(boss4Pot.transform.position, targetPos, Time.deltaTime * 3.0f);
+            Vector3 pos = Vector3.MoveTowards(boss4Pot.transform.position, targetPos, Time.deltaTime * 10.0f);
             boss4Pot.transform.position = pos;
             yield return null;
         } while ((boss4Pot.transform.position - targetPos).sqrMagnitude > .1f);

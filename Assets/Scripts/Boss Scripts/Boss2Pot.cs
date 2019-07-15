@@ -399,7 +399,7 @@ public class Boss2Pot_Animating : State
 
         boss.barrierPots.ForEach(x => Debug.Log(x.name));
 
-        while (boss.barrierPots.Exists(p => !p.InPosition))
+        while (boss.barrierPots.Exists(p => p.isActiveAndEnabled && !p.InPosition ))
         {
             yield return null;
         }

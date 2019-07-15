@@ -122,7 +122,7 @@ public class Cannon : MonoBehaviour {
             while (Time.time < startTime + BaseRotateTime) {
                 float t = (Time.time - startTime) / BaseRotateTime;
 
-                Vector3 baseDir = Vector3.Lerp(oldBaseDir, newBaseDir, t);
+                Vector3 baseDir = Vector3.Slerp(oldBaseDir, newBaseDir, t);
 
                 Base.transform.forward = baseDir;
 
@@ -142,7 +142,7 @@ public class Cannon : MonoBehaviour {
             while (Time.time < startTime + BarrelRotateTime) {
                 float t = (Time.time - startTime) / BarrelRotateTime;
 
-                Vector3 barrelDir = Vector3.Lerp(oldBarrelDir, newBarrelDir, t);
+                Vector3 barrelDir = Vector3.Slerp(oldBarrelDir, newBarrelDir, t);
 
                 Barrel.transform.forward = barrelDir;
 
